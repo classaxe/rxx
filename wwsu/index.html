@@ -1,0 +1,87 @@
+<html>
+<head>
+<style type='text/css'>
+a:active { color: red; }
+</style>
+
+<script language='JavaScript' type='text/JavaScript'>
+function WWSU(cal,cnt,sta,qth,khz,cla,pwr,nav,lat,lon,ele,date,cyc,mod,daid) {
+  var a = new Array();
+  a.cal = cal;
+  a.cnt = cnt;
+  a.sta = sta;
+  a.qth = qth;
+  a.khz = khz;
+  a.cla = cla;
+  a.pwr = pwr;
+  a.nav = nav;
+  a.lat = lat;
+  a.lon = lon;
+  a.ele = ele;
+  a.date = date;
+  a.cyc = cyc;
+  a.mod = mod;
+  a.daid = daid;
+
+  var lat_h = (lat.substr(0,1)=='N' ? 1 : -1);
+  var lat_d = parseFloat(lat.substr(1,2));
+  var lat_m = parseFloat(lat.substr(3,2))/60;
+  var lat_s = parseFloat(lat.substr(5,2))/3600;
+  a.lat_d = Math.round(10000*lat_h*(lat_d+lat_m+lat_s))/10000;
+
+  var lon_h = (lon.substr(0,1)=='E' ? 1 : -1);
+  var lon_d = parseFloat(lon.substr(1,3));
+  var lon_m = parseFloat(lon.substr(4,2))/60;
+  var lon_s = parseFloat(lon.substr(6,2))/3600;
+  a.lon_d = Math.round(10000*lon_h*(lon_d+lon_m+lon_s))/10000;
+
+  wwsu_list[wwsu_list.length] = a;
+}
+
+// ************************************
+// * Map:                             *
+// ************************************
+function map(lat,lon) {
+  var map_hd =	window.open(	"http://www.mapquest.com/maps/map.adp?latlongtype=decimal&latitude="+lat+"&longitude="+lon+
+						"&size=small&zoom=0","map",
+						"width=800,height=600,resizable=1,scrollbars=1,status=0,menubar=0,location=1,toolbar=0");
+  map_hd.focus();
+}
+
+function list(){
+  var out = new Array();
+  var n = 0;
+  for (var i=0; i<wwsu_list.length; i++) {
+    var a =	wwsu_list[i];
+    out[n++] =	"<a href='javascript:void map(\""+a.lat_d+"\",\""+a.lon_d+"\")'>";
+    out[n++] =	a.cal+","
+    out[n++] =	a.cnt+","
+    out[n++] =	a.sta+","
+    out[n++] =	a.qth+","
+    out[n++] =	a.khz+","
+    out[n++] =	a.cla+","
+    out[n++] =	a.pwr+","
+    out[n++] =	a.nav+","
+    out[n++] =	a.lat+","
+    out[n++] =	a.lon+","
+    out[n++] =	a.ele+","
+    out[n++] =	a.date+","
+    out[n++] =	a.cyc+","
+    out[n++] =	a.mod+","
+    out[n++] =	a.daid
+    out[n++] =	"</a>";
+    out[n++] =	"\n";
+  }
+  document.write("<h1>Country Locator</h1><pre>"+out.join("")+"</pre>");
+}
+
+wwsu_list = new Array();
+</script>
+<script language='JavaScript' type='text/JavaScript' src='q-r.js'></script>
+</head>
+<body>
+<script language='JavaScript' type='text/JavaScript'>list();
+</script>
+</body>
+<html>
+

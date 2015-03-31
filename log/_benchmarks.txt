@@ -1,0 +1,118 @@
+Benchmarks
+
+Pentium 200-MMX 64MB RAM, Windows 95 (4.00.950B)
+  IE4.0 (4.71.1712.6)
+    Remote Load: 82 seconds (55sec in CM with IE5.0, 69sec in CM with IE5.5)
+  IE5.0 (5.00.2014.0216)
+    Remote Load: 55 seconds
+  IE5.5 (5.50.4134.0600)
+    Remote Load: 59 seconds
+
+Pentium III-733 256MB RAM, Windows XP-Home Edition (2002 SP1)
+  NS 4.75 (False start first time - press Reload to time)
+    Remote Load: 59 Seconds
+  NS 6.1
+    Remote Load: 15.5 Seconds
+  IE6.0
+    Remote Load: 22.9 Seconds (18 with cached files)
+  Mozilla 1.5
+    Remote Load: 12.6 Seconds
+  
+
+Stats for V 1.1.19 over 1.1.19:
+
+// Summary:
+
+// Time for total function (Averaged over several iterations)
+// These timings are for the whole function section - the optimised code is just some of that contained within a row loop
+
+// Ver Secs  dS   d%
+// 1   22.7  0    0    With the compact loop
+// 2   19.1  3.6  16   Spread out, no loop, hard coded array values
+// 3   18.8  3.9  17   Using less out[n++] and + instead
+// 4   17.5  5.2  23   All on single lines, no +
+
+// Bitter Conclusion:
+// You can have nice readable code, or fast code.   You can't have both.
+
+
+
+// Version 1: 22.7 secs
+for (var b=0; b<12; b++) {
+  out[n++] =	"<td class='"+mm_arr[b]+"'>"+((sorted[a].log[sel_yyyy] && sorted[a].log[sel_yyyy].rx[mm_arr[b]])?(sorted[a].log[sel_yyyy].rx[mm_arr[b]]):("&nbsp;"))+"</td>\n";
+}
+
+
+// Version 2: 19.1 secs
+// The removal of unnecessary brackets also seems to help:
+if (sorted[a].log[sel_yyyy]) {
+  out[n++] =	"<td class='01'>"+(sorted[a].log[sel_yyyy].rx["01"] ? sorted[a].log[sel_yyyy].rx["01"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='02'>"+(sorted[a].log[sel_yyyy].rx["02"] ? sorted[a].log[sel_yyyy].rx["02"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='03'>"+(sorted[a].log[sel_yyyy].rx["03"] ? sorted[a].log[sel_yyyy].rx["03"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='04'>"+(sorted[a].log[sel_yyyy].rx["04"] ? sorted[a].log[sel_yyyy].rx["04"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='05'>"+(sorted[a].log[sel_yyyy].rx["05"] ? sorted[a].log[sel_yyyy].rx["05"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='06'>"+(sorted[a].log[sel_yyyy].rx["06"] ? sorted[a].log[sel_yyyy].rx["06"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='07'>"+(sorted[a].log[sel_yyyy].rx["07"] ? sorted[a].log[sel_yyyy].rx["07"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='08'>"+(sorted[a].log[sel_yyyy].rx["08"] ? sorted[a].log[sel_yyyy].rx["08"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='09'>"+(sorted[a].log[sel_yyyy].rx["09"] ? sorted[a].log[sel_yyyy].rx["09"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='10'>"+(sorted[a].log[sel_yyyy].rx["10"] ? sorted[a].log[sel_yyyy].rx["10"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='11'>"+(sorted[a].log[sel_yyyy].rx["11"] ? sorted[a].log[sel_yyyy].rx["11"] : "&nbsp;")+"</td>\n";
+  out[n++] =	"<td class='12'>"+(sorted[a].log[sel_yyyy].rx["12"] ? sorted[a].log[sel_yyyy].rx["12"] : "&nbsp;")+"</td>\n";
+}
+else {
+  out[n++] =	"<td class='01'>&nbsp;</td>\n";
+  out[n++] =	"<td class='02'>&nbsp;</td>\n";
+  out[n++] =	"<td class='03'>&nbsp;</td>\n";
+  out[n++] =	"<td class='04'>&nbsp;</td>\n";
+  out[n++] =	"<td class='05'>&nbsp;</td>\n";
+  out[n++] =	"<td class='06'>&nbsp;</td>\n";
+  out[n++] =	"<td class='07'>&nbsp;</td>\n";
+  out[n++] =	"<td class='08'>&nbsp;</td>\n";
+  out[n++] =	"<td class='09'>&nbsp;</td>\n";
+  out[n++] =	"<td class='10'>&nbsp;</td>\n";
+  out[n++] =	"<td class='11'>&nbsp;</td>\n";
+  out[n++] =	"<td class='12'>&nbsp;</td>\n";
+}
+
+
+Version 3: 18.8 secs
+if (sorted[a].log[sel_yyyy]) {
+  out[n++] = "<td class='01'>"+(sorted[a].log[sel_yyyy].rx["01"] ? sorted[a].log[sel_yyyy].rx["01"] : "&nbsp;")+"</td>\n"+
+             "<td class='02'>"+(sorted[a].log[sel_yyyy].rx["02"] ? sorted[a].log[sel_yyyy].rx["02"] : "&nbsp;")+"</td>\n"+
+             "<td class='03'>"+(sorted[a].log[sel_yyyy].rx["03"] ? sorted[a].log[sel_yyyy].rx["03"] : "&nbsp;")+"</td>\n"+
+             "<td class='04'>"+(sorted[a].log[sel_yyyy].rx["04"] ? sorted[a].log[sel_yyyy].rx["04"] : "&nbsp;")+"</td>\n"+
+             "<td class='05'>"+(sorted[a].log[sel_yyyy].rx["05"] ? sorted[a].log[sel_yyyy].rx["05"] : "&nbsp;")+"</td>\n"+
+             "<td class='06'>"+(sorted[a].log[sel_yyyy].rx["06"] ? sorted[a].log[sel_yyyy].rx["06"] : "&nbsp;")+"</td>\n"+
+             "<td class='07'>"+(sorted[a].log[sel_yyyy].rx["07"] ? sorted[a].log[sel_yyyy].rx["07"] : "&nbsp;")+"</td>\n"+
+             "<td class='08'>"+(sorted[a].log[sel_yyyy].rx["08"] ? sorted[a].log[sel_yyyy].rx["08"] : "&nbsp;")+"</td>\n"+
+             "<td class='09'>"+(sorted[a].log[sel_yyyy].rx["09"] ? sorted[a].log[sel_yyyy].rx["09"] : "&nbsp;")+"</td>\n"+
+             "<td class='10'>"+(sorted[a].log[sel_yyyy].rx["10"] ? sorted[a].log[sel_yyyy].rx["10"] : "&nbsp;")+"</td>\n"+
+             "<td class='11'>"+(sorted[a].log[sel_yyyy].rx["11"] ? sorted[a].log[sel_yyyy].rx["11"] : "&nbsp;")+"</td>\n"+
+             "<td class='12'>"+(sorted[a].log[sel_yyyy].rx["12"] ? sorted[a].log[sel_yyyy].rx["12"] : "&nbsp;")+"</td>\n";
+}
+else {
+  out[n++] = "<td class='01'>&nbsp;</td>\n"+
+             "<td class='02'>&nbsp;</td>\n"+
+             "<td class='03'>&nbsp;</td>\n"+
+             "<td class='04'>&nbsp;</td>\n"+
+             "<td class='05'>&nbsp;</td>\n"+
+             "<td class='06'>&nbsp;</td>\n"+
+             "<td class='07'>&nbsp;</td>\n"+
+             "<td class='08'>&nbsp;</td>\n"+
+             "<td class='09'>&nbsp;</td>\n"+
+             "<td class='10'>&nbsp;</td>\n"+
+             "<td class='11'>&nbsp;</td>\n"+
+             "<td class='12'>&nbsp;</td>\n";
+}
+
+
+// Version 4: 17.5 secs
+// UGLY UGLY UGLY! (But FAST FAST FAST)
+if (sorted[a].log[sel_yyyy]) {
+  out[n++] =	"<td class='01'>"+(sorted[a].log[sel_yyyy].rx["01"] ? sorted[a].log[sel_yyyy].rx["01"] : "&nbsp;")+"</td>\n<td class='02'>"+(sorted[a].log[sel_yyyy].rx["02"] ? sorted[a].log[sel_yyyy].rx["02"] : "&nbsp;")+"</td>\n<td class='03'>"+(sorted[a].log[sel_yyyy].rx["03"] ? sorted[a].log[sel_yyyy].rx["03"] : "&nbsp;")+"</td>\n<td class='04'>"+(sorted[a].log[sel_yyyy].rx["04"] ? sorted[a].log[sel_yyyy].rx["04"] : "&nbsp;")+"</td>\n<td class='05'>"+(sorted[a].log[sel_yyyy].rx["05"] ? sorted[a].log[sel_yyyy].rx["05"] : "&nbsp;")+"</td>\n<td class='06'>"+(sorted[a].log[sel_yyyy].rx["06"] ? sorted[a].log[sel_yyyy].rx["06"] : "&nbsp;")+"</td>\n<td class='07'>"+(sorted[a].log[sel_yyyy].rx["07"] ? sorted[a].log[sel_yyyy].rx["07"] : "&nbsp;")+"</td>\n<td class='08'>"+(sorted[a].log[sel_yyyy].rx["08"] ? sorted[a].log[sel_yyyy].rx["08"] : "&nbsp;")+"</td>\n<td class='09'>"+(sorted[a].log[sel_yyyy].rx["09"] ? sorted[a].log[sel_yyyy].rx["09"] : "&nbsp;")+"</td>\n<td class='10'>"+(sorted[a].log[sel_yyyy].rx["10"] ? sorted[a].log[sel_yyyy].rx["10"] : "&nbsp;")+"</td>\n<td class='11'>"+(sorted[a].log[sel_yyyy].rx["11"] ? sorted[a].log[sel_yyyy].rx["11"] : "&nbsp;")+"</td>\n<td class='12'>"+(sorted[a].log[sel_yyyy].rx["12"] ? sorted[a].log[sel_yyyy].rx["12"] : "&nbsp;")+"</td>\n";
+}
+else {
+  out[n++] =	"<td class='01'>&nbsp;</td>\n<td class='02'>&nbsp;</td>\n<td class='03'>&nbsp;</td>\n<td class='04'>&nbsp;</td>\n<td class='05'>&nbsp;</td>\n<td class='06'>&nbsp;</td>\n<td class='07'>&nbsp;</td>\n<td class='08'>&nbsp;</td>\n<td class='09'>&nbsp;</td>\n<td class='10'>&nbsp;</td>\n<td class='11'>&nbsp;</td>\n<td class='12'>&nbsp;</td>\n";
+}
+
+

@@ -1,0 +1,87 @@
+Taken from http://members.aol.com/aibold/utility/qaa.htm
+File: qsl.txt
+
+ITU-Station            Days  rcvd/gvn               QRG    Callsign   Power issue -- Notes by MF:
+CAN-NDB Alert,ON         56  p/d lt                 305    `ON`              3-01 -- Not in NANDB or WNDB
+CAN-NDB Alert            44  lt,ppc,afu-c/USD       305    `LT`       450 W  5-01 -- Power not given in wndb
+CAN-NDB Cartwright,NF    29  ppc/sase  2 fup        281    `CA`             APR02
+CAN-NDB Fredericton, NB  14  ppc,infos AP/ vc,1 USD 326    `YFC`      150 W  6-99 -- Not in NANDB or WNDB - (listed & rxed as FC)
+CAN-NDB Gander            9  ppc/SAE                280    `QX`             10-99
+CAN-NDB La Grande4, PQ   23  QSL-ltr/vc, 1USD       332    `YFM`     2000 W  6-99 -- Power not given in wndb
+CAN-NDB Mont Joli,PQ     11  n/d lt,tech-info       340    `YY`              9-99
+CAN-NDB North Bay, ON     9  ppc,ltr,infos/vc,1 USD 394    `YB`       500 W  6-99 -- Power not given in wndb
+CAN-NDB Parent, PQ       29  ppc/vc, 1 USD          303    `YYP`      500 W  6-99 -- Not in NANDB or WNDB - (listed & rxed as YPP)
+CAN-NDB Saint Bruno, PQ  65  ppc/vc, 1 USD          407    `H`         25 W  6-99 -- Not in NANDB or WNDB
+CAN-NDB St. Anthony,NF   40  ppc/sase  f/up         356    `AY`             APR02
+CAN-NDB St. John`s,NF    19  ppc/SSAE               260    `YT`             11-00
+CAN-NDB St. Leonhard, NB 14  ppc,infos/vc, 1 USD    404    `YSL`      500 W  6-99 -- Power not given in wndb
+CAN-NDB Stephenville     33  f/d lt                 390    `JT`             12-00
+CAN-NDB Waskaganish, PQ  43  ppc/vc, 1 USD          351    `YKQ`      500 W  6-99 -- Power not given in wndb
+
+
+USA-NDB Charleston, SC   35  ppc (hrd in DOM) f/up  329    `CH`       400 W  9-99 -- location shown as ASHLEY in wndb
+USA-NDB Dixon,NC         54  ppc     (hrd in DOM)   198    `DIW`     1000 W  6-97 -- Power also seen in logs as 2KW
+USA-NDB Jacksonville,FL  42  ppc  hrd in CUB        344    `JA`              4-01
+USA-NDB Key West Int`l   18  ppc     (hrd in MEX)   332    `FIS`      400 W  6-00 -- Power not given in wndb
+USA-NDB Pensacola,FL     46  ppc,lt,vc hrd in CUB   326    `PKZ`      400 W  4-01 -- location shown as PICKENS in wndb
+USA-NDB West Palm Beach  23  ppc (hrd in DOM) f/up  356    `PB`       400 W  9-97 -- Power not given, QTH shown as RUBIN in wndb
+USA-NDB Tampa            18  f/d ppc,lt (hrd in MEX)388    `AM`       400 W  6-00 -- location shown as PICKNEY in wndb
+
+
+File: adr.txt
+NDB:
+
+CAN AY      NDB Saint Anthony: Nav Canada, Flight Service Station, P.O.Box 620
+                       Saint Anthony, NF A0K 4S0, Canada. EUNL 04/02
+CAN CA      NDB Cartwright: Nav Canada, Technical Services, P.O.Box 250, Station
+                      `C`, Goose Bay Airport A0P 1C0, Canada EUNL 04/02
+CAN HO      NDB Hopedale: Nav Canada, Technical Services, P.O.Box 250, Station 
+                      `C`, Goose Bay Airport A0P 1C0, Canada EUNL 11/98
+CAN JC      NDB Rigolet: Nav Canada, Technical Services, P.O.Box 250, Station 
+                      `C`, Goose Bay Airport A0P 1C0, Canada EUNL 11/98
+CAN JT      NDB Stephenville: Stephenville Airport Radio, 7 Tennessee Drive,
+                       Stephenville, NF A2N 2Y3 EUNL 12/00
+CAN ON      NDB Alert: Canadian Forces Station Alert, P.O.Box 5210, Station
+                       Forces, Belleville ON K8N 5WL EUNL 03/01
+CAN QX      NDB Gander: Nav Canada, Gander IFSS, P.O.Box 328, Gander, NF A1V 1W7
+                       EUNL 09/98
+CAN QY      NDB Sydney: Nav Canada, 280 Airport Road, Sydney, NS B1M 1B8, Canada
+                       EUNL 09/98
+CAN UWP     NDB Argentia: Technical Services, Nav Canada, P.O.Box 29009,
+                       Operations Building, Saint John's Airport, Saint John's,
+                       NF A1A 5B5, Canada EUNL 09/98
+CAN YB      NDB North Bay: Nav. Canada, P.O. Box 1380, North Bay, ON P1B 9L9
+                       Canada EUNL 06/99
+CAN YFC     NDB Fredericton: Nav. Canada, Technical Services, 2570 Route 102,
+                       Unit 6, Lincoln, NB E3B9G1, Canada EUNL 06/99
+CAN YFM     NDB La Grande 4: Hydro Quebec, Agent de Trafic, Aeroport de la
+                       Grande 4, Baie James, PQ Canada
+CAN YKQ     NDB Waskaganish: Nav. Canada, Services Techniques, Aeroport de Val
+                       d'Or, Val d'Or, PQ J9P 4P4, Canada EUNL 06/99
+CAN YSL     NDB St Leonard: Nav. Canada, Technical Services, 2570 Route 102,
+                       Unit 6, Lincoln, NB E3B9G1, Canada EUNL 06/99
+CAN YT      NDB St. John`s,NF: NAV CANADA, Technical Operations, P.O.Box 29009,
+                       Operations Building, St. John`s Airport, St. John`s, NF
+                       A1A 5B5 
+CAN YY      NDB Mont-Joli: Aeroport de Mont-Joli, 875 Rue Jacques Cartier, Suite
+                       102, Mont-Joli, QUE G5H 4A4, Canada EUNL 09/99
+CAN YYP     NDB Parent: Nav. Canada, Services Techniques, Aeroport de Val
+                       d'Or, Val d'Or, PQ J9P 4P4, Canada EUNL 06/99
+
+USA DIW     NDB Dixon,NC: FAA, System Service Unit, 940 Aviation Drive, New 
+                       Bern, NC 28562 EUNL 06/97
+USA FIS     NDB Fish Hook/Key West Int`l: FAA Room 208, Key West International
+                       Airport, 3491 S. Roosevelt Blvd., Key West, FL 33040,
+                       USA EUNL 06/00
+USA JA      NDB Jacksonville,FL: FAA, System Service Center, P.O.Box 18350,
+                       Jacksonville, FL 32229-0350 EUNL 05/97
+USA JA      NDB Jacksonville,FL: Mr. james Gaughan, 3453 Caroline Ridge Ln E.,
+                       Jacksonville, FL-32225-9315, USA EUNL 04/01
+USA PB      NDB West Palm Beach,FL: DOT/FAA, Airways Facilities Systems Support 
+                       Center, 3901 Southern Boulevard, West Palm Beach,
+                       FL  33406 EUNL 09/97
+USA PKZ     NDB Pensacola,FL:  FAA, Pesacola Systems Support Couter, FAA Tower
+                       Building, Pensacola Regional Airport, 2440 Airport Blvd,
+                       Pensacola, FL 32504, USA EUNL 04/01
+
+

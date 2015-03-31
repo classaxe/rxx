@@ -1,0 +1,76 @@
+January 19, 2004  02:24:26
+
+Preamble                     : 102
+Message Type                 : 6 GPS Null Frame
+Station Number               : 210
+Z Count                      : 4880
+Sequency Count               : 0
+Num of Data Words            : 0
+Health                       : 1 UDRE scale factor = 0.75
+
+
+January 19, 2004  02:24:44
+
+Preamble                     : 102
+Message Type                 : 6 GPS Null Frame
+Station Number               : 210
+Z Count                      : 2470
+Sequency Count               : 2
+Num of Data Words            : 0
+Health                       : 0 UDRE scale factor = 1.0
+
+
+January 19, 2004  02:25:04
+
+Preamble                     : 102
+Message Type                 : 9 GPS Partial Correction Set
+Station Number               : 210
+Z Count                      : 2502
+Sequency Count               : 1
+Num of Data Words            : 5
+Health                       : 3 UDRE scale factor = 0.3
+Satellite Id                 : 4
+  User Diff Range Error      : 1 - 4 m
+  Pseudorange Correction     : 169.16 m
+  Range Rate Correction      : 0.000 m/s
+  Issue of Data              : 12
+Satellite Id                 : 4
+  User Diff Range Error      : < 8 m
+  Pseudorange Correction     : 5.44 m
+  Range Rate Correction      : 0.018 m/s
+  Issue of Data              : 117
+Satellite Id                 : 27
+  User Diff Range Error      : 1 - 4 m
+  Pseudorange Correction     : 9.18 m
+  Range Rate Correction      : -0.010 m/s
+  Issue of Data              : 112
+
+Message Contains Parity Errors
+
+
+January 19, 2004  02:34:09
+
+Preamble                     : 102
+Message Type                 : 9 GPS Partial Correction Set
+Station Number               : 210
+Z Count                      : 3412
+Sequency Count               : 0
+Num of Data Words            : 5
+Health                       : 1 UDRE scale factor = 0.75
+Satellite Id                 : 11
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : 2.86 m
+  Range Rate Correction      : 0.000 m/s
+  Issue of Data              : 194
+Satellite Id                 : 30
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -17.60 m
+  Range Rate Correction      : 0.056 m/s
+  Issue of Data              : 64
+Satellite Id                 : 23
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -5279.04 m
+  Range Rate Correction      : -0.096 m/s
+  Issue of Data              : 142
+
+Message Contains Parity Errors

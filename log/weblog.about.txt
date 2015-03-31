@@ -1,0 +1,6 @@
+NDB Weblog Version 1.1.1
+
+NDB Weblog software (and station editor)
+is available for free at http://www.classaxe.com/dx
+
+Copyright 2003 Martin Francis

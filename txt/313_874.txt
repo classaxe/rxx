@@ -1,0 +1,26 @@
+Decoded message:
+313KHz - Station ID #874
+(Billings MT USA 20031110 1227UTC)
+
+Preamble                     : 102
+Message Type                 : 9 GPS Partial Correction Set
+Station Number               : 62
+Z Count                      : 2432
+Sequency Count               : 2
+Num of Data Words            : 5
+Health                       : 2 UDRE scale factor = 0.5
+Satellite Id                 : 23
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -3.18 m
+  Range Rate Correction      : 0.000 m/s
+  Issue of Data              : 235
+Satellite Id                 : 14
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -3.78 m
+  Range Rate Correction      : 0.002 m/s
+  Issue of Data              : 17
+Satellite Id                 : 25
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -2.22 m
+  Range Rate Correction      : -0.002 m/s
+  Issue of Data              : 6

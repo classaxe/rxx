@@ -1,0 +1,3 @@
+NDB Weblog Version 1.1.1
+WARNING - don't overwrite your own
+log.js file if you are upgrading this product

@@ -1,0 +1,10 @@
+NDB WebLog Version 1.1.27
+UPGRADE VERSION
+You should replace all existing files with the
+newer versions contained in this package
+
+For new installations, obtain and install the
+FULL INSTALLATION VERSION of this product.
+
+
+Read the README.TXT file for more.

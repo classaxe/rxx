@@ -1,0 +1,1113 @@
+
+19901101 07:03 296   B     150  24.4 CO50xk Quatsino Sound Light Station, BC, CAN
+19881008 03:26 296   B     150  24.4 CO50xk Quatsino Sound Light Station, BC, CAN
+19901225 05:44 296   B     150  24.4 CO50xk Quatsino Sound Light Station, BC, CAN
+19881123 05:32 296   CRZ   25   50.6 EN20px Corning (Municipal), IA, USA
+19881112 07:28 296   G     1000 2.1  EL29ph Galveston, TX, USA
+20050309 11:26 296   LGD   25   120. DN15ai La Grande, OR, USA
+19880828 10:54 296   LGD   25   120. DN15ai La Grande, OR, USA
+19910102 07:28 296   LGD   25   120. DN15ai La Grande, OR, USA
+19901226 09:01 296   LGD   25   120. DN15ai La Grande, OR, USA
+19880828 10:51 296   LQR   25   69   EM08ke LARNED, KS, USA
+20050314 11:27 296   V4    0         DO44ph Bonnyville, AB, CAN
+20070805 06:35 296   V4    0         DO44ph Bonnyville, AB, CAN
+20070805 15:45 296   V4    0         DO44ph Bonnyville, AB, CAN
+19881231 20:44 296   V4    0         DO44ph Bonnyville, AB, CAN
+19901225 05:40 296   V4    0         DO44ph Bonnyville, AB, CAN
+19911106 22:15 296   V4    0         DO44ph Bonnyville, AB, CAN
+20070803 07:36 297   #792  0         EM44pc Bobo, MS, USA
+20050221 10:46 297   #833  0         EN63ba Milwaukee, WI, USA
+20050320 11:33 298   #831  0         EN57qf Upper Keweenaw, MI, USA
+20041018 10:31 298   #868  0         EN21as Orson  (Serves Omaha-  NE), NE, USA
+20070803 07:43 298   #868  0         EN21as Orson  (Serves Omaha-  NE), NE, USA
+20070803 07:44 298   #875  0         DM24js Essex, CA, USA
+20041017 11:38 299   #866  0         EM25oi Sallisaw, OK, USA
+20050228 10:32 299   #866  0         EM25oi Sallisaw, OK, USA
+20070803 07:45 299   #866  0         EM25oi Sallisaw, OK, USA
+19901225 05:37 299   J4    200  13.2 DO47lf Fort Mackay, AB, CAN
+20050306 02:37 299   TV    200  13.5 DO20ts Turner Valley, AB, CAN
+20070805 15:46 299   TV    200  13.5 DO20ts Turner Valley, AB, CAN
+19881231 20:50 299   TV    200  13.5 DO20ts Turner Valley, AB, CAN
+19901225 03:21 299   TV    200  13.5 DO20ts Turner Valley, AB, CAN
+19911106 22:25 299   TV    200  13.5 DO20ts Turner Valley, AB, CAN
+20050213 06:16 300   #871  0         CN95ps Appleton, WA, USA
+20070804 10:55 300   #871  0         CN95ps Appleton, WA, USA
+20050221 03:27 300   #906  0         CO43mf Sandspit, BC, CAN
+20050306 02:37 300   Q5    0         DO03nw Grande Cache, AB, CAN
+20070805 06:38 300   Q5    0         DO03nw Grande Cache, AB, CAN
+20070805 15:46 300   Q5    0         DO03nw Grande Cache, AB, CAN
+19881231 22:04 300   Q5    0         DO03nw Grande Cache, AB, CAN
+19901225 03:22 300   Q5    0         DO03nw Grande Cache, AB, CAN
+19911106 22:37 300   Q5    0         DO03nw Grande Cache, AB, CAN
+19910105 07:48 300   SPF   0         DN84cl BLACK HILLS, SD, USA
+19991230 02:30 300   YIV   500  3.1  EO23qu Island Lake, MB, CAN
+19881231 22:02 300   YIV   500  3.1  EO23qu Island Lake, MB, CAN
+20050318 03:57 301   #822  0         EM82fq Huber  (Macon), GA, USA
+20041017 11:42 301   #828  0         EL29gh Bonny  (Angleton), TX, USA
+20050301 03:36 302   #888  0         CN88ph Whidbey Island, WA, USA
+20070804 11:32 302   #888  0         CN88ph Whidbey Island, WA, USA
+19991230 08:14 302   EAG   25   45.8 EN32br Eagle Grove, IA, USA
+19881122 07:55 302   EAG   25   45.8 EN32br Eagle Grove, IA, USA
+19910102 07:10 302   EAG   25   45.8 EN32br Eagle Grove, IA, USA
+19910105 07:38 302   HO    0         EN04tk BEADY, SD, USA
+19901220 07:12 302   L     0         DM12jp Point Loma Light, CA, USA
+19900717 11:01 302   L     0         DM12jp Point Loma Light, CA, USA
+19890723 06:40 302   PU    0         DM78qg MERTZ, CO, USA
+19910105 07:40 302   PU    0         DM78qg MERTZ, CO, USA
+20050306 02:38 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+20070805 06:39 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+20070805 15:47 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+19881231 22:11 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+19901225 03:23 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+19911106 22:40 302   QW    40   58.2 DO52tt North Battleford, SK, CAN
+19901220 07:12 302   V     0         FN03jg Point Vincente Light, CA, USA
+19891112 03:18 302   XY    0         CP20ks Whitehorse, YK, CAN
+20041017 10:51 303   #873  0         DN40xc Myton, UT, USA
+20070803 07:46 303   #873  0         DN40xc Myton, UT, USA
+20070803 10:16 304   #777  0         EN53xe Mequon, WI, USA
+19881123 05:37 304   BN    0         EM66pa NASHVILLE/DOBBS, TN, USA
+20050306 02:39 304   FH    0         DO24cd Mc Leod  (Whitecourt), AB, CAN
+20070805 06:40 304   FH    0         DO24cd Mc Leod  (Whitecourt), AB, CAN
+20070805 15:47 304   FH    0         DO24cd Mc Leod  (Whitecourt), AB, CAN
+19881231 22:15 304   FH    0         DO24cd Mc Leod  (Whitecourt), AB, CAN
+19901225 03:23 304   FH    0         DO24cd Mc Leod  (Whitecourt), AB, CAN
+20050227 13:31 305   #795  0         DM05kd Bakersfield, CA, USA
+20070804 10:51 305   #795  0         DM05kd Bakersfield, CA, USA
+20050221 10:50 305   #867  0         EM29hc Thompsonville  (Kansas City), MO, USA
+20050318 03:34 305   #890  0         CO26su Biorka Island, ALS
+20070803 07:50 305   #890  0         CO26su Biorka Island, ALS
+19900102 07:16 305   OI    0         EN12sl 'Tommi'  South Sioux City, NE, USA
+20050312 12:12 305   ONO   0         DN14la Ontario, OR, USA
+20070803 10:18 305   ONO   0         DN14la Ontario, OR, USA
+19881123 05:45 305   ONO   0         DN14la Ontario, OR, USA
+19881214 04:55 305   ONO   0         DN14la Ontario, OR, USA
+19901101 07:03 305   P     150  24.2 CO60dx Pine Island Light, BC, CAN
+19991230 08:16 305   RO    0         DM73si 'Topan'  Roswell, NM, USA
+19890218 12:46 305   RO    0         DM73si 'Topan'  Roswell, NM, USA
+19901222 08:24 305   RO    0         DM73si 'Topan'  Roswell, NM, USA
+20050316 04:20 305   YQ    500  3.9  EO38as Churchill / Eastern Creek, MB, CAN
+19881231 22:20 305   YQ    500  3.9  EO38as Churchill / Eastern Creek, MB, CAN
+20050306 02:40 305   Z1    49   53.6 DO31jq Three Hills, AB, CAN
+20070805 06:41 305   Z1    49   53.6 DO31jq Three Hills, AB, CAN
+20070805 15:47 305   Z1    49   53.6 DO31jq Three Hills, AB, CAN
+19881231 22:24 305   Z1    49   53.6 DO31jq Three Hills, AB, CAN
+19901225 03:24 305   Z1    49   53.6 DO31jq Three Hills, AB, CAN
+19881231 22:30 306   R4    0         DO45kj PRIMROSE, AB, CAN
+19901225 05:37 306   R4    0         DO45kj PRIMROSE, AB, CAN
+20041017 10:48 307   #872  0         DM78tg Sugar City  (Pueblo), CO, USA
+20070803 07:51 307   #872  0         DM78tg Sugar City  (Pueblo), CO, USA
+19901101 07:06 307   G     0         CN89ic Sand Heads Light Station, BC, CAN
+20050316 04:24 307   M5    0         DO16ew Manning, AB, CAN
+19901225 05:30 307   M5    0         DO16ew Manning, AB, CAN
+19901231 09:40 308   DST   200  13.4 DN26ww 'Desmet' Missoula, MT, USA
+19880717 09:40 308   DST   200  13.4 DN26ww 'Desmet' Missoula, MT, USA
+19901231 10:36 308   DST   200  13.4 DN26ww 'Desmet' Missoula, MT, USA
+19890825 01:15 308   E     0         DO33eg Edmonton, AB, CAN
+19881231 22:55 308   E     0         DO33eg Edmonton, AB, CAN
+19901225 03:25 308   E     0         DO33eg Edmonton, AB, CAN
+19880824 09:37 308   HIL   0         EM08ni HILYN/GREAT BEND, KS, USA
+19881122 07:58 308   HIL   0         EM08ni HILYN/GREAT BEND, KS, USA
+19910105 07:56 308   HIL   0         EM08ni HILYN/GREAT BEND, KS, USA
+19911216 07:23 308   L6    0         CO98gw Yo-Yo, BC, CAN
+20050306 02:42 308   ZZD   0         DO33eg Calmar  (Edmonton Intl Apt), AB, CAN
+20070805 06:42 308   ZZD   0         DO33eg Calmar  (Edmonton Intl Apt), AB, CAN
+20070805 15:48 308   ZZD   0         DO33eg Calmar  (Edmonton Intl Apt), AB, CAN
+20041017 10:53 309   #850  0         EN14aw Clark, SD, USA
+20050212 22:33 309   #850  0         EN14aw Clark, SD, USA
+20070803 07:53 309   #850  0         EN14aw Clark, SD, USA
+20070803 20:15 309   #850  0         EN14aw Clark, SD, USA
+20050221 13:25 309   #909  0         CO60no Alert Bay, BC, CAN
+20070803 08:05 309   #909  0         CO60no Alert Bay, BC, CAN
+19901101 07:09 309   J     100  33.7 CN88fh Race Rocks Light Station, BC, CAN
+19880824 09:28 309   J     100  33.7 CN88fh Race Rocks Light Station, BC, CAN
+20050221 13:23 310   #773  0         DN04le Seneca, OR, USA
+20050317 12:10 310   #773  0         DN04le Seneca, OR, USA
+20070803 10:22 310   #773  0         DN04le Seneca, OR, USA
+20041017 10:55 310   #859  0         DN82pr Whitney, NE, USA
+20050212 20:42 310   #859  0         DN82pr Whitney, NE, USA
+20070803 07:52 310   #859  0         DN82pr Whitney, NE, USA
+20070803 20:16 310   #859  0         DN82pr Whitney, NE, USA
+20050320 13:40 310   8A    0         DN89up Carlyle, SK, CAN
+20050301 03:58 311   #863  0         EN42va Teeds Grove  (Rock Island-  IL, IL, USA
+20070803 08:09 311   #863  0         EN42va Teeds Grove  (Rock Island-  IL, IL, USA
+20050306 02:47 311   9Y    50   53.3 DN39am Pincher Creek, AB, CAN
+20070805 15:49 311   9Y    50   53.3 DN39am Pincher Creek, AB, CAN
+19881231 23:00 311   9Y    50   53.3 DN39am Pincher Creek, AB, CAN
+19901225 03:26 311   9Y    50   53.3 DN39am Pincher Creek, AB, CAN
+19991230 02:40 311   HY    0         DP20ds Hay River, NT, CAN
+19881231 23:02 311   HY    0         DP20ds Hay River, NT, CAN
+19901225 03:26 311   HY    0         DP20ds Hay River, NT, CAN
+19890723 06:51 311   MVI   50   46.2 DM67xm Monte Vista, CA, USA
+19880824 09:31 311   MVI   50   46.2 DM67xm Monte Vista, CA, USA
+20041017 10:59 312   #798  0         DM19pj Austin, NV, USA
+20050212 23:40 312   #798  0         DM19pj Austin, NV, USA
+20070803 07:53 312   #798  0         DM19pj Austin, NV, USA
+19890825 01:30 312   L5    50   61.1 DO05os Spirit River, AB, CAN
+19881008 13:31 312   L5    50   61.1 DO05os Spirit River, AB, CAN
+19890101 18:47 312   L5    50   61.1 DO05os Spirit River, AB, CAN
+19901225 05:33 312   L5    50   61.1 DO05os Spirit River, AB, CAN
+20050317 04:15 312   UNT   0         DN09eo Naramata  (Penticton), BC, CAN
+19911216 07:17 312   UNT   0         DN09eo Naramata  (Penticton), BC, CAN
+20041017 11:01 313   #874  0         DN65xx Garland  (Billings), MT, USA
+20050212 23:32 313   #874  0         DN65xx Garland  (Billings), MT, USA
+20070803 07:55 313   #874  0         DN65xx Garland  (Billings), MT, USA
+20041017 11:02 314   #764  0         CM98hu Lincoln, CA, USA
+20070803 07:56 314   #764  0         CM98hu Lincoln, CA, USA
+19901223 06:52 314   F     150  24.4 CM87mq Farallon Island Light Station, CA, USA
+19910106 08:17 314   GGU   25   68.2 EM15pm Prague, OK, USA
+19901101 07:03 314   H     150  26.4 CO34lg Langara Island Light Station, BC, CAN
+19881123 06:00 314   POH   50   24.1 EN22qs Pocahontas, IA, USA
+19910106 03:39 314   POH   50   24.1 EN22qs Pocahontas, IA, USA
+19891220 04:03 314   POH   50   24.1 EN22qs Pocahontas, IA, USA
+19880514 03:10 314   YN    100  22.2 DO60dg Swift Current, SK, CAN
+19890101 18:53 314   YN    100  22.2 DO60dg Swift Current, SK, CAN
+19901225 03:26 314   YN    100  22.2 DO60dg Swift Current, SK, CAN
+19900109 11:55 314   ZN    320  4.8  EN09xs Portage La Prairie CFB, MB, CAN
+19891009 11:55 314   ZN    320  4.8  EN09xs Portage La Prairie CFB, MB, CAN
+20041017 11:05 315   #908  0         CN78fw Amphitrite Pt., BC, CAN
+20070803 08:02 315   #908  0         CN78fw Amphitrite Pt., BC, CAN
+19901101 07:11 315   M     100  34.2 CN79sl Sisters Islets Light Station, BC, CAN
+19880902 09:54 315   M     100  34.2 CN79sl Sisters Islets Light Station, BC, CAN
+20050212 22:43 316   #848  0         DN17rm Killarney Lake  (Spokane), WA, USA
+20050213 11:08 316   #848  0         DN17rm Killarney Lake  (Spokane), WA, USA
+20070803 08:16 316   #848  0         DN17rm Killarney Lake  (Spokane), WA, USA
+20050221 11:01 317   #864  0         EN44bh Alma  (Saint Paul-  MN), MN, USA
+19890101 19:10 317   A5    0         DO07kn CHINCHAGA, AB, CAN
+19901225 18:22 317   A5    0         DO07kn CHINCHAGA, AB, CAN
+19900717 10:17 317   IBM   25   78.9 DN81de KIMBALL, NE, USA
+19901231 10:40 317   IBM   25   78.9 DN81de KIMBALL, NE, USA
+19911216 07:08 317   IBM   25   78.9 DN81de KIMBALL, NE, USA
+20050306 02:49 317   VC    1000 2.2  DO75ic La Ronge, SK, CAN
+20070805 06:44 317   VC    1000 2.2  DO75ic La Ronge, SK, CAN
+20070805 15:50 317   VC    1000 2.2  DO75ic La Ronge, SK, CAN
+19890101 19:03 317   VC    1000 2.2  DO75ic La Ronge, SK, CAN
+19901225 03:26 317   VC    1000 2.2  DO75ic La Ronge, SK, CAN
+20041017 11:47 318   #823  0         DM84rt Summerfield, TX, USA
+20070803 08:18 318   #823  0         DM84rt Summerfield, TX, USA
+20070819 12:15 318   #878  0         CM99ek Chico, CA, USA
+19880828 11:15 318   5C    200  9    DN99dr Cromer, MB, CAN
+19881031 04:59 318   5C    200  9    DN99dr Cromer, MB, CAN
+19890826 08:23 318   UT    25   160. CO26wa Cape Decision LS (Kuiu Island), AK, ALS
+19890730 10:00 318   UT    25   160. CO26wa Cape Decision LS (Kuiu Island), AK, ALS
+19880902 10:09 318   UT    25   160. CO26wa Cape Decision LS (Kuiu Island), AK, ALS
+20050213 06:37 319   #818  0         EM92dd Groveland  (Savannah), GA, USA
+20050213 11:49 319   #876  0         DM45cf Castle Butte  (Flagstaff), AZ, USA
+20070803 08:21 319   #876  0         DM45cf Castle Butte  (Flagstaff), AZ, USA
+20050213 06:44 320   #907  0         CN89mc Richmond, BC, CAN
+20050319 06:06 320   #907  0         CN89mc Richmond, BC, CAN
+20070803 08:24 320   #907  0         CN89mc Richmond, BC, CAN
+19901201 01:44 320   AE    100  33.4 CN89ih Point Atkinson Light Station, BC, CAN
+20050309 11:45 320   HTN   100  20.7 DN76aj 'Horton'  Miles City, MT, USA
+20070803 20:18 320   HTN   100  20.7 DN76aj 'Horton'  Miles City, MT, USA
+19871111 04:40 320   HTN   100  20.7 DN76aj 'Horton'  Miles City, MT, USA
+20070806 17:25 320   HTN   100  20.7 DN76aj 'Horton'  Miles City, MT, USA
+19890101 19:45 320   HTN   100  20.7 DN76aj 'Horton'  Miles City, MT, USA
+19881010 06:09 320   OM    0         EN21ai OMAHA/GERFI, NE, USA
+19910106 08:21 320   OM    0         EN21ai OMAHA/GERFI, NE, USA
+19911216 07:04 320   OM    0         EN21ai OMAHA/GERFI, NE, USA
+20050306 02:53 320   YQF   50   53.6 DO32bd Red Deer, AB, CAN
+20070805 06:46 320   YQF   50   53.6 DO32bd Red Deer, AB, CAN
+20070805 15:50 320   YQF   50   53.6 DO32bd Red Deer, AB, CAN
+19890101 19:40 320   YQF   50   53.6 DO32bd Red Deer, AB, CAN
+19901225 03:27 320   YQF   50   53.6 DO32bd Red Deer, AB, CAN
+20050320 12:06 321   #882  0         CM94rt Ventucopa  (Lompoc), CA, USA
+20070803 10:30 321   #882  0         CM94rt Ventucopa  (Lompoc), CA, USA
+19900110 04:26 321   YSY   0         CQ71ix Sachs Harbour, NT, CAN
+19880822 06:20 321   YSY   0         CQ71ix Sachs Harbour, NT, CAN
+20050221 10:56 322   #862  0         EM58co Summerfield  (St. Louis-  MO), MO, USA
+20050319 06:11 322   #862  0         EM58co Summerfield  (St. Louis-  MO), MO, USA
+20070803 08:32 322   #862  0         EM58co Summerfield  (St. Louis-  MO), MO, USA
+20050213 06:32 323   #887  0         CN97ej Robinson Point, WA, USA
+20070803 08:42 323   #887  0         CN97ej Robinson Point, WA, USA
+20050213 12:35 323   #889  0         CO45tb Observatory Inlet  (Annette Is, ALS
+20070803 08:35 323   #889  0         CO45tb Observatory Inlet  (Annette Is, ALS
+19880828 11:27 323   HJH   25   60.8 EN10ed HEBRON, NE, USA
+20070826 10:25 323   HJH   25   60.8 EN10ed HEBRON, NE, USA
+20000813 04:23 323   HJH   25   60.8 EN10ed HEBRON, NE, USA
+19991011 20:08 323   LTY   0         DN48mm Chester, MT, USA
+19890101 21:09 323   LTY   0         DN48mm Chester, MT, USA
+19901231 09:09 323   LTY   0         DN48mm Chester, MT, USA
+19881123 06:09 323   UT    500  3.9  EL39hs Calcasieu Pass, LA, USA
+19991230 02:50 323   W4    63   28.3 EO04xm Jenpeg, MB, CAN
+20050301 04:02 324   #844  0         FN33fg Hudson Falls, NY, USA
+19910106 08:21 324   ID    0         DN43ao UCONN, ID, USA
+19890225 11:45 324   J     200  19.4 CO45bk Guard Island Light Station, ALS
+20041017 11:16 325   #851  0         DN86pv Dickinson  (Medora), ND, USA
+20050213 12:45 325   #851  0         DN86pv Dickinson  (Medora), ND, USA
+20070803 08:44 325   #851  0         DN86pv Dickinson  (Medora), ND, USA
+19871019 01:55 325   LN    80   25.5 DO70mq Lumsden, SK, CAN
+19890101 21:18 325   LN    80   25.5 DO70mq Lumsden, SK, CAN
+19901225 05:31 325   LN    80   25.5 DO70mq Lumsden, SK, CAN
+19911209 07:52 325   YJQ   0         CO52we BELLA BELLA, BC, CAN
+20050306 02:55 326   DC    500  6.3  CN99rl Princeton, BC, CAN
+19891220 04:06 326   ETH   25   53.6 EN15rs WHEATON, MN, USA
+19891220 04:10 326   ETH   25   53.6 EN15rs WHEATON, MN, USA
+19890831 13:15 326   MCY   50   63   DM16xp Mercury, NV, USA
+20070826 10:27 326   RRX   25   67   EN00bu 'Darr'  Lexington, NE, USA
+19991230 02:51 326   VQ    0         CP65pg Norman Wells, NT, CAN
+19881105 03:49 326   VQ    0         CP65pg Norman Wells, NT, CAN
+20050322 03:45 326   XJ    100  31.9 CO96ng Fort St. John, BC, CAN
+20070805 15:52 326   XJ    100  31.9 CO96ng Fort St. John, BC, CAN
+19890101 21:22 326   XJ    100  31.9 CO96ng Fort St. John, BC, CAN
+19901225 03:27 326   XJ    100  31.9 CO96ng Fort St. John, BC, CAN
+20050316 04:41 326   YQK   200  6.5  EN29st Kenora, ON, CAN
+19901221 07:00 326   YQK   200  6.5  EN29st Kenora, ON, CAN
+20050306 03:12 328   5J    141  17.8 DO42gb Coronation, AB, CAN
+20070805 15:53 328   5J    141  17.8 DO42gb Coronation, AB, CAN
+19890101 21:30 328   5J    141  17.8 DO42gb Coronation, AB, CAN
+19901225 03:28 328   5J    141  17.8 DO42gb Coronation, AB, CAN
+19991230 02:55 328   YTL   1000 1.3  EO53bt Big Trout Lake, ON, CAN
+19900111 07:03 328   YTL   1000 1.3  EO53bt Big Trout Lake, ON, CAN
+19891221 03:02 328   YTL   1000 1.3  EO53bt Big Trout Lake, ON, CAN
+19901201 01:44 329   D     0         CN78oo CARMANAH, BC, CAN
+19881112 04:13 329   D     0         CN78oo CARMANAH, BC, CAN
+19890826 05:15 329   IA    0         FN03nc 'Kathi'  Niagara Falls, NY, USA
+19891016 02:55 329   PJ    25   161. CP20nk Whitehorse (Robinson), YT, CAN
+19891012 11:28 329   PMV   25   54.3 EN20bw PLATTSMOUTH, NE, USA
+19910105 08:15 329   PMV   25   54.3 EN20bw PLATTSMOUTH, NE, USA
+20050304 11:43 329   TAD   150  14.6 DM77th Trinidad, CO, USA
+20070804 11:18 329   TAD   150  14.6 DM77th Trinidad, CO, USA
+19890730 10:19 329   TAD   150  14.6 DM77th Trinidad, CO, USA
+19901222 08:01 329   TAD   150  14.6 DM77th Trinidad, CO, USA
+20050306 03:13 329   X2    0         DO34jr Athabasca, AB, CAN
+20070805 06:48 329   X2    0         DO34jr Athabasca, AB, CAN
+20070805 15:53 329   X2    0         DO34jr Athabasca, AB, CAN
+19890101 21:40 329   X2    0         DO34jr Athabasca, AB, CAN
+19901225 03:24 329   X2    0         DO34jr Athabasca, AB, CAN
+19891112 04:10 329   YEK   1000 2.2  EP21xc Arviat, NU, CAN
+20050306 03:16 329   YEK   1000 2.2  EP21xc Arviat, NU, CAN
+19881008 03:37 329   YEK   1000 2.2  EP21xc Arviat, NU, CAN
+19891115 05:16 329   YHN   500  1.4  EN79qf Hornepayne, ON, CAN
+19881220 02:13 330   BWX   50   52.1 DN38ko 'Starr'- Browning, MT, USA
+20050304 11:34 330   GLE   0         EM13jr Gainesville, TX, USA
+20050304 11:34 330   PWC   0         EN26tr Pine River, MN, USA
+20050304 11:29 332   BVN   25   60.2 EN01xr 'Alaby'  Albion, NE, USA
+20070826 10:52 332   BVN   25   60.2 EN01xr 'Alaby'  Albion, NE, USA
+20050304 11:29 332   IA    0         CN85sm 'Laker'  Portland, OR, USA
+19880828 11:40 332   IA    0         CN85sm 'Laker'  Portland, OR, USA
+19911209 07:38 332   IA    0         CN85sm 'Laker'  Portland, OR, USA
+19900102 07:26 332   IC    0         EM17gn 'Piche'  Wichita, KS, USA
+20070804 11:24 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+20070808 11:23 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+20070808 11:24 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+19901225 11:41 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+19901225 11:41 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+20070826 06:24 332   LBH   0         CN85sm Portland-Blue-Lake, OR, USA
+20050213 13:32 332   POA   0         BK29mn Pahoa, HWA
+20050301 13:32 332   POA   0         BK29mn Pahoa, HWA
+19890825 02:05 332   VT    500  4.9  DO55su Buffalo Narrows, SK, CAN
+20070805 15:54 332   VT    500  4.9  DO55su Buffalo Narrows, SK, CAN
+19890101 21:42 332   VT    500  4.9  DO55su Buffalo Narrows, SK, CAN
+19901225 03:25 332   VT    500  4.9  DO55su Buffalo Narrows, SK, CAN
+19901227 09:20 332   WC    0         CN89oa WHITE ROCK, BC, CAN
+20050306 03:18 332   XH    50   48.8 DO40oa Medicine Hat, AB, CAN
+20070805 14:07 332   XH    50   48.8 DO40oa Medicine Hat, AB, CAN
+19901225 03:25 332   XH    50   48.8 DO40oa Medicine Hat, AB, CAN
+20050306 03:17 332   XT    0         CO54ri Terrace, BC, CAN
+19991229 06:40 333   STI   0         DN23ec 'Sturgeon'  Mountain Home, ID, USA
+19911209 07:34 333   STI   0         DN23ec 'Sturgeon'  Mountain Home, ID, USA
+20050306 03:34 334   P2    0         DO32hx Wetaskiwin, AB, CAN
+20070805 14:10 334   P2    0         DO32hx Wetaskiwin, AB, CAN
+19890101 21:44 334   P2    0         DO32hx Wetaskiwin, AB, CAN
+19901225 03:26 334   P2    0         DO32hx Wetaskiwin, AB, CAN
+19900110 04:23 334   YER   195  7.6  EO65ex Fort Severn, ON, CAN
+20050314 10:58 335   BDX   0         DN75hk Broadus, MT, USA
+19881113 06:30 335   BDX   0         DN75hk Broadus, MT, USA
+19910106 04:01 335   BDX   0         DN75hk Broadus, MT, USA
+20070826 06:43 335   BDX   0         DN75hk Broadus, MT, USA
+19991222 07:21 335   CNC   25   46.1 EN31ha Chariton, IA, USA
+19890225 11:35 335   CNK   0         EM19en Concordia, KS, USA
+20070826 06:45 335   CNK   0         EM19en Concordia, KS, USA
+20050314 10:58 335   CVP   0         DN46ao 'Capitol'  Helena, MT, USA
+19880514 03:15 335   CVP   0         DN46ao 'Capitol'  Helena, MT, USA
+20070806 05:06 335   CVP   0         DN46ao 'Capitol'  Helena, MT, USA
+19890101 19:07 335   CVP   0         DN46ao 'Capitol'  Helena, MT, USA
+19901226 09:05 335   CVP   0         DN46ao 'Capitol'  Helena, MT, USA
+19881123 06:22 335   IHS   0         DM78oq Ft. Carson (IRONHORSE), CO, USA
+19891112 03:46 335   YUT   0         EP66vm Repulse Bay, NU, CAN
+19881031 05:07 335   YUT   0         EP66vm Repulse Bay, NU, CAN
+19900707 03:35 335   YXO   500  6.1  DN09ll Carmi, BC, CAN
+20050323 11:17 336   LF    50   29.7 EN19ip La Salle, MB, CAN
+19880310 02:10 337   1Z    200  11.7 DO51lu Kerrobert, SK, CAN
+19901225 05:26 337   1Z    200  11.7 DO51lu Kerrobert, SK, CAN
+19911209 08:03 338   ESY   100  24.9 DN44kq West Yellowstone, MT, USA
+20050304 11:21 338   PBT   500  7    CN80vc 'Proberta'  Red Bluff, CA, USA
+19881123 06:35 338   PBT   500  7    CN80vc 'Proberta'  Red Bluff, CA, USA
+20070805 05:04 338   PBT   500  7    CN80vc 'Proberta'  Red Bluff, CA, USA
+19911209 08:10 338   PBT   500  7    CN80vc 'Proberta'  Red Bluff, CA, USA
+20070808 11:25 338   PBT   500  7    CN80vc 'Proberta'  Red Bluff, CA, USA
+20050304 11:23 338   PSS   0         EN00sq 'Prosser'  Hastings, NE, USA
+20070826 10:39 338   PSS   0         EN00sq 'Prosser'  Hastings, NE, USA
+20050318 12:48 338   RYN   400  7.5  DM42kd 'Ryan'  Tucson, AZ, USA
+19890225 11:31 338   VTI   25   40.3 EN32xf 'Garrison'  Vinton, IA, USA
+19900108 02:59 338   VTI   25   40.3 EN32xf 'Garrison'  Vinton, IA, USA
+20050306 03:20 338   ZU    0         DO24gb Whitecourt, AB, CAN
+20070805 14:14 338   ZU    0         DO24gb Whitecourt, AB, CAN
+19890101 21:48 338   ZU    0         DO24gb Whitecourt, AB, CAN
+19901225 03:28 338   ZU    0         DO24gb Whitecourt, AB, CAN
+19901101 07:00 339   6X    0         EO16wc York Landing, MB, CAN
+19891115 05:03 339   6X    0         EO16wc York Landing, MB, CAN
+20050309 11:57 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+20070805 01:29 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+19880707 08:58 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+20070806 17:27 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+19890101 21:52 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+19901225 18:30 339   MKR   0         DN68qe 'Milk River'  Glasgow, MT, USA
+19901101 06:57 340   YY    500  2.1  FN58un Mont Joli, QC, CAN
+19891115 05:10 340   YY    500  2.1  FN58un Mont Joli, QC, CAN
+19881008 13:42 341   1X    50   43.3 DO61re Loreburn, SK, CAN
+19890101 22:26 341   1X    50   43.3 DO61re Loreburn, SK, CAN
+19901225 05:25 341   1X    50   43.3 DO61re Loreburn, SK, CAN
+19890829 13:00 341   CD    1000 5.8  AO85oh 'Elfee'  Cold Bay, ALS
+20050402 12:47 341   CD    1000 5.8  AO85oh 'Elfee'  Cold Bay, ALS
+20050403 12:50 341   CD    1000 5.8  AO85oh 'Elfee'  Cold Bay, ALS
+20050312 13:14 341   DB    200  21.3 CP01mi Burwash, YK, CAN
+20050316 04:49 341   DB    200  21.3 CP01mi Burwash, YK, CAN
+19890225 11:16 341   DB    200  21.3 CP01mi Burwash, YK, CAN
+19891217 04:18 341   FO    0         EN22um 'Barro'  Fort  Dodge, IA, USA
+20050403 12:56 341   GIG   50   39.1 DN81dw 'Gering'  Scottsbluff, NE, USA
+19881113 06:34 341   GIG   50   39.1 DN81dw 'Gering'  Scottsbluff, NE, USA
+20000813 04:17 341   GIG   50   39.1 DN81dw 'Gering'  Scottsbluff, NE, USA
+19881208 05:34 341   MYZ   0         EM19qu Marysville, KS, USA
+20070826 10:40 341   MYZ   0         EM19qu Marysville, KS, USA
+20000813 04:21 341   MYZ   0         EM19qu Marysville, KS, USA
+19991228 08:28 341   OIN   25   70.8 DM99rt Oberlin, KS, USA
+19890225 11:23 341   OIN   25   70.8 DM99rt Oberlin, KS, USA
+19901225 03:28 341   YFN   2000 1.2  DO67ki Cree Lake, SK, CAN
+19891222 05:35 343   YGO   200  8    EO24sn GODS LAKE NARROWS, MB, CAN
+20050306 03:22 343   YZH   282  9.9  DO25oh Slave Lake, AB, CAN
+20070805 14:15 343   YZH   282  9.9  DO25oh Slave Lake, AB, CAN
+20070806 17:28 343   YZH   282  9.9  DO25oh Slave Lake, AB, CAN
+20050311 11:55 344   BKU   80   24.3 DN76ui 'Timber'  Baker, MT, USA
+19881208 05:03 344   BKU   80   24.3 DN76ui 'Timber'  Baker, MT, USA
+20070806 17:28 344   BKU   80   24.3 DN76ui 'Timber'  Baker, MT, USA
+19910102 07:08 344   BKU   80   24.3 DN76ui 'Timber'  Baker, MT, USA
+19901223 06:31 344   CQL   100  23.1 DM69kj CARBONDALE, CO, USA
+19881208 05:04 344   CQL   100  23.1 DM69kj CARBONDALE, CO, USA
+20050311 11:54 344   FCH   400  8.6  DM06br 'Chandler'  Fressno, CA, USA
+20050318 12:52 344   FCH   400  8.6  DM06br 'Chandler'  Fressno, CA, USA
+20070806 11:41 344   FCH   400  8.6  DM06br 'Chandler'  Fressno, CA, USA
+20070808 11:31 344   FCH   400  8.6  DM06br 'Chandler'  Fressno, CA, USA
+20070814 10:23 344   FCH   400  8.6  DM06br 'Chandler'  Fressno, CA, USA
+19881208 05:19 344   GNC   25   93.2 DM82qq GAINES COUNTY, TX, USA
+20050314 10:54 344   POY   0         DN54ou Powell, WY, USA
+19901225 10:52 344   POY   0         DN54ou Powell, WY, USA
+19881122 08:11 344   SIT   1000 4.1  CO26fu Sitka (Biorka Island), ALS
+19890219 10:54 344   SIT   1000 4.1  CO26fu Sitka (Biorka Island), ALS
+19911218 06:52 344   SIT   1000 4.1  CO26fu Sitka (Biorka Island), ALS
+20050306 03:23 344   YC    0         DO31bb Calgary, AB, CAN
+20070805 14:16 344   YC    0         DO31bb Calgary, AB, CAN
+19890101 22:40 344   YC    0         DO31bb Calgary, AB, CAN
+19881220 02:07 344   YC    0         DO31bb Calgary, AB, CAN
+19901225 03:28 344   YC    0         DO31bb Calgary, AB, CAN
+19881120 20:12 344   YOP   0         DO08ik RAINBOW LAKE, AB, CAN
+19890101 22:40 344   YOP   0         DO08ik RAINBOW LAKE, AB, CAN
+19901225 03:29 344   YOP   0         DO08ik RAINBOW LAKE, AB, CAN
+20050312 13:17 346   N9    0         CO95ma 'Tumbler'  Tumbler Ridge, BC, CAN
+20050306 03:25 346   YXL   1000 1.2  EO40bc Sioux Lookout, ON, CAN
+20050316 05:44 346   YXL   1000 1.2  EO40bc Sioux Lookout, ON, CAN
+20050403 12:12 347   AFK   0         EN20bo Nebraska City, NE, USA
+19901225 10:54 347   AFK   0         EN20bo Nebraska City, NE, USA
+20050311 11:59 347   LFA   45   75.1 CN91ex 'Merrill'  Klamath Lake, OR, USA
+19890218 12:58 347   LFA   45   75.1 CN91ex 'Merrill'  Klamath Lake, OR, USA
+20050306 03:26 347   PA    25   87   DO73cf Prince Albert, SK, CAN
+20070805 14:17 347   PA    25   87   DO73cf Prince Albert, SK, CAN
+19890101 22:45 347   PA    25   87   DO73cf Prince Albert, SK, CAN
+19901225 03:30 347   PA    25   87   DO73cf Prince Albert, SK, CAN
+20050305 12:01 347   SBX   25   100. DN48bm Shelby, MT, USA
+20070803 20:24 347   SBX   25   100. DN48bm Shelby, MT, USA
+19871115 05:13 347   SBX   25   100. DN48bm Shelby, MT, USA
+20070805 01:31 347   SBX   25   100. DN48bm Shelby, MT, USA
+20070806 17:45 347   SBX   25   100. DN48bm Shelby, MT, USA
+19890101 22:48 347   SBX   25   100. DN48bm Shelby, MT, USA
+19910105 23:50 347   SBX   25   100. DN48bm Shelby, MT, USA
+19890217 12:46 347   UJ    100  33.6 DP38jl Lady Franklin Point , NT, CAN
+20050403 12:18 347   YK    0         EN12iu 'Cagur'  Yankton, SD, USA
+19910106 06:37 348   LDF   50   42.6 DN65pp Lame Deer, MT, USA
+19881113 06:37 348   LDF   50   42.6 DN65pp Lame Deer, MT, USA
+19910106 04:11 348   LDF   50   42.6 DN65pp Lame Deer, MT, USA
+19991226 01:30 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+20070804 11:38 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+19881122 08:16 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+20070806 11:22 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+19901231 09:26 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+19901231 09:28 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+19901225 11:14 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+20070819 10:37 348   MNC   0         CN87kf 'Mason Co'  Shelton, WA, USA
+19991222 02:10 350   DNS   25   51.3 EN21hx Denison, IA, USA
+20050329 11:06 350   DNS   25   51.3 EN21hx Denison, IA, USA
+19881031 02:29 350   DNS   25   51.3 EN21hx Denison, IA, USA
+19900112 08:22 350   DNS   25   51.3 EN21hx Denison, IA, USA
+19901201 08:23 350   HBC   0         DN98fs Mohall, ND, USA
+19881113 06:34 350   HBC   0         DN98fs Mohall, ND, USA
+19900108 08:31 350   HBC   0         DN98fs Mohall, ND, USA
+19881105 01:05 350   J5    200  14.3 DO27ld Loon River, AB, CAN
+19890101 22:53 350   J5    200  14.3 DO27ld Loon River, AB, CAN
+20050403 12:02 350   ME    400  1.7  EN51xx 'Deana'  Chicago, IL, USA
+20050312 14:08 350   N4    0         DO92jc Swan River, MB, CAN
+20050326 13:01 350   N4    0         DO92jc Swan River, MB, CAN
+19891012 11:16 350   N4    0         DO92jc Swan River, MB, CAN
+20050306 03:27 350   NY    500  6    DO00mp Enderby, BC, CAN
+20050325 19:25 350   NY    500  6    DO00mp Enderby, BC, CAN
+20070805 14:20 350   NY    500  6    DO00mp Enderby, BC, CAN
+19901225 03:30 350   NY    500  6    DO00mp Enderby, BC, CAN
+19900110 06:15 350   RB    3000 1.2  EQ24mr Resolute Bay, NU, CAN
+20050305 12:11 350   RG    0         EM15eh 'Gally'  Oklahoma City, OK, USA
+19901225 10:55 350   RG    0         EM15eh 'Gally'  Oklahoma City, OK, USA
+20050305 12:11 350   SWU   0         DN33wk 'Sweden'  Idaho Falls, ID, USA
+20050326 05:25 350   SWU   0         DN33wk 'Sweden'  Idaho Falls, ID, USA
+19901225 11:13 350   SWU   0         DN33wk 'Sweden'  Idaho Falls, ID, USA
+20070816 11:41 350   SWU   0         DN33wk 'Sweden'  Idaho Falls, ID, USA
+19900112 08:22 350   SWU   0         DN33wk 'Sweden'  Idaho Falls, ID, USA
+19891012 11:19 351   NO    50   66.5 DM09cm RENO, NV, USA
+19911209 08:36 351   NO    50   66.5 DM09cm RENO, NV, USA
+20050326 02:41 351   YKQ   500  1.7  FO01pl Waskaganish, QC, CAN
+19891115 02:25 351   YKQ   500  1.7  FO01pl Waskaganish, QC, CAN
+19911209 08:33 351   YKQ   500  1.7  FO01pl Waskaganish, QC, CAN
+20050320 12:45 352   B2    0         DO07ci Hamburg, AB, CAN
+20050326 12:59 352   B2    0         DO07ci Hamburg, AB, CAN
+19890102 19:40 352   B2    0         DO07ci Hamburg, AB, CAN
+19881008 13:46 352   Q4    50   47.5 DO52jl Unity, SK, CAN
+19890102 19:30 352   Q4    50   47.5 DO52jl Unity, SK, CAN
+20050306 03:28 353   5F    0         DO14oj Fox Creek, AB, CAN
+20050325 19:27 353   5F    0         DO14oj Fox Creek, AB, CAN
+20070803 22:47 353   5F    0         DO14oj Fox Creek, AB, CAN
+20070805 14:21 353   5F    0         DO14oj Fox Creek, AB, CAN
+19910106 01:42 353   5F    0         DO14oj Fox Creek, AB, CAN
+19901225 03:32 353   5F    0         DO14oj Fox Creek, AB, CAN
+20050306 12:54 353   CY    0         DN71pd 'Horse'  Cheyenne, WY, USA
+19911216 07:28 353   CY    0         DN71pd 'Horse'  Cheyenne, WY, USA
+20000813 04:20 353   DWL   25   67.7 DN90xu WILLOW, NE, USA
+20050302 12:32 353   ICL   25   51.8 EN20lr Clarinda, IA, USA
+20070817 10:02 353   IN    100  11.7 EN38il 'Raize'  International Falls, MN, USA
+20070818 09:51 353   IN    100  11.7 EN38il 'Raize'  International Falls, MN, USA
+20070819 10:07 353   IN    100  11.7 EN38il 'Raize'  International Falls, MN, USA
+20070826 05:09 353   IN    100  11.7 EN38il 'Raize'  International Falls, MN, USA
+19890825 02:10 353   K4    200  13.7 DO37ne Legend Lake, AB, CAN
+19901225 03:31 353   K4    200  13.7 DO37ne Legend Lake, AB, CAN
+20050301 13:06 353   LLD   0         BL10ms Lanai, HWA
+20050318 13:02 353   LLD   0         BL10ms Lanai, HWA
+20050320 12:30 353   LLD   0         BL10ms Lanai, HWA
+20050326 12:02 353   LLD   0         BL10ms Lanai, HWA
+19991222 01:40 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+20050325 19:22 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+20070803 20:26 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+19870825 05:37 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+20070805 02:25 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+20070806 19:28 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+19890102 19:20 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+19910106 03:52 353   LWT   200  11.3 DN57tb Lewistown, MT, USA
+20050312 14:06 353   PG    0         EN09vu Portage, MB, CAN
+20050325 21:43 353   PG    0         EN09vu Portage, MB, CAN
+20070812 12:10 353   PG    0         EN09vu Portage, MB, CAN
+20070819 10:12 353   PG    0         EN09vu Portage, MB, CAN
+20050305 12:24 353   RNT   25   131. CN87vl Renton, WA, USA
+20050327 12:37 353   RNT   25   131. CN87vl Renton, WA, USA
+19891019 02:20 353   RNT   25   131. CN87vl Renton, WA, USA
+20070808 11:35 353   RNT   25   131. CN87vl Renton, WA, USA
+20070819 10:08 353   RNT   25   131. CN87vl Renton, WA, USA
+19991225 02:32 353   ZES   500  7.4  CO50qs Cape Scott, BC, CAN
+20050326 02:48 355   YWP   100  11.7 EO62hx Webequie, ON, CAN
+19891014 10:36 356   FR    25   138. CN82nj Medford, OR, USA
+20050327 11:58 356   HI    0         CN85lp 'Abate'  Portland, OR, USA
+20050403 11:43 356   LLU   0         EM27ul 'Spring River'  Lamar, MO, USA
+20050327 12:04 356   MEF   0         CN82nj Medford, OR, USA
+20070811 11:54 356   MEF   0         CN82nj Medford, OR, USA
+20050304 12:14 356   ODX   25   63.2 EN01mo Ord, NE, USA
+20050329 10:37 356   ODX   25   63.2 EN01mo Ord, NE, USA
+19910102 07:02 356   ODX   25   63.2 EN01mo Ord, NE, USA
+20070814 11:03 356   ODX   25   63.2 EN01mo Ord, NE, USA
+19901226 07:30 356   ODX   25   63.2 EN01mo Ord, NE, USA
+19891012 11:24 356   OPZ   0         CN88ml LOPEZ ISLAND, WA, USA
+19901231 09:07 356   OPZ   0         CN88ml LOPEZ ISLAND, WA, USA
+20050327 11:54 356   PTT   25   68.8 EM07pr Pratt, KS, USA
+20050403 11:45 356   PTT   25   68.8 EM07pr Pratt, KS, USA
+19900108 08:18 356   PTT   25   68.8 EM07pr Pratt, KS, USA
+19880827 03:15 356   RN    50   53.5 DO33hv Barchane, AB, CAN
+19890102 19:40 356   RN    50   53.5 DO33hv Barchane, AB, CAN
+19901225 03:33 356   RN    50   53.5 DO33hv Barchane, AB, CAN
+19991223 03:06 356   SKI   0         EN22mj Sac City, IA, USA
+20050329 10:36 356   SKI   0         EN22mj Sac City, IA, USA
+19900112 08:11 356   SKI   0         EN22mj Sac City, IA, USA
+19901226 07:33 356   SKI   0         EN22mj Sac City, IA, USA
+19890825 02:15 356   T     0         DO62rd Saskatoon, SK, CAN
+19901225 05:20 356   T     0         DO62rd Saskatoon, SK, CAN
+20050306 03:30 356   ZF    1000 3    DP22sj Yellowknife, NT, CAN
+20050325 23:29 356   ZF    1000 3    DP22sj Yellowknife, NT, CAN
+19881027 01:55 356   ZF    1000 3    DP22sj Yellowknife, NT, CAN
+19881213 02:34 356   ZF    1000 3    DP22sj Yellowknife, NT, CAN
+20050306 03:30 356   ZXE   39   56.1 DO62rd Barnes  (Saskatoon), SK, CAN
+20050325 19:29 356   ZXE   39   56.1 DO62rd Barnes  (Saskatoon), SK, CAN
+20070803 22:46 356   ZXE   39   56.1 DO62rd Barnes  (Saskatoon), SK, CAN
+20070805 14:22 356   ZXE   39   56.1 DO62rd Barnes  (Saskatoon), SK, CAN
+19880827 03:18 357   HS    100  26.1 DO31mb Standard, AB, CAN
+19991222 08:15 359   BO    400  7.3  DN13uo 'Ustik'  Boise, ID, USA
+20050326 03:48 359   BO    400  7.3  DN13uo 'Ustik'  Boise, ID, USA
+20070808 11:35 359   BO    400  7.3  DN13uo 'Ustik'  Boise, ID, USA
+20050329 10:27 359   GGF   0         DN90du Grant, NE, USA
+20050312 14:26 359   SDY   100  19.4 DN77vr Sidney, MT, USA
+20050325 19:49 359   SDY   100  19.4 DN77vr Sidney, MT, USA
+20070803 20:44 359   SDY   100  19.4 DN77vr Sidney, MT, USA
+19880809 09:52 359   SDY   100  19.4 DN77vr Sidney, MT, USA
+20070806 17:47 359   SDY   100  19.4 DN77vr Sidney, MT, USA
+20050326 12:38 359   YAZ   0         CN79db Tofino, BC, CAN
+20050306 03:31 359   YQZ   0         CO82sx Quesnel, BC, CAN
+20050325 19:32 359   YQZ   0         CO82sx Quesnel, BC, CAN
+19890204 07:16 359   YQZ   0         CO82sx Quesnel, BC, CAN
+20050304 12:05 360   SW    0         EN28ju 'Roadd'  Warroad, MN, USA
+20050312 13:19 361   E3    0         DO35cx Wabasca, AB, CAN
+20050325 19:33 361   E3    0         DO35cx Wabasca, AB, CAN
+20070805 14:22 361   E3    0         DO35cx Wabasca, AB, CAN
+19910106 01:40 361   E3    0         DO35cx Wabasca, AB, CAN
+19901225 05:17 361   E3    0         DO35cx Wabasca, AB, CAN
+19881213 02:12 361   HI    0         DQ10cs Holman, NT, CAN
+20050327 04:45 361   HI    0         DQ10cs Holman, NT, CAN
+19890115 13:16 361   HI    0         DQ10cs Holman, NT, CAN
+20050306 03:34 362   6T    41   60.6 DN49gl Foremost, AB, CAN
+20050325 21:37 362   6T    41   60.6 DN49gl Foremost, AB, CAN
+20070803 22:43 362   6T    41   60.6 DN49gl Foremost, AB, CAN
+20070805 14:23 362   6T    41   60.6 DN49gl Foremost, AB, CAN
+19901225 03:40 362   6T    41   60.6 DN49gl Foremost, AB, CAN
+20050327 12:22 362   BF    0         CN87tp 'Nolla'  Seattle, WA, USA
+20050403 13:11 362   BL    0         EM58cl Belleville, IL, USA
+19891114 02:13 362   C7    250  3.5  EN69ms Geraldton, ON, CAN
+20050304 12:01 362   CYW   25   60.6 EM19kj Clay Center, KS, USA
+20050329 11:33 362   CYW   25   60.6 EM19kj Clay Center, KS, USA
+20050403 11:31 362   CYW   25   60.6 EM19kj Clay Center, KS, USA
+20010915 10:40 362   CYW   25   60.6 EM19kj Clay Center, KS, USA
+19891014 10:54 362   EZB   400  9    CM87vs Oakland (East Bay), CA, USA
+20050403 11:25 362   HBK   1000 4.7  BP60wj Hinchinbrook, ALS
+19890225 13:12 362   HBK   1000 4.7  BP60wj Hinchinbrook, ALS
+19910102 08:08 362   RPX   0         DN56rl Round Up, MT, USA
+19880809 11:04 362   RPX   0         DN56rl Round Up, MT, USA
+20070806 17:51 362   RPX   0         DN56rl Round Up, MT, USA
+19910106 04:36 362   RPX   0         DN56rl Round Up, MT, USA
+19910102 08:08 362   RPX   0         DN56rl Round Up, MT, USA
+19900110 06:08 362   ZS    3000 0.8  EP84id Coral Harbour, NU, CAN
+19890115 13:18 362   ZS    3000 0.8  EP84id Coral Harbour, NU, CAN
+19881213 01:23 362   ZS    3000 0.8  EP84id Coral Harbour, NU, CAN
+19890825 02:21 363   D3    0         DO32eq Ponoka, AB, CAN
+19890102 20:42 363   D3    0         DO32eq Ponoka, AB, CAN
+19901225 03:41 363   D3    0         DO32eq Ponoka, AB, CAN
+20050306 13:00 363   IOM   25   114. DN14wt Mc Call, ID, USA
+20070826 05:21 363   IOM   25   114. DN14wt Mc Call, ID, USA
+20050312 13:23 363   T6    0         CO80oh Pemberton, BC, CAN
+20050326 12:25 363   T6    0         CO80oh Pemberton, BC, CAN
+20050316 12:38 364   4D    0         CO99ok Helmet, BC, CAN
+19991229 06:28 364   FQ    0         EN23tp Fairmont, MN, USA
+20050304 11:58 364   MHA   25   33.5 EN56bc 'Manitowish'  Manitowish Water, WI, USA
+20050304 11:49 365   AA    100  13.8 EN17oa 'Kenie'  Fargo, ND, USA
+20050326 02:33 365   AA    100  13.8 EN17oa 'Kenie'  Fargo, ND, USA
+19880930 04:35 365   AA    100  13.8 EN17oa 'Kenie'  Fargo, ND, USA
+19910106 04:37 365   AA    100  13.8 EN17oa 'Kenie'  Fargo, ND, USA
+20070826 05:26 365   AA    100  13.8 EN17oa 'Kenie'  Fargo, ND, USA
+20050304 11:51 365   ADT   0         DM99lu Atwood, KS, USA
+20050329 03:04 365   ADT   0         DM99lu Atwood, KS, USA
+19910106 04:41 365   ADT   0         DM99lu Atwood, KS, USA
+19891009 11:34 365   ADT   0         DM99lu Atwood, KS, USA
+19991224 04:56 365   FT    25   77.6 EM12hv 'Mufin'  Fort Worth, TX, USA
+20050304 11:56 365   HQG   25   78.4 DM97hd Hugoton, KS, USA
+20050327 11:22 365   HQG   25   78.4 DM97hd Hugoton, KS, USA
+19910106 04:38 365   HQG   25   78.4 DM97hd Hugoton, KS, USA
+20050312 13:24 365   MA    500  8.2  CP23bp Mayo, YK, CAN
+19881008 03:49 365   MA    500  8.2  CP23bp Mayo, YK, CAN
+19891220 06:17 365   MA    500  8.2  CP23bp Mayo, YK, CAN
+19891008 12:40 365   SFF   25   116. DN17iq 'Felts'  Spokane, WA, USA
+19911227 06:15 365   SFF   25   116. DN17iq 'Felts'  Spokane, WA, USA
+20050304 11:53 365   SHH   0         AP66xg Shishmaref, ALS
+19900110 04:13 365   YGZ   100  36.4 EQ86nk Grise Fiord, NU, CAN
+19901225 03:41 366   5Z    0         DO41si Oyen, AB, CAN
+19890102 20:43 366   5Z    0         DO41si Oyen, AB, CAN
+19900109 13:08 366   PLV   0         CN85og Aurora, OR, USA
+19910106 04:44 366   PLV   0         CN85og Aurora, OR, USA
+19911210 06:22 366   PLV   0         CN85og Aurora, OR, USA
+19891009 13:08 366   PLV   0         CN85og Aurora, OR, USA
+19951109 07:10 367   HA    0         BH91mw Hao Atoll  (Tuamotu), TUA
+19901226 07:45 367   HA    0         BH91mw Hao Atoll  (Tuamotu), TUA
+20050318 13:08 367   MO    25   139. CM97nn 'Wowar'  Modesto, CA, USA
+20050327 12:35 367   MO    25   139. CM97nn 'Wowar'  Modesto, CA, USA
+20050305 12:44 368   SIR   100  22.3 DN61kt Sinclair, WY, USA
+20050326 02:35 368   SIR   100  22.3 DN61kt Sinclair, WY, USA
+19911210 06:20 368   SIR   100  22.3 DN61kt Sinclair, WY, USA
+20050305 12:36 368   SOY   0         EN13vd Sioux Center, IA, USA
+20050326 05:21 368   SOY   0         EN13vd Sioux Center, IA, USA
+20070826 11:00 368   SOY   0         EN13vd Sioux Center, IA, USA
+19991225 02:42 368   SX    500  5.6  DN29cw Skookum  (Cranbrook), BC, CAN
+20050325 19:44 368   SX    500  5.6  DN29cw Skookum  (Cranbrook), BC, CAN
+20070805 14:24 368   SX    500  5.6  DN29cw Skookum  (Cranbrook), BC, CAN
+19890102 21:16 368   SX    500  5.6  DN29cw Skookum  (Cranbrook), BC, CAN
+19901225 18:31 368   SX    500  5.6  DN29cw Skookum  (Cranbrook), BC, CAN
+19901223 08:55 368   V     100  33.4 CN89je Vancouver (International), BC, CAN
+20050306 03:36 368   VX    80   25.6 DO71ru Dafoe, SK, CAN
+20050325 21:28 368   VX    80   25.6 DO71ru Dafoe, SK, CAN
+20070803 21:41 368   VX    80   25.6 DO71ru Dafoe, SK, CAN
+19890204 05:08 368   VX    80   25.6 DO71ru Dafoe, SK, CAN
+20070805 14:24 368   VX    80   25.6 DO71ru Dafoe, SK, CAN
+20050306 03:38 368   YJF   0         CP80gf Fort Liard, NT, CAN
+19901225 03:41 368   YZH   500  5.6  DO25oh Slave Lake, AB, CAN
+19890102 21:12 368   YZH   500  5.6  DO25oh Slave Lake, AB, CAN
+19991225 02:40 368   ZP    0         CO43ce Sandspit, BC, CAN
+20050326 13:14 368   ZP    0         CO43ce Sandspit, BC, CAN
+19890113 03:58 368   ZP    0         CO43ce Sandspit, BC, CAN
+20050316 12:43 368   ZVR   20   166. CN89je Sea Island  (Vancouver), BC, CAN
+20050326 12:22 368   ZVR   20   166. CN89je Sea Island  (Vancouver), BC, CAN
+19900515 07:27 370   YBV   50   31.9 EO12li Berens River, MB, CAN
+19901201 07:39 371   ACQ   0         EN34fb Waseca, MN, USA
+19910106 05:02 371   ACQ   0         EN34fb Waseca, MN, USA
+19900108 08:05 371   E1    50   63.8 CO98ua Beaverskin, BC, CAN
+19881220 02:46 371   GT    0         DN47hi 'Truly'- Great Falls, MT, USA
+19890102 21:19 371   GT    0         DN47hi 'Truly'- Great Falls, MT, USA
+20050306 03:40 371   GW    500  2.6  FO15cg 'Jarpik'  Kuujjuarapik, QC, CAN
+19881008 03:36 371   GW    500  2.6  FO15cg 'Jarpik'  Kuujjuarapik, QC, CAN
+19881121 03:05 371   GW    500  2.6  FO15cg 'Jarpik'  Kuujjuarapik, QC, CAN
+19881112 03:12 371   GW    500  2.6  FO15cg 'Jarpik'  Kuujjuarapik, QC, CAN
+20050306 13:31 371   ITU   100  24.8 DN47hi 'Truly'  Great Falls, MT, USA
+19890113 04:04 371   ITU   100  24.8 DN47hi 'Truly'  Great Falls, MT, USA
+19881028 02:01 371   ITU   100  24.8 DN47hi 'Truly'  Great Falls, MT, USA
+20070806 16:29 371   ITU   100  24.8 DN47hi 'Truly'  Great Falls, MT, USA
+19901225 18:35 371   ITU   100  24.8 DN47hi 'Truly'  Great Falls, MT, USA
+19900108 08:06 371   MD    0         EN27nk BUNAN, MN, USA
+19881208 05:49 371   MKA   50   30.6 EN04mm Miller (Municipal), SD, USA
+19901226 07:50 371   MKA   50   30.6 EN04mm Miller (Municipal), SD, USA
+19901201 07:36 371   MLE   0         EN11we 'Millard'  Omaha, NE, USA
+19900108 08:07 371   TS    400  3.3  EM54aw Memphis (Elvis Intl), TN, USA
+20050305 12:40 371   TVY   25   107. DN30to Tooele, UT, USA
+20050402 11:11 371   TVY   25   107. DN30to Tooele, UT, USA
+19881031 02:28 371   TVY   25   107. DN30to Tooele, UT, USA
+19901225 11:19 371   TVY   25   107. DN30to Tooele, UT, USA
+20070814 09:59 371   TVY   25   107. DN30to Tooele, UT, USA
+19910106 05:09 371   XED   25   68   EM16ct Medford (Municipal), OK, USA
+20050305 12:50 371   YK    0         CN96tm 'Donny'  Yakima, WA, USA
+19880902 10:40 371   YK    0         CN96tm 'Donny'  Yakima, WA, USA
+20070826 05:30 371   YK    0         CN96tm 'Donny'  Yakima, WA, USA
+19891008 12:42 371   YK    0         CN96tm 'Donny'  Yakima, WA, USA
+19901225 04:20 372   A     50   43.2 DO73ff Prince Albert, SK, CAN
+20050401 12:46 372   FPN   25   157  CO36ot Fredericks Point, ALS
+19901225 11:21 372   FPN   25   157  CO36ot Fredericks Point, ALS
+20050323 12:07 372   YCO   1000 3.4  DP27kt 'Coppermine'  Kugluktuk, NU, CAN
+19880930 04:43 372   YCO   1000 3.4  DP27kt 'Coppermine'  Kugluktuk, NU, CAN
+20050320 13:33 372   ZPA   25   86.3 DO73ff Glass  (Prince Albert), SK, CAN
+20070805 14:25 372   ZPA   25   86.3 DO73ff Glass  (Prince Albert), SK, CAN
+20050306 03:42 373   2P    200  14.4 DO14qc Fox Creek  (Chevron), AB, CAN
+19881218 19:09 373   2P    200  14.4 DO14qc Fox Creek  (Chevron), AB, CAN
+19890102 21:30 373   2P    200  14.4 DO14qc Fox Creek  (Chevron), AB, CAN
+19901225 03:41 373   2P    200  14.4 DO14qc Fox Creek  (Chevron), AB, CAN
+19991225 02:34 373   EP    100  35.7 CN69rj Estevan Point, BC, CAN
+19901220 06:51 373   MF    25   138. CN82nk 'Pumie'  Medford, OR, USA
+20050305 12:52 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+20050315 11:36 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+19910102 08:00 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+20070825 11:46 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+19951109 07:11 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+19901226 07:55 373   TF    0         DM78tg 'Aruba'  Pueblo, CO, USA
+20050323 12:09 374   EX    0         DN09hw Rutland  (Kelowna), BC, CAN
+20050306 13:35 374   LV    50   71.1 CM97dq 'Reiga'  Livermore, CA, USA
+19900108 07:57 374   LW    200  14.5 DN16ni Lewistown (Manno), ID, USA
+19901101 06:41 374   SA    0         FN93xw Sable Island, NS, CAN
+20050306 03:43 375   8H    50   51   DO43hx Saint Paul, AB, CAN
+20070803 21:39 375   8H    50   51   DO43hx Saint Paul, AB, CAN
+20070805 15:05 375   8H    50   51   DO43hx Saint Paul, AB, CAN
+19901225 03:42 375   8H    50   51   DO43hx Saint Paul, AB, CAN
+20050306 13:40 375   BD    0         DO70gh Baildon  (Moose Jaw), SK, CAN
+19901225 11:23 375   BD    0         DO70gh Baildon  (Moose Jaw), SK, CAN
+19901225 11:23 375   BD    0         DO70gh Baildon  (Moose Jaw), SK, CAN
+19880902 10:44 375   BM    25   60.2 EO10id Balmoral, MB, CAN
+19900108 07:15 375   CCY   25   41.5 EN33qb Charles City, IA, USA
+19910106 06:12 375   CP    0         DN62rv JOHNO, WY, USA
+20010916 11:25 375   CP    0         DN62rv JOHNO, WY, USA
+20010916 11:23 375   DW    20   79.7 EM26bh 'Owaso'  Tulsa, OK, USA
+19891112 03:19 375   FS    280  12   CP91is Fort Simpson, NT, CAN
+20050327 04:00 375   FS    280  12   CP91is Fort Simpson, NT, CAN
+19881004 09:37 375   FS    280  12   CP91is Fort Simpson, NT, CAN
+19881121 03:09 375   FS    280  12   CP91is Fort Simpson, NT, CAN
+19900717 10:20 375   HPL   0         DM58rf 'Hopkins'  Nucla, CO, USA
+19991223 08:07 375   YMJ   0         DO70gh Moose Jaw, SK, CAN
+19891009 17:03 375   YMJ   0         DO70gh Moose Jaw, SK, CAN
+19881027 02:13 376   BI    20   158. CO96qg Fort St. John, BC, CAN
+19890825 02:45 376   K2    1    2690 DO21wr Olds-Didsbury, AB, CAN
+20070806 11:16 376   K2    1    2690 DO21wr Olds-Didsbury, AB, CAN
+19881218 19:00 376   K2    1    2690 DO21wr Olds-Didsbury, AB, CAN
+19901225 18:40 376   K2    1    2690 DO21wr Olds-Didsbury, AB, CAN
+20050323 11:54 376   YAG   40   29.8 EN38fq Fort Frances, ON, CAN
+19880902 10:47 376   YAG   40   29.8 EN38fq Fort Frances, ON, CAN
+19901221 01:13 376   YAG   40   29.8 EN38fq Fort Frances, ON, CAN
+19900108 07:15 377   CWI   0         EN41ut Clinton, IA, USA
+19880503 03:58 377   EHA   25   80.3 DM97ba ELKHART, KS, USA
+20050316 12:50 378   AP    25   133. CN88iu Active Pass  (Mayne Island), BC, CAN
+20050323 11:51 378   AP    25   133. CN88iu Active Pass  (Mayne Island), BC, CAN
+20050306 13:42 378   OT    0         CN73uj 'Emire'  North Bend, OR, USA
+20050312 13:30 378   ZFA   0         CP32hf Faro, YK, CAN
+19891220 06:20 378   ZFA   0         CP32hf Faro, YK, CAN
+19900108 07:52 379   DL    0         EN36tu Duluth, MN, USA
+19890825 02:46 379   G     0         DO33gj Edmonton, AB, CAN
+19890102 21:40 379   G     0         DO33gj Edmonton, AB, CAN
+19901225 03:42 379   G     0         DO33gj Edmonton, AB, CAN
+19901201 07:24 379   GKQ   400  1.4  FN20vq 'Linden'- Newark, NJ, USA
+19891015 03:11 379   YBE   500  5.2  DO59rn URANIUM CITY, SK, CAN
+19901225 04:09 379   YBE   500  5.2  DO59rn URANIUM CITY, SK, CAN
+20050306 03:45 379   ZEG   50   53.4 DO33gj Nisku  (Edmonton Intl), AB, CAN
+20070805 15:06 379   ZEG   50   53.4 DO33gj Nisku  (Edmonton Intl), AB, CAN
+19911227 05:50 380   BBD   25   88.2 EM01ie BRADY, TX, USA
+20050310 11:33 380   GC    25   82.1 DN74fg 'Deryk'  Gillette, WY, USA
+19900108 07:47 380   GC    25   82.1 DN74fg 'Deryk'  Gillette, WY, USA
+19881028 02:29 380   GC    25   82.1 DN74fg 'Deryk'  Gillette, WY, USA
+19911215 08:35 380   GC    25   82.1 DN74fg 'Deryk'  Gillette, WY, USA
+20070826 05:05 380   GC    25   82.1 DN74fg 'Deryk'  Gillette, WY, USA
+19991229 06:24 380   OEL   25   72.7 DM99oc Oakley, KS, USA
+19910102 07:56 380   OEL   25   72.7 DM99oc Oakley, KS, USA
+19901220 06:23 380   UB    0         CP39lk Tuktoyaktuk, NT, CAN
+19901201 07:12 382   AL    0         EN32ro 'Price'  Waterloo, IA, USA
+19991224 05:59 382   AW    50   65.4 CN88wb 'Waton'  Arlington, WA, USA
+19910102 09:23 382   AW    50   65.4 CN88wb 'Waton'  Arlington, WA, USA
+19911208 08:06 382   AW    50   65.4 CN88wb 'Waton'  Arlington, WA, USA
+20070826 04:59 382   AW    50   65.4 CN88wb 'Waton'  Arlington, WA, USA
+19880825 02:50 382   EA    1000 2.4  DO50aw Empress, AB, CAN
+19890102 21:48 382   EA    1000 2.4  DO50aw Empress, AB, CAN
+19901225 03:45 382   EA    1000 2.4  DO50aw Empress, AB, CAN
+19991228 09:13 382   LRJ   25   53.3 EN12vs Le Mars, IA, USA
+19881208 05:58 382   LRJ   25   53.3 EN12vs Le Mars, IA, USA
+20050310 11:36 382   VCY   22   66.1 EN16bv Valley City, ND, USA
+19881122 07:09 382   VCY   22   66.1 EN16bv Valley City, ND, USA
+19910102 07:48 382   VCY   22   66.1 EN16bv Valley City, ND, USA
+20070819 10:48 382   VCY   22   66.1 EN16bv Valley City, ND, USA
+20050306 03:46 382   YE    100  33.5 CO88pt Fort Nelson, BC, CAN
+19890102 21:49 382   YE    100  33.5 CO88pt Fort Nelson, BC, CAN
+19901101 06:38 382   YPL   1000 1.2  EO41vk Pickle Lake, ON, CAN
+20050316 13:03 382   YPW   0         CN79ru Powell River, BC, CAN
+19890225 13:10 382   YPW   0         CN79ru Powell River, BC, CAN
+19901222 08:38 382   YPW   0         CN79ru Powell River, BC, CAN
+20050315 11:47 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+20050401 11:18 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+19881028 02:35 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+19901229 08:50 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+20070826 05:57 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+20011113 01:47 383   CNP   25   75.1 DN81sb Chappell, NE, USA
+19880503 04:05 383   LB    0         DM96mx PANCK, KS, USA
+20050318 13:21 383   MM    50   67.9 CN85lf 'Minne'  Mc Minnville Municipa, OR, USA
+20050305 13:55 383   PI    0         DN32rx 'Tyhee'  Pocatello, ID, USA
+19881206 06:03 383   PI    0         DN32rx 'Tyhee'  Pocatello, ID, USA
+19910102 09:14 383   PI    0         DN32rx 'Tyhee'  Pocatello, ID, USA
+20070812 11:22 383   PI    0         DN32rx 'Tyhee'  Pocatello, ID, USA
+20070826 06:01 383   PI    0         DN32rx 'Tyhee'  Pocatello, ID, USA
+20050315 11:51 384   3F    0         DO65al Ile-a-la-crosse, SK, CAN
+20070825 12:25 384   3F    0         DO65al Ile-a-la-crosse, SK, CAN
+20050306 03:46 385   3M    0         DO23mg Drayton Valley Industrial, AB, CAN
+19890204 20:34 385   3M    0         DO23mg Drayton Valley Industrial, AB, CAN
+20070805 15:07 385   3M    0         DO23mg Drayton Valley Industrial, AB, CAN
+19901225 03:46 385   3M    0         DO23mg Drayton Valley Industrial, AB, CAN
+19901201 07:16 385   BA    0         EN34mu 'Babco'  St Paul, MN, USA
+20050401 11:25 385   OCC   0         CO09dn 'Ocean Cape'  Yakutat, ALS
+19890204 20:38 385   QV    100  18.9 DO81rf YORKTON, SK, CAN
+19901225 04:06 385   QV    100  18.9 DO81rf YORKTON, SK, CAN
+19991226 03:51 385   WL    500  6.5  CO92ad Williams Lake, BC, CAN
+19890204 20:36 385   WL    500  6.5  CO92ad Williams Lake, BC, CAN
+19901225 00:33 385   WL    500  6.5  CO92ad Williams Lake, BC, CAN
+19890204 04:40 386   4X    100  14.3 EO10xg LAC DU BONNET, MB, CAN
+19991228 09:40 386   BTN   0         EN15dt Britton, SD, USA
+20050401 11:44 386   BTN   0         EN15dt Britton, SD, USA
+19881230 07:50 386   BTN   0         EN15dt Britton, SD, USA
+19910106 06:27 386   BTN   0         EN15dt Britton, SD, USA
+20050315 11:53 386   HAU   25   100. DN46cn 'Hauser'  Helena, MT, USA
+19881230 06:56 386   HAU   25   100. DN46cn 'Hauser'  Helena, MT, USA
+19901229 08:00 386   HAU   25   100. DN46cn 'Hauser'  Helena, MT, USA
+20070814 10:52 386   HAU   25   100. DN46cn 'Hauser'  Helena, MT, USA
+19900106 06:33 386   LYO   25   66.1 EM08vi LYONS, KS, USA
+19991226 03:40 386   SYF   25   74.9 DM99cr St. Francis, KS, USA
+20050401 11:34 386   SYF   25   74.9 DM99cr St. Francis, KS, USA
+19910102 07:36 386   SYF   25   74.9 DM99cr St. Francis, KS, USA
+20010915 10:13 386   SYF   25   74.9 DM99cr St. Francis, KS, USA
+19900515 07:33 388   3Z    0         DN39vt TABER, AB, CAN
+19910102 07:37 388   AM    400  4.4  EL87ru 'Picny'  Tampa, FL, USA
+20050314 11:45 388   JW    15   181. DO21qb 'Pigeon'  Jumping Pound Creek, AB, CAN
+19890204 20:40 388   JW    15   181. DO21qb 'Pigeon'  Jumping Pound Creek, AB, CAN
+20070805 15:08 388   JW    15   181. DO21qb 'Pigeon'  Jumping Pound Creek, AB, CAN
+19901225 03:48 388   JW    15   181. DO21qb 'Pigeon'  Jumping Pound Creek, AB, CAN
+20050306 03:48 388   MM    125  21.1 DO46hp Fort Mc Murray, AB, CAN
+19890204 20:43 388   MM    125  21.1 DO46hp Fort Mc Murray, AB, CAN
+20070805 15:09 388   MM    125  21.1 DO46hp Fort Mc Murray, AB, CAN
+19901225 03:48 388   MM    125  21.1 DO46hp Fort Mc Murray, AB, CAN
+19991225 02:17 388   MS    100  36.9 CO52pg McInnes Island, BC, CAN
+19881004 09:43 388   MS    100  36.9 CO52pg McInnes Island, BC, CAN
+19911207 09:15 388   MS    100  36.9 CO52pg McInnes Island, BC, CAN
+20070826 06:18 389   CSB   25   68.8 DN90wh 'Harry Strunk'  Cambridge, NE, USA
+20011113 04:15 389   CSB   25   68.8 DN90wh 'Harry Strunk'  Cambridge, NE, USA
+20050314 10:23 389   LCG   0         EN12mf Wayne, NE, USA
+20070826 06:16 389   LCG   0         EN12mf Wayne, NE, USA
+20050306 13:53 389   LDS   25   94.1 DN58dn 'Leeds'  Havre, MT, USA
+19890204 21:03 389   LDS   25   94.1 DN58dn 'Leeds'  Havre, MT, USA
+19900108 07:30 389   LDS   25   94.1 DN58dn 'Leeds'  Havre, MT, USA
+19880510 02:50 389   LDS   25   94.1 DN58dn 'Leeds'  Havre, MT, USA
+19901229 07:42 389   LDS   25   94.1 DN58dn 'Leeds'  Havre, MT, USA
+20010915 10:12 389   MEJ   0         DM97tg MEADE, KS, USA
+20050402 12:11 390   HBT   0         AO95rh Sand Point  (Borland), ALS
+20050402 12:15 390   HBT   0         AO95rh Sand Point  (Borland), ALS
+19910106 01:26 391   4W    25   72.5 EO16ra KELSEY, MB, CAN
+19911219 07:14 391   4W    25   72.5 EO16ra KELSEY, MB, CAN
+20050312 13:41 391   D5    0         DO72ou Melfort, SK, CAN
+19991225 06:35 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+20050302 04:29 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+19881031 06:00 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+19881113 05:49 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+19900106 06:36 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+20070826 06:11 391   DDP   2000 1.5  FK68tl San Juan / Dorado / Luiz Munoz, PTR
+19900515 07:34 391   EBY   400  8.6  CN78ri Neah Bay, WA, USA
+19881012 05:15 391   EBY   400  8.6  CN78ri Neah Bay, WA, USA
+20050304 12:22 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+20050401 11:51 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+20070806 11:10 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+19911210 07:09 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+19901223 08:46 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+20070819 11:01 391   EEF   0         CO28ie 'Elephant'  Sisters Island, ALS
+20050302 04:35 391   GXD   25   74.8 EM21pp Nacogdoches, TX, USA
+20050312 13:33 391   TK    0         CO64mq Telkwa  (Smithers), BC, CAN
+20050304 12:37 392   AGZ   25   59.8 EN03ub Wagner, SD, USA
+19881124 04:14 392   AGZ   25   59.8 EN03ub Wagner, SD, USA
+19900717 10:27 392   BAJ   0         DN80jm 'Batten'  Sterling, CO, USA
+20050401 11:56 392   BAJ   0         DN80jm 'Batten'  Sterling, CO, USA
+19900108 07:20 392   BAJ   0         DN80jm 'Batten'  Sterling, CO, USA
+20050304 12:25 392   EUR   0         DN28kx Eureka, MT, USA
+20070806 11:09 392   EUR   0         DN28kx Eureka, MT, USA
+19900102 09:08 392   EUR   0         DN28kx Eureka, MT, USA
+19911207 09:12 392   EUR   0         DN28kx Eureka, MT, USA
+20070812 11:19 392   EUR   0         DN28kx Eureka, MT, USA
+19901201 06:39 392   HEI   25   72.5 DN86qa Hettinger, ND, USA
+19900110 06:18 392   ML    500  1.7  FN47uo Charlevoix, QC, CAN
+19991230 06:37 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+20050401 11:53 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+19881124 04:16 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+19901225 11:28 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+19901225 11:28 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+20070812 11:19 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+20010916 10:53 392   PNA   25   96.7 DN52ct 'Wenz'  Pinedale, WY, USA
+19890825 03:01 392   W1    0         DO42hp Hardisty, AB, CAN
+19901225 18:45 392   W1    0         DO42hp Hardisty, AB, CAN
+19891112 03:45 392   ZFN   50   73.2 CP74fv Tulita, NT, CAN
+20050327 03:55 392   ZFN   50   73.2 CP74fv Tulita, NT, CAN
+19881027 02:28 392   ZFN   50   73.2 CP74fv Tulita, NT, CAN
+19891220 06:25 392   ZFN   50   73.2 CP74fv Tulita, NT, CAN
+20050306 06:35 393   8N    50   57.4 DO13sn Edson, AB, CAN
+20070805 15:10 393   8N    50   57.4 DO13sn Edson, AB, CAN
+20050312 13:35 394   DQ    50   62.6 CO95xr Dawson Creek, BC, CAN
+19890204 23:12 394   DQ    50   62.6 CO95xr Dawson Creek, BC, CAN
+19901225 03:49 394   DQ    50   62.6 CO95xr Dawson Creek, BC, CAN
+20050304 12:35 394   RWO   0         BO37us 'Woody Island'  Kodiak, ALS
+19890219 11:17 394   RWO   0         BO37us 'Woody Island'  Kodiak, ALS
+20050306 06:40 395   5V    50   51.9 DO31om Drumheller, AB, CAN
+19890204 23:16 395   5V    50   51.9 DO31om Drumheller, AB, CAN
+20070805 15:11 395   5V    50   51.9 DO31om Drumheller, AB, CAN
+19901225 03:49 395   5V    50   51.9 DO31om Drumheller, AB, CAN
+20050304 12:30 395   JM    0         EN06ru 'Sabon'  Jamestown, ND, USA
+20050310 11:43 395   JM    0         EN06ru 'Sabon'  Jamestown, ND, USA
+19900108 07:15 395   JM    0         EN06ru 'Sabon'  Jamestown, ND, USA
+20050306 06:42 395   L7    250  7.5  DN89nf Estevan, SK, CAN
+20050317 03:03 395   L7    250  7.5  DN89nf Estevan, SK, CAN
+20050304 12:43 395   ULS   0         DM97ho Ulysses, KS, USA
+19870827 04:08 395   YL    1600 1.3  DO96lt Lynn Lake, MB, CAN
+19901225 04:00 395   YL    1600 1.3  DO96lt Lynn Lake, MB, CAN
+19991225 05:40 396   CMJ   0         CO45di 'Clam Cove'  Ketchikan, ALS
+19911207 08:20 396   GOL   25   143. CN72sk Gold Beach (Muni), OR, USA
+20050304 12:42 396   PA    0         CN88ub 'Ritts'  Everett, WA, USA
+19911208 06:49 396   PA    0         CN88ub 'Ritts'  Everett, WA, USA
+19901222 08:41 396   PA    0         CN88ub 'Ritts'  Everett, WA, USA
+20050306 06:43 396   PH    500  3.3  FO08wk Inukjuak, QC, CAN
+19881130 05:14 396   ZBB   2000 1    FL05ir South Bimini, BAH
+19911207 08:21 396   ZBB   2000 1    FL05ir South Bimini, BAH
+20050323 11:43 397   3I    200  16.4 CO98ht 'Mobil Sierra'  Fort Nelson, BC, CAN
+19890203 04:39 397   3I    200  16.4 CO98ht 'Mobil Sierra'  Fort Nelson, BC, CAN
+19911213 06:37 397   3I    200  16.4 CO98ht 'Mobil Sierra'  Fort Nelson, BC, CAN
+19900111 07:47 397   AIT   25   45.4 EN36dn Aitkin, MN, USA
+19900102 09:01 397   CIN   25   49.4 EN22ob Carroll, IA, USA
+19911219 07:08 397   CIN   25   49.4 EN22ob Carroll, IA, USA
+19890204 23:19 397   E     25   85.5 DO72df Saskatoon, SK, CAN
+19870827 07:12 397   LLJ   50   53   DN34jm Challis, ID, USA
+19881208 06:12 397   LLJ   50   53   DN34jm Challis, ID, USA
+19901229 07:48 397   LLJ   50   53   DN34jm Challis, ID, USA
+20050306 06:44 397   ZSS   25   88   DO62pf Yellowhead  (Saskatoon), SK, CAN
+20070805 15:11 397   ZSS   25   88   DO62pf Yellowhead  (Saskatoon), SK, CAN
+20050304 12:46 398   YOD   25   99.8 DO44uj Cold Lake, AB, CAN
+20070805 01:25 398   YOD   25   99.8 DO44uj Cold Lake, AB, CAN
+20070806 16:32 398   YOD   25   99.8 DO44uj Cold Lake, AB, CAN
+19890204 23:27 398   YOD   25   99.8 DO44uj Cold Lake, AB, CAN
+19901225 18:43 398   YOD   25   99.8 DO44uj Cold Lake, AB, CAN
+19880827 04:05 399   C1    0         DO31ag AIRDRIE, AB, CAN
+19890204 23:30 399   C1    0         DO31ag AIRDRIE, AB, CAN
+19900110 04:03 399   D     25   47.6 EN39qt Delta / Dryden, ON, CAN
+20050304 12:51 399   SRI   50   121. AO56en 'Pribilof'  St George, ALS
+19891015 02:02 400   AFD   0         DN87it WATFORD CITY, ND, USA
+20011113 04:15 400   AHQ   0         EN11qf WAHOO, NE, USA
+19991230 06:13 400   FN    0         DN70mi 'Colln'  Fort Collins / Lovela, CO, USA
+19891015 02:11 400   FN    0         DN70mi 'Colln'  Fort Collins / Lovela, CO, USA
+19901221 07:43 400   FN    0         DN70mi 'Colln'  Fort Collins / Lovela, CO, USA
+19870825 04:24 400   LKO   25   90.3 DN55ts 'Logan' Billings, MT, USA
+19901225 18:46 400   LKO   25   90.3 DN55ts 'Logan' Billings, MT, USA
+20050313 11:14 400   MDS   0         EN14ka 'Wentworth'  Madison, SD, USA
+19900108 06:57 400   MDS   0         EN14ka 'Wentworth'  Madison, SD, USA
+19911219 06:59 400   MDS   0         EN14ka 'Wentworth'  Madison, SD, USA
+19901226 07:10 400   QQ    0         CN79ms Comox, BC, CAN
+20050306 06:45 400   QQ    0         CN79ms Comox, BC, CAN
+19900110 04:02 401   YPO   125  10.6 EO74gx Peawanuck, ON, CAN
+19991222 04:29 402   L4    200  10.3 DO73xi Nipawin, SK, CAN
+19901222 08:44 402   L4    200  10.3 DO73xi Nipawin, SK, CAN
+19891226 07:07 402   L4    200  10.3 DO73xi Nipawin, SK, CAN
+20050313 11:06 402   M3    0         DO51jm Kindersley, SK, CAN
+19890204 23:40 402   M3    0         DO51jm Kindersley, SK, CAN
+19901225 18:48 402   M3    0         DO51jm Kindersley, SK, CAN
+19901222 08:44 402   M3    0         DO51jm Kindersley, SK, CAN
+19881124 04:29 403   AXA   25   46.8 EN23ub ALGONA, IA, USA
+19910102 08:42 403   AXA   25   46.8 EN23ub ALGONA, IA, USA
+19991230 06:19 404   HEQ   0         DN80un 'Heginbotham'  Holyoke, CO, USA
+19900108 07:02 404   HEQ   0         DN80un 'Heginbotham'  Holyoke, CO, USA
+20050310 11:50 404   MOG   25   138. CN81sr Montague, CA, USA
+20070804 11:49 404   MOG   25   138. CN81sr Montague, CA, USA
+20070806 12:01 404   MOG   25   138. CN81sr Montague, CA, USA
+20070808 11:40 404   MOG   25   138. CN81sr Montague, CA, USA
+20070814 10:44 404   MOG   25   138. CN81sr Montague, CA, USA
+20050310 11:50 404   OLF   100  20.5 DN78ec Wolf Point, MT, USA
+19880801 11:27 404   OLF   100  20.5 DN78ec Wolf Point, MT, USA
+20070806 16:37 404   OLF   100  20.5 DN78ec Wolf Point, MT, USA
+19901231 09:50 404   OLF   100  20.5 DN78ec Wolf Point, MT, USA
+19910102 08:47 404   XCR   0         EN26tb 'Ripley'  Little Falls, MN, USA
+19900111 06:26 404   YSL   1000 1    FN67be St Leonard, NB, CAN
+20050306 06:47 405   2K    0         DO33oa Camrose, AB, CAN
+19881008 04:08 405   2K    0         DO33oa Camrose, AB, CAN
+20070805 15:12 405   2K    0         DO33oa Camrose, AB, CAN
+19890204 23:45 405   2K    0         DO33oa Camrose, AB, CAN
+19901225 03:51 405   2K    0         DO33oa Camrose, AB, CAN
+20070805 15:14 405   9G    50   54.6 DO21ps SUNDRE, AB, CAN
+19890204 04:03 405   YXL   1000 1.2  EO40bc Sioux Lookout, ON, CAN
+20050314 11:36 406   2S    0         DO15sj High Prairie, AB, CAN
+19890204 04:03 406   2S    0         DO15sj High Prairie, AB, CAN
+20070805 15:15 406   2S    0         DO15sj High Prairie, AB, CAN
+19890405 22:25 406   2S    0         DO15sj High Prairie, AB, CAN
+19900111 07:50 406   OK    0         EM15el Tulakes/TULOO, OK, USA
+20050306 06:48 406   YLJ   40   59.6 DO54qd Meadow Lake, SK, CAN
+20070805 15:15 406   YLJ   40   59.6 DO54qd Meadow Lake, SK, CAN
+19890405 22:17 406   YLJ   40   59.6 DO54qd Meadow Lake, SK, CAN
+19901225 03:52 406   YLJ   40   59.6 DO54qd Meadow Lake, SK, CAN
+19870827 07:36 407   BNS   25   86   DN64op Sheridan (County - Banstow) , WY, USA
+19901126 04:36 407   BNW   25   46.4 EN32bb Boone, IA, USA
+19900108 06:51 407   BNW   25   46.4 EN32bb Boone, IA, USA
+19901231 09:52 407   BNW   25   46.4 EN32bb Boone, IA, USA
+19910102 08:40 407   CO    25   85.9 DM78pq 'Petey'  Colorado Springs, CO, USA
+20010916 11:00 407   CO    25   85.9 DM78pq 'Petey'  Colorado Springs, CO, USA
+19890118 12:48 407   NUW   25   132. CN88pi Whidbey Island NAS (Ault), WA, USA
+19900108 06:53 407   PLT   0         EN11hl PLATTE CENTER, NE, USA
+19910102 08:40 407   PLT   0         EN11hl PLATTE CENTER, NE, USA
+19880826 09:33 407   RVB   0         DN95tn 'Riverbend'  Mobridge, SD, USA
+19881113 06:05 407   RVB   0         DN95tn 'Riverbend'  Mobridge, SD, USA
+19910105 07:21 407   RVB   0         DN95tn 'Riverbend'  Mobridge, SD, USA
+19900106 06:56 407   SWA   2000 1.5  EK87aj Islas Del Cisne (Swan Island), HND
+19991230 03:10 408   JDM   25   72.8 DM99lm 'Wheatfield'  Colby, KS, USA
+20050311 11:24 408   MW    0         DN07ic 'Pelly'  Moses Lake, WA, USA
+20070806 11:33 408   MW    0         DN07ic 'Pelly'  Moses Lake, WA, USA
+20070814 10:35 408   MW    0         DN07ic 'Pelly'  Moses Lake, WA, USA
+20050306 06:48 408   Z7    50   52.8 DO30ea Claresholm, AB, CAN
+20070805 15:16 408   Z7    50   52.8 DO30ea Claresholm, AB, CAN
+19911208 07:51 408   Z7    50   52.8 DO30ea Claresholm, AB, CAN
+20050306 06:52 410   6Z    0         DO56hl La Loche, SK, CAN
+20070805 15:17 410   6Z    0         DO56hl La Loche, SK, CAN
+19911208 07:46 410   6Z    0         DO56hl La Loche, SK, CAN
+19991229 02:42 410   EGQ   0         EN23pc Emmetsburg, IA, USA
+19901229 07:25 410   EGQ   0         EN23pc Emmetsburg, IA, USA
+19991111 02:15 410   GDV   100  19.8 DN77od Glendive, MT, USA
+20050311 11:27 410   GDV   100  19.8 DN77od Glendive, MT, USA
+19880828 11:01 410   GDV   100  19.8 DN77od Glendive, MT, USA
+20070806 16:45 410   GDV   100  19.8 DN77od Glendive, MT, USA
+20070806 17:10 410   GDV   100  19.8 DN77od Glendive, MT, USA
+20070814 10:36 410   GDV   100  19.8 DN77od Glendive, MT, USA
+19910102 08:28 410   HMM   0         DN26wg Hamilton, MT, USA
+19910102 08:28 410   HMM   0         DN26wg Hamilton, MT, USA
+19910105 07:07 411   HAE   0         EM49gr Hannibal, MO, USA
+19900111 08:25 411   HDL   0         EM15tc Holdenville, OK, USA
+20050305 05:17 411   RD    400  8.2  CN94lh 'Bodey'  Redmond, OR, USA
+19881031 05:56 411   RD    400  8.2  CN94lh 'Bodey'  Redmond, OR, USA
+20070808 11:42 411   RD    400  8.2  CN94lh 'Bodey'  Redmond, OR, USA
+19880825 18:15 411   RM    1600 1.7  DO22li Rocky Mountain House, AB, CAN
+19890405 22:36 411   RM    1600 1.7  DO22li Rocky Mountain House, AB, CAN
+19901225 03:56 411   RM    1600 1.7  DO22li Rocky Mountain House, AB, CAN
+20050305 05:17 411   SDA   25   52.8 EN20hs Shenandoah, IA, USA
+20011113 03:15 411   SDA   25   52.8 EN20hs Shenandoah, IA, USA
+19881118 05:11 413   TAM   1000 2.9  EL12bg TAMPICO, MEX
+19900110 03:57 413   YHD   250  4.8  EN39nu Dryden, ON, CAN
+20050306 06:53 414   8M    0         DO43ov Elk Point, AB, CAN
+20070805 15:17 414   8M    0         DO43ov Elk Point, AB, CAN
+19901225 03:56 414   8M    0         DO43ov Elk Point, AB, CAN
+20050305 05:23 414   GRN   0         DN82vt Gordon, NE, USA
+19900108 06:33 414   GRN   0         DN82vt Gordon, NE, USA
+19901229 07:17 414   GRN   0         DN82vt Gordon, NE, USA
+19911227 08:01 414   GRN   0         DN82vt Gordon, NE, USA
+19900109 13:22 414   HQ    25   136. CN86cx 'Abern' Hoquiam, WA, USA
+19901221 07:51 414   HQ    25   136. CN86cx 'Abern' Hoquiam, WA, USA
+19891009 13:22 414   HQ    25   136. CN86cx 'Abern' Hoquiam, WA, USA
+20050301 12:39 414   HZE   0         DN97fh Hazen, ND, USA
+20050401 12:07 414   IME   0         CO27hb 'Mount Edgecumbe'  Sitka, ALS
+20050301 12:38 414   LYI   100  27.8 DN28gh Libby, MT, USA
+19870827 07:46 414   LYI   100  27.8 DN28gh Libby, MT, USA
+19870907 09:30 414   LYI   100  27.8 DN28gh Libby, MT, USA
+19880827 07:46 414   LYI   100  27.8 DN28gh Libby, MT, USA
+20070806 10:54 414   LYI   100  27.8 DN28gh Libby, MT, USA
+19991224 07:40 414   PYD   100  31.2 DM27ae 'Area 19'  Groom Lake, NV, USA
+20050301 12:58 414   SU    40   33.7 EN12uh 'Salix'  Sioux City, IA, USA
+19881124 04:36 414   SU    40   33.7 EN12uh 'Salix'  Sioux City, IA, USA
+19901231 09:56 414   SU    40   33.7 EN12uh 'Salix'  Sioux City, IA, USA
+19901229 07:20 414   SU    40   33.7 EN12uh 'Salix'  Sioux City, IA, USA
+19991222 22:29 414   Y     0         DO70ok Brophy / Regina, SK, CAN
+19901225 03:59 414   Y     0         DO70ok Brophy / Regina, SK, CAN
+20050323 11:32 414   ZRG   20   101. DO70ok Brophy  (Regina), SK, CAN
+20050302 05:17 415   CBC   1000 2.7  FK09bq West End  (Cayman Brac), CYM
+19900111 08:01 415   CBC   1000 2.7  FK09bq West End  (Cayman Brac), CYM
+20050302 05:20 415   HJM   25   72.3 EM13vo 'Rayburn'  Bonham, TX, USA
+19881124 04:41 415   HJM   25   72.3 EM13vo 'Rayburn'  Bonham, TX, USA
+19870727 07:50 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+19870827 04:15 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+19870828 11:35 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+19870727 07:50 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+20070819 11:32 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+20070826 10:07 415   LO    50   49.9 DN44jn 'Targy'  West Yellowstone, MT, USA
+20050301 12:42 416   LB    50   34.5 DN91rb 'Panbe'  North Platte, NE, USA
+19881010 06:51 416   LB    50   34.5 DN91rb 'Panbe'  North Platte, NE, USA
+19910106 07:27 416   LB    50   34.5 DN91rb 'Panbe'  North Platte, NE, USA
+19910105 06:59 417   HHG   25   22.5 EN70gu Huntington, IN, USA
+20050305 11:04 417   IY    25   41.8 EN33pd 'Chukk'  Charles City, IA, USA
+19900108 05:40 417   IY    25   41.8 EN33pd 'Chukk'  Charles City, IA, USA
+20070826 10:03 417   IY    25   41.8 EN33pd 'Chukk'  Charles City, IA, USA
+19891008 08:19 418   CW    0         EM30jh 'Mossy'  Lake Charles, LA, USA
+19881031 05:55 419   GB    0         EM08ng BABSY, KS, USA
+19900111 07:52 419   RYS   25   13   EN82kc 'Grosse Ile'  Detroit / Grosse, MI, USA
+19991224 03:58 420   CEK   25   58.1 EN10mo Crete, NE, USA
+19900112 05:31 420   CEK   25   58.1 EN10mo Crete, NE, USA
+20011113 03:17 420   CEK   25   58.1 EN10mo Crete, NE, USA
+20050301 11:58 420   FQ    0         EN23tp 'Montz'  Fairmont, MN, USA
+20070826 09:56 420   FQ    0         EN23tp 'Montz'  Fairmont, MN, USA
+20050301 11:58 420   PK    0         EM28ps Olathe, KS, USA
+19991230 07:48 421   EF    0         EM13qg 'Fluet'  Mc Kinney, TX, USA
+20050301 11:55 423   CKP   25   51.2 EN22fr 'Pilot Rock'  Cherokee, IA, USA
+19881031 05:51 423   CKP   25   51.2 EN22fr 'Pilot Rock'  Cherokee, IA, USA
+20070806 10:46 423   CKP   25   51.2 EN22fr 'Pilot Rock'  Cherokee, IA, USA
+19901231 10:03 423   CKP   25   51.2 EN22fr 'Pilot Rock'  Cherokee, IA, USA
+20050301 11:55 423   DXE   0         EM56as Dexter, MO, USA
+20050301 11:52 426   EN    0         EN21cf 'Rikky'  Council Bluffs, NE, USA
+19891008 12:20 426   EN    0         EN21cf 'Rikky'  Council Bluffs, NE, USA
+20050301 11:49 428   POH   25   48.2 EN22qr Pocahontas, IA, USA
+20070826 09:18 428   POH   25   48.2 EN22qr Pocahontas, IA, USA
+19991230 07:29 428   SYW   25   73.8 EM12xx 'Cash'  Greenville, TX, USA
+20050301 11:42 430   AYB   0         EN20ck Auburn, NE, USA
+20011113 04:30 430   AYB   0         EN20ck Auburn, NE, USA
+20050301 11:44 434   SLB   25   50.2 EN22jo Storm Lake, IA, USA
+20070826 09:27 434   SLB   25   50.2 EN22jo Storm Lake, IA, USA
+20050301 11:23 515   CL    0         CN88dd 'Elwha'  Port Angeles, WA, USA
+20070826 09:38 515   CL    0         CN88dd 'Elwha'  Port Angeles, WA, USA
+20050301 11:23 515   SAK   25   108. DN28sc 'Smith Lake'  Kalispell, MT, USA
+19880717 10:28 515   SAK   25   108. DN28sc 'Smith Lake'  Kalispell, MT, USA
+19910102 08:16 515   SAK   25   108. DN28sc 'Smith Lake'  Kalispell, MT, USA
+20070826 09:34 515   SAK   25   108. DN28sc 'Smith Lake'  Kalispell, MT, USA
+20070826 09:39 515   SAK   25   108. DN28sc 'Smith Lake'  Kalispell, MT, USA
+19881001 06:47 520   BF    400  8.2  CN87tp Seattle (Boeing Field), WA, USA
+19910102 08:11 521   INE   400  6.8  DN27tc 'Konna'  Missoula, MT, USA
+20050301 11:28 521   INE   400  6.8  DN27tc 'Konna'  Missoula, MT, USA
+19910102 08:11 521   INE   400  6.8  DN27tc 'Konna'  Missoula, MT, USA
+20000818 05:24 521   INE   400  6.8  DN27tc 'Konna'  Missoula, MT, USA
+19881001 06:43 521   ORC   25   52.6 EN12xx Orange City, IA, USA
+----------------------------------------------------------------------
+706 stations shown listed.
+(Output generated by NDB WebLog 1.1.25 - looks best in courier font)

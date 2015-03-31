@@ -1,0 +1,3 @@
+NDB WebLog Version 1.0.4
+Extracting files needed for
+NDB Weblog Editor installation

@@ -1,0 +1,31 @@
+Decoded message:
+321KHz - Station ID #882
+(Lompoc CA USA 20041104 0900UTC)
+
+
+Preamble                     : 102
+Message Type                 : 9 GPS Partial Correction Set
+Station Number               : 265
+Z Count                      : 36
+Sequency Count               : 1
+Num of Data Words            : 5
+Health                       : 1 UDRE scale factor = 0.75
+Satellite Id                 : 20
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -6.72 m
+  Range Rate Correction      : -0.256 m/s
+  Issue of Data              : 99
+Satellite Id                 : 23
+  User Diff Range Error      : < 8 m
+  Pseudorange Correction     : -10424.64 m
+  Range Rate Correction      : 0.000 m/s
+  Issue of Data              : 200
+Satellite Id                 : 29
+  User Diff Range Error      : < 8 m
+  Pseudorange Correction     : 0.00 m
+  Range Rate Correction      : 0.134 m/s
+  Issue of Data              : 119
+
+Message Contains Parity Errors
+
+

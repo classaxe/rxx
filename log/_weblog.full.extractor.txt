@@ -1,0 +1,7 @@
+NDB WebLog Version 1.1.27
+FULL INSTALLATION VERSION
+If you are UPGRADING an NDB WebLog,
+quit this install and get the UPGRADE
+VERSION instead to avoid losing data!
+
+Read the README.TXT file for more.

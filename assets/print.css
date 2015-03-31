@@ -1,0 +1,111 @@
+.noprint { display: none; }
+.titleTable { display: none; }
+.scrollbox_230 { }
+
+h1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #3333ff;
+	display:inline;
+	font-weight: normal;
+}
+h2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 17px;
+	color: #666666;
+	display:inline;
+}
+.formField {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #000000;
+	border-color: #808080;
+	border-width: 1px;
+	border-style: solid;
+}
+.formField_disabled {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333333;
+        background-color: #e0e0e0;
+	border-color: #AAAAAA;
+	border-width: 1px;
+	border-style: solid;
+}
+.fixed {
+	font-family:	monospace;
+	color: #000000;
+}
+.formFixed {
+	font-family:	courier;
+	font-size: 8pt;
+	color: #000000;
+	border-color: #808080;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.formButton {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #000000;
+}
+
+
+.tableContainer {
+	background-color: #AAAAAA;
+        border-width: 1px;
+	border-color: #AAAAAA;
+	border-style: solid;
+}
+
+.downloadTable {
+	background-color:#CCCCCC;
+	border-collapse: collapse;
+}
+
+.downloadTableContent {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	background-color:#FFFFFF;
+	padding-top: 2px;
+	padding-right: 7px;
+	padding-bottom: 2px;
+	padding-left: 7px;
+}
+
+thead    { display: table-header-group; }
+td       { font: 8pt Verdana, Geneva, sans-serif; }
+th       { font: 8pt Verdana, Geneva, sans-serif; text-align: left; font-weight: bold;  }
+.downloadTableHeadings {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #FFFFFF;
+	background-color:#707070;
+        cursor: pointer;
+	cursor: hand;
+
+}
+.downloadTableHeadings_nosort {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color:#707070;
+}
+
+.tableForm {
+	spacing: 0px;
+	border-color: #3333FF;
+	border-width: 1px;
+	border-style: solid;
+	background-color: #3333FF;
+}
+.rowForm {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #F1F1FF;
+}

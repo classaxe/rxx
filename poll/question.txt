@@ -1,0 +1,1 @@
+6|Weather Checks|May 05|Do you consult weather data<br>(donut, lightning, pressure etc)<br>before listening sessions?|Never,Occasionally,Often,Always

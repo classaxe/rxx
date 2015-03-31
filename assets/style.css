@@ -1,0 +1,317 @@
+
+
+/*
+1.0.1 (2008-11-30)
+  Added cascade for tr.type td signal row colouring
+1.0.0 (initial release)
+*/
+
+@media screen {
+  .noprint { }
+  .noscreen { display: none; }
+  .scrollbox_230 {
+    OVERFLOW: auto;
+    HEIGHT: 230px
+  }
+  .titleTable { }
+}
+
+@media print {
+  .noprint { display: none; }
+  .noscreen { }
+  .titleTable { display: none; }
+  .scrollbox_230 { }
+}
+
+
+form
+{
+    DISPLAY: inline
+}
+td
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+th
+{
+    PADDING-RIGHT: 2px;
+    PADDING-LEFT: 2px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+thead
+{
+    DISPLAY: table-header-group
+}
+
+.scroll_list
+{
+    FONT-SIZE: 8pt;
+    COLOR: #333333;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.p
+{
+    FONT-SIZE: 11pt;
+    COLOR: #333333;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-ALIGN: justify
+}
+P
+{
+    COLOR: #333333;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+li
+{
+    COLOR: #333333;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+ul
+{
+    COLOR: #333333;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+h2
+{
+    DISPLAY: inline;
+    FONT-SIZE: 17px;
+    COLOR: #666666;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+a
+{
+    COLOR: #003366;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: none
+}
+a:hover
+{
+    TEXT-DECORATION: underline
+}
+a.yellow:link
+{
+    COLOR: #ffff80;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: none
+}
+a.yellow:visited
+{
+    COLOR: #ffff80;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: none
+}
+a.yellow:active
+{
+    COLOR: #ffff80;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: none
+}
+a.yellow:hover
+{
+    COLOR: #ffff80;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: underline
+}
+a.hover:hover
+{
+    BACKGROUND-COLOR: yellow
+}
+.tableContainer
+{
+    BORDER-RIGHT: #aaaaaa 1px solid;
+    BORDER-TOP: #aaaaaa 1px solid;
+    BORDER-LEFT: #aaaaaa 1px solid;
+    BORDER-BOTTOM: #aaaaaa 1px solid;
+    BACKGROUND-COLOR: #aaaaaa
+}
+.formField_disabled
+{
+    BORDER-RIGHT: #aaaaaa 1px solid;
+    BORDER-TOP: #aaaaaa 1px solid;
+    FONT-SIZE: 11px;
+    BORDER-LEFT: #aaaaaa 1px solid;
+    COLOR: #333333;
+    BORDER-BOTTOM: #aaaaaa 1px solid;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #e0e0e0
+}
+.formButton
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.navTable
+{
+    BORDER-COLLAPSE: collapse
+}
+.tabTable
+{
+    BORDER-COLLAPSE: collapse;
+    BACKGROUND-COLOR: #ffffff
+}
+.itemTextCell
+{
+    PADDING-RIGHT: 10px;
+    PADDING-LEFT: 10px;
+    PADDING-BOTTOM: 12px;
+    PADDING-TOP: 10px
+}
+.downloadTable
+{
+    BORDER-COLLAPSE: collapse;
+    BACKGROUND-COLOR: #cccccc
+}
+.downloadTableHeadings
+{
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #ffffff;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #707070;
+    BORDER-BOTTOM: #D6D2C2 3px solid !important; 
+}
+.downloadTableHeadings_over
+{
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #ffffff;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #808080;
+    BORDER-BOTTOM: #FCC247 3px solid !important; 
+}
+.downloadTableHeadings_click
+{
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #FCC247;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #f0f0f0;
+    BORDER-BOTTOM: #FCC247 3px solid !important; 
+}
+.downloadTableHeadings_nosort
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    COLOR: #ffffff;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #707070
+}
+.downloadTableContent
+{
+    PADDING-RIGHT: 7px;
+    PADDING-LEFT: 7px;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    COLOR: #333333;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #ffffff
+}
+.beaconlistTable
+{
+    BORDER-RIGHT: #c0c0c0 1px solid;
+    PADDING-RIGHT: 2px;
+    BORDER-TOP: #c0c0c0 1px solid;
+    PADDING-LEFT: 2px;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    BORDER-LEFT: #c0c0c0 1px solid;
+    PADDING-TOP: 2px;
+    BORDER-BOTTOM: #c0c0c0 1px solid;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #ffffff
+}
+.tableHead
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    COLOR: #ffffff;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.tableHead_sort
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    CURSOR: hand;
+    COLOR: #ffffff;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.rowHighlight
+{
+    PADDING-RIGHT: 2px;
+    PADDING-LEFT: 2px;
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #333333;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #ffff00
+}
+.rowNormal {
+    PADDING-RIGHT: 2px;
+    PADDING-LEFT: 2px;
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    COLOR: #000000;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #ffffff;
+    vertical-align: top;
+}
+.actionDelete
+{
+    BACKGROUND-COLOR: #0a2a6c
+}
+td.sorted
+{
+    BACKGROUND-COLOR: #f0f1f4
+}
+img.nav
+{
+    CURSOR: hand
+}
+.fixed
+{
+    COLOR: #000000;
+    FONT-FAMILY: courier-new,monospace
+}
+.fixed_heading
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: courier;
+    BACKGROUND-COLOR: #999999
+}
+.lookupOn
+{
+    BACKGROUND-COLOR: yellow
+}
+.lookupOff
+{
+}
+
+tr.inactive td { background-color: #d0d0d0; }
+tr.ndb      td { background-color: #ffffff; }
+tr.dgps     td { background-color: #00D8ff; }
+tr.dsc      td { background-color: #FFB000; }
+tr.time     td { background-color: #00D8ff; }
+tr.navtex   td { background-color: #FFB8D8; }
+tr.hambcn   td { background-color: #D8FFE0; }
+tr.other    td { background-color: #B8F8FF; }
+
+

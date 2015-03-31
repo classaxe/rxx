@@ -1,0 +1,78 @@
+<html>
+<head><title>Latitude and longitude decimal conversion</title>
+
+<script>
+function calc() {
+  var rexp =	/([0-9]+)\.([0-9]+)\.([0-9]+)\.([NS])/;
+  var a =	document.form.lat.value.match(rexp);
+  if (a==null) {
+    alert("Latitude must be given in this format:\nDD.MM.SS.L\n\n(where L is N or S)");
+    return;
+  }
+  var deg =	parseFloat(a[1]);
+  var min =	parseFloat(a[2]);
+  var sec =	parseFloat(a[3]);
+  var sgn =	((a[4]=="N")?(1):(-1));
+  var dec_lat =	sgn*(deg+(Math.round(((sec/3600)+(min/60))*10000))/10000);
+
+  var rexp =	/([0-9]+)\.([0-9]+)\.([0-9]+)\.([EW])/;
+  var a =	document.form.lon.value.match(rexp);
+  if (a==null) {
+    alert("Longitude must be given in this format:\nDDD.MM.SS.L\n\n(where L is E or W)");
+    return;
+  }
+  var deg =	parseFloat(a[1]);
+  var min =	parseFloat(a[2]);
+  var sec =	parseFloat(a[3]);
+  var sgn =	((a[4]=="E")?(1):(-1));
+  var dec_lon =	sgn*(deg+(Math.round(((sec/3600)+(min/60))*10000))/10000);
+
+  document.form.lat.value = "";
+  document.form.lon.value = "";
+
+  document.form.result.value=("\""+dec_lat+"\",\""+dec_lon+"\"");
+  document.form.result.focus();
+  document.form.result.select();
+  window.open("http://www.mapquest.com/maps/map.adp?latlongtype=decimal&latitude="+dec_lat+"&longitude="+dec_lon+"&size=big&zoom=6","map","width=800,height=600,resizable=1,scrollbars=1,status=0,menubar=0,location=1,toolbar=0");
+}
+
+
+
+</script>
+</head>
+<body>
+
+<h1>Latitude and longitude decimal conversion</h1>
+Optimised exactly for manually taking coordinates from WNDB - copy and paste each value into their respective boxes and press 'Decimal' to convert.
+The result may be pasted into the appropriate line of the stations.js file for the NBD log program.
+<center>
+
+<form name='form'>
+<table cellpadding='5' cellspacing='0' border='1' bordercolor='#000000'>
+  <tr>
+    <td><table cellpadding="2" cellspacing="0" border="0">
+      <tr>
+        <td>&nbsp;</td>
+        <td align=center valign=bottom>Deg.Min.Sec</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td nowrap>Lat:</td>
+        <td><input type="Text" name="lat" size="10" maxlength="10" tabindex=1></td>
+        <td rowspan=2 valign=middle><input type="button" value='decimal' onclick='calc()'><input type=reset value='clear'></td>
+      </tr>
+      <tr>
+        <td nowrap>Lon:</td>
+        <td><input type="text" name="lon" size="11" maxlength="11" tabindex=2></td>
+      </tr>
+      <tr>
+        <td colspan='4'><input name='result' value=''></td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+</form>  
+</body>
+</html>
+
+

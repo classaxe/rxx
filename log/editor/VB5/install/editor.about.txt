@@ -1,0 +1,9 @@
+NDB WebLog Editor Version 1.0.4
+
+NDB Weblog software is available for free
+from http://www.classaxe.com/dx
+
+You can now include the path to your files in the command line like this:
+editor.exe c:\path\fileshere\
+
+Copyright 2004 Martin Francis

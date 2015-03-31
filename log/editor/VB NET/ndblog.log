@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UpgradeLog>
+    <Settings>
+        <Setting
+            Name = "LogFile"
+            Value = "ndblog.log"
+        />
+        <Setting
+            Name = "GenerateInterfacesForClasses"
+            Value = "FALSE"
+        />
+        <Setting
+            Name = "ProjectName"
+            Value = "ndblog"
+        />
+        <Setting
+            Name = "OutputName"
+            Value = "ndblog.vbproj"
+        />
+        <Setting
+            Name = "OutputDir"
+            Value = "C:\www.classaxe.com\dx\ndb\log\editor\vb.net"
+        />
+        <Setting
+            Name = "ProjectPath"
+            Value = "C:\www.classaxe.com\dx\ndb\log\editor\vb5\ndblog.vbp"
+        />
+        <Setting
+            Name = "MigrateProjectTo"
+            Value = "0"
+        />
+    </Settings>
+    <File
+        OldPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb5\stations.frm"
+        NewPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb.net\stations.vb"
+        FileType = "Form"
+        Upgraded = "True"
+    >
+        <Section Name = "(Layout)" >
+            <Issue
+                Type = "Design"
+                Number = "2056"
+                ObjectName = "edit_daid"
+                ObjectType = "ListBox"
+                PME = "ItemData"
+            >ListBox property edit_daid.ItemData was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_about"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_about.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_delete"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_delete.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_add"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_add.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_save"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_save.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_undo"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_undo.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2064"
+                ObjectName = "cmd_apply"
+                ObjectType = "CommandButton"
+                PME = "DisabledPicture"
+            >CommandButton property cmd_apply.DisabledPicture was not upgraded.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "1041"
+                PME = "array"
+            >Array has a new behavior.</Issue>
+            <Issue
+                Type = "Design"
+                Number = "2068"
+            >Shape object was not upgraded.</Issue>
+        </Section>
+        <Section Name = "Form_Load" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object save_alert_shown.</Issue>
+        </Section>
+        <Section Name = "add_station" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object stations(i + 1).</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object stations(stationCurrent).</Issue>
+        </Section>
+        <Section Name = "delete_station" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object temp_array(new_index).</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object stations(i).</Issue>
+        </Section>
+        <Section Name = "chk_edit_Click" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event chk_edit.CheckStateChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_khz_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_khz.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_call_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_call.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_daid_Click" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_daid.SelectedIndexChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_cyc_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_cyc.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_lsb_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_lsb.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_usb_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_usb.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_pwr_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_pwr.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_qth_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_qth.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_sta_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_sta.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_cnt_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_cnt.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_lat_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_lat.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_lon_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_lon.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "edit_notes_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2075"
+            >Event edit_notes.TextChanged may fire when form is initialized.</Issue>
+        </Section>
+        <Section Name = "update_record" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object temp.</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object i.</Issue>
+        </Section>
+        <Section Name = "save_stations" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object save_alert_shown.</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object a.</Issue>
+        </Section>
+        <Section Name = "load_stations" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object stations(stationsCount).</Issue>
+        </Section>
+        <Section Name = "scroll_station_Change" >
+            <Issue
+                Type = "Runtime"
+                Number = "2065"
+                ObjectName = "scroll_station"
+                ObjectType = "HScrollBar"
+                PME = "Change"
+            >HScrollBar event scroll_station.Change has a new behavior.</Issue>
+        </Section>
+        <Section Name = "lat_error" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+        </Section>
+        <Section Name = "lon_error" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+        </Section>
+    </File>
+    <File
+        OldPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb5\log.bas"
+        NewPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb.net\log.vb"
+        FileType = "Module"
+        Upgraded = "True"
+    >
+        <Section Name = "SHBrowseForFolder" >
+            <Issue
+                Type = "Runtime"
+                Number = "1050"
+            >Structure BROWSEINFO may require marshalling attributes to be passed as an argument in this Declare statement.</Issue>
+        </Section>
+    </File>
+    <File
+        OldPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb5\about.frm"
+        NewPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb.net\about.vb"
+        FileType = "Form"
+        Upgraded = "True"
+    >
+        <Section Name = "Form_Load" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name().</Issue>
+        </Section>
+    </File>
+    <File
+        OldPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb5\log_2.bas"
+        NewPath = "C:\www.classaxe.com\dx\ndb\log\editor\vb.net\log_2.vb"
+        FileType = "Module"
+        Upgraded = "True"
+    >
+        <Section Name = "get_name" >
+            <Issue
+                Type = "Runtime"
+                Number = "1037"
+            >Couldn't resolve default property of object get_name.</Issue>
+            <Issue
+                Type = "Compile"
+                Number = "2069"
+                ObjectName = "App"
+                ObjectType = "App"
+                PME = "Revision"
+            >App property App.Revision was not upgraded.</Issue>
+        </Section>
+    </File>
+</UpgradeLog>
+

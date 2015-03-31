@@ -1,0 +1,26 @@
+Decoded message:
+315KHz - Station ID #940
+(Cape Race NL CAN 20031111 0132 UTC)
+
+Preamble                     : 102
+Message Type                 : 9 GPS Partial Correction Set
+Station Number               : 338
+Z Count                      : 3065
+Sequency Count               : 1
+Num of Data Words            : 5
+Health                       : 2 UDRE scale factor = 0.5
+Satellite Id                 : 28
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -8.16 m
+  Range Rate Correction      : -0.002 m/s
+  Issue of Data              : 66
+Satellite Id                 : 27
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : 10.54 m
+  Range Rate Correction      : -0.008 m/s
+  Issue of Data              : 216
+Satellite Id                 : 24
+  User Diff Range Error      : < 1 m
+  Pseudorange Correction     : -4.82 m
+  Range Rate Correction      : 0.002 m/s
+  Issue of Data              : 29

@@ -1,0 +1,105 @@
+<html>
+<head>
+<style>
+body { font-family: Arial; }
+</style>
+<title>Changelog for NDB WebLog Editor</title>
+<script language='JavaScript' type='text/javascript'>
+
+
+current =		window.location.href.match(/current=([0-9]+\.[0-9]+\.[0-9]+)/);
+if (current) {
+  current = current[1];
+}
+
+
+
+// ************************************
+// * releases data                    *
+// ************************************
+function RELEASE(version,date,changes) {
+  this.version =	version;
+  this.date =		date;
+  this.changes =	changes;
+}
+
+releases =		new Array();
+var i =			0;
+
+releases[i++] =		new RELEASE("1.0.0","9 Jul, 2003","<ul>\n<li>Initial Release</li>\n</ul>");
+
+releases[i++] =		new RELEASE("1.0.1","17 Jul, 2003",
+			"<ul><li>Corrections to tab order</li>"+
+			"<li>WWSU fields now clear after apply</li>"+
+			"<li>Save becomes active after any edit</li>"+
+			"<li>Save applies changes to current record</li>"+
+			"<li>Add record inserts after current position</li>"+
+			"</ul>");
+
+releases[i++] =		new RELEASE("1.0.2","21 Jul, 2003",
+			"<ul>\n<li>Corrections to Upper case routines</li>"+
+			"<li>Location is now Sentence Case Corrected upon apply</li>\n"+
+			"</ul>");
+
+releases[i++] =		new RELEASE("1.0.3","27 Jul, 2003",
+			"<ul><li>Simplified insertion of coordinates - system now detects format in use and converts if necessary.</li>"+
+			"<li>All dialogs and messages now carry version number of application.</li>"+
+			"<li>Pressing the 'Add' button preserves any changes to the current record before creating the new entry.</li>"+
+			"<li>The 'Saved' dialog is shown only for the time to speed up entry process.</li>"+
+			"<li>Small bug in case conversion for QTH corrected (trailing spaces previously caused a crash)</li>"+
+			"</ul>");
+
+releases[i++] =		new RELEASE("1.0.4","28 Feb, 2004",
+			"<ul><li>Minor change to make MY life easier - the new version allows you to specify the path to your log file when you call it.<br>"+
+			"To set a path in your shortcut, edit the shortcut properties and alter the target to read like this:<br>"+
+			"<b>\"C:\\Program Files\\NDB Weblog Editor\\editor.exe\" c:\\www.classaxe.com\\dx\\ndb\\log</b><br>"+
+			"(everything following the bit in quotes is the path to your NDB WebLog, wherever that happens to be).</li>"+
+			"</ul>");
+// ************************************
+// * changelog()                      *
+// ************************************
+function changelog(current){
+  rexp_version =	/([0-9]+)\.([0-9]+)\.([0-9]+)/;		// Regular expression to slip version codes
+  if (current) {
+    var latest =	releases[releases.length-1].version
+    document.write("<body bgcolor='" + ( current == latest ? "#e8ffe8": "#ffd0do") + "'>\n");
+    document.write("<h3>NDB WebLog Editor Version Check</h3>\n");
+    document.write("<p><ul><li><b>Your version: <font color='red'>"+current+"</font></b></li>");
+    document.write("<li><b>Latest version: <font color='red'>"+latest+"</font></b></li>");
+    if (current == latest) {
+      document.write("<li><b><font color='#206020'>This system is up to date</font></b></li>");
+    }
+    else {
+      document.write("<li><b><a href='../upgrade.exe'>Get Upgrade</a> (NDB WebLog Administrator only)</b></li></ul>");
+      document.write("<hr align='center'><h3>What's new?</h3>\n");
+    }
+    document.write("</ul></p>");
+    var cur =		current.match(rexp_version);
+    var cur_1 =		parseInt(cur[1]);
+    var cur_2 =		parseInt(cur[2]);
+    var cur_3 =		parseInt(cur[3]);
+  }
+  else {
+    document.write("<h3>NDB WebLog Editor Release History</h3>");
+  }
+  document.write("<table>\n");
+  for (var i=releases.length-1; i>=0; i--) {
+    var ver =		releases[i].version.match(rexp_version);
+    var ver_1 =		parseInt(ver[1]);
+    var ver_2 =		parseInt(ver[2]);
+    var ver_3 =		parseInt(ver[3]);
+    if (!current || (cur_1<ver_1) || (cur_1==ver_1 && cur_2<ver_2) || (cur_1==ver_1 && cur_2==ver_2 && cur_3<ver_3)) {
+      document.write("<tr><td><b>"+releases[i].version+"</b> Released: "+releases[i].date+"</td></tr>\n");
+      document.write("<tr><td>"+releases[i].changes+"</th></tr>\n");
+    }
+  }
+  document.write("</table>\n");
+
+}
+</script>
+</head>
+
+<body>
+  <script language='JavaScript' type='text/javascript'>changelog(current);</script>
+</body>
+</html>
