@@ -155,9 +155,8 @@ switch ($mode) {
     mini_popup();
   break;
   case "lastlog":
-    include_once('class.system_stats.php');
-    $Obj = new system_stats;
-    die($Obj->get_last_log_date());
+    $Obj = new SystemStats;
+    die($Obj->getLastLogDate());
   break;
   case "metar":
     print(METAR(@$REQUEST_ICAO,@$REQUEST_hours,@$REQUEST_list));

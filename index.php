@@ -10,6 +10,21 @@ Version History:
 //ob_start("ob_gzhandler");
 ini_set('display_errors',1);
 
+function __autoload($className)
+{
+    if (class_exists($className)) {
+        return;
+    }
+    $fileName = $className.'.php';
+    $filePath = 'classes/'.$fileName;
+    if (file_exists($filePath)) {
+        require_once($filePath);
+        return;
+    }
+    print 'looking for '.$className;
+}
+
+
 $request =  explode("?",urldecode($_SERVER["REQUEST_URI"]));
 $request =  trim($request[0],'/');
 if (strlen($_SERVER['SCRIPT_NAME'])-(strlen('index.php'))-1){
@@ -124,8 +139,6 @@ $server =	getenv("SERVER_NAME");
 $root =	getenv('DOCUMENT_ROOT');
 ini_set("mysql.trace_mode",1);
 
-include_once("class.phpmailer.php");
-include_once("class.smtp.php");
 include_once("backup.php");
 include_once("donate.php");
 include_once("img.php");
@@ -133,7 +146,6 @@ include_once("poll.php");
 include_once("attachment.php");
 include_once("admin.php");
 include_once("functions.php");
-include_once("awards.php");
 include_once("cle.php");
 include_once("export.php");
 include_once("listener.php");

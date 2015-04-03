@@ -34,62 +34,6 @@
 //     Record::get_record_for_sql()
 //     Record::get_records_for_sql()
 // Note: all functions are declared in alphabetical order
-class Record {
-  var $ID;
-  var $table;
-  function Record($ID='',$table='') {
-    $this->ID = addslashes($ID);
-    $this->table = $table;
-  }
-  function do_sql_query($sql) {
-    return mysql_query($sql);
-  }
-  function get_ID() {
-    return $this->ID;
-  }
-  function get_record() {
-    if ($this->ID=='') {
-      return false;
-    }
-    $sql =
-       "SELECT\n"
-      ."  *\n"
-      ."FROM\n"
-      ."  `".$this->table."`\n"
-      ."WHERE\n"
-      ."  `ID` = \"".$this->ID."\"";
-
-    $result =		mysql_query($sql);
-    return mysql_fetch_array($result,MYSQL_ASSOC);
-  }
-  // ************************************
-  // * METHOD: get_record_for_sql()     *
-  // ************************************
-  function get_record_for_sql($sql) {
-    if (!$result = $this->do_sql_query($sql)) {
-      return false;
-    }
-    if (!mysql_num_rows($result)) {
-      return false;
-    }
-    return mysql_fetch_array($result,MYSQL_ASSOC);
-  }
-  // ************************************
-  // * METHOD: get_records_for_sql()    *
-  // ************************************
-  function get_records_for_sql($sql){
-    $out = array();
-    if (!$result = $this->do_sql_query($sql)) {
-      z($sql);
-      print mysql_error();
-      return false;
-    }
-    for ($i=0; $i<mysql_num_rows($result); $i++) {
-      $out[] = mysql_fetch_array($result,MYSQL_ASSOC);
-    }
-    return $out;
-  }
-}
 
 
 
@@ -664,9 +608,22 @@ function main() {
      "</table>&nbsp;\n"
     ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."  <tr>\n"
-    ."    <td width='100%' valign='top'>"
-    .call_user_func($mode)
-    ."    </td>\n"
+    ."    <td width='100%' valign='top'>";
+  switch ($mode) {
+      case 'awards':
+        $Obj = new Awards;
+        $out.= $Obj->draw();
+        break;
+      case 'signal_list':
+        $Obj = new SignalList;
+        $out.= $Obj->draw();
+        break;
+      default:
+        $out.= call_user_func($mode);
+        break;
+  }
+  $out.=
+     "    </td>\n"
     ."  </tr>\n"
     ."</table>\n"
     ."<br><br><hr noshade>\n"
@@ -1821,9 +1778,10 @@ function titleCase($string) {
   return implode($tmp," ");
 }
 
-
+function y($var) {
+    var_dump($var);
+}
 
 function z($sql) {
   print("<pre>$sql</pre>");
 }
-?>

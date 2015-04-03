@@ -1,0 +1,92 @@
+<?php
+
+class Listener extends Record
+{
+    public function __construct($ID)
+    {
+        parent::__construct($ID, 'listeners');
+    }
+
+    public function tabs()
+    {
+        $record = $this->get_record();
+        return
+             tabItem("Profile", "listener_edit", 50)
+            .tabItem("Signals (".$record['count_signals'].")", "listener_signals", 105)
+            .tabItem("Logs (".$record['count_logs'].")", "listener_log", 85)
+            .tabItem("Export", "listener_log_export", 45)
+            .(isset($GSQ) ? tabItem("QNH", "listener_QNH", 35) : "")
+            .tabItem("Stats", "listener_stats", 45)
+            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+                 "                <td class='tabOff' onclick='log_upload(\"".$this->ID."\");'"
+                ." onmouseover='return tabOver(this,1);' onmouseout='return tabOver(this,0);' width='45'>Add...</td>\n"
+             :
+                ""
+            );
+    }
+
+    public function get_log($sortBy_SQL, $limit = -1, $offset = 0)
+    {
+        if (!$this->get_ID()) {
+            return array();
+        }
+        $sql =
+             "SELECT\n"
+            ."  `logs`.`ID`,\n"
+            ."  `logs`.`date`,\n"
+            ."  `logs`.`daytime`,\n"
+            ."  `logs`.`dx_km`,\n"
+            ."  `logs`.`dx_miles`,\n"
+            ."  `logs`.`format`,\n"
+            ."  `logs`.`sec`,\n"
+            ."  `logs`.`time`,\n"
+            ."  `logs`.`LSB`,\n"
+            ."  `logs`.`USB`,\n"
+            ."  `logs`.`LSB_approx`,\n"
+            ."  `logs`.`USB_approx`,\n"
+            ."  `signals`.`active`,\n"
+            ."  `signals`.`call`,\n"
+            ."  `signals`.`GSQ`,\n"
+            ."  `signals`.`ITU`,\n"
+            ."  `signals`.`khz`,\n"
+            ."  `signals`.`type`,\n"
+            ."  `signals`.`SP` AS `signalSP`,\n"
+            ."  `signals`.`ID` AS `signalID`\n"
+            ."FROM\n"
+            ."  `signals`\n"
+            ."INNER JOIN `logs` ON\n"
+            ." `signals`.`ID` = `logs`.`signalID`\n"
+            ."WHERE\n"
+            ." `listenerID` = ".$this->get_ID()."\n"
+            .($sortBy_SQL ?
+                 "ORDER BY\n"
+                ."  $sortBy_SQL"
+             :
+                ""
+            )
+            .($limit<>-1 ?
+                "\nLIMIT\n  $offset, $limit"
+             :
+                ""
+            );
+  //  z($sql);
+        return $this->get_records_for_sql($sql);
+    }
+
+    public function get_log_count()
+    {
+        if (!$this->get_ID()) {
+            return 0;
+        }
+        $sql =
+             "SELECT\n"
+            ."  COUNT(*) AS `count`\n"
+            ."FROM\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ." `listenerID` = ".$this->get_ID();
+  //  z($sql);
+        $result = $this->getRecordForSql($sql);
+        return $result['count'];
+    }
+}
