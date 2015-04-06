@@ -23,6 +23,12 @@
   .scrollbox_230 { }
 }
 
+.signalType {
+    white-space: nowrap;
+}
+.signalType label {
+    display:inline-block;
+}
 
 form
 {

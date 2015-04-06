@@ -1,5 +1,10 @@
 /*
 Version History:
+  1.0.5 (2015-04-05)
+    1) Changes following renaming of:
+         filter_heard ->    filter_heard_in
+         grp ->             filter_heard_in_mod
+         listenerID ->      filter_listener
   1.0.4 (2015-02-16)
     1) Made window size bigger for log_upload() popup
   1.0.3 (2015-01-12)
@@ -71,21 +76,34 @@ function check_for_tabs(frm) {
   return false;
 }
 
+function get_type(form){
+  if (form.type_NDB.checked)    return 0;
+  if (form.type_DGPS.checked)   return 1;
+  if (form.type_TIME.checked)   return 2;
+  if (form.type_NAVTEX.checked) return 3;
+  if (form.type_HAMBCN.checked) return 4;
+  if (form.type_OTHER.checked)  return 5;
+  if (form.type_DSC.checked)    return 6;
+  return '';
+}
+
 function clear_signal_list(form){
   with (form) {
     filter_dx_gsq.value="";
     filter_dx_max.value="";
     filter_dx_min.value="";
     filter_custom.value="";
-    filter_heard.value="";
-    form['listenerID[]'].selectedIndex=0;
+    filter_heard_in.value="";
+    radio_filter_heard_in_mod_any.checked=1;
+    filter_dx_units_km.checked=1;
+    form['filter_listener[]'].selectedIndex=0;
     filter_khz_1.value="";
     filter_khz_2.value="";
     filter_sp.value="";
     filter_itu.value="";
     filter_id.value="";
-    filter_heard.disabled=0;
-    filter_heard.className="formField";
+    filter_heard_in.disabled=0;
+    filter_heard_in.className="formField";
     type_DGPS.checked=0;
     type_DSC.checked=0;
     type_HAMBCN.checked=0;
@@ -101,7 +119,7 @@ function clear_signal_list(form){
 }
 
 function clear_state_map(form){
-  form.listenerID.selectedIndex=0;
+  form.filter_listener.selectedIndex=0;
   form.simple.selectedIndex=0;
   form.type_DGPS.checked=0;
   form.type_HAMBCN.checked=0;
@@ -525,24 +543,24 @@ function rowOver(targ,over) {
 }
 
 function set_listener_and_heard_in(form) {
-  if (form['listenerID[]'].selectedIndex) {
-    form.filter_heard.disabled=1;
-    form.filter_heard.className="formField_disabled";
-    form.filter_heard.value = "";
-    form.grp[0].disabled=1;
-    form.grp[1].disabled=1;
+  if (form['filter_listener[]'].selectedIndex) {
+    form.filter_heard_in.disabled=1;
+    form.filter_heard_in.className="formField_disabled";
+    form.filter_heard_in.value = "";
+    form.filter_heard_in_mod[0].disabled=1;
+    form.filter_heard_in_mod[1].disabled=1;
   }
   else {
-    form.filter_heard.disabled=0;
-    form.filter_heard.className="formField";
+    form.filter_heard_in.disabled=0;
+    form.filter_heard_in.className="formField";
   }
-  if (!form.filter_heard.value.length) {
-    form.grp[0].disabled=1;
-    form.grp[1].disabled=1;
+  if (!form.filter_heard_in.value.length) {
+    form.filter_heard_in_mod[0].disabled=1;
+    form.filter_heard_in_mod[1].disabled=1;
   }
   else {
-    form.grp[0].disabled=0;
-    form.grp[1].disabled=0;
+    form.filter_heard_in_mod[0].disabled=0;
+    form.filter_heard_in_mod[1].disabled=0;
   }
 }
 
@@ -785,7 +803,7 @@ function send_form(form) {
   if (form.sortBy) {
     form.sortBy.value = form.sortBy_column.options[form.sortBy_column.selectedIndex].value + (form.sortBy_d.checked ? form.sortBy_d.value : "");
   }
-  if (form.filter_heard && form.filter_heard.value!="(All States and Countries)" && (!validate_alphasp(form.filter_heard.value))) {
+  if (form.filter_heard_in && form.filter_heard_in.value!="(All States and Countries)" && (!validate_alphasp(form.filter_heard_in.value))) {
     msg += "HEARD IN:\n* List locations separated by spaces, e.g.: ENG FRA ON BC NE NOR\n\n";
   }
   if (form.filter_date_1 && (!validate_YYYYMMDD(form.filter_date_1.value) || !validate_YYYYMMDD(form.filter_date_2.value))) {

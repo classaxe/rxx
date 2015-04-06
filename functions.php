@@ -326,6 +326,16 @@ function get_local_icao($GSQ,$num,$selected){
   return $icao_arr;
 }
 
+function get_var($key, $default = false)
+{
+    return (isset($_GET[$key]) ? $_GET[$key] : (isset($_POST[$key]) ? $_POST[$key] : $default));
+}
+
+function set_var($key, $value)
+{
+    $_GET[$key] =     $value;
+    $_POST[$key] =    $value;
+}
 
 
 // ************************************
