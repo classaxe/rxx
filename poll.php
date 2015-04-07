@@ -35,10 +35,8 @@ function doNow() {
       return show_poll();
     break;
     default:
-      return     "<p><b>Sorry!</b><br>The poll function<br>\n"
-                ."is temporary offline.</p>\n"
-                ."Click <a href='./?mode=poll_list'><b>here</b></a> to see<br>\n"
-                ."previous results.";
+      return     "<p><b>Sorry!</b><br>The poll function is offline.</p>\n"
+                ."<p>Click <a href='./?mode=poll_list'><b>here</b></a> for previous.</p>";
     break;
   }
 }

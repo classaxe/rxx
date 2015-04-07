@@ -985,21 +985,21 @@ function signal_seeklist()
 {
     global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_custom, $filter_date_1, $filter_date_2;
     global $filter_dx_gsq, $filter_dx_max, $filter_dx_min, $filter_dx_units;
-    global $filter_heard, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
-    global $filter_sp, $filter_itu, $listenerID, $sortBy, $grp, $limit, $offset;
-    global $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
+    global $filter_heard_in, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
+    global $filter_sp, $filter_itu, $filter_listener, $sortBy, $filter_heard_in_mod, $limit, $offset;
+    global $type_NDB, $type_TIME, $type_DSC, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
 // No array used as page size cause memory fault on linux box.   Just print.
 
 //  $filter_sp = "ON";
 //print "active=$filter_active";
 
   // If there's no valid listener data, blank it all out
-    if (!($listenerID && is_array($listenerID) && count($listenerID) && $listenerID[0])) {
-        $listenerID =    false;
+    if (!($filter_listener && is_array($filter_listener) && count($filter_listener) && $filter_listener[0])) {
+        $filter_listener =    false;
     }
 
-    if ($filter_heard=="(All States and Countries)") {
-        $filter_heard="";
+    if ($filter_heard_in=="(All States and Countries)") {
+        $filter_heard_in="";
     }
 
 
@@ -1098,7 +1098,7 @@ function signal_seeklist()
     }
 
     $filter_type =    array();
-    if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
+    if (!($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
         switch (system) {
             case "RNA":    $type_NDB =    1;
                 break;
@@ -1110,12 +1110,15 @@ function signal_seeklist()
 
     }
 
-    if ($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
+    if ($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
         if ($type_NDB) {
             $filter_type[] =     "`type` = ".NDB;
         }
         if ($type_DGPS) {
             $filter_type[] =     "`type` = ".DGPS;
+        }
+        if ($type_DSC) {
+            $filter_type[] =     "`type` = ".DSC;
         }
         if ($type_TIME) {
             $filter_type[] =     "`type` = ".TIME;
@@ -1132,18 +1135,18 @@ function signal_seeklist()
     }
     $filter_type =    (count($filter_type) ? "(".implode($filter_type, " OR ").")" : "");
 
-    if ($filter_heard) {
-        $tmp =        explode(" ", strToUpper($filter_heard));
+    if ($filter_heard_in) {
+        $tmp =        explode(" ", strToUpper($filter_heard_in));
         sort($tmp);
-        $filter_heard =    implode(" ", $tmp);
+        $filter_heard_in =    implode(" ", $tmp);
     }
 
   // Filter on 'Heard in':
-    $filter_heard_SQL =    explode(" ", strToUpper($filter_heard));
-    if ($grp=="all") {
-        $filter_heard_SQL =    "`signals`.`heard_in` LIKE '%".implode($filter_heard_SQL, "%' AND `signals`.`heard_in` LIKE '%")."%'";
+    $filter_heard_in_SQL =    explode(" ", strToUpper($filter_heard_in));
+    if ($filter_heard_in_mod=="all") {
+        $filter_heard_in_SQL =    "`signals`.`heard_in` LIKE '%".implode($filter_heard_in_SQL, "%' AND `signals`.`heard_in` LIKE '%")."%'";
     } else {
-        $filter_heard_SQL =    "`logs`.`heard_in` = '".implode($filter_heard_SQL, "' OR `logs`.`heard_in` = '")."'";
+        $filter_heard_in_SQL =    "`logs`.`heard_in` = '".implode($filter_heard_in_SQL, "' OR `logs`.`heard_in` = '")."'";
     }
   // Filter on Frequencies:
     if ($filter_khz_1 || $filter_khz_2) {
@@ -1207,48 +1210,48 @@ function signal_seeklist()
     }
 
 
-    $sql =     "SELECT DISTINCT\n"
-            ."  `signals`.`ID`,\n"
-            ."  `signals`.`active`,\n"
-            ."  `signals`.`khz`,\n"
-            ."  `signals`.`call`,\n"
-            ."  `signals`.`type`,\n"
-            ."  `signals`.`SP`,\n"
-            ."  `signals`.`ITU`\n"
-    .($filter_heard || $listenerID ?
+    $sql =
+         "SELECT DISTINCT\n"
+        ."  `signals`.`ID`,\n"
+        ."  `signals`.`active`,\n"
+        ."  `signals`.`khz`,\n"
+        ."  `signals`.`call`,\n"
+        ."  `signals`.`type`,\n"
+        ."  `signals`.`SP`,\n"
+        ."  `signals`.`ITU`\n"
+        .($filter_heard_in || $filter_listener ?
              "FROM\n"
             ."  `signals`,\n"
             ."  `logs`\n"
             ."WHERE\n"
             ."  (`signals`.`ID` = `logs`.`signalID`) AND\n"
-            .($filter_heard ?   "  ($filter_heard_SQL) AND\n" : "")
-            .($listenerID ?     "  (`logs`.`listenerID`=".implode($listenerID, " OR `logs`.`listenerID`=").") AND\n" : "")
-        :
+            .($filter_heard_in ?   "  (".$filter_heard_in_SQL/") AND\n" : "")
+            .($filter_listener ?     "  (`logs`.`listenerID`=".implode($filter_listener, " OR `logs`.`listenerID`=").") AND\n" : "")
+         :
              "FROM\n"
             ."  `signals`\n"
             ."WHERE\n"
         )
-        ."  $filter_system_SQL AND\n"
+        ."  ".$filter_system_SQL." AND\n"
         .($filter_active ?                      "  (`active` = 1) AND\n" : "")
-        .($filter_by_range && $filter_dx_min ?  "  round(degrees(acos(sin(radians($filter_dx_lat)) * sin(radians(signals.lat)) + cos(radians($filter_dx_lat)) * cos(radians(signals.lat)) * cos(radians($filter_dx_lon - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) > $filter_dx_min AND\n" : "")
-        .($filter_by_range && $filter_dx_max ?  "  round(degrees(acos(sin(radians($filter_dx_lat)) * sin(radians(signals.lat)) + cos(radians($filter_dx_lat)) * cos(radians(signals.lat)) * cos(radians($filter_dx_lon - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) < $filter_dx_max AND\n" : "")
-        .($filter_custom ?                      " ($filter_custom_SQL) AND\n" : "")
-        .($filter_date_2 ?                      "  (`last_heard` >= \"$filter_date_1\" AND `last_heard` <= \"$filter_date_2\") AND\n" : "")
-        .($filter_id ?                          "  (`signals`.`call` LIKE \"%$filter_id%\") AND\n" : "")
-        .($filter_itu ?                         "  ($filter_itu_SQL) AND\n" : "")
-        .($filter_khz_2 ?                       "  (`khz` >= $filter_khz_1 AND `khz` <= $filter_khz_2) AND\n" : "")
+        .($filter_by_range && $filter_dx_min ?  "  round(degrees(acos(sin(radians(".$filter_dx_lat.")) * sin(radians(signals.lat)) + cos(radians(".$filter_dx_lat.")) * cos(radians(signals.lat)) * cos(radians(".$filter_dx_lon." - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) > $filter_dx_min AND\n" : "")
+        .($filter_by_range && $filter_dx_max ?  "  round(degrees(acos(sin(radians(".$filter_dx_lat.")) * sin(radians(signals.lat)) + cos(radians(".$filter_dx_lat.")) * cos(radians(signals.lat)) * cos(radians(".$filter_dx_lon." - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) < $filter_dx_max AND\n" : "")
+        .($filter_custom ?                      " (".$filter_custom_SQL.") AND\n" : "")
+        .($filter_date_2 ?                      "  (`last_heard` >= \"".$filter_date_1."\" AND `last_heard` <= \"".$filter_date_2."\") AND\n" : "")
+        .($filter_id ?                          "  (`signals`.`call` LIKE \"%".$filter_id."%\") AND\n" : "")
+        .($filter_itu ?                         "  (".$filter_itu_SQL.") AND\n" : "")
+        .($filter_khz_2 ?                       "  (`khz` >= ".$filter_khz_1." AND `khz` <= ".$filter_khz_2.") AND\n" : "")
         .($filter_channels==1 ?                 "  MOD((`khz`* 1000),1000) = 0 AND\n" : "")
         .($filter_channels==2 ?                 "  MOD((`khz`* 1000),1000) != 0 AND\n" : "")
-        .($filter_sp ?                          "  ($filter_sp_SQL) AND\n" : "")
-        .($filter_type ?                        "  $filter_type AND\n" : "")
+        .($filter_sp ?                          "  (".$filter_sp_SQL.") AND\n" : "")
+        .($filter_type ?                        "  ".$filter_type." AND\n" : "")
         ."  (1)\n"
         ."ORDER BY\n"
         ."  `signals`.`ITU`,\n"
         ."  `signals`.`SP`,\n"
         ."  `signals`.`khz`,\n"
         ."  `signals`.`call`";
-
-//        print "<pre>$sql</pre>";
+//    z($sql);die;
     $result =     @mysql_query($sql);
     $total =    mysql_num_rows($result);
     $heard =    0;
@@ -1316,12 +1319,13 @@ function signal_seeklist()
     ."        <th align='left'>Types&nbsp;</th>\n"
     ."        <td nowrap style='padding: 0px;'><table cellpadding='0' cellspacing='1' border='0' width='100%' class='tableForm'>\n"
     ."          <tr>\n"
-    ."            <td bgcolor='#00D8FF' width='16%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
-    ."            <td bgcolor='#B8FFC0' width='17%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
-    ."            <td bgcolor='#FFB8D8' width='17%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
-    ."            <td bgcolor='#FFFFFF' width='17%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
-    ."            <td bgcolor='#FFE0B0' width='17%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
-    ."            <td bgcolor='#B8F8FF' width='16%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
+        ."            <td bgcolor='".Signal::$colors[DGPS]."' width='14%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
+        ."            <td bgcolor='".Signal::$colors[DSC]."' width='14%' nowrap onclick='toggle(document.form.type_DSC)'><input type='checkbox' onclick='toggle(document.form.type_DSC);' name='type_DSC' value='1'".($type_DSC? " checked" : "").">DSC</td>"
+        ."            <td bgcolor='".Signal::$colors[HAMBCN]."' width='14%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
+        ."            <td bgcolor='".Signal::$colors[NAVTEX]."' width='15%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
+        ."            <td bgcolor='".Signal::$colors[NDB]."' width='14%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
+        ."            <td bgcolor='".Signal::$colors[TIME]."' width='14%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
+        ."            <td bgcolor='".Signal::$colors[OTHER]."' width='15%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
     ."          </tr>\n"
     ."        </table></td>"
     ."      </tr>\n"
@@ -1369,8 +1373,8 @@ function signal_seeklist()
     ."      </tr>\n"
     ."      <tr class='rowForm'>\n"
     ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></th>"
-    ."        <td><select name='listenerID[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
-    .get_listener_options_list($filter_listener_SQL, $listenerID, "Anyone (or enter values in \"Heard In\" box)")
+    ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
+    .get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
     ."</select></td>\n"
     ."      </tr>\n";
     if (system=="RWW") {
@@ -1390,13 +1394,13 @@ function signal_seeklist()
     ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."          <tr>\n"
     ."            <td title='Separate multiple options using spaces' nowrap>\n"
-    ."<input type='text' name='filter_heard' size='41' value='".($filter_heard ? strToUpper($filter_heard) : "(All States and Countries)")."'\n"
-    .($filter_heard=="" ? "style='color: #0000ff' ":"")
+    ."<input type='text' name='filter_heard_in' size='41' value='".($filter_heard_in ? strToUpper($filter_heard_in) : "(All States and Countries)")."'\n"
+    .($filter_heard_in=="" ? "style='color: #0000ff' ":"")
     ."onclick=\"if(this.value=='(All States and Countries)') { this.value=''; this.style.color='#000000'}\"\n"
     ."onblur=\"if(this.value=='') { this.value='(All States and Countries)'; this.style.color='#0000ff';}\"\n"
-    ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' ".($listenerID ? "class='formfield_disabled' disabled" : "class='formfield'").">"
-    ."            <td width='45'><label for='radio_grp_any' title='Show where any terms match'><input id='radio_grp_any' type='radio' value='any' name='grp'".($grp!="all" ? " checked" : "").($listenerID || !$filter_heard ? " disabled" : "").">Any</label></td>\n"
-    ."            <td width='55'><label for='radio_grp_all' title='Show where all terms match'><input id='radio_grp_all' type='radio' value='all' name='grp'".($grp=="all" ? " checked" : "").($listenerID || !$filter_heard ? " disabled" : "").">All</label></td>\n"
+    ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' ".($filter_listener ? "class='formfield_disabled' disabled" : "class='formfield'").">"
+    ."            <td width='45'><label for='radio_filter_heard_in_mod_any' title='Show where any terms match'><input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'".($filter_heard_in_mod!="all" ? " checked" : "").($filter_listener || !$filter_heard_in ? " disabled" : "").">Any</label></td>\n"
+    ."            <td width='55'><label for='radio_filter_heard_in_mod_all' title='Show where all terms match'><input id='radio_filter_heard_in_mod_all' type='radio' value='all' name='filter_heard_in_mod'".($filter_heard_in_mod=="all" ? " checked" : "").($filter_listener || !$filter_heard_in ? " disabled" : "").">All</label></td>\n"
     ."          </tr>\n"
     ."	 </table></td>"
     ."      </tr>\n"
@@ -1450,7 +1454,7 @@ function signal_seeklist()
     ."    <td colspan='$page_cols' class='downloadTableContent' width='100%'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."      <tr>\n"
     ."        <td height='18' valign='top'>Signals\n"
-    .($filter_heard ? " heard in [<b>$filter_heard</b>]" : "")
+    .($filter_heard_in ? " heard in [<b>$filter_heard_in</b>]" : "")
     .($filter_khz_1 ? " from ".$filter_khz_1."KHz" : "")
     .($filter_khz_2 && $filter_khz_2 != "100000" ? " to ".$filter_khz_2."KHz" : "")
     .($filter_sp || $filter_itu ? " located in " : "")
@@ -1480,20 +1484,30 @@ function signal_seeklist()
             $ITU =    $value['ITU'];
         }
         if ($value["active"]!="1") {
-            $bgcolor =    " style='border: 1px dashed #000000; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
+            $bgcolor =    " style='border: 1px dashed #000000; border-right: none; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
         } else {
+            $style = " style='background-color: ".Signal::$colors[$value['type']]."'";
             switch ($value['type']) {
-                case NDB:    $bgcolor = " title='NDB'";
+                case NDB:
+                    $bgcolor = $style." title='NDB'";
                     break;
-                case DGPS:    $bgcolor = " style='background-color: #00D8ff' title='DGPS Station'";
+                case DGPS:
+                    $bgcolor = $style." title='DGPS Station'";
                     break;
-                case TIME:    $bgcolor = " style='background-color: #FFE0B0' title='Time Signal Station'";
+                case DSC:
+                    $bgcolor = $style." title='DSC Station'";
                     break;
-                case NAVTEX:    $bgcolor = " style='background-color: #FFB8D8' title='NAVTEX Station'";
+                case TIME:
+                    $bgcolor = $style." title='Time Signal Station'";
                     break;
-                case HAMBCN:    $bgcolor = " style='background-color: #D8FFE0' title='Amateur signal'";
+                case NAVTEX:
+                    $bgcolor = $style." title='NAVTEX Station'";
                     break;
-                case OTHER:    $bgcolor = " style='background-color: #B8F8FF' title='Other form of transmission'";
+                case HAMBCN:
+                    $bgcolor = $style." title='Amateur signal'";
+                    break;
+                case OTHER:
+                    $bgcolor = $style." title='Other form of transmission'";
                     break;
             }
         }

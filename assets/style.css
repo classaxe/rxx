@@ -30,6 +30,40 @@
     display:inline-block;
 }
 
+.shadow {
+  position:relative;
+  box-shadow: #777 2px 2px 5px;
+}
+
+.form_box{
+  position:relative;
+  display: table;
+  background: #707070;
+  border-radius: 15px 15px 0 0;
+}
+.form_box .clr{
+  clear: both; height: 0; width: 0; overflow: hidden;
+}
+
+.form_box .header{
+  font-weight: bold;
+  color: #ffffff;
+  padding: 2px;
+  text-align: center;
+}
+
+.form_box .body{
+  padding:0;
+}
+
+.form_box .body p {
+    margin: 0.25em;
+    padding: 2px;
+}
+
+
+
+
 form
 {
     DISPLAY: inline

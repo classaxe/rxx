@@ -13,6 +13,7 @@ class SignalList
     protected $filter_active;
     protected $filter_by_range;
     protected $filter_channels;
+    protected $filter_continent;
     protected $filter_custom;
     protected $filter_date_1;
     protected $filter_date_2;
@@ -51,6 +52,7 @@ class SignalList
 
     protected $sql_filter_active =          false;
     protected $sql_filter_channels =        false;
+    protected $sql_filter_continent =       false;
     protected $sql_filter_custom =          false;
     protected $sql_filter_frequency =       false;
     protected $sql_filter_heard_in =        false;
@@ -81,236 +83,18 @@ class SignalList
             ."<input type='hidden' name='sort_by' value='".$this->sort_by."' />\n"
             ."<h2>Signal List</h2>\n"
             .$this->drawHelp()
-            ."<table cellpadding='2' border='0' cellspacing='1'>\n"
-            ."  <tr>\n"
-            ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
-            ."      <tr>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-            ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Report</td>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-            ."      </tr>\n"
-            ."    </table>\n"
-            ."    <table cellpadding='0' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm'>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Show</th>\n"
-            ."        <td nowrap>"
-            .show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
-            ."</td>\n"
-            ."      </tr>"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Types&nbsp;</th>\n"
-            ."        <td nowrap class='signalType'>\n"
-            .$this->drawControlType()
-            ."</td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Frequencies&nbsp;</th>\n"
-            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-            ."          <tr>\n"
-            ."            <td><input title='Lowest frequency (or leave blank)' type='text' name='filter_khz_1' size='6' maxlength='9' value='".($this->filter_khz_1 !="0" ? $this->filter_khz_1 : "")."' class='formfield'> - <input title='Highest frequency (or leave bank)' type='text' name='filter_khz_2' size='6' maxlength='9' value='".($this->filter_khz_2 != 1000000 ? $this->filter_khz_2 : "")."' class='formfield'> KHz</td>\n"
-            ."            <td>Channels</td>\n"
-            ."            <td><select name='filter_channels' class='formField'>\n"
-            ."<option value=''".($this->filter_channels=='' ? ' selected' : '').">All</option>\n"
-            ."<option value='1'".($this->filter_channels=='1' ? ' selected' : '').">Only 1 KHz</option>\n"
-            ."<option value='2'".($this->filter_channels=='2' ? ' selected' : '').">Not 1 KHz</option>\n"
-            ."</select></td>\n"
-            ."            <td align='right'><span title='Callsign or DGPS ID (Exact matches are shown at the top of the report, partial matches are shown later)'><b>Call / ID</b></span> <input type='text' name='filter_id' size='6' maxlength='12' value='".$this->filter_id."' class='formfield' title='Limit results to signals with this ID or partial ID -\nuse _ to indicate a wildcard character'></td>"
-            ."          </tr>\n"
-            ."        </table></td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Locations&nbsp;</th>\n"
-            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-            ."          <tr>\n"
-            ."            <td nowrap>&nbsp;<span title='List of States or Provinces'><a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>States</b></a></span> <input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically located there' type='text' name='filter_sp' size='20' value='".$this->filter_sp."' class='formfield'></td>\n"
-            ."            <td nowrap align='right'><span title='List of Countries'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>Countries</b></a></span> <input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only signals physically located there' type='text' name='filter_itu' size='20' value='".$this->filter_itu."' class='formfield'></td>"
-            ."          </tr>\n"
-            ."	 </table></td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Range</th>\n"
-            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-            ."          <tr>\n"
-            ."            <td>&nbsp;<b>From GSQ</b> <input title='Enter a grid square to show only signals physically located between the distances indicated' type='text' name='filter_dx_gsq' size='6' maxlength='6' value='".$this->filter_dx_gsq."' class='formfield' onKeyUp='set_range(form)' onchange='set_range(form)'></td>"
-            ."            <td><b><span title='Distance'>DX</span></b> <input title='Enter a value to show only signals equal or greater to this distance' type='text' name='filter_dx_min' size='5' maxlength='5' value='".$this->filter_dx_min."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."> - "
-            ."<input title='Enter a value to show only signals up to this distance' type='text' name='filter_dx_max' size='5' maxlength='5' value='".$this->filter_dx_max."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."></td>"
-            ."            <td width='45'><label for='filter_dx_units_km'><input type='radio' id='filter_dx_units_km' name='filter_dx_units' value='km'".($this->filter_dx_units=="km" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">km</label></td>"
-            ."            <td width='55'><label for='filter_dx_units_miles'><input type='radio' id='filter_dx_units_miles' name='filter_dx_units' value='miles'".($this->filter_dx_units=="miles" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">miles&nbsp;</label></td>"
-            ."          </tr>\n"
-            ."	 </table></td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
-            ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
-            .get_listener_options_list($this->listeners_list_filter, $this->filter_listener, "Anyone (or enter values in \"Heard here\" box)")
-            ."</select></td>\n"
-            ."      </tr>\n";
-        if (system=="RWW") {
-            $this->html.=
-            "     <tr class='rowForm'>\n"
-            ."       <th align='left'>Heard in&nbsp;</th>\n"
-            ."       <td>\n"
-            ."<select name='region' onchange='document.form.go.disabled=1;document.form.submit()' class='formField' style='width: 100%;'>\n"
-            .get_region_options_list($this->region, "(All Continents)")
-            ."</select>"
-            ."</td>"
-            ."      </tr>\n";
-        }
-        $this->html.=
-        "      <tr class='rowForm'>\n"
-        ."        <th align='left'><span title='Only signals heard in these states and countries'>Heard here</span></th>\n"
-        ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-        ."          <tr>\n"
-        ."            <td title='Separate multiple options using spaces' nowrap>\n"
-        ."<input type='text' name='filter_heard_in' size='41' value='".($this->filter_heard_in ? strToUpper($this->filter_heard_in) : "(All States and Countries)")."'\n"
-        .($this->filter_heard_in=="" ? "style='color: #0000ff' ":"")
-        ."onclick=\"if(this.value=='(All States and Countries)') { this.value=''; this.style.color='#000000'}\"\n"
-        ."onblur=\"if(this.value=='') { this.value='(All States and Countries)'; this.style.color='#0000ff';}\"\n"
-        ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' ".($this->filter_listener ? "class='formfield_disabled' disabled" : "class='formfield'").">"
-        ."            <td width='45'><label for='radio_filter_heard_in_mod_any' title='Show where any terms match'><input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'".($this->filter_heard_in_mod!="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">Any</label></td>\n"
-        ."            <td width='55'><label for='radio_filter_heard_in_mod_all' title='Show where all terms match'><input id='radio_filter_heard_in_mod_all' type='radio' value='all' name='filter_heard_in_mod'".($this->filter_heard_in_mod=="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">All</label></td>\n"
-        ."          </tr>\n"
-        ."	 </table></td>"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Last Heard</th>\n"
-        ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-        ."          <tr>\n"
-        ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield'> -\n"
-        ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield'></td>"
-        ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
-        ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"
-        ."<option value='abs'".($this->offsets=="" ? "" : " selected") .">Absolute</option>\n"
-        ."</select></td>"
-        ."          </tr>\n"
-        ."	 </table></td>"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Sort By</th>\n"
-        ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-        ."          <tr>\n"
-        ."            <td><select name='sort_by_column' class='fixed'>\n"
-        ."<option value='khz'".($this->sort_by=="khz" || $this->sort_by=="khz_d" ? " selected" : "") .">KHz - Nominal carrier</option>\n"
-        ."<option value='call'".($this->sort_by=="call" || $this->sort_by=="call_d" ? " selected" : "") .">ID &nbsp;- Callsign or ID</option>\n"
-        ."<option value='LSB'".($this->sort_by=="LSB" || $this->sort_by=="LSB_d" ? " selected" : "") .">LSB - Offset value in Hz</option>\n"
-        ."<option value='USB'".($this->sort_by=="USB" || $this->sort_by=="USB_d" ? " selected" : "") .">USB - Offset value in Hz</option>\n"
-        ."<option value='sec'".($this->sort_by=="sec" || $this->sort_by=="sec_d" ? " selected" : "") .">Sec - Cycle time in sec</option>\n"
-        ."<option value='format'".($this->sort_by=="format" || $this->sort_by=="format_d" ? " selected" : "") .">Fmt - Signal Format</option>\n"
-        ."<option value='QTH'".($this->sort_by=="QTH" || $this->sort_by=="QTH_d" ? " selected" : "") .">QTH - 'Name' and location</option>\n"
-        ."<option value='sp'".($this->sort_by=="sp" || $this->sort_by=="sp_d" ? " selected" : "") .">S/P - State or Province</option>\n"
-        ."<option value='itu'".($this->sort_by=="itu" || $this->sort_by=="itu_d" ? " selected" : "") .">ITU - Country code</option>\n"
-        ."<option value='gsq'".($this->sort_by=="gsq" || $this->sort_by=="gsq_d" ? " selected" : "") .">GSQ - Grid Square</option>\n"
-        ."<option value='pwr'".($this->sort_by=="pwr" || $this->sort_by=="pwr_d" ? " selected" : "") .">PWR - TX power in watts</option>\n"
-        ."<option value='notes'".($this->sort_by=="notes" || $this->sort_by=="notes_d" ? " selected" : "") .">Notes column</option>\n"
-        ."<option value='heard_in'".($this->sort_by=="heard_in" || $this->sort_by=="heard_in_d" ? " selected" : "") .">Heard In column</option>\n"
-        ."<option value='logs'".($this->sort_by=="logs" || $this->sort_by=="logs_d" ? " selected" : "") .">Logs - Number of loggings</option>\n"
-        ."<option value='last_heard'".($this->sort_by=="last_heard" || $this->sort_by=="last_heard_d" ? " selected" : "") .">Date last heard</option>\n"
-        ."<option value='CLE64'".($this->sort_by=="CLE64" || $this->sort_by=="CLE64_d" ? " selected" : "") ." style='color: #ff0000;'>CLE64 - First letter / DX</option>\n"
-        ."</select></td>"
-        ."            <td width='45'><label for='sort_by_d'><input type='checkbox' id='sort_by_d' name='sort_by_d' value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">Z-A</label></td>"
-        ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active' type='checkbox' name='filter_active' value='1'".($this->filter_active ? " checked" : "").">Only active&nbsp;</label></td>"
-        ."          </tr>\n"
-        ."	 </table></td>"
-        ."      </tr>\n"
-        .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
-        "      <tr class='rowForm'>\n"
-        ."        <th align='left'>Admin:</th>\n"
-        ."        <td nowrap><select name='filter_system' class='formField'>\n"
-        ."<option value='1'".($this->filter_system=='1' ? " selected" : "").">RNA</option>\n"
-        ."<option value='2'".($this->filter_system=='2' ? " selected" : "").">REU</option>\n"
-        ."<option value='3'".($this->filter_system=='3' ? " selected" : "").">RWW</option>\n"
-        ."<option value='not_logged'".($this->filter_system=='not_logged' ? " selected" : "").">Unlogged signals</option>\n"
-        ."<option value='all'".($this->filter_system=='all' ? " selected" : "").">Show everything</option>\n"
-        ."</select> Select system</td>\n"
-        ."      </tr>"
-        : ""
-        )
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Custom Filter:</th>\n"
-        ."        <td nowrap><select name='filter_custom' class='formField'>\n"
-        ."<option value=''".($this->filter_custom=='' ? " selected" : "").">(None)</option>\n"
-        ."<option value='cle160'".($this->filter_custom=='cle160' ? " selected" : "").">CLE160</option>\n"
-        ."</select></td>\n"
-        ."      </tr>"
-        ."      <tr class='rowForm noprint'>\n"
-        ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
-        ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
-        ."      </tr>\n"
-        ."    </table>"
-        ."    </td>"
-        ."    <td>&nbsp;</td>\n"
-        ."    <td align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Signals</td>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."      </tr>\n"
-        ."    </table>\n"
-        ."    <table cellpadding='2' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm' width='100%'>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>RNA only</th>\n"
-        ."        <td align='right'>".$this->stats['RNA_only']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>REU only</th>\n"
-        ."        <td align='right'>".$this->stats['REU_only']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>RNA + REU</th>\n"
-        ."        <td align='right'>".$this->stats['RNA_and_REU']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>RWW</th>\n"
-        ."        <td align='right'>".$this->stats['RWW']."</td>\n"
-        ."      </tr>\n"
-        .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
-        "      <tr class='rowForm'>\n"
-        ."        <th align='left'>Unassigned signals</th>\n"
-        ."        <td align='right'>".$this->stats['Unassigned']."</td>\n"
-        ."      </tr>\n"
-        : ""
-        )
-        ."    </table><br>\n"
-        ."    <table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."        <td width='100%' class='downloadTableHeadings_nosort' align='center' nowrap>".system." Listeners</td>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."      </tr>\n"
-        ."    </table>\n"
-        ."    <table cellpadding='2' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm' width='100%'>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Locations</th>\n"
-        ."        <td align='right'>".$this->stats['locations']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Loggings</th>\n"
-        ."        <td align='right'>".$this->stats['logs']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>First log</th>\n"
-        ."        <td align='right'>".$this->stats['first_log']."</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Last log</th>\n"
-        ."        <td align='right'>".$this->stats['last_log']."</td>\n"
-        ."      </tr>\n"
-        ."    </table></td>"
-        ."    <td>&nbsp;</td>\n"
-        ."    <td align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."        <td width='100%' class='downloadTableHeadings_nosort' align='center' nowrap>Poll - Vote Now</td>\n"
-        ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
-        ."      </tr>\n"
-        ."    </table>\n"
-        ."    <table cellpadding='2' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm' width='100%'>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <td align='left'>".doNow()."</td>\n"
-        ."      </tr>\n"
-        ."    </table><br>\n"
-        ."  </tr>"
-        ."</table></form><br>\n";
+            ."<div style='float:left;width:540px; margin: 0 20px 10px 0;'>"
+            .$this->drawForm()
+            ."</div>"
+            ."<div style='float:left;width:160px;'>"
+            .$this->drawSignalStats()
+            ."<br>\n"
+            .$this->drawListenerStats()
+            ."<br>\n"
+            .$this->drawVisitorPoll()
+            ."</div>"
+            ."<br style='clear:both' />"
+            ."</form>";
 
         if ($this->rows) {
             if ($this->sort_by=='CLE64') {
@@ -481,6 +265,77 @@ class SignalList
             return $this->html;
     }
 
+    protected function drawControlChannels()
+    {
+        return
+             "<select name='filter_channels' id='filter_channels' class='formField'>\n"
+            ."  <option value=''" .($this->filter_channels=='' ?  " selected='selected'" : '').">All</option>\n"
+            ."  <option value='1'".($this->filter_channels=='1' ? " selected='selected'" : '').">Only 1 KHz</option>\n"
+            ."  <option value='2'".($this->filter_channels=='2' ? " selected='selected'" : '').">Not 1 KHz</option>\n"
+            ."</select>";
+    }
+
+    protected function drawControlContinents()
+    {
+        return
+             "<label style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<b>Continent</b></label> "
+            ."<select title='Choose a continent to show only signals physically located there'"
+            ." name='filter_continent' id='filter_continent' class='formfield' style='width:360px'>"
+            .get_region_options_list($this->filter_continent, '(All)')
+            ."</select>\n";
+    }
+
+    protected function drawControlCountries()
+    {
+        return
+             "<label title='List of Countries' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>"
+            ."<b>Countries</b></a></label> "
+            ."<input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only"
+            ." signals physically located there' type='text' name='filter_itu' id='filter_itu' size='20' value='"
+            .$this->filter_itu
+            ."' class='formfield' style='width:360px'/>";
+    }
+
+    protected function drawControlFrequencyRange()
+    {
+        return
+             "<input title='Lowest frequency (or leave blank)' type='text' name='filter_khz_1' id='filter_khz_1'"
+            ." size='6' maxlength='9' value='"
+            .($this->filter_khz_1 !="0" ? $this->filter_khz_1 : "")
+            ."' class='formfield' />"
+            ." - "
+            ."<input title='Highest frequency (or leave bank)' type='text' name='filter_khz_2' id='filter_khz_2'"
+            ." size='6' maxlength='9' value='"
+            .($this->filter_khz_2 != 1000000 ? $this->filter_khz_2 : "")
+            ."' class='formfield' /> KHz";
+
+    }
+
+    protected function drawControlId()
+    {
+        return
+             "<label for='filter_id' title='Callsign or DGPS ID"
+            ." (Exact matches are shown at the top of the report, partial matches are shown later)'>"
+            ."<b>Call / ID</b></label> "
+            ."<input type='text' name='filter_id' id='filter_id' size='6' maxlength='12' value='".$this->filter_id."'"
+            ." class='formfield' title='Limit results to signals with this ID or partial ID -\n"
+            ."use _ to indicate a wildcard character' />";
+    }
+
+    protected function drawControlStates()
+    {
+        return
+             "<label title='List of States or Provinces' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<a href='".system_URL."/show_sp' onclick='show_sp();return false'"
+            ." title='NDBList State and Province codes'><b>States</b></a></label> "
+            ."<input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically"
+            ." located there' type='text' name='filter_sp' id='filter_sp' size='20' value='"
+            .$this->filter_sp
+            ."' class='formfield' style='width:360px'/>";
+    }
+
     protected function drawControlType()
     {
         $types = array(
@@ -503,6 +358,165 @@ class SignalList
                 .$type[2]
                 ."</label>";
         }
+        return $html;
+    }
+
+    protected function drawForm()
+    {
+        $html =
+             "<div class='form_box shadow'>\n"
+            ."  <div class='header'>Customise ".system." Report</div>\n"
+            ."  <div class='body rowForm'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:540px'>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Show</th>\n"
+            ."        <td nowrap>"
+            .show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
+            ."</td>\n"
+            ."      </tr>"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Types&nbsp;</th>\n"
+            ."        <td nowrap class='signalType'>\n"
+            .$this->drawControlType()
+            ."</td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'><label for='filter_khz_1'>Frequencies</label></th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td>"
+            .$this->drawControlFrequencyRange()
+            ."</td>\n"
+            ."            <td><label for='filter_channels'><b>Channels</b></label></td>\n"
+            ."            <td>"
+            .$this->drawControlChannels()
+            ."</td>\n"
+            ."            <td align='right'>"
+            .$this->drawControlId()
+            ."</td>"
+            ."          </tr>\n"
+            ."        </table></td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Locations</th>\n"
+            ."        <td nowrap>\n"
+            .$this->drawControlStates()
+            ."<br />\n"
+            .$this->drawControlCountries()
+            ."<br />\n"
+            .$this->drawControlContinents()
+            ."</td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Range</th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td>&nbsp;<b>From GSQ</b> <input title='Enter a grid square to show only signals physically located between the distances indicated' type='text' name='filter_dx_gsq' size='6' maxlength='6' value='".$this->filter_dx_gsq."' class='formfield' onKeyUp='set_range(form)' onchange='set_range(form)'></td>"
+            ."            <td><b><span title='Distance'>DX</span></b> <input title='Enter a value to show only signals equal or greater to this distance' type='text' name='filter_dx_min' size='5' maxlength='5' value='".$this->filter_dx_min."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."> - "
+            ."<input title='Enter a value to show only signals up to this distance' type='text' name='filter_dx_max' size='5' maxlength='5' value='".$this->filter_dx_max."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."></td>"
+            ."            <td width='45'><label for='filter_dx_units_km'><input type='radio' id='filter_dx_units_km' name='filter_dx_units' value='km'".($this->filter_dx_units=="km" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">km</label></td>"
+            ."            <td width='55'><label for='filter_dx_units_miles'><input type='radio' id='filter_dx_units_miles' name='filter_dx_units' value='miles'".($this->filter_dx_units=="miles" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">miles&nbsp;</label></td>"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
+            ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
+            .get_listener_options_list($this->listeners_list_filter, $this->filter_listener, "Anyone (or enter values in \"Heard here\" box)")
+            ."</select></td>\n"
+            ."      </tr>\n";
+        if (system=="RWW") {
+            $html.=
+                 "     <tr class='rowForm'>\n"
+                ."       <th align='left'>Heard in&nbsp;</th>\n"
+                ."       <td>\n"
+                ."<select name='region' onchange='document.form.go.disabled=1;document.form.submit()' class='formField' style='width: 100%;'>\n"
+                .get_region_options_list($this->region, "(All Continents)")
+                ."</select>"
+                ."</td>"
+                ."      </tr>\n";
+        }
+        $html.=
+             "      <tr class='rowForm'>\n"
+            ."        <th align='left'><span title='Only signals heard in these states and countries'>Heard here</span></th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td title='Separate multiple options using spaces' nowrap>\n"
+            ."<input type='text' name='filter_heard_in' size='41' value='".($this->filter_heard_in ? strToUpper($this->filter_heard_in) : "(All States and Countries)")."'\n"
+            .($this->filter_heard_in=="" ? "style='color: #0000ff' ":"")
+            ."onclick=\"if(this.value=='(All States and Countries)') { this.value=''; this.style.color='#000000'}\"\n"
+            ."onblur=\"if(this.value=='') { this.value='(All States and Countries)'; this.style.color='#0000ff';}\"\n"
+            ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' ".($this->filter_listener ? "class='formfield_disabled' disabled" : "class='formfield'").">"
+            ."            <td width='45'><label for='radio_filter_heard_in_mod_any' title='Show where any terms match'><input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'".($this->filter_heard_in_mod!="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">Any</label></td>\n"
+            ."            <td width='55'><label for='radio_filter_heard_in_mod_all' title='Show where all terms match'><input id='radio_filter_heard_in_mod_all' type='radio' value='all' name='filter_heard_in_mod'".($this->filter_heard_in_mod=="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">All</label></td>\n"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Last Heard</th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield'> -\n"
+            ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield'></td>"
+            ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
+            ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"
+            ."<option value='abs'".($this->offsets=="" ? "" : " selected") .">Absolute</option>\n"
+            ."</select></td>"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Sort By</th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td><select name='sort_by_column' class='fixed'>\n"
+            ."<option value='khz'".($this->sort_by=="khz" || $this->sort_by=="khz_d" ? " selected" : "") .">KHz - Nominal carrier</option>\n"
+            ."<option value='call'".($this->sort_by=="call" || $this->sort_by=="call_d" ? " selected" : "") .">ID &nbsp;- Callsign or ID</option>\n"
+            ."<option value='LSB'".($this->sort_by=="LSB" || $this->sort_by=="LSB_d" ? " selected" : "") .">LSB - Offset value in Hz</option>\n"
+            ."<option value='USB'".($this->sort_by=="USB" || $this->sort_by=="USB_d" ? " selected" : "") .">USB - Offset value in Hz</option>\n"
+            ."<option value='sec'".($this->sort_by=="sec" || $this->sort_by=="sec_d" ? " selected" : "") .">Sec - Cycle time in sec</option>\n"
+            ."<option value='format'".($this->sort_by=="format" || $this->sort_by=="format_d" ? " selected" : "") .">Fmt - Signal Format</option>\n"
+            ."<option value='QTH'".($this->sort_by=="QTH" || $this->sort_by=="QTH_d" ? " selected" : "") .">QTH - 'Name' and location</option>\n"
+            ."<option value='sp'".($this->sort_by=="sp" || $this->sort_by=="sp_d" ? " selected" : "") .">S/P - State or Province</option>\n"
+            ."<option value='itu'".($this->sort_by=="itu" || $this->sort_by=="itu_d" ? " selected" : "") .">ITU - Country code</option>\n"
+            ."<option value='gsq'".($this->sort_by=="gsq" || $this->sort_by=="gsq_d" ? " selected" : "") .">GSQ - Grid Square</option>\n"
+            ."<option value='pwr'".($this->sort_by=="pwr" || $this->sort_by=="pwr_d" ? " selected" : "") .">PWR - TX power in watts</option>\n"
+            ."<option value='notes'".($this->sort_by=="notes" || $this->sort_by=="notes_d" ? " selected" : "") .">Notes column</option>\n"
+            ."<option value='heard_in'".($this->sort_by=="heard_in" || $this->sort_by=="heard_in_d" ? " selected" : "") .">Heard In column</option>\n"
+            ."<option value='logs'".($this->sort_by=="logs" || $this->sort_by=="logs_d" ? " selected" : "") .">Logs - Number of loggings</option>\n"
+            ."<option value='last_heard'".($this->sort_by=="last_heard" || $this->sort_by=="last_heard_d" ? " selected" : "") .">Date last heard</option>\n"
+            ."<option value='CLE64'".($this->sort_by=="CLE64" || $this->sort_by=="CLE64_d" ? " selected" : "") ." style='color: #ff0000;'>CLE64 - First letter / DX</option>\n"
+            ."</select></td>"
+            ."            <td width='45'><label for='sort_by_d'><input type='checkbox' id='sort_by_d' name='sort_by_d' value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">Z-A</label></td>"
+            ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active' type='checkbox' name='filter_active' value='1'".($this->filter_active ? " checked" : "").">Only active&nbsp;</label></td>"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
+            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+            "      <tr class='rowForm'>\n"
+            ."        <th align='left'>Admin:</th>\n"
+            ."        <td nowrap><select name='filter_system' class='formField'>\n"
+            ."<option value='1'".($this->filter_system=='1' ? " selected" : "").">RNA</option>\n"
+            ."<option value='2'".($this->filter_system=='2' ? " selected" : "").">REU</option>\n"
+            ."<option value='3'".($this->filter_system=='3' ? " selected" : "").">RWW</option>\n"
+            ."<option value='not_logged'".($this->filter_system=='not_logged' ? " selected" : "").">Unlogged signals</option>\n"
+            ."<option value='all'".($this->filter_system=='all' ? " selected" : "").">Show everything</option>\n"
+            ."</select> Select system</td>\n"
+            ."      </tr>"
+            : ""
+            )
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Custom Filter:</th>\n"
+            ."        <td nowrap><select name='filter_custom' class='formField'>\n"
+            ."<option value=''".($this->filter_custom=='' ? " selected" : "").">(None)</option>\n"
+            ."<option value='cle160'".($this->filter_custom=='cle160' ? " selected" : "").">CLE160</option>\n"
+            ."</select></td>\n"
+            ."      </tr>"
+            ."      <tr class='rowForm noprint'>\n"
+            ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
+            ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
+            ."      </tr>\n"
+            ."    </table></div></div>";
         return $html;
     }
 
@@ -572,6 +586,81 @@ class SignalList
         return $html;
     }
 
+    protected function drawListenerStats()
+    {
+        return
+             "<div class='form_box shadow'>\n"
+            ."  <div class='header'>".system." Listeners</div>\n"
+            ."  <div class='body rowForm'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:180px'>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Locations</th>\n"
+            ."        <td align='right'>".$this->stats['locations']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Loggings</th>\n"
+            ."        <td align='right'>".$this->stats['logs']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>First log</th>\n"
+            ."        <td align='right'>".$this->stats['first_log']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Last log</th>\n"
+            ."        <td align='right'>".$this->stats['last_log']."</td>\n"
+            ."      </tr>\n"
+            ."    </table>\n"
+            ."  </div>\n"
+            ."</div>";
+    }
+
+    protected function drawSignalStats()
+    {
+        return
+             "<div class='form_box shadow'>\n"
+            ."  <div class='header'>Signals</div>\n"
+            ."  <div class='body rowForm'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:180px'>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>RNA only</th>\n"
+            ."        <td align='right'>".$this->stats['RNA_only']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>REU only</th>\n"
+            ."        <td align='right'>".$this->stats['REU_only']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>RNA + REU</th>\n"
+            ."        <td align='right'>".$this->stats['RNA_and_REU']."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>RWW</th>\n"
+            ."        <td align='right'>".$this->stats['RWW']."</td>\n"
+            ."      </tr>\n"
+            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+                 "      <tr class='rowForm'>\n"
+                ."        <th align='left'>Unassigned signals</th>\n"
+                ."        <td align='right'>".$this->stats['Unassigned']."</td>\n"
+                ."      </tr>\n"
+             :
+                ""
+            )
+            ."    </table>\n"
+            ."  </div>\n"
+            ."</div>";
+    }
+
+    protected function drawVisitorPoll()
+    {
+        return
+             "<div class='form_box shadow'>\n"
+            ."  <div class='header'>Poll - Vote Now</div>\n"
+            ."  <div class='body rowForm'>"
+            ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'><tr><td>\n"
+            .doNow()."</td></tr></table></div>\n"
+            ."</div>";
+    }
+
     protected function getCountLocations()
     {
         $this->stats['locations'] =    listener_get_count($this->region);
@@ -628,17 +717,19 @@ class SignalList
                .$this->sql_filter_system
             )
             .($this->sql_filter_active ?        " AND\n".$this->sql_filter_active       : "")
-            .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
-            .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
+            .($this->sql_filter_channels ?      " AND\n".$this->sql_filter_channels     : "")
+            .($this->sql_filter_continent ?     " AND\n".$this->sql_filter_continent    : "")
             .($this->sql_filter_custom ?        " AND\n".$this->sql_filter_custom       : "")
-            .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
+            .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?            " AND\n".$this->sql_filter_id           : "")
             .($this->sql_filter_itu ?           " AND\n".$this->sql_filter_itu          : "")
-            .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
-            .($this->sql_filter_channels ?      " AND\n".$this->sql_filter_channels     : "")
+            .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
+            .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
+            .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
             .($this->sql_filter_sp ?            " AND\n".$this->sql_filter_sp           : "")
             .($this->sql_filter_type ?          " AND\n".$this->sql_filter_type         : "")
             ;
+//        z($sql);die;
         $this->total = $this->ObjSignal->getFieldForSql($sql);
     }
 
@@ -791,15 +882,16 @@ class SignalList
                 ."  ".$this->sql_filter_system
             )
             .($this->sql_filter_active ?        " AND\n".$this->sql_filter_active       : "")
-            .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
-            .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
+            .($this->sql_filter_channels ?      " AND\n".$this->sql_filter_channels     : "")
+            .($this->sql_filter_continent ?     " AND\n".$this->sql_filter_continent    : "")
             .($this->sql_filter_custom ?        " AND\n".$this->sql_filter_custom       : "")
-            .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
+            .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?            " AND\n".$this->sql_filter_id           : "")
             .($this->sql_filter_itu ?           " AND\n".$this->sql_filter_itu          : "")
-            .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
-            .($this->filter_channels ?          " AND\n".$this->sql_filter_channels     : "")
-            .($this->filter_sp ?                " AND\n".$this->sql_filter_sp           : "")
+            .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
+            .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
+            .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
+            .($this->sql_filter_sp ?            " AND\n".$this->sql_filter_sp           : "")
             .($this->sql_filter_type ?          " AND\n".$this->sql_filter_type         : "")
             .($this->sql_sort_by ?              "\nORDER BY\n  ".$this->sql_sort_by : "")
             .($this->limit!=-1 ?                "\nLIMIT\n  ".$this->offset.", ".$this->limit : "");
@@ -954,6 +1046,7 @@ class SignalList
     {
         $this->setupInitSqlFilterActive();
         $this->setupInitSqlFilterChannels();
+        $this->setupInitSqlFilterContinent();
         $this->setupInitSqlFilterCustom();
         $this->setupInitSqlFilterFrequency();
         $this->setupInitSqlFilterHeardIn();
@@ -1126,6 +1219,17 @@ class SignalList
             ."    ) > ".$this->filter_dx_min.")";
 
     }
+    protected function setupInitSqlFilterContinent()
+    {
+        if (!$this->filter_continent) {
+            return;
+        }
+        $this->sql_filter_continent =
+             "    (`signals`.`ITU` IN(\n"
+            ."        SELECT `ITU` FROM `itu` WHERE `region` = '".$this->filter_continent."')\n"
+            ."    )";
+    }
+
     protected function setupInitSqlFilterSP()
     {
         if (!$this->filter_sp) {
@@ -1409,6 +1513,7 @@ class SignalList
         $this->targetID =               (int)get_var('targetID');
         $this->filter_active =          get_var('filter_active');
         $this->filter_channels =        get_var('filter_channels');
+        $this->filter_continent =       get_var('filter_continent');
         $this->filter_custom =          get_var('filter_custom');
         $this->filter_date_1 =          get_var('filter_date_1');
         $this->filter_date_2 =          get_var('filter_date_2');
