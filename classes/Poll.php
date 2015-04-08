@@ -356,7 +356,7 @@ class Poll
         }
         $html.=
              "  <tr>\n"
-            ."    <td colspan='2' align='center'><b>Votes cast: $total_votes</b></td>\n"
+            ."    <td colspan='3' align='center'><b>Votes cast: $total_votes</b></td>\n"
             ."  </tr>"
             ."</table>";
         return $html;
