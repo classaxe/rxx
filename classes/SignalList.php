@@ -76,12 +76,7 @@ class SignalList
         $this->setup();
 
         $this->html.=
-             "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='".$this->mode."' />\n"
-            ."<input type='hidden' name='submode' value='' />\n"
-            ."<input type='hidden' name='targetID' value='' />\n"
-            ."<input type='hidden' name='sort_by' value='".$this->sort_by."' />\n"
-            ."<h2>Signal List</h2>\n"
+             "<h2>Signal List</h2>\n"
             .$this->drawHelp()
             ."<div style='float:left;width:540px; margin: 0 20px 10px 0;'>"
             .$this->drawForm()
@@ -93,8 +88,7 @@ class SignalList
             ."<br>\n"
             .$this->drawVisitorPoll()
             ."</div>"
-            ."<br style='clear:both' />"
-            ."</form>";
+            ."<br style='clear:both' />";
 
         if ($this->rows) {
             if ($this->sort_by=='CLE64') {
@@ -364,7 +358,12 @@ class SignalList
     protected function drawForm()
     {
         $html =
-             "<div class='form_box shadow'>\n"
+             "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".$this->mode."' />\n"
+            ."<input type='hidden' name='submode' value='' />\n"
+            ."<input type='hidden' name='targetID' value='' />\n"
+            ."<input type='hidden' name='sort_by' value='".$this->sort_by."' />\n"
+            ."<div class='form_box shadow'>\n"
             ."  <div class='header'>Customise ".system." Report</div>\n"
             ."  <div class='body rowForm'>\n"
             ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:540px'>\n"
@@ -516,7 +515,7 @@ class SignalList
             ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
             ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
             ."      </tr>\n"
-            ."    </table></div></div>";
+            ."    </table></div></div></form>";
         return $html;
     }
 
@@ -652,12 +651,19 @@ class SignalList
 
     protected function drawVisitorPoll()
     {
+        $Obj = new Poll;
         return
              "<div class='form_box shadow'>\n"
-            ."  <div class='header'>Poll - Vote Now</div>\n"
+            ."  <div class='header'>Visitor's Poll</div>\n"
             ."  <div class='body rowForm'>"
-            ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'><tr><td>\n"
-            .doNow()."</td></tr></table></div>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'>\n"
+            ."      <tr>\n"
+            ."        <td>\n"
+            .$Obj->draw()
+            ."        </td>\n"
+            ."      </tr>\n"
+            ."    </table>\n"
+            ."  </div>\n"
             ."</div>";
     }
 

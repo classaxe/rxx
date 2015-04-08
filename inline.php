@@ -72,12 +72,6 @@ switch ($sys) {
     die;
   break;
 }
-if (isset($submode) && $submode=="vote") {
-  $sql =	"UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = '$my_answer'";
-  @mysql_query($sql);
-  setcookie('cookie_rxx_poll',$questionID,time()+31536000,"/");	// One year expiry
-  header("Location: ".system_URL."/".$mode);
-}
 
 switch ($mode) {
   // Public functions

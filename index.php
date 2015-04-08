@@ -142,7 +142,6 @@ ini_set("mysql.trace_mode",1);
 include_once("backup.php");
 include_once("donate.php");
 include_once("img.php");
-include_once("poll.php");
 include_once("attachment.php");
 include_once("admin.php");
 include_once("functions.php");

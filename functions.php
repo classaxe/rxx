@@ -628,6 +628,10 @@ function main() {
         $Obj = new SignalList;
         $out.= $Obj->draw();
         break;
+      case 'poll_list':
+        $Obj = new Poll;
+        $out.= $Obj->drawList();
+        break;
       default:
         $out.= call_user_func($mode);
         break;
@@ -797,7 +801,6 @@ function popup() {
     case "listener_QNH":
     case "listener_stats":
     case "log_upload":
-    case "poll_edit":
     case "show_itu":
     case "show_sp":
     case "signal_attachments":
@@ -811,7 +814,11 @@ function popup() {
     case "signal_QNH":
     case "state_map":
       $out.= call_user_func($mode);
-    break;
+      break;
+    case "poll_edit":
+        $Obj = new Poll;
+        $out.= $Obj->edit();
+        break;
   }
   $out.=
      "</body>\n"
