@@ -192,7 +192,7 @@ function signal_info()
                     .($USB!="" ? "  `USB` = \"".addslashes(trim($USB))."\",\n" : "")
                     ."  `USB_approx` = \"$USB_approx\"\n";
                     mysql_query($sql);
-                    return    "<script language='javascript' type='text/javascript'>window.setTimeout('window.opener.location.reload(1);window.close()',1000)</script>";
+                    return    "<script language='javascript' type='text/javascript'>window.setTimeout('window.opener.location.reload(1);',1000)</script>";
                 } else {
                     $out[] =    "<p><font color='red'><b>Error -</b> you must specify at least ID and Frequency</font></p>";
                 }
@@ -225,7 +225,7 @@ function signal_info()
             break;
         }
     }
-    $Obj =      new SIGNAL($ID);
+    $Obj =      new Signal($ID);
     if ($ID) {
         $row =                $Obj->get_record();
         $active =            $row["active"];

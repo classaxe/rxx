@@ -66,7 +66,7 @@ class Poll
             ."    <td><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <td><b>".$title."</b></td>\n"
-            ."        <td align='right' valign='top' nowrap><i>$date</i></td>\n"
+            ."        <td align='right' valign='top' nowrap><i>".$date."</i></td>\n"
             ."      </tr>\n"
             ."    </table></td>\n"
             ."  </tr>"
@@ -288,10 +288,24 @@ class Poll
 
     protected function drawResults() {
         global $doThis, $vote, $poll_number, $title, $date, $question, $answers, $my_answer;
+        $sql =	"SELECT * FROM `poll_question` WHERE `active` = '1'";
+        $result =	@mysql_query($sql);
+
+        if (!mysql_num_rows($result)) {
+            return'';
+        }
+        $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+        $ID =	    $row['ID'];
+        $MM =	    substr($row['date'],5,2);
+        $YYYY =	    substr($row['date'],0,4);
+        $title =	$row['title'];
+        $text =	    $row['text'];
+        $date =	    MM_to_MMM($MM)." ".$YYYY;
+
         $html =
              "<table>\n"
             ."  <tr>\n"
-            ."    <td colspan='2'>\n"
+            ."    <td colspan='3'>\n"
             ."    <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <td><b>".$title."</b></td>\n"
@@ -300,7 +314,7 @@ class Poll
             ."    </table></td>\n"
             ."  </tr>"
             ."  <tr>\n"
-            ."    <td colspan='2'>".$question."</td>\n"
+            ."    <td colspan='3'>".$text."</td>\n"
             ."  </tr>";
 
         $sql =

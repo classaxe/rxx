@@ -88,7 +88,7 @@ class SignalList
             ."<br>\n"
             .$this->drawVisitorPoll()
             ."</div>"
-            ."<br style='clear:both' />";
+            ."<br style='clear:both' /><br />";
 
         if ($this->rows) {
             if ($this->sort_by=='CLE64') {
@@ -989,8 +989,8 @@ class SignalList
     protected function setup()
     {
         $this->ObjSignal = new Signal;
-        $this->setupDoSubmode();
         $this->setupLoadVars();
+        $this->setupDoSubmode();
         $this->setupTweakVars();
         $this->setupLoadStats();
         $this->setupInitListenersListFilter();
