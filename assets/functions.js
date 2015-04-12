@@ -133,6 +133,15 @@ function clear_state_map(form){
   form.hide_labels.checked=0;
 }
 
+function colSort(sortBy, current, desc) {
+    if (typeof desc!=='undefined' && desc===1){
+        $('#sort_by').val(current==sortBy+'_d' ? sortBy : sortBy+'_d');
+    } else {
+        $('#sort_by').val(sortBy+(current==sortBy ? '_d' : ''));
+    }
+    document.form.submit();
+}
+
 function column_over(obj_cell,int_state) {
   switch (int_state) {
     case 0: obj_cell.className = 'downloadTableHeadings'; break;
@@ -140,6 +149,16 @@ function column_over(obj_cell,int_state) {
     case 2: obj_cell.className = 'downloadTableHeadings_click'; break;
   }
   return true;
+}
+
+function signalsListChangeSortControl() {
+    var option = $('#sort_by_column').val();
+    $('#sort_by').val(option + ($('#sort_by_d').is(':checked') ? '_d' : ''));
+    if (option=='CLE64' && $('#filter_dx_gsq').val().length!=6) {
+        alert('CLE64\nThis option requires that you provide \na GSQ from which to measure distance');
+        return;
+    }
+    document.form.submit();
 }
 
 function conv_dd_dddd(form) {
@@ -292,6 +311,16 @@ function export_signallist_pdf() {
     (document.form.type_TIME.checked ? '&type_TIME=1' : '')+
     (document.form.type_OTHER.checked ? '&type_OTHER=1' : ''),
     'popPDF','scrollbars=1,toolbar=1,menubar=1,status=1,resizable=1',800,550,'centre');
+}
+
+function export_signallist_ilg() {
+  if (!confirm(
+    "EXPORT ENTIRE "+system+" DATABASE TO IRGRadio Database format\n"+
+    "All options selected in \"Customise Report\" above will be ignored.\n"+
+    "Continue?")){
+      return;
+  }
+  document.location=system_URL+'/ILGRadio_signallist';
 }
 
 function find_ICAO() {
@@ -573,6 +602,11 @@ function set_ICAO_cookies(form) {
 
 function set_range(form) {
   if (form.filter_dx_gsq.value.length==6) {
+    if (!validate_GSQ(form.filter_dx_gsq.value)) {
+        alert("Sorry, that doen't look like a valid GSQ value.\nValid GSQ values look like this: FN03gv");
+        return;
+    }
+    form.filter_dx_gsq.value = form.filter_dx_gsq.value.substr(0,2).toUpperCase()+form.filter_dx_gsq.value.substr(2);
     form.filter_dx_min.disabled=0;
     form.filter_dx_max.disabled=0;
     form.filter_dx_min.className="formField";
@@ -795,14 +829,6 @@ function sp_itu_over(targ,mode) {
 
 function send_form(form) {
   var msg = "", err_sp=false, err_itu=false;
-  if (form.sortBy_column && form.sortBy_column.options[form.sortBy_column.selectedIndex].value == "CLE64" && form.filter_dx_gsq.value=="") {
-    alert("To use this setting you must first specify a value for GSQ from which distances should be calculated.");
-    form.filter_dx_gsq.focus();
-    return false;
-  }
-  if (form.sortBy) {
-    form.sortBy.value = form.sortBy_column.options[form.sortBy_column.selectedIndex].value + (form.sortBy_d.checked ? form.sortBy_d.value : "");
-  }
   if (form.filter_heard_in && form.filter_heard_in.value!="(All States and Countries)" && (!validate_alphasp(form.filter_heard_in.value))) {
     msg += "HEARD IN:\n* List locations separated by spaces, e.g.: ENG FRA ON BC NE NOR\n\n";
   }

@@ -201,52 +201,101 @@ a.hover:hover
     PADDING-BOTTOM: 12px;
     PADDING-TOP: 10px
 }
+.txt_c {
+    text-align: center !important;
+}
+
+.listTable
+{
+    border-collapse: collapse;
+    background: #cccccc;
+}
+.listTable thead th
+{
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #ffffff;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    text-align: left;
+    vertical-align: bottom;
+    white-space:nowrap;
+    BACKGROUND-COLOR: #707070;
+    border-bottom: #D6D2C2 3px solid;
+}
+.listTable thead th:hover
+{
+    BACKGROUND-COLOR: #808080;
+    BORDER-BOTTOM: #FCC247 3px solid;
+}
+.listTable thead th:active
+{
+    COLOR: #FCC247;
+    BACKGROUND-COLOR: #f0f0f0;
+    BORDER-BOTTOM: #FCC247 3px solid;
+}
+
+.listTable thead th.nosort,
+.listTable thead th.nosort:hover,
+.listTable thead th.nosort:active
+{
+    COLOR: #ffffff;
+    BACKGROUND-COLOR: #707070;
+    BORDER-BOTTOM: none;
+}
+
+div.ui-datepicker{
+ font-size:10px;
+}
+img.ui-datepicker-trigger {
+    vertical-align:top;
+}
+
+.buttons input {
+    width: 150px;
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+
 .downloadTable
 {
-    BORDER-COLLAPSE: collapse;
-    BACKGROUND-COLOR: #cccccc
+    border-collapse: collapse;
+    background: #cccccc;
 }
+.downloadTable th
+{
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 2px;
+    CURSOR: hand;
+    COLOR: #ffffff;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+}
+
 .downloadTableHeadings
 {
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 2px;
-    CURSOR: hand;
-    COLOR: #ffffff;
-    PADDING-TOP: 2px;
-    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    text-align: left;
+    vertical-align: bottom;
     BACKGROUND-COLOR: #707070;
-    BORDER-BOTTOM: #D6D2C2 3px solid !important; 
+    BORDER-BOTTOM: #D6D2C2 3px solid !important;
 }
-.downloadTableHeadings_over
+.downloadTableHeadings:hover
 {
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 2px;
-    CURSOR: hand;
-    COLOR: #ffffff;
-    PADDING-TOP: 2px;
-    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #808080;
-    BORDER-BOTTOM: #FCC247 3px solid !important; 
+    BORDER-BOTTOM: #FCC247 3px solid !important;
 }
-.downloadTableHeadings_click
+.downloadTableHeadings:active
 {
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 2px;
-    CURSOR: hand;
     COLOR: #FCC247;
-    PADDING-TOP: 2px;
-    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #f0f0f0;
-    BORDER-BOTTOM: #FCC247 3px solid !important; 
+    BORDER-BOTTOM: #FCC247 3px solid !important;
 }
-.downloadTableHeadings_nosort
+.downloadTableHeadings_nosort,
+.downloadTableHeadings_nosort:hover
 {
     FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 2px;
-    COLOR: #ffffff;
-    PADDING-TOP: 2px;
-    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #707070
 }
 .downloadTableContent

@@ -94,8 +94,8 @@ define ("DSC",6);
 define ("swing_LF",0.6);	// How much signals may be off frequency before being considered wrong
 define ("swing_HF",1.5);	// LF is enough to pull signals such as 414 RPB on to correct frequency
 
-define ("poll_column_width",60);					// Width of a bar of 100% in pixels
-define ("poll_column_height",10);					// Height of a results bar in pixels
+define ("poll_column_width",80);					// Width of a bar of 100% in pixels
+define ("poll_column_height",14);					// Height of a results bar in pixels
 
 define ("g_highlight","#20b020");
 

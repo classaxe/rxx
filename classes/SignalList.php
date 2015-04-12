@@ -81,182 +81,57 @@ class SignalList
             ."<div style='float:left;width:540px; margin: 0 20px 10px 0;'>"
             .$this->drawForm()
             ."</div>"
-            ."<div style='float:left;width:160px;'>"
-            .$this->drawSignalStats()
+            ."<div style='float:left;width:240px'>"
+            .$this->drawStatsSignals()
             ."<br>\n"
-            .$this->drawListenerStats()
+            .$this->drawStatsListeners()
             ."<br>\n"
             .$this->drawVisitorPoll()
             ."</div>"
             ."<br style='clear:both' /><br />";
 
         if ($this->rows) {
-            if ($this->sort_by=='CLE64') {
-                $this->html.=    "<table cellpadding='0' cellspacing='0' border='0'><tr><td><ul><li><b><font color='#ff0000'>CLE64 Custom sort order applied:</font></b><br> - Show <b>active</b> beacons first<br> - Sort by <b>first letter</b> of callsign: <b>A-Z</b><br> - Sort by <b>DX</b> from Grid Square <b>".$this->filter_dx_gsq."</b>.<br><b>Tip:</b> You can further <b>refine this search</b> by entering values in 'Heard here', 'Heard by' or adding other criteria such as range limits.</li></ul></td></tr></table>\n";
-            }
-            if ($this->sort_by=='CLE64_d') {
-                $this->html.=    "<table cellpadding='0' cellspacing='0' border='0'><tr><td><ul><li><b><font color='#ff0000'>CLE64 Custom sort order applied:</font></b><br> - Show <b>active</b> beacons first<br> - Sort by <b>first letter</b> of callsign: <b>Z-A</b><br> - Sort by <b>DX</b> from Grid Square <b>".$this->filter_dx_gsq."</b>.<br><b>Tip:</b> You can further <b>refine this search</b> by entering values in 'Heard here', 'Heard by' or adding other criteria such as range limits.</li></ul></td></tr></table>\n";
-            }
-            if ($this->filter_id) {
-                $this->html.=    "<table cellpadding='0' cellspacing='0' border='0'><tr><td><b>Note:</b> Any exact matches for <b>".$this->filter_id."</b> will shown at the top of this list, regardless of the station's current status.</td></tr></table>\n";
-            }
             $this->html.=
-            "<table cellpadding='2' cellspacing='0' border='1' bordercolor='#c0c0c0' bgcolor='#ffffff' class='downloadtable'>\n"
-            ."  <thead>\n"
-            ."  <tr id=\"header\">\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='khz".($this->sort_by=="khz" ? "_d" : "")."';document.form.submit()\" title=\"Sort by Frequency\">KHz ".($this->sort_by=='khz' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='khz_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='call".($this->sort_by=="call" ? "_d" : "")."';document.form.submit()\" title=\"Sort by Callign or DGPS Station ID\">ID ".($this->sort_by=='call' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='call_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            .($this->type_NDB ?
-            "    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='LSB".($this->sort_by=="LSB" ? "_d" : "")."';document.form.submit()\" title=\"Sort by LSB (-ve Offset)\">LSB ".($this->sort_by=='LSB' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='LSB_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='USB".($this->sort_by=="USB" ? "_d" : "")."';document.form.submit()\" title=\"Sort by USB (+ve Offset)\">USB ".($this->sort_by=='USB' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='USB_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='sec".($this->sort_by=="sec" ? "_d" : "")."';document.form.submit()\" title=\"Sort by cycle duration\">Sec ".($this->sort_by=='sec' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='sec_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='format".($this->sort_by=="format" ? "_d" : "")."';document.form.submit()\" title=\"Sort by cycle format\">Fmt ".($this->sort_by=='format' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='format_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            : ""
-            )
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='QTH".($this->sort_by=="QTH" ? "_d" : "")."';document.form.submit()\" title=\"Sort by 'Name' and Location\">'Name' and Location ".($this->sort_by=='QTH' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='QTH_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='sp".($this->sort_by=="sp" ? "_d" : "")."';document.form.submit()\" title=\"Sort by State / Province\">S/P ".($this->sort_by=='sp' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='sp_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='itu".($this->sort_by=="itu" ? "_d" : "")."';document.form.submit()\" title=\"Sort by NDB List Country Code\">ITU ".($this->sort_by=='itu' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='itu_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='gsq".($this->sort_by=="gsq" ? "_d" : "")."';document.form.submit()\" title=\"Sort by GSQ Grid Locator Square\">GSQ ".($this->sort_by=='gsq' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='gsq_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="pwr_d" ? "pwr" : "pwr_d")."';document.form.submit()\" title=\"Sort by Transmitter Power\">PWR ".($this->sort_by=='pwr' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='pwr_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='notes".($this->sort_by=="notes" ? "_d" : "")."';document.form.submit()\" title=\"Sort by 'Notes' column\">Notes ".($this->sort_by=='notes' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='notes_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='heard_in".($this->sort_by=="heard_in" ? "_d" : "")."';document.form.submit()\" title=\"Sort by 'Heard In' column\">Heard In <span style='font-weight: normal'>(Click for Map - <b>bold</b> = daytime logging)</span>".($this->sort_by=='heard_in' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='heard_in_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='logs".($this->sort_by=="logs" ? "_d" : "")."';document.form.submit()\" title=\"Sort by 'Logs' column\" nowrap>Logs ".($this->sort_by=='logs' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='logs_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-            ."    <th class='downloadTableHeadings' rowspan='2' align='left' valign='bottom' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='last_heard".($this->sort_by=="last_heard" ? "_d" : "")."';document.form.submit()\" title=\"Sort by 'Last Heard' column (YYYY-MM-DD)\" nowrap>Last Heard ".($this->sort_by=='last_heard' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='last_heard_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n";
-
-            if ($this->filter_listener) {
-                $this->html.=    "    <th class='downloadTableHeadings_nosort' colspan='2'>Range from<br>Listener</th>\n";
-            }
-            if ($this->filter_dx_gsq) {
-                $this->html.=    "    <th class='downloadTableHeadings_nosort' colspan='3'>Range from<br>GSQ</th>\n";
-            }
-            if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
-                $this->html.=    "    <th class='downloadTableHeadings_nosort' rowspan='2' valign='bottom'>&nbsp;</th>\n";
-            }
-            if ($this->filter_listener || $this->filter_dx_gsq) {
-                $this->html.=    "  <tr>\n";
-                if ($this->filter_listener) {
-                    $this->html.=
-                    "    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="dx_d" ? "dx" : "dx_d")."';document.form.submit()\" title=\"Sort by 'KM' column\"  nowrap>KM ".($this->sort_by=='dx' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='dx_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-                    ."    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="dx_d" ? "dx" : "dx_d")."';document.form.submit()\" title=\"Sort by 'Miles' column\" nowrap>Miles ".($this->sort_by=='dx' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='dx_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-              //		 ."    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="dx_deg" ? "dx_deg_d" : "dx_deg")."';document.form.submit()\" title=\"Sort by 'Degrees' column\" nowrap>Deg ".($this->sort_by=='dx_deg' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='dx_deg_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>": "")."</th>\n"
-                    ;
-                }
-                if ($this->filter_dx_gsq) {
-                    $this->html.=
-                    "    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="range_dx_km_d" ? "range_dx_km" : "range_dx_km_d")."';document.form.submit()\" title=\"Sort by 'Range KM' column\" nowrap>KM ".($this->sort_by=='range_dx_km' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='range_dx_km_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-                    ."    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="range_dx_km_d" ? "range_dx_km" : "range_dx_km_d")."';document.form.submit()\" title=\"Sort by 'Range Miles' column\" nowrap>Miles ".($this->sort_by=='range_dx_km' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='range_dx_km_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n"
-                    ."    <th class='downloadTableHeadings' align='left' onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\" onmousedown=\"column_over(this,2);\" onclick=\"document.form.sort_by.value='".($this->sort_by=="range_dx_deg" ? "range_dx_deg_d" : "range_dx_deg")."';document.form.submit()\" title=\"Sort by 'Degrees' column\" nowrap>Deg ".($this->sort_by=='range_dx_deg' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "").($this->sort_by=='range_dx_deg_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")."</th>\n";
-                }
-                $this->html.=        "  </tr>\n";
-            }
-            $this->html.=
-            "  </tr>\n"
-            ."  </thead>\n"
-            ."  <tbody>";
-            foreach ($this->rows as $row) {
-                if (isset($filter_by_dx) && $filter_by_dx) {
-                    $dx =        get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
-                }
-                if (!$row["active"]) {
-                    $class='inactive';
-                    $title = '(Reportedly off air or decommissioned)';
-                } else {
-                    switch ($row["type"]) {
-                        case NDB:        $class='ndb';
-                            $title = 'NDB';
-                            break;
-                        case DGPS:    $class='dgps';
-                            $title = 'DGPS Station';
-                            break;
-                        case DSC:        $class='dsc';
-                            $title = 'DSC Station';
-                            break;
-                        case TIME:    $class='time';
-                            $title = 'Time Signal Station';
-                            break;
-                        case NAVTEX:    $class='navtex';
-                            $title = 'NAVTEX Station';
-                            break;
-                        case HAMBCN:    $class='hambcn';
-                            $title = 'Amateur signal';
-                            break;
-                        case OTHER:    $class='other';
-                            $title = 'Other Utility Station';
-                            break;
-                    }
-                }
-                $call =    ($this->filter_id ? highlight($row["call"], $this->filter_id) : $row["call"]);
-                $heard_in = ($this->filter_heard_in ? highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in)) : $row["heard_in_html"]);
-                $SP =     ($this->filter_sp ? highlight($row["SP"], str_replace(" ", "|", $this->filter_sp)) : $row["SP"]);
-                $ITU =    ($this->filter_itu ? highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu)) : $row["ITU"]);
-                $this->html.=
-                "<tr class='rownormal ".$class."' title='".$title."'>"
-                ."<td><a href='".system_URL."/signal_list?filter_khz_1=".(float)$row["khz"]."&amp;filter_khz_2=".(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
-                ."<td><a onmouseover='window.status=\"View profile for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\"><b>$call</b></a></td>\n";
-                if ($this->type_NDB) {
-                    $this->html.=
-                    "<td align='right'>".$row["LSB_approx"].($row["LSB"]<>"" ? ($this->offsets=="" ? $row["LSB"] : number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
-                    ."<td align='right'>".$row["USB_approx"].($row["USB"]<>"" ? ($this->offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
-                    ."<td>".($row["sec"] ? $row["sec"] : "&nbsp;")."</td>\n"
-                    ."<td>".($row["format"] ? stripslashes($row["format"]) : "&nbsp;")."</td>\n";
-                }
-                $this->html.=
-                "<td>".($row["QTH"] ? get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"]) : "&nbsp;")."</td>\n"
-                ."<td>".($SP ? "<a href='".system_URL."/signal_list?filter_sp=".$row["SP"]."' title='Filter on this value'>".$SP."</a>" : "&nbsp;")."</td>\n"
-                ."<td>".($ITU ? "<a href='".system_URL."/signal_list?filter_itu=".$row["ITU"]."' title='Filter on this value'>".$ITU."</a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["GSQ"] ? "<a href='.' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["pwr"] ? $row["pwr"] : "&nbsp;")."</td>\n"
-                ."<td>".($row["notes"] ? stripslashes($row["notes"]) : "&nbsp;")."</td>\n"
-                ."<td>".($heard_in ? $heard_in : "&nbsp;")."</td>\n"
-                ."<td align='right'>"
-                .($row["logs"] ? "<a href=\"".system_URL."/signal_log/".$row["ID"]."\" onclick='signal_log(\"".$row["ID"]."\");return false;'><b>".$row["logs"]."</b></a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "&nbsp;")."</td>\n";
-
-                if ($this->filter_listener) {
-                    $this->html.=
-                    "<td align='right'>".($row["dx_km"]!=='' ? $row["dx_km"] : "&nbsp;")."</td>\n"
-                    ."<td align='right'>".($row["dx_miles"]!=='' ? $row["dx_miles"] : "&nbsp;")."</td>\n"
-              //	  ."<td align='right'>".($row["dx_deg"] ? $row["dx_deg"] : "&nbsp;")."</td>\n"
-                    ;
-                }
-
-                if ($this->filter_dx_gsq) {
-                    $this->html.=
-                    "<td align='right'>".($row["range_dx_km"]!=='' ? round($row["range_dx_km"]) : "&nbsp;")."</td>\n"
-                    ."<td align='right'>".($row["range_dx_miles"]!=='' ? round($row["range_dx_miles"]) : "&nbsp;")."</td>\n"
-                    ."<td align='right'>".($row["range_dx_deg"]!=='' ? round($row["range_dx_deg"]) : "&nbsp;")."</td>\n";
-                }
-
-                if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
-                    $this->html.=
-                    "<td nowrap><a href='javascript: if (confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")) { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\"; document.form.submit();}'>Del</a>\n"
-                    ."<a href='javascript:signal_merge(".$row["ID"].")'>Merge</a></td>\n";
-                }
-            }
-            $this->html.=     "  </tr>"
-            ."</tbody>"
-            ."</table>\n"
-            ."<br>\n"
-            ."<span class='noscreen'>\n"
-            ."<b><i>(End of printout)</i></b>\n"
-            ."</span>\n";
+                 $this->drawResultsInfo()
+                ."<table cellpadding='2' cellspacing='0' border='1' class='listTable'>\n"
+                .$this->drawResultsHeadings()
+                .$this->drawResultsData()
+                ."</table>\n"
+                ."<br>\n"
+                ."<span class='noscreen'>\n"
+                ."<b><i>(End of printout)</i></b>\n"
+                ."</span>\n";
         } else {
-            $this->html.=    "<h2>Results</h2><br><br><h3>No results for search criteria</h3><br><br><br>\n";
+            $this->html.=
+                "<h2>Results</h2><br><br><h3>No results for search criteria</h3><br><br><br>\n";
         }
 
-            $this->html.=
-            "<span class='noprint'>\n"
-            ."<input type='button' value='Print...' onclick='".(($this->limit!=-1 && $this->limit<$this->total) ? "if (confirm(\"Information\\n\\nThis printout works best in Landscape.\\n\\nYou are not presently displaying all ".$this->total." available records.\\nContinue anyway?\")) { window.print(); }": "window.print()")."' class='formbutton' style='width: 150px;'> ";
+        $this->html.=
+             "<p class='noprint txt_c buttons'>\n"
+            ."<input type='button' value='Print...' onclick='"
+            .(($this->limit!=-1 && $this->limit<$this->total) ?
+                 "if (confirm("
+                ."\"Information\\n\\nThis printout works best in Landscape.\\n\\n"
+                ."You are not presently displaying all ".$this->total." available records.\\n"
+                ."Continue anyway?\""
+                .")) { window.print(); }": "window.print()")."'/> ";
         if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
-            $this->html.=    "<input type='button' class='formbutton' value='Add signal...' style='width: 150px' onclick='signal_add(document.form.filter_id.value,document.form.filter_khz_1.value,\"\",\"\",\"\",\"\",\"\",get_type(document.form))'> ";
-        }
             $this->html.=
-            "<input type='button' class='formbutton' value='All ".system." > Excel' style='width: 150px' title='Get the whole database as Excel' onclick='export_signallist_excel();'> "
-            ."<input type='button' class='formbutton' value='All ".system." > PDF'   style='width: 150px' title='get the whole database as PDF' onclick='export_signallist_pdf();'> "
-            ."<input type='button' class='formbutton' value='All ".system." > ILG'   style='width: 150px' title='get the whole database as ILGRadio format for Ham Radio Deluxe' onclick='if (confirm(\"EXPORT ENTIRE ".system." DATABASE TO IRGRadio Database format?\\n\\nThis can be a time consuming process - typically 5 minutes or more.\")) { show_ILG(); }'> "
-            ."</span>\n"
-            ."<script type='text/javascript'>document.form.filter_id.focus();document.form.filter_id.select();</script>\n";
-            return $this->html;
+                 "<input type='button' value='Add signal...'"
+                ." onclick=\"signal_add("
+                ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
+                .")\" /> ";
+        }
+        $this->html.=
+             "<input type='button' value='All ".system." > Excel'"
+            ." title='Get the whole database as Excel' onclick='export_signallist_excel();' /> "
+            ."<input type='button' value='All ".system." > PDF'"
+            ." title='get the whole database as PDF' onclick='export_signallist_pdf();' /> "
+            ."<input type='button' value='All ".system." > ILG'"
+            ." title='get the whole database as ILGRadio format for Ham Radio Deluxe'"
+            ." onclick='export_signallist_ilg()' /> "
+            ."</p>\n";
+        return $this->html;
     }
 
     protected function drawControlChannels()
@@ -269,10 +144,46 @@ class SignalList
             ."</select>";
     }
 
+    protected function drawControlColumnSortby()
+    {
+        $columns = array(
+            'khz|KHz - Nominal carrier',
+            'call|ID &nbsp;- Callsign or ID',
+            'LSB|LSB - Offset value in Hz',
+            'USB|USB - Offset value in Hz',
+            'sec|Sec - Cycle time in sec',
+            'format|Fmt - Signal Format',
+            'QTH|QTH - \'Name\' and location',
+            'sp|S/P - State or Province',
+            'itu|ITU - Country code',
+            'gsq|GSQ - Grid Square',
+            'pwr|PWR - TX power in watts',
+            'notes|Notes column',
+            'heard_in|Heard In column',
+            'logs|Logs - Number of loggings',
+            'last_heard|Date last heard',
+            'CLE64|CLE64 - First letter / DX from GSQ|#ff0000'
+        );
+        $html =
+             "<select name='sort_by_column' id='sort_by_column' class='fixed'"
+            ." onchange='signalsListChangeSortControl()'>\n";
+        foreach ($columns as $column) {
+            $col = explode('|', $column);
+            $html.=
+                 "  <option value='".$col[0]."'"
+                .($this->sort_by==$col[0] || $this->sort_by==$col[0]."_d" ? " selected='selected'" : "")
+                .(isset($col[2]) ? " style='color:".$col[2]."'" : "")
+                .">".$col[1]."</option>\n";
+        }
+        $html.=
+            "</select>";
+        return $html;
+    }
+
     protected function drawControlContinents()
     {
         return
-             "<label style='display:inline-block; width:70px; margin:0.25em 0;'>"
+             "<label style='display:inline-block; width:70px; margin:0.25em 0;' for='filter_continent'>"
             ."<b>Continent</b></label> "
             ."<select title='Choose a continent to show only signals physically located there'"
             ." name='filter_continent' id='filter_continent' class='formfield' style='width:360px'>"
@@ -292,6 +203,39 @@ class SignalList
             ."' class='formfield' style='width:360px'/>";
     }
 
+    protected function drawControlDXMax()
+    {
+        return
+             "<input title='Enter a value to show only signals up to this distance' type='text'"
+            ." name='filter_dx_max' id='filter_dx_max' size='5' maxlength='5' value='".$this->filter_dx_max."'"
+            ." onKeyUp='set_range(form)' onchange='set_range(form)'"
+            .($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")
+            .">";
+    }
+
+    protected function drawControlDXMin()
+    {
+        return
+             "<input title='Enter a value to show only signals equal or greater to this distance' type='text'"
+            ." name='filter_dx_min' id='filter_dx_min' size='5' maxlength='5' value='".$this->filter_dx_min."'"
+            ." onKeyUp='set_range(form)' onchange='set_range(form)'"
+            .($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")
+            .">";
+    }
+
+    protected function drawControlDXUnits()
+    {
+        return
+             "<input type='radio' id='filter_dx_units_km' name='filter_dx_units' value='km'"
+            .($this->filter_dx_units=="km" ? " checked" : "")
+            .($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">"
+            ."<label for='filter_dx_units_km'>km</label> "
+            ."<input type='radio' id='filter_dx_units_miles' name='filter_dx_units' value='miles'"
+            .($this->filter_dx_units=="miles" ? " checked" : "")
+            .($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">"
+            ."<label for='filter_dx_units_miles'>miles</label>";
+    }
+
     protected function drawControlFrequencyRange()
     {
         return
@@ -307,13 +251,71 @@ class SignalList
 
     }
 
+    protected function drawControlGSQ()
+    {
+        return
+             "<input title='Enter a grid square to show only signals physically located between the distances chosen'"
+            ." type='text' class='formfield' name='filter_dx_gsq' id='filter_dx_gsq' size='6' maxlength='6'"
+            ." value='".$this->filter_dx_gsq."' onkeyup='set_range(form)' onchange='set_range(form)' />";
+    }
+
+    protected function drawControlHeardBy()
+    {
+        return
+             "<select name='filter_listener[]' id='filter_listener' multiple class='formfield'"
+            ." onchange='set_listener_and_heard_in(document.form)'"
+            ." style='font-family: monospace; width:100%; height: 100px;'>\n"
+            .get_listener_options_list(
+                $this->listeners_list_filter,
+                $this->filter_listener,
+                "Anyone (or enter values in \"Heard here\" box)"
+            )
+            ."</select>";
+
+    }
+
+    protected function drawControlHeardIn()
+    {
+        return
+             "<input type='text' name='filter_heard_in' id='filter_heard_in' size='41'"
+            ." value='".($this->filter_heard_in ? strToUpper($this->filter_heard_in) : "(All States and Countries)")."'"
+            .($this->filter_heard_in=="" ? "style='color: #0000ff' ":"")
+            ."onclick=\"if(this.value=='(All States and Countries)') { this.value=''; this.style.color='#000000'}\"\n"
+            ."onblur=\"if(this.value=='') { this.value='(All States and Countries)'; this.style.color='#0000ff';}\"\n"
+            ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' "
+            .($this->filter_listener ? "class='formfield_disabled' disabled" : "class='formfield'")
+            .">";
+    }
+
+    protected function drawControlHeardInContinent()
+    {
+        return
+             "<select name='region' id='region' onchange='document.form.go.disabled=1;document.form.submit()'"
+            ." class='formField' style='width: 100%;'>\n"
+            .get_region_options_list($this->region, "(All Continents)")
+            ."</select>";
+
+    }
+
+    protected function drawControlHeardInMatch()
+    {
+        return
+             "<input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'"
+            .($this->filter_heard_in_mod!="all" ? " checked" : "")
+            .($this->filter_listener || !$this->filter_heard_in ? " disabled" : "")
+            .">"
+            ."<label for='radio_filter_heard_in_mod_any' title='Show where any terms match'>Any</label>\n"
+            ."<input id='radio_filter_heard_in_mod_all' type='radio' value='all' name='filter_heard_in_mod'"
+            .($this->filter_heard_in_mod=="all" ? " checked" : "")
+            .($this->filter_listener || !$this->filter_heard_in ? " disabled" : "")
+            .">"
+            ."<label for='radio_filter_heard_in_mod_all' title='Show where all terms match'>All</label>";
+    }
+
     protected function drawControlId()
     {
         return
-             "<label for='filter_id' title='Callsign or DGPS ID"
-            ." (Exact matches are shown at the top of the report, partial matches are shown later)'>"
-            ."<b>Call / ID</b></label> "
-            ."<input type='text' name='filter_id' id='filter_id' size='6' maxlength='12' value='".$this->filter_id."'"
+             "<input type='text' name='filter_id' id='filter_id' size='6' maxlength='12' value='".$this->filter_id."'"
             ." class='formfield' title='Limit results to signals with this ID or partial ID -\n"
             ."use _ to indicate a wildcard character' />";
     }
@@ -362,11 +364,11 @@ class SignalList
             ."<input type='hidden' name='mode' value='".$this->mode."' />\n"
             ."<input type='hidden' name='submode' value='' />\n"
             ."<input type='hidden' name='targetID' value='' />\n"
-            ."<input type='hidden' name='sort_by' value='".$this->sort_by."' />\n"
+            ."<input type='hidden' name='sort_by' id = 'sort_by' value='".$this->sort_by."' />\n"
             ."<div class='form_box shadow'>\n"
             ."  <div class='header'>Customise ".system." Report</div>\n"
             ."  <div class='body rowForm'>\n"
-            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:540px'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:536px'>\n"
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Show</th>\n"
             ."        <td nowrap>"
@@ -380,24 +382,25 @@ class SignalList
             ."</td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'><label for='filter_khz_1'>Frequencies</label></th>\n"
+            ."        <th align='left'><label for='filter_id' title='Callsign or DGPS ID"
+            ." (Exact matches are shown at the top of the report, partial matches are shown later)'>"
+            ."<b>Call / ID</b></label></th>\n"
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
             ."            <td>"
+            .$this->drawControlId()
+            ."</td>\n"
+            ."            <td align='center'><label for='filter_khz_1' title='Frequencies'><b>Freq.&nbsp;</b></label>"
             .$this->drawControlFrequencyRange()
             ."</td>\n"
-            ."            <td><label for='filter_channels'><b>Channels</b></label></td>\n"
-            ."            <td>"
+            ."            <td align='right'><label for='filter_channels'><b>Channels</b>&nbsp;</label>"
             .$this->drawControlChannels()
-            ."</td>\n"
-            ."            <td align='right'>"
-            .$this->drawControlId()
             ."</td>"
             ."          </tr>\n"
             ."        </table></td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Locations</th>\n"
+            ."        <th align='left'><label for='filter_sp'>Locations</label></th>\n"
             ."        <td nowrap>\n"
             .$this->drawControlStates()
             ."<br />\n"
@@ -405,49 +408,54 @@ class SignalList
             ."<br />\n"
             .$this->drawControlContinents()
             ."</td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Range</th>\n"
-            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-            ."          <tr>\n"
-            ."            <td>&nbsp;<b>From GSQ</b> <input title='Enter a grid square to show only signals physically located between the distances indicated' type='text' name='filter_dx_gsq' size='6' maxlength='6' value='".$this->filter_dx_gsq."' class='formfield' onKeyUp='set_range(form)' onchange='set_range(form)'></td>"
-            ."            <td><b><span title='Distance'>DX</span></b> <input title='Enter a value to show only signals equal or greater to this distance' type='text' name='filter_dx_min' size='5' maxlength='5' value='".$this->filter_dx_min."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."> - "
-            ."<input title='Enter a value to show only signals up to this distance' type='text' name='filter_dx_max' size='5' maxlength='5' value='".$this->filter_dx_max."' onKeyUp='set_range(form)' onchange='set_range(form)'".($this->filter_dx_gsq ? " class='formfield'" : " class='formfield_disabled' disabled")."></td>"
-            ."            <td width='45'><label for='filter_dx_units_km'><input type='radio' id='filter_dx_units_km' name='filter_dx_units' value='km'".($this->filter_dx_units=="km" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">km</label></td>"
-            ."            <td width='55'><label for='filter_dx_units_miles'><input type='radio' id='filter_dx_units_miles' name='filter_dx_units' value='miles'".($this->filter_dx_units=="miles" ? " checked" : "").($this->filter_dx_gsq && ($this->filter_dx_min || $this->filter_dx_max) ? "" : " disabled").">miles&nbsp;</label></td>"
-            ."          </tr>\n"
-            ."	 </table></td>"
-            ."      </tr>\n"
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
-            ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
-            .get_listener_options_list($this->listeners_list_filter, $this->filter_listener, "Anyone (or enter values in \"Heard here\" box)")
-            ."</select></td>\n"
-            ."      </tr>\n";
+            ."     </tr>\n"
+            ."     <tr class='rowForm'>\n"
+            ."       <th align='left'><label for='filter_dx_gsq'>Distance</label></th>\n"
+            ."       <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."         <tr>\n"
+            ."           <td><label for='filter_dx_gsq'><b>From GSQ</b></label> "
+            .$this->drawControlGSQ()
+            ."</td>"
+            ."           <td><label for='filter_dx_min' title='Distance'><b>DX</b></label> "
+            .$this->drawControlDXMin()
+            ." - "
+            .$this->drawControlDXMax()
+            ."</td>"
+            ."           <td>"
+            .$this->drawControlDXUnits()
+            ."</td>"
+            ."         </tr>\n"
+            ."	     </table></td>"
+            ."     </tr>\n";
         if (system=="RWW") {
             $html.=
-                 "     <tr class='rowForm'>\n"
-                ."       <th align='left'>Heard in&nbsp;</th>\n"
+                 "    <tr class='rowForm'>\n"
+                ."       <th align='left'>Heard in</th>\n"
                 ."       <td>\n"
-                ."<select name='region' onchange='document.form.go.disabled=1;document.form.submit()' class='formField' style='width: 100%;'>\n"
-                .get_region_options_list($this->region, "(All Continents)")
-                ."</select>"
+                .$this->drawControlHeardInContinent()
                 ."</td>"
                 ."      </tr>\n";
         }
         $html.=
-             "      <tr class='rowForm'>\n"
-            ."        <th align='left'><span title='Only signals heard in these states and countries'>Heard here</span></th>\n"
-            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+             "     <tr class='rowForm'>\n"
+            ."       <th align='left'><label title='Only signals heard by the selected listener'>Heard by<br /><br />"
+            ."<span style='font-weight: normal;'>Use SHIFT or <br />CONTROL to<br />select multiple<br />values</span>"
+            ."</label></th>"
+            ."       <td>"
+            .$this->drawControlHeardBy()
+            ."</td>\n"
+            ."    </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>"
+            ."<span title='Only signals heard in these states and countries'>Heard here</span></th>\n"
+            ."        <td><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td title='Separate multiple options using spaces' nowrap>\n"
-            ."<input type='text' name='filter_heard_in' size='41' value='".($this->filter_heard_in ? strToUpper($this->filter_heard_in) : "(All States and Countries)")."'\n"
-            .($this->filter_heard_in=="" ? "style='color: #0000ff' ":"")
-            ."onclick=\"if(this.value=='(All States and Countries)') { this.value=''; this.style.color='#000000'}\"\n"
-            ."onblur=\"if(this.value=='') { this.value='(All States and Countries)'; this.style.color='#0000ff';}\"\n"
-            ."onchange='set_listener_and_heard_in(form)' onKeyUp='set_listener_and_heard_in(form)' ".($this->filter_listener ? "class='formfield_disabled' disabled" : "class='formfield'").">"
-            ."            <td width='45'><label for='radio_filter_heard_in_mod_any' title='Show where any terms match'><input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'".($this->filter_heard_in_mod!="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">Any</label></td>\n"
-            ."            <td width='55'><label for='radio_filter_heard_in_mod_all' title='Show where all terms match'><input id='radio_filter_heard_in_mod_all' type='radio' value='all' name='filter_heard_in_mod'".($this->filter_heard_in_mod=="all" ? " checked" : "").($this->filter_listener || !$this->filter_heard_in ? " disabled" : "").">All</label></td>\n"
+            ."            <td title='Separate multiple options using spaces'>\n"
+            .$this->drawControlHeardIn()
+            ."</td>"
+            ."            <td>"
+            .$this->drawControlHeardInMatch()
+            ."</td>\n"
             ."          </tr>\n"
             ."	 </table></td>"
             ."      </tr>\n"
@@ -455,8 +463,15 @@ class SignalList
             ."        <th align='left'>Last Heard</th>\n"
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield'> -\n"
-            ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield'></td>"
+            ."            <td>"
+            ."<input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
+            ." value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield' />\n"
+            ."-\n"
+            ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
+            ." value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield' />"
+            ."</td>"
             ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
             ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"
             ."<option value='abs'".($this->offsets=="" ? "" : " selected") .">Absolute</option>\n"
@@ -468,25 +483,10 @@ class SignalList
             ."        <th align='left'>Sort By</th>\n"
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td><select name='sort_by_column' class='fixed'>\n"
-            ."<option value='khz'".($this->sort_by=="khz" || $this->sort_by=="khz_d" ? " selected" : "") .">KHz - Nominal carrier</option>\n"
-            ."<option value='call'".($this->sort_by=="call" || $this->sort_by=="call_d" ? " selected" : "") .">ID &nbsp;- Callsign or ID</option>\n"
-            ."<option value='LSB'".($this->sort_by=="LSB" || $this->sort_by=="LSB_d" ? " selected" : "") .">LSB - Offset value in Hz</option>\n"
-            ."<option value='USB'".($this->sort_by=="USB" || $this->sort_by=="USB_d" ? " selected" : "") .">USB - Offset value in Hz</option>\n"
-            ."<option value='sec'".($this->sort_by=="sec" || $this->sort_by=="sec_d" ? " selected" : "") .">Sec - Cycle time in sec</option>\n"
-            ."<option value='format'".($this->sort_by=="format" || $this->sort_by=="format_d" ? " selected" : "") .">Fmt - Signal Format</option>\n"
-            ."<option value='QTH'".($this->sort_by=="QTH" || $this->sort_by=="QTH_d" ? " selected" : "") .">QTH - 'Name' and location</option>\n"
-            ."<option value='sp'".($this->sort_by=="sp" || $this->sort_by=="sp_d" ? " selected" : "") .">S/P - State or Province</option>\n"
-            ."<option value='itu'".($this->sort_by=="itu" || $this->sort_by=="itu_d" ? " selected" : "") .">ITU - Country code</option>\n"
-            ."<option value='gsq'".($this->sort_by=="gsq" || $this->sort_by=="gsq_d" ? " selected" : "") .">GSQ - Grid Square</option>\n"
-            ."<option value='pwr'".($this->sort_by=="pwr" || $this->sort_by=="pwr_d" ? " selected" : "") .">PWR - TX power in watts</option>\n"
-            ."<option value='notes'".($this->sort_by=="notes" || $this->sort_by=="notes_d" ? " selected" : "") .">Notes column</option>\n"
-            ."<option value='heard_in'".($this->sort_by=="heard_in" || $this->sort_by=="heard_in_d" ? " selected" : "") .">Heard In column</option>\n"
-            ."<option value='logs'".($this->sort_by=="logs" || $this->sort_by=="logs_d" ? " selected" : "") .">Logs - Number of loggings</option>\n"
-            ."<option value='last_heard'".($this->sort_by=="last_heard" || $this->sort_by=="last_heard_d" ? " selected" : "") .">Date last heard</option>\n"
-            ."<option value='CLE64'".($this->sort_by=="CLE64" || $this->sort_by=="CLE64_d" ? " selected" : "") ." style='color: #ff0000;'>CLE64 - First letter / DX</option>\n"
-            ."</select></td>"
-            ."            <td width='45'><label for='sort_by_d'><input type='checkbox' id='sort_by_d' name='sort_by_d' value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">Z-A</label></td>"
+            ."            <td>"
+            .$this->drawControlColumnSortby()
+            ."</td>"
+            ."            <td width='45'><label for='sort_by_d'><input type='checkbox' id='sort_by_d' onclick='signalsListChangeSortControl()' name='sort_by_d' value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">Z-A</label></td>"
             ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active' type='checkbox' name='filter_active' value='1'".($this->filter_active ? " checked" : "").">Only active&nbsp;</label></td>"
             ."          </tr>\n"
             ."	 </table></td>"
@@ -515,7 +515,30 @@ class SignalList
             ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
             ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
             ."      </tr>\n"
-            ."    </table></div></div></form>";
+            ."    </table></div></div></form>"
+            ."<script>\n"
+            ."\$(function() {\n"
+            ."  var minDate = new Date('".$this->stats['first_log_iso']."');\n"
+            ."  var maxDate = new Date('".$this->stats['last_log_iso']."');\n"
+            ."  minDate.setDate(minDate.getDate()+1);\n"
+            ."  maxDate.setDate(maxDate.getDate()+1);\n"
+            ."  var config = {\n"
+            ."    changeMonth:true,\n"
+            ."    changeYear:true,\n"
+            ."    dateFormat:'yy-mm-dd',\n"
+            ."    minDate:minDate,\n"
+            ."    maxDate:maxDate,\n"
+            ."    showOn:'button',\n"
+            ."    buttonImage:'/dx/ndb/assets/datepicker_".system.".gif',\n"
+            ."    buttonImageOnly: true,\n"
+            ."    buttonText: 'Select date'\n"
+            ."  };\n"
+            ."  \$('#filter_date_1').datepicker(config);\n"
+            ."  \$('#filter_date_2').datepicker(config);\n"
+            ."  \$('#filter_id').focus();\n"
+            ."  \$('#filter_id').select();\n"
+            ."})\n"
+            ."</script>\n";
         return $html;
     }
 
@@ -585,15 +608,296 @@ class SignalList
         return $html;
     }
 
-    protected function drawListenerStats()
+    protected function drawResultsData()
+    {
+        $html =
+            "  <tbody>";
+        foreach ($this->rows as $row) {
+            if (isset($filter_by_dx) && $filter_by_dx) {
+                $dx =        get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+            }
+            if (!$row["active"]) {
+                $class='inactive';
+                $title = '(Reportedly off air or decommissioned)';
+            } else {
+                switch ($row["type"]) {
+                    case NDB:
+                        $class =    'ndb';
+                        $title =    'NDB';
+                        break;
+                    case DGPS:
+                        $class =    'dgps';
+                        $title =    'DGPS Station';
+                        break;
+                    case DSC:
+                        $class =    'dsc';
+                        $title =    'DSC Station';
+                        break;
+                    case TIME:
+                        $class =    'time';
+                        $title =    'Time Signal Station';
+                        break;
+                    case NAVTEX:
+                        $class =    'navtex';
+                        $title =    'NAVTEX Station';
+                        break;
+                    case HAMBCN:
+                        $class =    'hambcn';
+                        $title =    'Amateur signal';
+                        break;
+                    case OTHER:
+                        $class =    'other';
+                        $title =    'Other Utility Station';
+                        break;
+                }
+            }
+            $call =     ($this->filter_id ?
+                highlight($row["call"], $this->filter_id)
+             :
+                $row["call"]
+            );
+            $heard_in = ($this->filter_heard_in ?
+                highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
+             :
+                $row["heard_in_html"]
+            );
+            $SP =       ($this->filter_sp ?
+                highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
+             :
+                $row["SP"]
+            );
+            $ITU =      ($this->filter_itu ?
+                highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
+             :
+                $row["ITU"]
+            );
+            $html.=
+                 "<tr class='rownormal ".$class."' title='".$title."'>"
+                ."<td><a href='".system_URL."/signal_list?filter_khz_1=".(float)$row["khz"]."&amp;filter_khz_2=".(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
+                ."<td><a onmouseover='window.status=\"View profile for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\"><b>$call</b></a></td>\n";
+            if ($this->type_NDB) {
+                $html.=
+                     "<td align='right'>".$row["LSB_approx"].($row["LSB"]<>"" ? ($this->offsets=="" ? $row["LSB"] : number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
+                    ."<td align='right'>".$row["USB_approx"].($row["USB"]<>"" ? ($this->offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
+                    ."<td>".($row["sec"] ? $row["sec"] : "&nbsp;")."</td>\n"
+                    ."<td>".($row["format"] ? stripslashes($row["format"]) : "&nbsp;")."</td>\n";
+            }
+            $html.=
+                 "<td>".($row["QTH"] ? get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"]) : "&nbsp;")."</td>\n"
+                ."<td>".($SP ? "<a href='".system_URL."/signal_list?filter_sp=".$row["SP"]."' title='Filter on this value'>".$SP."</a>" : "&nbsp;")."</td>\n"
+                ."<td>".($ITU ? "<a href='".system_URL."/signal_list?filter_itu=".$row["ITU"]."' title='Filter on this value'>".$ITU."</a>" : "&nbsp;")."</td>\n"
+                ."<td>".($row["GSQ"] ? "<a href='.' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>" : "&nbsp;")."</td>\n"
+                ."<td>".($row["pwr"] ? $row["pwr"] : "&nbsp;")."</td>\n"
+                ."<td>".($row["notes"] ? stripslashes($row["notes"]) : "&nbsp;")."</td>\n"
+                ."<td>".($heard_in ? $heard_in : "&nbsp;")."</td>\n"
+                ."<td align='right'>"
+                .($row["logs"] ? "<a href=\"".system_URL."/signal_log/".$row["ID"]."\" onclick='signal_log(\"".$row["ID"]."\");return false;'><b>".$row["logs"]."</b></a>" : "&nbsp;")."</td>\n"
+                ."<td>".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "&nbsp;")."</td>\n";
+
+            if ($this->filter_listener) {
+                $html.=
+                 "<td align='right'>".($row["dx_km"]!=='' ? $row["dx_km"] : "&nbsp;")."</td>\n"
+                ."<td align='right'>".($row["dx_miles"]!=='' ? $row["dx_miles"] : "&nbsp;")."</td>\n";
+            }
+
+            if ($this->filter_dx_gsq) {
+                $html.=
+                     "<td align='right'>".($row["range_dx_km"]!=='' ? round($row["range_dx_km"]) : "&nbsp;")."</td>\n"
+                    ."<td align='right'>".($row["range_dx_miles"]!=='' ? round($row["range_dx_miles"]) : "&nbsp;")."</td>\n"
+                    ."<td align='right'>".($row["range_dx_deg"]!=='' ? round($row["range_dx_deg"]) : "&nbsp;")."</td>\n";
+            }
+
+            if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+                $html.=
+                     "<td nowrap><a href='javascript: if (confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")) { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\"; document.form.submit();}'>Del</a>\n"
+                    ."<a href='javascript:signal_merge(".$row["ID"].")'>Merge</a></td>\n";
+            }
+        }
+        $html.=
+             "  </tr>"
+            ."</tbody>";
+        return $html;
+    }
+
+    protected function drawResultsHeadings()
+    {
+        $columns = array(
+            'khz|0|Sort by Frequency|KHz',
+            'call|0|Sort by Callign or DGPS Station ID|ID',
+            'LSB|0|Sort by LSB (-ve Offset)|LSB|'.$this->type_NDB,
+            'USB|0|Sort by USB (+ve Offset)|USB|'.$this->type_NDB,
+            'sec|0|Sort by cycle duration|Sec|'.$this->type_NDB,
+            'format|0|Sort by cycle format|Fmt|'.$this->type_NDB,
+            'QTH|0|Sort by \'Name\' and Location|\'Name\' and Location',
+            'sp|0|Sort by State / Province|S/P',
+            'itu|0|Sort by NDB List Country Code|ITU',
+            'gsq|0|Sort by GSQ Grid Locator Square|GSQ',
+            'pwr|1|Sort by Transmitter Power|PWR',
+            'notes|0|Sort by Notes column|Notes',
+            'heard_in|0|"Sort by \'Heard In\' column|Heard In',
+            'logs|0|Sort by number of times logged|Logs',
+            'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Heard'
+        );
+        $html =
+             "  <thead>\n"
+            ."  <tr>\n";
+        foreach ($columns as $column) {
+            $col = explode('|', $column);
+            if (!isset($col[4]) || $col[4]) {
+                $html.=
+                     "    <th rowspan='2' onclick=\"colSort("
+                    ."'".$col[0]."',"
+                    ."'".$this->sort_by."'"
+                    .($col[1] ? ",1" : "")
+                    .")\""
+                    ." title=\"".$col[2]."\">"
+                    .$col[3]." "
+                    .($this->sort_by==$col[0] ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by==$col[0].'_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n";
+            }
+        }
+        if ($this->filter_listener) {
+            $html.=    "    <th class='nosort txt_c' colspan='2'>Range from<br />Listener</th>\n";
+        }
+        if ($this->filter_dx_gsq) {
+            $html.=    "    <th class='nosort txt_c' colspan='3'>Range from<br />GSQ</th>\n";
+        }
+        if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+            $html.=    "    <th class='nosort' rowspan='2'>&nbsp;</th>\n";
+        }
+        if ($this->filter_listener || $this->filter_dx_gsq) {
+            $html.=    "  <tr>\n";
+            if ($this->filter_listener) {
+                $html.=
+                     "    <th onclick=\"colSort('dx','".$this->sort_by."',1)\""
+                    ." title=\"Sort by 'KM' column\"  nowrap>"
+                    ."KM "
+                    .($this->sort_by=='dx' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by=='dx_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n"
+                    ."    <th onclick=\"colSort('dx','".$this->sort_by."',1)\""
+                    ." title=\"Sort by 'Miles' column\" nowrap>"
+                    ."Miles "
+                    .($this->sort_by=='dx' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by=='dx_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n"
+                ;
+            }
+            if ($this->filter_dx_gsq) {
+                $html.=
+                     "    <th onclick=\"colSort('range_dx_km','".$this->sort_by."',1)\""
+                    ." title=\"Sort by 'Range KM' column\">"
+                    ."KM "
+                    .($this->sort_by=='range_dx_km' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by=='range_dx_km_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n"
+                    ."    <th onclick=\"colSort('range_dx_km','".$this->sort_by."',1)\""
+                    ." title=\"Sort by 'Range Miles' column\">"
+                    ."Miles "
+                    .($this->sort_by=='range_dx_km' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by=='range_dx_km_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n"
+                    ."    <th onclick=\"colSort('range_dx_deg','".$this->sort_by."')\""
+                    ." title=\"Sort by 'Degrees' column\">"
+                    ."Deg "
+                    .($this->sort_by=='range_dx_deg' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                     :
+                        ""
+                    )
+                    .($this->sort_by=='range_dx_deg_d' ?
+                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                     :
+                        ""
+                    )
+                    ."</th>\n";
+            }
+            $html.=
+                "  </tr>\n";
+        }
+        $html.=
+             "  </tr>\n"
+            ."  </thead>\n";
+        return $html;
+    }
+
+    protected function drawResultsInfo()
+    {
+        $html = "";
+        switch($this->sort_by) {
+            case 'CLE64':
+            case 'CLE64_d':
+                $html.=
+                     "<div><span style='color:#ff0000'>CLE64 Custom sort order applied:</span></b></div>\n"
+                    ."<ul>\n"
+                    ."  <li>Show <b>active</b> beacons first</li>\n"
+                    ."  <li>Sort by <b>first letter</b> of callsign: <b>("
+                    .($this->sort_by=='CLE64' ? 'A-Z' : 'Z-A')
+                    .")</b></li>\n"
+                    ."  <li>Sort by <b>DX</b> from Grid Square <b>".$this->filter_dx_gsq."</b>.</li>\n"
+                    ."</ul>\n"
+                    ."<p><b>Tip:</b> You can further <b>refine this search</b> by entering additional"
+                    ." search criteria such as range limits.</p>\n";
+                break;
+        }
+        if ($this->filter_id) {
+            $html.=
+                 "<p><b>Note:</b> Any exact matches for <b>".$this->filter_id."</b>"
+                ." will shown at the top of this list, regardless of the station's current status.</p>\n";
+        }
+        return $html;
+    }
+
+    protected function drawStatsListeners()
     {
         return
              "<div class='form_box shadow'>\n"
             ."  <div class='header'>".system." Listeners</div>\n"
             ."  <div class='body rowForm'>\n"
-            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:180px'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Locations</th>\n"
+            ."        <th align='left' width='50%'>Locations</th>\n"
             ."        <td align='right'>".$this->stats['locations']."</td>\n"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
@@ -613,15 +917,15 @@ class SignalList
             ."</div>";
     }
 
-    protected function drawSignalStats()
+    protected function drawStatsSignals()
     {
         return
              "<div class='form_box shadow'>\n"
             ."  <div class='header'>Signals</div>\n"
             ."  <div class='body rowForm'>\n"
-            ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:180px'>\n"
+            ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>RNA only</th>\n"
+            ."        <th align='left' width='50%'>RNA only</th>\n"
             ."        <td align='right'>".$this->stats['RNA_only']."</td>\n"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
@@ -638,7 +942,7 @@ class SignalList
             ."      </tr>\n"
             .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
                  "      <tr class='rowForm'>\n"
-                ."        <th align='left'>Unassigned signals</th>\n"
+                ."        <th align='left'>Unlogged</th>\n"
                 ."        <td align='right'>".$this->stats['Unassigned']."</td>\n"
                 ."      </tr>\n"
              :
@@ -847,7 +1151,9 @@ class SignalList
         $sql =
              "SELECT\n"
             ."    DATE_FORMAT(MIN(`date`),'%e %b %Y') AS `first_log`,\n"
-            ."    DATE_FORMAT(MAX(`date`),'%e %b %Y') AS `last_log`\n"
+            ."    DATE_FORMAT(MAX(`date`),'%e %b %Y') AS `last_log`,\n"
+            ."    DATE_FORMAT(MIN(`date`),'%Y-%m-%d') AS `first_log_iso`,\n"
+            ."    DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last_log_iso`\n"
             ."FROM\n"
             ."    `logs`\n"
             ."WHERE\n"
@@ -1513,7 +1819,7 @@ class SignalList
 
     protected function setupLoadVars()
     {
-        global $mode;
+        global $mode, $sort_by;
         $this->mode =                   $mode;
         $this->submode =                get_var('submode');
         $this->targetID =               (int)get_var('targetID');
