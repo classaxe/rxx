@@ -529,7 +529,7 @@ class SignalList
             ."    minDate:minDate,\n"
             ."    maxDate:maxDate,\n"
             ."    showOn:'button',\n"
-            ."    buttonImage:'/dx/ndb/assets/datepicker_".system.".gif',\n"
+            ."    buttonImage:'/dx/ndb/assets/datepicker_".strToLower(system).".gif',\n"
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
