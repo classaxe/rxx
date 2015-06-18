@@ -43,13 +43,14 @@ signal.init = function() {
 };
 
 signal.icons = {
-    'dgps':   new google.maps.MarkerImage('../assets/pin_dgps.png',   new google.maps.Size(12, 20)),
-    'dsc':    new google.maps.MarkerImage('../assets/pin_dsc.png',    new google.maps.Size(12, 20)),
-    'hambcn': new google.maps.MarkerImage('../assets/pin_hambcn.png', new google.maps.Size(12, 20)),
-    'navtex': new google.maps.MarkerImage('../assets/pin_navtex.png', new google.maps.Size(12, 20)),
-    'ndb':    new google.maps.MarkerImage('../assets/pin_ndb.png',    new google.maps.Size(12, 20)),
-    'time':   new google.maps.MarkerImage('../assets/pin_time.png',   new google.maps.Size(12, 20)),
-    'other':  new google.maps.MarkerImage('../assets/pin_other.png',  new google.maps.Size(12, 20))
+    'dgps':     new google.maps.MarkerImage('../assets/pin_dgps.png',     new google.maps.Size(12, 20)),
+    'dsc':      new google.maps.MarkerImage('../assets/pin_dsc.png',      new google.maps.Size(12, 20)),
+    'hambcn':   new google.maps.MarkerImage('../assets/pin_hambcn.png',   new google.maps.Size(12, 20)),
+    'navtex':   new google.maps.MarkerImage('../assets/pin_navtex.png',   new google.maps.Size(12, 20)),
+    'ndb':      new google.maps.MarkerImage('../assets/pin_ndb.png',      new google.maps.Size(12, 20)),
+    'time':     new google.maps.MarkerImage('../assets/pin_time.png',     new google.maps.Size(12, 20)),
+    'other':    new google.maps.MarkerImage('../assets/pin_other.png',    new google.maps.Size(12, 20)),
+    'inactive': new google.maps.MarkerImage('../assets/pin_inactive.png', new google.maps.Size(12, 20))
 }
 
 signal.showMarkers = function() {
@@ -74,7 +75,7 @@ signal.showMarkers = function() {
         panel.appendChild(item);
         latLng = new google.maps.LatLng(s.lat, s.lon);
         marker = new google.maps.Marker({
-            'title' :  s.khz + ' ' + s.call,
+            'title' :  strip_tags(s.khz + ' ' + s.call),
             'position': latLng,
             'icon': signal.icons[s.className]
         });
@@ -91,6 +92,20 @@ signal.showMarkers = function() {
         }
     }
 };
+
+function strip_tags(input, allowed) {
+  allowed = (((allowed || '') + '')
+    .toLowerCase()
+    .match(/<[a-z][a-z0-9]*>/g) || [])
+    .join('');
+  var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+  return input.replace(commentsAndPhpTags, '')
+    .replace(tags, function($0, $1) {
+      return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+    });
+}
+
 
 signal.markerClickFunction = function(s, latlng) {
     return function(e) {
