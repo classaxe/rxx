@@ -97,6 +97,7 @@ function clear_signal_list(form){
     radio_filter_heard_in_mod_any.checked=1;
     filter_dx_units_km.checked=1;
     form['filter_listener[]'].selectedIndex=0;
+    show_list.checked=1;
     filter_khz_1.value="";
     filter_khz_2.value="";
     filter_sp.value="";
@@ -287,6 +288,22 @@ function export_signallist_excel() {
     (document.form.type_TIME.checked ? '&type_TIME=1' : '')+
     (document.form.type_OTHER.checked ? '&type_OTHER=1' : ''),
     'popExcel','scrollbars=1,toolbar=1,menubar=1,status=1,resizable=1',800,550,'centre'
+  );
+}
+
+function filtered_signallist_map() {
+  popWin(
+    system_URL+'/filtered_signallist_map?'+
+    (document.form.filter_active.checked ? '&filter_active=1' : '')+
+    (document.form.offsets.options[document.form.offsets.selectedIndex].value!='' ? '&offsets=abs' : '')+
+    (document.form.type_DGPS.checked ? '&type_DGPS=1' : '')+
+    (document.form.type_DSC.checked ? '&type_DSC=1' : '')+
+    (document.form.type_HAMBCN.checked ? '&type_HAMBCN=1' : '')+
+    (document.form.type_NAVTEX.checked ? '&type_NAVTEX=1' : '')+
+    (document.form.type_NDB.checked ? '&type_NDB=1' : '')+
+    (document.form.type_TIME.checked ? '&type_TIME=1' : '')+
+    (document.form.type_OTHER.checked ? '&type_OTHER=1' : ''),
+    'popSignalMap','scrollbars=1,toolbar=1,menubar=1,status=1,resizable=1',1024,768, 'centre'
   );
 }
 
@@ -828,6 +845,28 @@ function sp_itu_over(targ,mode) {
 }
 
 function send_form(form) {
+  if (validate_form(form)) {
+      if (form.go) {
+        form.go.value="Loading...";
+        form.go.disabled=1;
+      }
+      if (form.map) {
+        form.map.disabled=1;
+      }
+      if (form.clear) {
+        form.clear.disabled=1;
+      }
+      if (form.previous) {
+        form.previous.disabled=1;
+      }
+      if (form.next) {
+        form.next.disabled=1;
+      }
+      form.submit();
+  }
+}
+
+function validate_form(form) {
   var msg = "", err_sp=false, err_itu=false;
   if (form.filter_heard_in && form.filter_heard_in.value!="(All States and Countries)" && (!validate_alphasp(form.filter_heard_in.value))) {
     msg += "HEARD IN:\n* List locations separated by spaces, e.g.: ENG FRA ON BC NE NOR\n\n";
@@ -862,26 +901,13 @@ function send_form(form) {
     alert("Please correct the following errors:\n\n" + msg);
     if (err_sp) {
       show_sp();
-    }    
+    }
     if (err_itu) {
       show_itu();
     }
     return false;
   }
-  if (form.go) {
-    form.go.value="Loading...";
-    form.go.disabled=1;
-  }
-  if (form.clear) {
-    form.clear.disabled=1;
-  }
-  if (form.previous) {
-    form.previous.disabled=1;
-  }
-  if (form.next) {
-    form.next.disabled=1;
-  }
-  form.submit();
+  return true;
 }
 
 function submit_log(form){

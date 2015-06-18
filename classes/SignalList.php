@@ -2,7 +2,8 @@
 
 class SignalList
 {
-    protected $html = '';
+    public $html = '';
+    public $head = '';
     protected $ObjSignal;
 
     protected $total;
@@ -46,6 +47,7 @@ class SignalList
     protected $limit;
     protected $offset;
     protected $sort_by;
+    protected $show;
 
     protected $mode;
     protected $submode;
@@ -74,7 +76,6 @@ class SignalList
     public function draw()
     {
         $this->setup();
-
         $this->html.=
              "<h2>Signal List</h2>\n"
             .$this->drawHelp()
@@ -89,41 +90,40 @@ class SignalList
             .$this->drawVisitorPoll()
             ."</div>"
             ."<br style='clear:both' /><br />";
-
         if ($this->rows) {
-            $this->html.=
-                 $this->drawResultsInfo()
-                ."<table cellpadding='2' cellspacing='0' border='1' class='listTable'>\n"
-                .$this->drawResultsHeadings()
-                .$this->drawResultsData()
-                ."</table>\n"
-                ."<br>\n"
-                ."<span class='noscreen'>\n"
-                ."<b><i>(End of printout)</i></b>\n"
-                ."</span>\n";
+            if ($this->show!='map') {
+                $this->drawListing();
+            }
+            else {
+                $this->drawMap();
+            }
         } else {
             $this->html.=
                 "<h2>Results</h2><br><br><h3>No results for search criteria</h3><br><br><br>\n";
         }
+        $this->html.= $this->drawButtons();
+    }
 
-        $this->html.=
-             "<p class='noprint txt_c buttons'>\n"
+    protected function drawButtons() {
+        $this->html .=
+             "<p class='noprint buttons'>\n"
             ."<input type='button' value='Print...' onclick='"
             .(($this->limit!=-1 && $this->limit<$this->total) ?
                  "if (confirm("
                 ."\"Information\\n\\nThis printout works best in Landscape.\\n\\n"
                 ."You are not presently displaying all ".$this->total." available records.\\n"
                 ."Continue anyway?\""
-                .")) { window.print(); }": "window.print()")."'/> ";
-        if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
-            $this->html.=
-                 "<input type='button' value='Add signal...'"
+                .")) { window.print(); }": "window.print()"
+            )."'/> "
+            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+             "<input type='button' value='Add signal...'"
                 ." onclick=\"signal_add("
                 ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
-                .")\" /> ";
-        }
-        $this->html.=
-             "<input type='button' value='All ".system." > Excel'"
+                .")\" /> "
+            :
+                ""
+            )
+            ."<input type='button' value='All ".system." > Excel'"
             ." title='Get the whole database as Excel' onclick='export_signallist_excel();' /> "
             ."<input type='button' value='All ".system." > PDF'"
             ." title='get the whole database as PDF' onclick='export_signallist_pdf();' /> "
@@ -131,7 +131,7 @@ class SignalList
             ." title='get the whole database as ILGRadio format for Ham Radio Deluxe'"
             ." onclick='export_signallist_ilg()' /> "
             ."</p>\n";
-        return $this->html;
+
     }
 
     protected function drawControlChannels()
@@ -347,7 +347,7 @@ class SignalList
         $html = '';
         foreach ($types as $type) {
             $html.=
-                 "<label style='width:".$type[3]."%;background:".Signal::$colors[$type[0]]."'>"
+                 "<label style='width:".$type[3]."%;' class='".strToLower($type[1])."'>"
                 ."<input type='checkbox' name='".$type[1]."' value='1'"
                 .($this->$type[1] ? " checked='checked'" : "")
                 .">"
@@ -373,6 +373,11 @@ class SignalList
             ."        <th align='left'>Show</th>\n"
             ."        <td nowrap>"
             .show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
+            ."<div style='float:right'>"
+            ."<input type='radio' id='show_list' name='show' value='list'".($this->show=='map' ? '' : 'checked="checked"').">"
+            ."<label for='show_list'>List</label>&nbsp;"
+            ."<input type='radio' id='show_map' name='show' value='map'".($this->show=='map' ? 'checked="checked"' : '').">"
+            ."<label for='show_map'>Map</label></div>"
             ."</td>\n"
             ."      </tr>"
             ."      <tr class='rowForm'>\n"
@@ -512,11 +517,13 @@ class SignalList
             ."</select></td>\n"
             ."      </tr>"
             ."      <tr class='rowForm noprint'>\n"
-            ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
+            ."        <th colspan='2'>"
+            ."<input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
             ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
             ."      </tr>\n"
             ."    </table></div></div></form>"
-            ."<script>\n"
+            ."<script type='text/javascript'>\n"
+            ."//<!--\n"
             ."\$(function() {\n"
             ."  var minDate = new Date('".$this->stats['first_log_iso']."');\n"
             ."  var maxDate = new Date('".$this->stats['last_log_iso']."');\n"
@@ -538,6 +545,7 @@ class SignalList
             ."  \$('#filter_id').focus();\n"
             ."  \$('#filter_id').select();\n"
             ."})\n"
+            ."//-->\n"
             ."</script>\n";
         return $html;
     }
@@ -600,12 +608,135 @@ class SignalList
                 ."<a href='http://www.ndblist.info/dgnavinfo/datamodes/worldDGPSdatabase.pdf' target='_blank'>"
                 ."<b>NDB List PDF (by Frequency)</b></a>"
                 ." | "
-                ."<a href='http://www.navcen.uscg.gov/?pageName=dgpsSiteInfo&All' target='_blank'>"
+                ."<a href='http://www.navcen.uscg.gov/?pageName=dgpsSiteInfo&amp;All' target='_blank'>"
                 ."<b>USCG DGPS Site List</b></a>"
                 ." ]</li>\n"
                 ."</ul>\n";
         }
         return $html;
+    }
+
+    protected function drawListing(){
+        $this->html.=
+             $this->drawResultsInfo()
+            ."<table cellpadding='2' cellspacing='0' border='1' class='listTable'>\n"
+            .$this->drawResultsHeadings()
+            .$this->drawResultsData()
+            ."</table>\n"
+            ."<br>\n"
+            ."<span class='noscreen'>\n"
+            ."<b><i>(End of printout)</i></b>\n"
+            ."</span>\n";
+    }
+
+    protected function drawMap() {
+        $this->head.=
+             "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js\"></script>\n"
+            ."<script type=\"text/javascript\" src=\"".BASE_PATH."assets/markerclusterer.js\"></script>\n"
+            ."<script type=\"text/javascript\">google.maps.event.addDomListener(window, 'load', signal.init);</script>\n"
+            ."<script type=\"text/javascript\">\n"
+            ."//<!--\n"
+            ."var signals = [\n";
+        foreach ($this->rows as $row) {
+            if (isset($filter_by_dx) && $filter_by_dx) {
+                $dx =        get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+            }
+            if (!$row["active"]) {
+                $class='inactive';
+                $type = '(Reportedly off air or decommissioned)';
+            } else {
+                switch ($row["type"]) {
+                    case NDB:
+                        $class =    'ndb';
+                        $type =     'NDB';
+                        break;
+                    case DGPS:
+                        $class =    'dgps';
+                        $type =     'DGPS Station';
+                        break;
+                    case DSC:
+                        $class =    'dsc';
+                        $type =     'DSC Station';
+                        break;
+                    case TIME:
+                        $class =    'time';
+                        $type =     'Time Signal Station';
+                        break;
+                    case NAVTEX:
+                        $class =    'navtex';
+                        $type =     'NAVTEX Station';
+                        break;
+                    case HAMBCN:
+                        $class =    'hambcn';
+                        $type =     'Amateur signal';
+                        break;
+                    case OTHER:
+                        $class =    'other';
+                        $type =     'Other Utility Station';
+                        break;
+                }
+            }
+            $call =     ($this->filter_id ?
+                highlight($row["call"], $this->filter_id)
+             :
+                $row["call"]
+            );
+            $heard_in = ($this->filter_heard_in ?
+                highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
+             :
+                $row["heard_in_html"]
+            );
+            $SP =       ($this->filter_sp ?
+                highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
+             :
+                $row["SP"]
+            );
+            $ITU =      ($this->filter_itu ?
+                highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
+             :
+                $row["ITU"]
+            );
+            if ($row['lat'] || $row['lon']) {
+                $this->head.=
+                     "  {\"id\":".$row["ID"].","
+                    ."\"khz\":".$row["khz"].","
+                    ."\"call\":\"".$call."\","
+                    ."\"className\":\"".$class."\","
+                    ."\"type\":\"".$type."\","
+                    ."\"pwr\":\"".number_format((float)$row["pwr"])."\","
+                    ."\"qth\":\"".htmlEntities($row["QTH"])."\","
+                    ."\"itu\":\"".$row["ITU"]."\","
+                    ."\"sp\":\"".$SP."\","
+                    ."\"lat\":".($row['lat'] ? $row['lat'] : "0").","
+                    ."\"lon\":".($row['lon'] ? $row['lon'] : "0").","
+                    ."\"gsq\":'".$row["GSQ"]."',"
+                    ."\"lsb\":'".$row["LSB_approx"].($row["LSB"]<>"" ? ($this->offsets=="" ? $row["LSB"] : number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')): "")."',"
+                    ."\"usb\":'".$row["USB_approx"].($row["USB"]<>"" ? ($this->offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')): "")."',"
+                    ."\"sec\":'".$row['sec']."',"
+                    ."\"fmt\":'".($row["format"] ? stripslashes($row["format"]) : "")."',"
+                    ."\"heard\":'".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "")."',"
+                    ."\"heard_in\":\"".str_replace(array('</a>','</b>'),array('<\/a>','<\/b>'),$heard_in)."\""
+                    ."},\n";
+            }
+        }
+        $this->head.=
+            "];\n"
+            ."//-->\n"
+            ."</script>\n";
+
+        $this->html.=
+             "<div id=\"panel\">\n"
+            ."  <h2>Signals Map</h2>\n"
+            ."  <div style='float:right;margin: 0 2em;'>\n"
+            ."    <input type=\"checkbox\" checked=\"checked\" id=\"usegmm\"/>\n"
+            ."    <label for='usegmm'>Clustering</label>\n"
+            ."  </div>\n"
+            ."  <div id=\"markerlist\">\n"
+            ."  </div>\n"
+            ."</div>\n"
+            ."<div id=\"map-container\">\n"
+            ."  <div id=\"map\"></div>\n"
+            ."</div>";
     }
 
     protected function drawResultsData()
@@ -709,8 +840,9 @@ class SignalList
 
             if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
                 $html.=
-                     "<td nowrap><a href='javascript: if (confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")) { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\"; document.form.submit();}'>Del</a>\n"
-                    ."<a href='javascript:signal_merge(".$row["ID"].")'>Merge</a></td>\n";
+                     "<td nowrap>"
+                    ."<a href='#' onclick='if (confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")) { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\"; document.form.submit();};return false'>Del</a>\n"
+                    ."<a href='#' onclick='signal_merge(".$row["ID"].")'>Merge</a></td>\n";
             }
         }
         $html.=
@@ -734,7 +866,7 @@ class SignalList
             'gsq|0|Sort by GSQ Grid Locator Square|GSQ',
             'pwr|1|Sort by Transmitter Power|PWR',
             'notes|0|Sort by Notes column|Notes',
-            'heard_in|0|"Sort by \'Heard In\' column|Heard In',
+            'heard_in|0|Sort by \'Heard In\' column|Heard In',
             'logs|0|Sort by number of times logged|Logs',
             'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Heard'
         );
@@ -1822,6 +1954,7 @@ class SignalList
         global $mode, $sort_by;
         $this->mode =                   $mode;
         $this->submode =                get_var('submode');
+        $this->show =                   get_var('show');
         $this->targetID =               (int)get_var('targetID');
         $this->filter_active =          get_var('filter_active');
         $this->filter_channels =        get_var('filter_channels');

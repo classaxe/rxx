@@ -6,36 +6,10 @@
 // * Project:   RNA / REU / RWW              *
 // * Filename:  functions.php                *
 // *                                         *
-// * Revised:   2007-07-02 (MF)              *
+// * Revised:   2015-06-14 (MF)              *
 // * Created:   2004-04-25 (MF)              *
 // * Email:     martin@classaxe.com          *
 // *******************************************
-/*
-1.0.5 (2013-12-16)
-  1) export_signallist_excel() and show_pdf() now respect 'active' filter flag - thanks Joachim Rabe!
-1.0.5 (2013-11-30)
-  1) Changes to export_signallist_excel() and show_pdf() to support type DSC - thanks Vincent!
-1.0.4 (2013-09-25)
-  1) Changes to update_listener_log_count() to include DSC and refactor to simplify
-1.0.3 (2010-11-22)
-  1) Changes to remove deprecated functions
-1.0.2 (2010-11-12)
-  1) Changes to xml_listener_stats() to extend DTD entity list
-1.0.1 (2008-11-30)
-  1) Changes to get_sp_maplinks() to show link text other than SP
-1.0.0 (Initial release)
-
-*/
-
-// 2007-07-02
-//   Added:
-//     Record::do_sql_query()
-//     Record::get_ID()
-//     Record::get_record_for_sql()
-//     Record::get_records_for_sql()
-// Note: all functions are declared in alphabetical order
-
-
 
 
 // ************************************
@@ -444,7 +418,7 @@ function admin_help() {
 // ************************************
 function highlight($string,$find) {
   $find = str_replace("_","[A-Z0-9]",$find);
-  return ($find ? (preg_replace("/($find)/", "<font color='".g_highlight."'><b>\\1</b></font>",$string)): $string);
+  return ($find ? (preg_replace("/($find)/", "<span style='font-weight:bold;color:".g_highlight."'>\\1</span>",$string)): $string);
 }
 
 
@@ -468,8 +442,28 @@ function piwik_tracking(){
 // * main()                           *
 // ************************************
 function main() {
-  global $mode, $script;
+  global $mode, $submode, $script;
   global $system;
+
+
+  switch ($mode) {
+      case 'awards':
+        $Obj = new Awards;
+        break;
+      case 'signal_list':
+        $Obj = new SignalList;
+        $Obj->draw();
+        break;
+      case 'poll_list':
+        $Obj = new Poll;
+        break;
+      default:
+        $Obj = false;
+        break;
+  }
+
+
+
   $out =
      "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
 	."<html><head>\n"
@@ -525,22 +519,22 @@ function main() {
   $out.=
      (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? " (ADMIN)" : "")
     ."</title>\n"
-    ."<link rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css' />\n"
-    ."<script src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
-    ."<script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
+    ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
+	."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
+	."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+    .($Obj && isset($Obj->head) ? $Obj->head : "")
+    ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
+    ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
 	."<script type='text/javascript'>\n"
     ."//<!--\n"
     .piwik_tracking()
     ."var system =     '".system."';\n"
     ."var system_URL = '".system_URL."';\n"
-//	."show_time();\n"
     ."//-->\n"
 	."</script>\n"
 	."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
-	."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
-	."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
     ."</head>\n"
-	."<body onload='show_time()'><a name='top'></a>\n"
+	."<body onload='show_time()'><span><a name='top'></a></span>\n"
 	."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
 	."  <tr>\n"
 	."    <td align='center'><h1 title='Software Date: ".system_software." UTC (MF)' style='cursor: pointer;cursor: hand;'>".system_title.(getenv("SERVER_NAME")=="classaxe.homedns.org" ? " (Hello Alan!)": "")."</h1></td>\n"
@@ -624,15 +618,12 @@ function main() {
     ."    <td width='100%' valign='top'>";
   switch ($mode) {
       case 'awards':
-        $Obj = new Awards;
         $out.= $Obj->draw();
         break;
       case 'signal_list':
-        $Obj = new SignalList;
-        $out.= $Obj->draw();
+        $out.= $Obj->html;
         break;
       case 'poll_list':
-        $Obj = new Poll;
         $out.= $Obj->drawList();
         break;
       default:
@@ -976,11 +967,8 @@ function translate_chars($string){
 // ************************************
 // * show_page_bar()                  *
 // ************************************
-function show_page_bar($record_count,$limit,$offset,$show,$show_prev_next,$show_page_select) {
-  $out = array();
-  if (!$show) {
-    return "<input type='hidden' name='limit' value='-1'><input type='hidden' name='offset' value='0'>";
-  }
+function show_page_bar($record_count,$limit,$offset) {
+  $out = '';
   if ($limit>$record_count) {
     if ($record_count>10) {
       $limit = 10;
@@ -1002,51 +990,44 @@ function show_page_bar($record_count,$limit,$offset,$show,$show_prev_next,$show_
     }
   }
   if ($record_count>10) {
-    $out[] =	"<select name=\"limit\" onchange=\"send_form(document.form)\" class=\"formField\">\n";
-    $out[] =	"  <option value=\"10\"".($limit==10 ? " selected":"").">10 Results</option>\n";
-    if ($record_count>25) {
-      $out[] =	"  <option value=\"25\"".($limit==25 ? " selected":"").">25 Results</option>\n";
-    }
-    if ($record_count>50) {
-      $out[] =	"  <option value=\"50\"".($limit==50 ? " selected":"").">50 Results</option>\n";
-    }
-    if ($record_count>100) {
-      $out[] =	"  <option value=\"100\"".($limit==100 ? " selected":"").">100 Results</option>\n";
-    }
-    if ($record_count>250) {
-      $out[] =	"  <option value=\"250\"".($limit==250 ? " selected":"").">250 Results</option>\n";
-    }
-    $out[] =	"  <option value=\"-1\"". ($limit==-1 ?" selected":"").">All Results</option>\n";
-    $out[] =	"</select>\n";
-    if ($show_prev_next && $limit!=-1) {
-      if ($show_page_select) {
-        $out[] = "<input type='button' class='formbutton'".($offset==0 ? " disabled": "")." name='previous' value='&nbsp;<&nbsp;' onclick='document.form.offset.selectedIndex=document.form.offset.selectedIndex-1;send_form(form);'>\n";
-        $out[] = "<input type='button' class='formbutton'".($offset+$limit>$record_count ? " disabled": "")." name='next' value='&nbsp;>&nbsp;' onclick='document.form.offset.selectedIndex=document.form.offset.selectedIndex+1;send_form(form);'>\n";
-      }
-      else {
-        $out[] = "<input type='button' class='formbutton'".($offset==0 ? " disabled": "")." name='previous' value='&nbsp;$config_page_prev_text&nbsp;' onclick='document.form.offset.value=parseInt(document.form.offset.value)-$limit;document.form.submit();'>\n";
-        $out[] = "<input type='button' class='formbutton'".($offset+$limit>$record_count ? " disabled": "")." name='next' value='&nbsp;$config_page_next_text&nbsp;' onclick='document.form.offset.value=parseInt(document.form.offset.value)+$limit;document.form.submit();'>\n";
-      }
-    }
-    if($show_prev_next) {
-    }
-    if ($limit!=-1 && $show_page_select) {
-      $out[] =	"<select name=\"offset\" onchange=\"send_form(document.form)\" class=\"formField\">\n";
+    $out.=
+         "<select name=\"limit\" onchange=\"send_form(document.form)\" class=\"formField\">\n"
+        ."  <option value=\"10\"".($limit==10 ? " selected":"").">10 Results</option>\n"
+        .($record_count>25 ?   "  <option value=\"25\"".($limit==25 ? " selected":"").">25 Results</option>\n" : "")
+        .($record_count>50 ?   "  <option value=\"50\"".($limit==50 ? " selected":"").">50 Results</option>\n" : "")
+        .($record_count>100 ?  "  <option value=\"100\"".($limit==100 ? " selected":"").">100 Results</option>\n" : "")
+        .($record_count>250 ?  "  <option value=\"250\"".($limit==250 ? " selected":"").">250 Results</option>\n" : "")
+        ."  <option value=\"-1\"". ($limit==-1 ?" selected":"").">All Results</option>\n"
+        ."</select>\n"
+        .($limit!=-1 ?
+             "<input type='button' class='formbutton'".($offset==0 ? " disabled": "")." name='previous' value='&lt;'"
+            ." onclick='document.form.offset.selectedIndex=document.form.offset.selectedIndex-1;send_form(form);'>\n"
+            ."<input type='button' class='formbutton'".($offset+$limit>$record_count ? " disabled": "")." name='next' value='&gt;'"
+            ." onclick='document.form.offset.selectedIndex=document.form.offset.selectedIndex+1;send_form(form);'>\n"
+         :
+            ""
+         );
+    if ($limit!=-1) {
+      $out.=
+        "<select name=\"offset\" onchange=\"send_form(document.form)\" class=\"formField\">\n";
       for ($i=0; $i<$record_count; $i = $i+$limit) {
-        $out[] ="  <option value=\"".$i."\"".($offset==$i ? " selected":"").">Show ".($i+1)."-".($i+$limit>$record_count ? $record_count : $i+$limit)."</option>\n";
+        $out.="  <option value=\"".$i."\"".($offset==$i ? " selected":"").">".($i+1)."-".($i+$limit>$record_count ? $record_count : $i+$limit)."</option>\n";
       }
-      $out[] =	"</select> of ".$record_count." records&nbsp;\n";
+      $out.=
+        "</select> of ".$record_count."\n";
     }
     else {
-      $out[] =	"<input type=\"hidden\" name=\"offset\" value=\"$offset\">Showing ";
-      $out[] =	($limit==-1 ? " all of " : " ".(1+$offset)." to ".($offset+$limit > $record_count ? $record_count : $offset+$limit)." of ").$record_count." records&nbsp;\n";
+      $out.=
+         "<input type=\"hidden\" name=\"offset\" value=\"".$offset."\">Showing "
+        .($limit==-1 ? " all of " : " ".(1+$offset)." to ".($offset+$limit > $record_count ? $record_count : $offset+$limit)." of ").$record_count." records&nbsp;\n";
     }
   }
   else {
-    $out[] =	"<input type=\"hidden\" name=\"limit\" value=\"".$limit."\"><input type=\"hidden\" name=\"offset\" value=\"0\">\n";
-    $out[] =	$record_count." record".($record_count<>1 ? "s" : "").".\n";
+    $out.=
+         "<input type=\"hidden\" name=\"limit\" value=\"".$limit."\"><input type=\"hidden\" name=\"offset\" value=\"0\">\n"
+        .$record_count." record".($record_count<>1 ? "s" : "").".\n";
   }
-  return implode('',$out);
+  return $out;
 }
 
 

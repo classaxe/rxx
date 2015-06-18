@@ -346,13 +346,13 @@ function signal_info()
     ."                    <td><input type='text' size='6' maxlength='6' name='GSQ' value='".$GSQ."' class='formfield'> [ "
     ."<a onmouseover='window.status=\"Use coordinate converter\";return true;' onmouseout='window.status=\"\";return true;' href=\"".system_URL."/tools_coordinates_conversion?GSQ=".$GSQ."\" onclick=\"popWin('".system_URL."/tools_coordinates_conversion?GSQ=".$GSQ."','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre');return false;\" title='Use coordinate converter'><b>Convert</b></a>"
     .(isset($row) ?
-        " | <a onmouseover='window.status=\"View Mapquest map for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href='javascript:popup_mapquestmap(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Mapquest map\\\n(accuracy limited to nearest Grid Square)'><b>Mapquest</b></a>"
-       ." | <a onmouseover='window.status=\"View Google map for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Google map\\\n(accuracy limited to nearest Grid Square)'><b>Google</b></a>"
+        " | <a href='javascript:popup_mapquestmap(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Mapquest map\\\n(accuracy limited to nearest Grid Square)'><b>Mapquest</b></a>"
+       ." | <a href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Google map\\\n(accuracy limited to nearest Grid Square)'><b>Google</b></a>"
       : ""
      )
     ." ]</td>\n"
-    ."                    <th>Lat</th><td><input type='text' size='10' name='lat_dddd' class='formField' value='".$lat."'></td>\n"
-    ."                    <th>Lon</th><td><input type='text' size='10' name='lon_dddd' class='formField' value='".$lon."'></td>\n"
+    ."                    <th>Lat</th><td><input type='text' size='10' name='lat_dddd' style='width:7em' class='formField' value='".$lat."'></td>\n"
+    ."                    <th>Lon</th><td><input type='text' size='10' name='lon_dddd' style='width:7em' class='formField' value='".$lon."'></td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."              <tr class='rowForm'>\n"
@@ -383,7 +383,7 @@ function signal_info()
      )
      ."</td>\n"
      ."              <tr class='rowForm'>\n"
-     ."                <th align='left'>Cycle Time (sec)</th>\n"
+     ."                <th align='left'>Cycle (sec)</th>\n"
      ."                <td><input type='text' size='9' maxlength='12' name='sec' value='".$sec."' class='formfield'><a href='javascript: alert(\"INFORMATION\\n\\nWhere two values are given for Cycle Time (e.g. 8.0/28.0),\\nthe first value is for the ID portion of the cycle and the second value is\\nfor the whole thing.\")'><b>(Info)</b></a></td>\n"
      ."                <th align='right'>Format</th>\n"
      ."                <td><input type='text' size='12' maxlength='25' name='format' value='".$format."' class='formfield'></td>\n"
@@ -1628,18 +1628,18 @@ function signal_update_heard_in($ID)
         $link =        "";
         switch ($region) {
             case "ca":
-                $link =        "<a class='hover' href='javascript:void signal_map_na($ID)' title='North American Reception Map'>";
+                $link =        "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
                 break;
             case "na":
-                $link =        "<a class='hover' href='javascript:void signal_map_na($ID)' title='North American Reception Map'>";
+                $link =        "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
                 break;
             case "oc":
                 if ($heard_in=='HI') {
-                    $link =    "<a class='hover' href='javascript:void signal_map_na($ID)' title='North American Reception Map'>";
+                    $link =    "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
                 }
                 break;
             case "eu":
-                $link =        "<a class='hover' href='javascript:void signal_map_eu($ID)' title='European Reception Map'>";
+                $link =        "<a class='hover' href='#' onclick='signal_map_eu($ID);return false' title='European Reception Map'>";
                 break;
         }
         $html_arr[] =     ($old_link!="" && $old_link != $link ? "</a>" : "")

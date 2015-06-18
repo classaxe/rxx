@@ -3,13 +3,13 @@
 class Signal extends Record
 {
     public static $colors = array(
-        DGPS =>     '#00D8FF',
-        DSC =>      '#FFB000',
-        HAMBCN =>   '#B8FFC0',
-        NAVTEX =>   '#FFB8D8',
-        NDB =>      '#FFFFFF',
-        TIME =>     '#FFE0B0',
-        OTHER =>    '#B8F8FF'
+        DGPS =>     '#00d8ff',
+        DSC =>      '#ffb000',
+        HAMBCN =>   '#b8ffc0',
+        NAVTEX =>   '#ffb8d8',
+        NDB =>      '#ffffff',
+        TIME =>     '#ffe0b0',
+        OTHER =>    '#b8f8ff'
     );
 
     public function __construct($ID = false)

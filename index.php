@@ -53,7 +53,7 @@ switch($request_arr[0]){
     define("system_ID","1");
     define(
         "system_editor",
-        "<script type='text/javascript'>//<!--\ndocument.write(\"<a title='Contact the Editor' href='mail\"+\"to\"+\":smoketronics\"+\"@\"+\"comcast\"+\".\"+\"net?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs) and <a title='Contact the NDB Editor' href='mail\"+\"to\"+\":vlecler\"+\"@\"+\"ozone\"+\".\"+\"net?subject=".system."%20System'>Vincent Lecler\"+\"<\/a> (for DSC signals)\");\n//--></script>"
+        "<script type='text/javascript'>//<!--\ndocument.write(\"<a title='Contact the Editor' href='mail\"+\"to\"+\":smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs) and <a title='Contact the NDB Editor' href='mail\"+\"to\"+\":vlecler\"+\"@\"+\"ozone\"+\".\"+\"net?subject=".system."%20System'>Vincent Lecler\"+\"<\/a> (for DSC signals)\");\n//--></script>"
     );
     define("system_title","Signals Received in N &amp; C America + Hawaii");
   break;

@@ -1,105 +1,39 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html>
   <head>
-    <title>Google Maps</title>
-    <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAlmkuUepz5dcrp9QUrOIxcBS0wTT-4MfW1EIwyZSGoLInIzg-GxTdHVFTiy2P8Qa13o2wUJK1PapqCw" type="text/javascript"></script>
-  </head>
-<body onunload="GUnload()">
-<table border='1'>
-  <tr>
-    <td valign="top" align='center' colspan='2'><B>OH5YW NDB LOGGINGS at location Aitomäki Finland 60.8635, 26.815 (KP30ju)</B></td>
-  </tr>
-  <tr>
-    <td>
-       <div id="map" style="width: 630px; height: 480px"></div>
-    </td>
-    <td width ='120' valign="top" style="font-size:8pt;font-family:'courier-new';monospace;">
-       <div id="side_bar"  style="overflow:auto; height:480px;"></div>
-    </td>
-  </tr>
-</table>
-<script type="text/javascript">
-  //<![CDATA[
-
-var side_bar_html = "";
-  // arrays to hold copies of the markers and html used by the side_bar
-  // because the function closure trick doesnt work there
-var gmarkers = new Array();
-var htmls = new Array();
-var i = 0;
-
-if (GBrowserIsCompatible()) {
-      // this variable will collect the html which will eventually be placed in the side_bar
-
-  var tiny = new GIcon();
-  tiny.image = "http://www.classaxe.com/dx/ndb/small.png"
-  tiny.iconSize = new GSize(9, 8);
-  tiny.iconAnchor = new GPoint(5, 8);
-  tiny.infoWindowAnchor = new GPoint(5, 8);
-
-      // A function to create the marker and set up the event window
-      function createMarker(point,khz,id,itu,html) {
-        var marker = new GMarker(point,{icon:tiny,title:name});
-        GEvent.addListener(marker, "click", function() {
-          marker.openInfoWindowHtml(html);
-        });
-
-        // save the info we need to use later for the side_bar
-        gmarkers[i] = marker;
-        htmls[i] = html;
-        // add a line to the side_bar html
-        side_bar_html += "<tr onclick='myclick("+i+")' onmouseover=\"this.bgColor='#e0e0c0';\" onmouseout=\"this.bgColor='#ffffff';\"><td>"+khz+"</td><td>"+id+"</td><td>"+itu+"</td></tr>";
-        i++;
-        return marker;
-      }
-
-
-      // This function picks up the click and opens the corresponding info window
-      function myclick(i) {
-        gmarkers[i].openInfoWindowHtml(htmls[i]);
-      }
-
-
-      // create the map
-      var map = new GMap2(document.getElementById("map"));
-      map.addControl(new GLargeMapControl());
-      map.addControl(new GMapTypeControl());
-      map.setCenter(new GLatLng( 60.907787,26.359741), 5);
-
-      var side_bar_html = "";
-
-      // === Define the function thats going to process the text file ===
-      process_it = function(doc) {
-        lines = doc.split("\n");
-        for (var i=0; i<lines.length; i++) {
-          if (lines[i].length > 1) {
-            parts = lines[i].split('"');
-            if (parts.length>0) {
-              var lat = (parts[21] == '' ? 0 : parseFloat(parts[21]));
-              var lng = (parts[23] == '' ? 0 : parseFloat(parts[23]));
-              var html = "<small>"+parts[3]+" - "+parts[1]+"kHz<br>"+parts[5]+"  "+parts[9] + "<br/>Lat: "+ parts[21]+ ", Lon: "+ parts[23] +"</small>";
-              var point = new GLatLng(lat,lng);
-              var marker = createMarker(point,parts[1],parts[3],parts[9],html);
-              map.addOverlay(marker);
-            }
-          }
-        }
-        // put the assembled side_bar_html contents into the side_bar div
-        document.getElementById("side_bar").innerHTML = "<table cellpadding='2' cellspacing='0' border='0' style='border:1px solid #808080'><tr><th>KHz</th><th>Call</th><th>ITU</th></tr>"+side_bar_html+"</table>";
-      }
-
-      GDownloadUrl("http://www.classaxe.com/dx/ndb/reu/?mode=export_googlemap_stations&ID=346", process_it);
-    }
-
-    else {
-      alert("Sorry, the Google Maps API is not compatible with this browser");
-    }
-    //]]>
+    <meta charset="utf-8">
+    <title>Signals List</title>
+	<link href='assets/style.css' rel='stylesheet' type='text/css'>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="assets/markerclusterer.js"></script>
+    <script>
+      google.maps.event.addDomListener(window, 'load', signal.init);
     </script>
+    <script>
+var signals = [
+{"id": 1, "call": "DIW", "type" : 'NDB', "pwr" : 2000, "qth" : "Dixon", "sp" : "NC", "itu" : "USA", "khz" : 198, "lat" : 34.5625, "lon": -77.4583, "gsq" : "FM14gn", "lsb": "1045", "usb": "1043", "sec": "10.5", "fmt": "", "heard": "2015-02-02", "active":1, "heard_in" :"DOM AB AZ BC CA CO CT FL GA IA IL LA MA MD ME MI MN MO MS MT NB NC NE NH NJ NL NM NS NY OH ON OR PA QC SC TN TX UT VA VT WA WV"},
+{"id": 2, "call": "DIW2", "type" : 'NDB', "pwr" : 2000, "qth" : "Dixon", "sp" : "NC", "itu" : "USA", "khz" : 198, "lat" : 34.55, "lon": -77.43, "gsq" : "FM14gn", "lsb": "1045", "usb": "1043", "sec": "10.5", "fmt": "", "heard": "2015-02-02", "active":1, "heard_in" :"DOM AB AZ BC CA CO CT FL GA IA IL LA MA MD ME MI MN MO MS MT NB NC NE NH NJ NL NM NS NY OH ON OR PA QC SC TN TX UT VA VT WA WV"}
+];
+    </script>
+  </head>
+
+  <body>
+    <div id="panel">
+      <h3>Signal Map</h3>
+
+      <div>
+      <strong>Signals</strong>
+      <div style='float:right'>
+        <input type="checkbox" checked="checked" id="usegmm"/>
+        <label for='usegmm'>Clustering</label>
+      </div>
+      </div>
+      <div id="markerlist">
+
+      </div>
+    </div>
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
   </body>
-
 </html>
-
-
-
-

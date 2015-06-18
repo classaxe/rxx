@@ -252,6 +252,10 @@ img.ui-datepicker-trigger {
     vertical-align:top;
 }
 
+.buttons {
+    text-align: center;
+}
+
 .buttons input {
     width: 150px;
     FONT-SIZE: 11px;
@@ -394,13 +398,73 @@ img.nav
 {
 }
 
-tr.inactive td { background-color: #d0d0d0; }
-tr.ndb      td { background-color: #ffffff; }
-tr.dgps     td { background-color: #00D8ff; }
-tr.dsc      td { background-color: #FFB000; }
-tr.time     td { background-color: #00D8ff; }
-tr.navtex   td { background-color: #FFB8D8; }
-tr.hambcn   td { background-color: #D8FFE0; }
-tr.other    td { background-color: #B8F8FF; }
+.type_inactive, tr.inactive td { background-color: #d0d0d0; }
+.type_ndb,      tr.ndb      td { background-color: #ffffff; }
+.type_dgps,     tr.dgps     td { background-color: #00d8ff; }
+.type_dsc,      tr.dsc      td { background-color: #ffb000; }
+.type_time,     tr.time     td { background-color: #ffe0b0; }
+.type_navtex,   tr.navtex   td { background-color: #ffb8d8; }
+.type_hambcn,   tr.hambcn   td { background-color: #b8ffc0; }
+.type_other,    tr.other    td { background-color: #b8f8ff; }
 
+#panel {
+    font-family: Arial;
+    font-size: 10px;
+    float: left;
+    width: 340px;
+    height: 550px;
+}
+#map-container {
+    margin-left: 350px;
+}
+#map {
+    width: 100%;
+    height: 650px;
+}
+#panel #markerlist {
+    height: 620px;
+    margin: 10px 5px 0 10px;
+    overflow: auto;
+}
+#panel .title {
+    border-bottom: 1px solid #e0ecff;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 310px;
+    cursor: pointer;
+    padding: 2px 0;
+    display: block;
+    color: #000;
+    text-decoration: none;
+}
+#panel .title b {
+    width: 100px; float: left;
+}
+
+#panel .title:visited {
+    color: #000;
+}
+#panel .title:hover {
+    background: #e0ecff;
+}
+.info .head {
+    padding: 0 2em;
+}
+.info h2 {
+    margin: 0; float: left;
+}
+.info label {
+    font-weight: bold; margin: 0 0 0 0.25em; width: 90px; display: block; float: left;
+}
+.info h3 {
+    margin: 0;
+}
+.info-body div  {
+    float:left;max-width:200px;
+}
+.info-body {
+    margin: 2px 0; font-size: 90%;
+    max-width: 360px;
+    overflow: hidden;
+}
 
