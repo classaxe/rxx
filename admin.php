@@ -461,7 +461,7 @@ function admin_systemSendTestEmail() {
     $mail->Mailer =         "smtp";
 
   $mail->From =		"martin@classaxe.com";
-  $mail->FromName =	"RNA . REU / RWW system";
+  $mail->FromName =	"RNA / REU / RWW system";
   $mail->Host =		smtp_host;
   $mail->Mailer =	"smtp";
 
