@@ -460,8 +460,8 @@ function admin_systemSendTestEmail() {
     $mail->IsHtml(true);
     $mail->Mailer =         "smtp";
 
-  $mail->From =		awardsAdminEmail;
-  $mail->FromName =	awardsAdminName;
+  $mail->From =		"martin@classaxe.com";
+  $mail->FromName =	"RNA . REU / RWW system";
   $mail->Host =		smtp_host;
   $mail->Mailer =	"smtp";
 
