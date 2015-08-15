@@ -17,43 +17,43 @@ class Poll
         if (
             get_var('submode')=="vote" && $my_answer && $questionID
         ) {
-          $sql =	"UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
-          @mysql_query($sql);
-          setcookie('cookie_rxx_poll',$questionID, time()+31536000,"/");	// One year expiry
-          header("Location: ".system_URL."/".$mode);
+            $sql =    "UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
+            @mysql_query($sql);
+            setcookie('cookie_rxx_poll', $questionID, time()+31536000, "/");    // One year expiry
+            header("Location: ".system_URL."/".$mode);
         }
         if (isset($_COOKIE['cookie_rxx_poll']) && $_COOKIE['cookie_rxx_poll'] = $row['ID']) {
             return $this->drawResults();
         }
         return $this->drawForm();
+    }
 
-     }
-
-    protected function drawForm() {
+    protected function drawForm()
+    {
         global $poll, $mode;
 
-        $sql =	"SELECT * FROM `poll_question` WHERE `active` = '1'";
-        $result =	@mysql_query($sql);
+        $sql =    "SELECT * FROM `poll_question` WHERE `active` = '1'";
+        $result =    @mysql_query($sql);
 
         if (!mysql_num_rows($result)) {
             return'';
         }
-        $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-        $ID =	    $row['ID'];
-        $MM =	    substr($row['date'],5,2);
-        $YYYY =	    substr($row['date'],0,4);
-        $title =	$row['title'];
-        $text =	    $row['text'];
-        $date =	    MM_to_MMM($MM)." ".$YYYY;
+        $row =      mysql_fetch_array($result, MYSQL_ASSOC);
+        $ID =       $row['ID'];
+        $MM =       substr($row['date'], 5, 2);
+        $YYYY =     substr($row['date'], 0, 4);
+        $title =    $row['title'];
+        $text =     $row['text'];
+        $date =     MM_to_MMM($MM)." ".$YYYY;
 
-        $sql =	    "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
-        $result =	@mysql_query($sql);
-        $answers =	array();
+        $sql =      "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
+        $result =   @mysql_query($sql);
+        $answers =  array();
         $total_votes = 0;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result);
-            $answers[$i] =	array($row['ID'], $row['text'], $row['votes']);
-            $total_votes+=	(int)trim($row['votes']);
+            $row =          mysql_fetch_array($result);
+            $answers[$i] =  array($row['ID'], $row['text'], $row['votes']);
+            $total_votes+=  (int)trim($row['votes']);
         }
 
         $html =
@@ -101,51 +101,52 @@ class Poll
         return $html;
     }
 
-    public function drawList() {
+    public function drawList()
+    {
         global $mode, $submode, $ID, $sortBy, $script, $mode;
         $out = array();
         switch ($submode) {
             case "activate":
-                $sql =	"UPDATE `poll_question` SET `active` = 0";
+                $sql =    "UPDATE `poll_question` SET `active` = 0";
                 @mysql_query($sql);
-                $sql =	"UPDATE `poll_question` SET `active` = 1 WHERE `ID` = ".(int)$ID;
+                $sql =    "UPDATE `poll_question` SET `active` = 1 WHERE `ID` = ".(int)$ID;
                 @mysql_query($sql);
                 break;
         }
-        $sortBy_SQL =		"";
+        $sortBy_SQL =        "";
         if ($sortBy=="") {
             $sortBy = "date";
         }
         switch ($sortBy) {
             case "active":
-                $sortBy_SQL =	"`active` DESC, `date` ASC";
+                $sortBy_SQL =    "`active` DESC, `date` ASC";
                 break;
             case "active_d":
-                $sortBy_SQL =	"`active` ASC, `date` ASC";
+                $sortBy_SQL =    "`active` ASC, `date` ASC";
                 break;
             case "date":
-                $sortBy_SQL =	"`date` ASC";
+                $sortBy_SQL =    "`date` ASC";
                 break;
             case "date_d":
-                $sortBy_SQL =	"`date` DESC";
+                $sortBy_SQL =    "`date` DESC";
                 break;
             case "title":
-                $sortBy_SQL =	"`title` ASC";
+                $sortBy_SQL =    "`title` ASC";
                 break;
             case "title_d":
-                $sortBy_SQL =	"`title` DESC";
+                $sortBy_SQL =    "`title` DESC";
                 break;
             case "text":
-                $sortBy_SQL =	"`text` ASC";
+                $sortBy_SQL =    "`text` ASC";
                 break;
             case "text_d":
-                $sortBy_SQL =	"`text` DESC";
+                $sortBy_SQL =    "`text` DESC";
                 break;
             case "votes":
-                $sortBy_SQL =	"`votes` ASC";
+                $sortBy_SQL =    "`votes` ASC";
                 break;
             case "votes_d":
-                $sortBy_SQL =	"`votes` DESC";
+                $sortBy_SQL =    "`votes` DESC";
                 break;
         }
 
@@ -161,7 +162,7 @@ class Poll
             .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "" : " AND `active` = '0'\n")
             ."GROUP BY `poll_question`.`ID`\n"
             .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
-        $result = 	@mysql_query($sql);
+        $result =     @mysql_query($sql);
 
         $html =
              "<form name='form' action=\"".system_URL."/".$mode."\" method='POST'>\n"
@@ -231,8 +232,8 @@ class Poll
              "  </tr>\n"
             ."  </thead>\n";
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $date =	MM_to_MMM(substr($row['date'],5,2))." ".substr($row['date'],2,2);
+            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $date =    MM_to_MMM(substr($row['date'], 5, 2))." ".substr($row['date'], 2, 2);
             $html.=
                  "  <tr class='rownormal'>"
                 ."    <td valign='top'>"
@@ -247,10 +248,10 @@ class Poll
                 ."    <td valign='top' style='padding: 0;'>"
                 ."<table cellpadding='2' cellspacing='0' border='0' bgcolor='#ffffff'>";
 
-            $sql =	"SELECT * FROM `poll_answer` WHERE `questionID` = '".$row['ID']."'";
-            $result2 = 	@mysql_query($sql);
+            $sql =    "SELECT * FROM `poll_answer` WHERE `questionID` = '".$row['ID']."'";
+            $result2 =     @mysql_query($sql);
             for ($j=0; $j<mysql_num_rows($result2); $j++) {
-                $row2 =	mysql_fetch_array($result2,MYSQL_ASSOC);
+                $row2 =    mysql_fetch_array($result2, MYSQL_ASSOC);
                 $html.=
                      "  <tr class='rownormal'>"
                     ."    <td valign='top' width='200' style='border-bottom: solid 1px;'>".$row2['text']."</td>"
@@ -286,21 +287,22 @@ class Poll
 
     }
 
-    protected function drawResults() {
+    protected function drawResults()
+    {
         global $doThis, $vote, $poll_number, $title, $date, $question, $answers, $my_answer;
-        $sql =	"SELECT * FROM `poll_question` WHERE `active` = '1'";
-        $result =	@mysql_query($sql);
+        $sql =    "SELECT * FROM `poll_question` WHERE `active` = '1'";
+        $result =    @mysql_query($sql);
 
         if (!mysql_num_rows($result)) {
             return'';
         }
-        $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-        $ID =	    $row['ID'];
-        $MM =	    substr($row['date'],5,2);
-        $YYYY =	    substr($row['date'],0,4);
-        $title =	$row['title'];
-        $text =	    $row['text'];
-        $date =	    MM_to_MMM($MM)." ".$YYYY;
+        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $ID =        $row['ID'];
+        $MM =        substr($row['date'], 5, 2);
+        $YYYY =        substr($row['date'], 0, 4);
+        $title =    $row['title'];
+        $text =        $row['text'];
+        $date =        MM_to_MMM($MM)." ".$YYYY;
 
         $html =
              "<table>\n"
@@ -330,7 +332,7 @@ class Poll
         $rows =   array();
         $total_votes =  0;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =          mysql_fetch_array($result,MYSQL_ASSOC);
+            $row =          mysql_fetch_array($result, MYSQL_ASSOC);
             $rows[] =       $row;
             $total_votes+=  $row['votes'];
         }
@@ -362,26 +364,26 @@ class Poll
         return $html;
     }
 
-    public function edit() {
+    public function edit()
+    {
         global $script, $mode, $submode, $ID, $question, $YYYY, $MMM, $title;
 
         switch ($submode) {
 
         }
 
-        $sql =	"SELECT * FROM `poll_question` where `ID` = '$ID'";
-        $result = 	@mysql_query($sql);
+        $sql =    "SELECT * FROM `poll_question` where `ID` = '$ID'";
+        $result =     @mysql_query($sql);
         if ($result) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $ID =	$row['ID'];
-            $MMM =	substr($row['date'],5,2);
-            $YYYY =	substr($row['date'],0,4);
-            $title =	$row['title'];
-            $text =	$row['text'];
-            $submode =	"update";
-        }
-        else {
-            $submode =	"add";
+            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $ID =    $row['ID'];
+            $MMM =    substr($row['date'], 5, 2);
+            $YYYY =    substr($row['date'], 0, 4);
+            $title =    $row['title'];
+            $text =    $row['text'];
+            $submode =    "update";
+        } else {
+            $submode =    "add";
         }
 
         $html =
@@ -404,13 +406,13 @@ class Poll
             ."    <td valign='top' nowrap>"
             ."<select name='MMM' class='formField'>\n";
         for ($i=1; $i<=12; $i++) {
-            $html.=	"<option value='$i'".((int)$MMM==(int)$i ? " selected" : "").">".MM_to_MMM($i)."</option>\n";
+            $html.=    "<option value='$i'".((int)$MMM==(int)$i ? " selected" : "").">".MM_to_MMM($i)."</option>\n";
         }
         $html.=
              "</select>\n"
             ."<select name='YYYY' class='formField'>\n";
         for ($i=2005; $i<=2020; $i++) {
-            $html.=	"<option value='$i'".((int)$YYYY==$i ? " selected" : "").">$i</option>\n";
+            $html.=    "<option value='$i'".((int)$YYYY==$i ? " selected" : "").">$i</option>\n";
         }
         $html.=
              "</select>\n"
@@ -431,17 +433,19 @@ class Poll
             ."  <tr class='rowForm'>\n"
             ."    <td valign='top' colspan='2' align='center'>"
             ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#ffffff' class='downloadtable'>";
-        $sql =	"SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
-        $result2 = 	@mysql_query($sql);
+        $sql =    "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
+        $result2 =     @mysql_query($sql);
         for ($j=0; $j<mysql_num_rows($result2); $j++) {
-            $row2 =	mysql_fetch_array($result2,MYSQL_ASSOC);
+            $row2 =    mysql_fetch_array($result2, MYSQL_ASSOC);
             $html.=
                  "  <tr class='rownormal'>"
                 ."    <td valign='top' width='200'>".$row2['text']."</td>"
                 ."    <td valign='top' width='20'>".$row2['votes']."</td>"
                 ."    <td valign='top' width='20'><a href='#'"
-                ." onclick='document.form.submode.value=\"answer_del\";document.form.targetID.value=\"".$row2['ID']."\";"
-                ." document.form.submit();return false'>Del</a></td>"
+                ." onclick='"
+                ."document.form.submode.value=\"answer_del\";"
+                ."document.form.targetID.value=\"".$row2['ID']."\";"
+                ."document.form.submit();return false'>Del</a></td>"
                 ."  </tr>\n";
         }
         $html.=
@@ -451,7 +455,9 @@ class Poll
             ."                <td colspan='4' align='center' style='height: 30px;'>\n"
             ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
             ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
-            ."<input type='submit' value='".($submode=="update" ? "Save" : "Add")."' class='formbutton' style='width: 60px;'>"
+            ."<input type='submit' value='"
+            .($submode=="update" ? "Save" : "Add")
+            ."' class='formbutton' style='width: 60px;'>"
             ."</td>\n"
             ."              </tr>\n"
             ."</table>";

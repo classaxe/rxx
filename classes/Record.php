@@ -11,36 +11,46 @@ class Record
         $this->table = $table;
     }
 
-    public function do_sql_query($sql)
+    public function delete()
+    {
+        $sql =
+             "DELETE FROM\n"
+            ."  `".$this->table."`\n"
+            ."WHERE\n"
+            ."  `ID` = ".$this->getID();
+        return $this->doSqlQuery($sql);
+    }
+
+    public function doSqlQuery($sql)
     {
         return mysql_query($sql);
     }
 
-    public function get_ID()
+
+    public function getID()
     {
         return $this->ID;
     }
 
-    public function get_record()
+    public function getRecord()
     {
-        if ($this->ID=='') {
+        if ($this->getID()=='') {
             return false;
         }
         $sql =
-         "SELECT\n"
-        ."  *\n"
-        ."FROM\n"
-        ."  `".$this->table."`\n"
-        ."WHERE\n"
-        ."  `ID` = \"".$this->ID."\"";
-
-        $result =        mysql_query($sql);
+             "SELECT\n"
+            ."  *\n"
+            ."FROM\n"
+            ."  `".$this->table."`\n"
+            ."WHERE\n"
+            ."  `ID` = \"".$this->getID()."\"";
+        $result = $this->doSqlQuery($sql);
         return mysql_fetch_array($result, MYSQL_ASSOC);
     }
 
     public function getFieldForSql($sql)
     {
-        if (!$result = $this->do_sql_query($sql)) {
+        if (!$result = $this->doSqlQuery($sql)) {
             return false;
         }
         if (!mysql_num_rows($result)) {
@@ -52,7 +62,7 @@ class Record
 
     public function getRecordForSql($sql)
     {
-        if (!$result = $this->do_sql_query($sql)) {
+        if (!$result = $this->doSqlQuery($sql)) {
             return false;
         }
         if (!mysql_num_rows($result)) {
@@ -61,10 +71,10 @@ class Record
         return mysql_fetch_array($result, MYSQL_ASSOC);
     }
 
-    public function get_records_for_sql($sql)
+    public function getRecordsForSql($sql)
     {
         $out = array();
-        if (!$result = $this->do_sql_query($sql)) {
+        if (!$result = $this->doSqlQuery($sql)) {
             z($sql);
             print mysql_error();
             return false;

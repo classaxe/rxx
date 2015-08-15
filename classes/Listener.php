@@ -9,7 +9,7 @@ class Listener extends Record
 
     public function tabs()
     {
-        $record = $this->get_record();
+        $record = $this->getRecord();
         return
              tabItem("Profile", "listener_edit", 50)
             .tabItem("Signals (".$record['count_signals'].")", "listener_signals", 105)
@@ -25,9 +25,9 @@ class Listener extends Record
             );
     }
 
-    public function get_log($sortBy_SQL, $limit = -1, $offset = 0)
+    public function getLog($sortBy_SQL, $limit = -1, $offset = 0)
     {
-        if (!$this->get_ID()) {
+        if (!$this->getID()) {
             return array();
         }
         $sql =
@@ -57,7 +57,7 @@ class Listener extends Record
             ."INNER JOIN `logs` ON\n"
             ." `signals`.`ID` = `logs`.`signalID`\n"
             ."WHERE\n"
-            ." `listenerID` = ".$this->get_ID()."\n"
+            ." `listenerID` = ".$this->getID()."\n"
             .($sortBy_SQL ?
                  "ORDER BY\n"
                 ."  $sortBy_SQL"
@@ -70,12 +70,12 @@ class Listener extends Record
                 ""
             );
   //  z($sql);
-        return $this->get_records_for_sql($sql);
+        return $this->getRecordsForSql($sql);
     }
 
-    public function get_log_count()
+    public function getLogCount()
     {
-        if (!$this->get_ID()) {
+        if (!$this->getID()) {
             return 0;
         }
         $sql =
@@ -84,7 +84,7 @@ class Listener extends Record
             ."FROM\n"
             ."  `logs`\n"
             ."WHERE\n"
-            ." `listenerID` = ".$this->get_ID();
+            ." `listenerID` = ".$this->getID();
   //  z($sql);
         $result = $this->getRecordForSql($sql);
         return $result['count'];

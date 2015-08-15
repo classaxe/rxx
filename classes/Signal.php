@@ -29,7 +29,7 @@ class Signal extends Record
 
     public function tabs()
     {
-        $signal = $this->get_record();
+        $signal = $this->getRecord();
         $out = tabItem("Profile", "signal_info", 50);
         if (!$signal) {
             return $out;

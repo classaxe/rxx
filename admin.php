@@ -47,7 +47,7 @@ function admin_manage() {
     ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_listenersUpdateLogCount\"'> <b>Listeners: Update log counts</b> (run periodically)</li><br><br>\n"
     ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_importICAO\"'> <b>ICAO: Get latest data</b> (run once a month)</li><br><br>\n"
     ."<li><input type='button' class='formButton' value='Go' onclick='document.location=\"".system_URL."/db_export\"'> <b>System: Export Database</b> (run periodically)</li>\n"
-    ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.form.submode.value=\"admin_systemSendTestEmail\";document.form.submit();'> <b>System: Send Test Email to </b><input type='text' class='formField' name='sendToEmail' value=''></li><br><br>\n"
+    ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_systemSendTestEmail&sendToEmail=\"+document.getElementById(\"sendToEmail\").value'> <b>System: Send Test Email to </b><input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''></li><br><br>\n"
     ."<li><input type='button' class='formButton' value='Go' onclick='document.form.submode.value=\"upload\";document.form.submit()'> <b>System: Upload</b> <INPUT TYPE='FILE' NAME='file1' SIZE='20' class='formField'> (saves file to http://www.classaxe.com/dx/ndb/) <font color='red'><b>$msg</b></font></li>\n"
     ."</ol><br>\n";
   switch ($submode) {
@@ -455,8 +455,11 @@ function admin_listenersUpdateLogCount() {
 // ************************************
 function admin_systemSendTestEmail() {
   global $sendToEmail, $awards_email;
-  require("class.phpmailer.php");
   $mail = new PHPMailer();
+    $mail->PluginDir =      "../";
+    $mail->IsHtml(true);
+    $mail->Mailer =         "smtp";
+
   $mail->From =		$awards_email;
   $mail->FromName =	"rxx@classaxe.com";
   $mail->Host =		smtp_host;
@@ -522,70 +525,8 @@ function sys_info() {
 // * log_delete()                     *
 // ************************************
 function log_delete($ID) {
-  $sql =	"SELECT `listenerID`,`signalID` FROM `logs` WHERE `ID` = $ID";
-  $result =	mysql_query($sql);
-  $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-  $signalID =	$row["signalID"];
-  $listenerID =	$row["listenerID"];
-
-  $sql =	"DELETE FROM `logs` WHERE `ID` = $ID";
-  mysql_query($sql);
-
-  update_listener_log_count($listenerID);
-  signal_update_heard_in($signalID);
-
-  $sql =	 "UPDATE\n"
-		."  `signals`\n"
-		."SET\n"
-		."  `heard_in_af` = 0,\n"
-		."  `heard_in_as` = 0,\n"
-		."  `heard_in_ca` = 0,\n"
-		."  `heard_in_eu` = 0,\n"
-		."  `heard_in_iw` = 0,\n"
-		."  `heard_in_na` = 0,\n"
-		."  `heard_in_oc` = 0,\n"
-		."  `heard_in_sa` = 0\n"
-		."WHERE\n"
-		."  `ID` = $signalID";
-  mysql_query($sql);
-
-  $sql =	 "SELECT DISTINCT\n"
-		." `region`\n"
-		."FROM\n"
-		."  `logs`\n"
-		."WHERE\n"
-		."  `signalID` = $signalID";
-  $result =	mysql_query($sql);
-
-  for ($i=0; $i<mysql_num_rows($result); $i++) {
-    $row = mysql_fetch_array($result, MYSQL_ASSOC);
-    $sql =	 "UPDATE\n"
-		."  `signals`\n"
-		."SET\n"
-		."  `heard_in_".$row['region']."` = 1\n"
-		."WHERE\n"
-		."  `ID` = $signalID";
-    mysql_query($sql);
-  }
-
-  $sql =	 "SELECT\n"
-		."  COUNT(*) AS `logs`,\n"
-		."  MAX(`date`) AS `last_heard`\n"
-		."FROM\n"
-		."  `logs`\n"
-		."WHERE\n"
-		."  `signalID` = $signalID AND\n"
-		."  `listenerID` != \"\"";
-  $result =	mysql_query($sql);
-  $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-  $logs =	$row["logs"];
-  $last_heard =	$row["last_heard"];
-
-  $sql =	 "UPDATE `signals` SET\n"
-		."  `last_heard` = \"".$last_heard."\",\n"
-		."  `logs` = \"".$logs."\"\n"
-		."WHERE `ID` = ".$signalID;
-  mysql_query($sql);
+    $log = new Log($ID);
+    $log->delete();
 }
 
 

@@ -736,7 +736,7 @@ function listener_log() {
     }
   }
   $Obj = new Listener($ID);
-  $row =	    $Obj->get_record();
+  $row =	    $Obj->getRecord();
   $name =	    $row["name"];
   $signals =	$row["count_signals"];
   $logs =	    $row["count_logs"];
@@ -750,7 +750,7 @@ function listener_log() {
   if (empty($limit))  { $limit = 100; } else { $limit = (int) $limit; }
   if (empty($offset)) { $offset = 0; } else { $offset = (int) $offset; }
   if ($offset<0) { $offset=0; }
-  $total = $Obj->get_log_count();
+  $total = $Obj->getLogCount();
   if ($limit >= $total) {
     $limit = -1;
   }
@@ -863,7 +863,7 @@ function listener_log() {
      : "")
     ."                  </tr>\n"
     ."                  </thead>\n";
-  $log_arr = $Obj->get_log($sortBy_SQL,$limit,$offset);
+  $log_arr = $Obj->getLog($sortBy_SQL,$limit,$offset);
   foreach ($log_arr as $row) {
     $bgcolor =	"";
     if (!$row["active"]) {
@@ -942,7 +942,7 @@ function listener_log_export() {
     }
   }
   $Obj =    new Listener($ID);
-  $row =	$Obj->get_record();
+  $row =	$Obj->getRecord();
   $name =	$row["name"];
   $signals =	$row["count_signals"];
   $logs =	$row["count_logs"];
@@ -1256,7 +1256,7 @@ function listener_signals() {
     }
   }
   $Obj = new Listener($ID);
-  $row =	$Obj->get_record();
+  $row =	$Obj->getRecord();
   $name =	$row["name"];
   $signals =	$row["count_signals"];
   $logs =	$row["count_logs"];
@@ -1460,7 +1460,7 @@ function listener_stats() {
     }
   }
   $Obj = new Listener($ID);
-  $row =	$Obj->get_record();
+  $row =	$Obj->getRecord();
   $signals =	$row["count_signals"];
   $logs =	$row["count_logs"];
   $GSQ =	$row["GSQ"];

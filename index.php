@@ -108,12 +108,13 @@ define ("awardsBCCName","Martin Francis (Awards copy)");
 
 
 switch (getenv("SERVER_NAME")) {
+  case "desktop.classaxe.com" :
   case "127.0.0.1" :
     define ("system_backup","c:\\backup\\");
     define ("system_mysql","c:\\mysql\\bin\\mysql");
     define ("question","c:\\www.classaxe.com\\dx\\ndb\\poll\\question.txt");	// Path and filename - CHMOD file 666, Directory 777
     define ("results","c:\\www.classaxe.com\\dx\\ndb\\poll\\results.txt");	// Path and filename - CHMOD file 666, Directory 777
-    define ("smtp_host","smtp3.sympatico.ca");
+    define ("smtp_host","mail.classaxe.com");
 
   break;
   case "www.classaxe.com":
@@ -121,14 +122,14 @@ switch (getenv("SERVER_NAME")) {
     define ("system_mysql","mysql");
     define ("question","/home/classaxe/backup/question.txt");	// Path and filename - CHMOD file 666, Directory 777
     define ("results","/home/classaxe/backup/results.txt");	// Path and filename - CHMOD file 666, Directory 777
-    define ("smtp_host","mta.mail.classaxe.com");
+    define ("smtp_host","mail.classaxe.com");
   break;
   case "linux" :
     define ("system_backup","/var/www/html/backup/");
     define ("system_mysql","mysql");
     define ("question","/var/www/html/dx/ndb/poll/question.txt");	// Path and filename - CHMOD file 666, Directory 777
     define ("results","/var/www/html/dx/ndb/poll/results.txt");		// Path and filename - CHMOD file 666, Directory 777
-    define ("smtp_host","smtp3.sympatico.ca");
+    define ("smtp_host","mail.classaxe.com");
   break;
 }
 

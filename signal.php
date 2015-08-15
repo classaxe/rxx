@@ -49,7 +49,7 @@ function signal_dgps_messages()
     }
     $Obj =      new Signal($ID);
     if ($ID) {
-        $row =        $Obj->get_record();
+        $row =        $Obj->getRecord();
         $active =        $row["active"];
         $call =            $row["call"];
         $format =        stripslashes($row["format"]);
@@ -227,7 +227,7 @@ function signal_info()
     }
     $Obj =      new Signal($ID);
     if ($ID) {
-        $row =                $Obj->get_record();
+        $row =                $Obj->getRecord();
         $active =            $row["active"];
         $call =                $row["call"];
         $format =            stripslashes($row["format"]);
@@ -460,7 +460,7 @@ function signal_listeners()
     }
     $Obj =      new Signal($ID);
     if ($ID) {
-        $row =        $Obj->get_record();
+        $row =        $Obj->getRecord();
         $active =        $row["active"];
         $call =        $row["call"];
         $GSQ =        $row["GSQ"];
@@ -895,7 +895,7 @@ function signal_QNH()
     $pressure =    array();
 
     $Obj =      new Signal($ID);
-    $row =        $Obj->get_record();
+    $row =        $Obj->getRecord();
     $call =    $row["call"];
     $GSQ =    $row["GSQ"];
     $ITU =    $row["ITU"];
@@ -1679,7 +1679,7 @@ function signal_log() {
   }
   $Obj =      new Signal($ID);
   if ($ID) {
-    $row =		$Obj->get_record();
+    $row =		$Obj->getRecord();
     $active =	$row["active"];
     $call =		$row["call"];
     $GSQ =		$row["GSQ"];
