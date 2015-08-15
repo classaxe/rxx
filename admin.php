@@ -454,24 +454,24 @@ function admin_listenersUpdateLogCount() {
 // * admin_systemSendTestEmail()      *
 // ************************************
 function admin_systemSendTestEmail() {
-  global $sendToEmail, $awards_email;
+  global $sendToEmail;
   $mail = new PHPMailer();
     $mail->PluginDir =      "../";
     $mail->IsHtml(true);
     $mail->Mailer =         "smtp";
 
-  $mail->From =		$awards_email;
-  $mail->FromName =	"rxx@classaxe.com";
+  $mail->From =		awardsAdminEmail;
+  $mail->FromName =	awardsAdminName;
   $mail->Host =		smtp_host;
   $mail->Mailer =	"smtp";
 
-  $mail->AddAddress($sendToEmail,"Test Email");
+  $mail->AddAddress($sendToEmail, "Test Email");
   $mail->Subject = "RNA / REU / RWW System";
-  $mail->Body    = "Test Message to $sendToEmail via ".smtp_host." from ".getenv("SERVER_NAME");
+  $mail->Body    = "Test Message to ".$sendToEmail." via ".smtp_host." from ".getenv("SERVER_NAME");
   if ($mail->Send()) {
-    return "<h2>Sent test email to $sendToEmail via ".smtp_host."</h2>";
+    return "<h2>Sent test email to ".$sendToEmail." via ".smtp_host."</h2>";
   }
-  return "<h2>Test email to $sendToEmail via ".smtp_host." failed.</h2>";
+  return "<h2>Test email to ".$sendToEmail." via ".smtp_host." failed.</h2>";
 }
 
 // ************************************
