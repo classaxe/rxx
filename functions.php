@@ -762,9 +762,10 @@ function popup() {
   $out.=
      "</title>\n"
     ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-    ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
-    ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"		."<script language='javascript' type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
-    ."<script language='javascript' type='text/javascript'>\n"
+    ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+    ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
+    ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+    ."<script type='text/javascript'>\n"
     ."//<![CDATA[\n"
     ."system_URL = '".system_URL."';\n"
     ."function map_locator(system,map_x,map_y,name,QTH,lat,lon){\n"

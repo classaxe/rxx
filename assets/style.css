@@ -382,12 +382,14 @@ img.nav
 .fixed
 {
     COLOR: #000000;
+    font-size: 10pt;
     FONT-FAMILY: courier-new,monospace
 }
 .fixed_heading
 {
     COLOR: #ffffff;
-    FONT-FAMILY: courier;
+    font-size: 10pt;
+    FONT-FAMILY: courier-new,monospace;
     BACKGROUND-COLOR: #999999
 }
 .lookupOn

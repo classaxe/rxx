@@ -1877,7 +1877,7 @@ function log_upload()
              "  <tr class='rownormal'>\n"
             ."    <th>"
             ."<input type='button' value='Tabs > Spaces' class='formbutton' name='conv' onclick='tabs_to_spaces(document.form)'"
-            .(!preg_match("/	/", $log_entries) ? " disabled='1'" : "").">\n"
+            .(!preg_match("/	/", $log_entries) ? " disabled='disabled'" : "").">\n"
             ."<input type='button' value='Line Up' class='formbutton' name='lineup' onclick='line_up(document.form)'>\n"
             ."<input type='button' name='go' value='Parse Log' class='formbutton' onclick='if (parse_log(document.form)) { document.form.go.value=\"Please wait..\";document.form.go.disabled=true;document.form.conv.disabled=true;document.form.save.disabled=true;document.form.submode.value=\"parse_log\";document.form.submit();}'> "
             ."<script language='javascript' type='text/javascript'>"
