@@ -4,18 +4,11 @@
 // *******************************************
 // * Project:   RNA / REU / RWW              *
 // * Filename:  admin.php                    *
-// *                                         *
 // * Created:   25/04/2004 (MF)              *
-// * Revised:   21/06/2005 (MF)              *
 // * Email:     martin@classaxe.com          *
 // *******************************************
 // Note: all functions are declared in alphabetical order
 
-
-
-// ************************************
-// * admin_manage()                   *
-// ************************************
 function admin_manage()
 {
     global $mode, $submode;
@@ -98,88 +91,10 @@ function admin_manage()
         case "admin_systemSendTestEmail":
             $out.= admin_systemSendTestEmail();
             break;
-        case "db_backup":
-            $out.= "<h2>Create System Restore Point</h2><br>".db_dump();
-            break;
-        case "admin_dbRestore":
-            $out.= "<h2>Restore using System Restore Point</h2><br>".admin_dbRestore();
-            break;
     }
     return $out;
 }
 
-// ************************************
-// * admin_dbDump()                   *
-// ************************************
-function admin_dbDump()
-{
-    $filename =    strftime('%Y%m%d_%H%M', mktime()).".sql";
-    $cmd =    "mysqldump -undb-ndbrna -pkj356y9945m -a -Q -a -r backup/$filename ndb-ndbrna";
-    exec($cmd, $result, $status);
-    return
-         implode($result, "<br>\n")."<br>\n"
-        ."Dumped data to ".$filename;
-}
-
-
-
-// ************************************
-// * admin_dbRestore()                *
-// ************************************
-function admin_dbRestore()
-{
-    set_time_limit(600);    // Extend maximum execution time to 10 mins
-
-    global $mode, $submode, $file;
-    $out = '';
-
-    if (!$file) {
-        $path =    system_backup;
-
-        if (!$dir = opendir($path)) {
-            return "Directory Error reading $path - please check your system configuration";
-        }
-
-        $files =    array();
-        while ($temp = readdir($dir)) {
-          // Only get backup files for this site:
-            if (preg_match('/(.+)\.sql$/', $temp, $name)) {
-                $files[] =    $name[1];
-            }
-        }
-
-        closedir($dir);
-        sort($files);
- 
-        $out.=
-             "<form name='form' action='".system_URL."/".$mode."?submode=$submode' method='POST'"
-            ." onsubmit='this.go.disabled=1'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
-            ."<input type='hidden' name='submode' value='$submode'>\n"
-            ."<select name='file' size='15' class='formField'>\n";
-
-        for ($i=0; $i<count($files); $i++) {
-            $out.=    "<option value='".$files[$i].".sql'>$files[$i]</option>\n";
-        }
-        $out.=
-             "</select>\n"
-            ."<input type='submit' value='Go' name='go'>\n"
-            ."</form>\n";
-    } else {
-        $cmd =    system_mysql." -undb-ndbrna -pkj356y9945m -Dndb-ndbrna <".system_backup.$file." 2>&1";
-        exec($cmd, $result, $status);
-        $out.=
-             implode($result, "<br>\n")."<br>\n"
-            ."Restored data from $file";
-    }
-    return $out;
-}
-
-
-
-// ************************************
-// * admin_logsUpdateDX()             *
-// ************************************
 function admin_logsUpdateDX()
 {
     set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -224,9 +139,6 @@ function admin_logsUpdateDX()
 
 
 
-// ************************************
-// * admin_signalUpdateRegionsHeard() *
-// ************************************
 function admin_signalUpdateRegionsHeard()
 {
     $sql =
@@ -274,9 +186,6 @@ function admin_signalUpdateRegionsHeard()
 }
 
 
-// ************************************
-// * admin_setDaytimeLogs()           *
-// ************************************
 function admin_setDaytimeLogs()
 {
     $sql =
@@ -302,10 +211,6 @@ function admin_setDaytimeLogs()
 }
 
 
-
-// ************************************
-// * admin_importICAO()               *
-// ************************************
 function admin_importICAO()
 {
     global $mode, $submode, $subsubmode, $data;
@@ -420,9 +325,6 @@ function admin_importICAO()
 }
 
 
-// ************************************
-// * admin_signalUpdateLogCount()     *
-// ************************************
 function admin_signalUpdateLogCount()
 {
     set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -464,9 +366,6 @@ function admin_signalUpdateLogCount()
 }
 
 
-// ************************************
-// * admin_signalUpdateFromGSQ()      *
-// ************************************
 function admin_signalUpdateFromGSQ()
 {
     $updated =    0;
@@ -504,9 +403,6 @@ function admin_signalUpdateFromGSQ()
 }
 
 
-// ************************************
-// * admin_listenersUpdateLogCount()  *
-// ************************************
 function admin_listenersUpdateLogCount()
 {
     set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -527,9 +423,6 @@ function admin_listenersUpdateLogCount()
 
 
 
-// ************************************
-// * admin_systemSendTestEmail()      *
-// ************************************
 function admin_systemSendTestEmail()
 {
     global $sendToEmail;
@@ -551,9 +444,8 @@ function admin_systemSendTestEmail()
     }
     return "<h2>Test email to ".$sendToEmail." via ".smtp_host." failed.</h2>";
 }
-// ************************************
-// * sys_info()                       *
-// ************************************
+
+
 function sys_info()
 {
     ob_start();
@@ -599,9 +491,6 @@ function sys_info()
 }
 
 
-// ************************************
-// * log_update()                     *
-// ************************************
 function log_update(
     $ID,
     $date,
@@ -645,6 +534,7 @@ function log_update(
     }
 }
 
+
 function admin_polls()
 {
     global $mode, $submode;
@@ -657,10 +547,6 @@ function admin_polls()
 }
 
 
-
-// ************************************
-// * logon()                          *
-// ************************************
 function logon()
 {
     global $server,$mode,$submode;
@@ -694,9 +580,7 @@ function logon()
         ."</table><script type='text/javascript'>document.form.user.focus();</script>\n";
 }
 
-// ************************************
-// * log_upload()                     *
-// ************************************
+
 function log_upload()
 {
     global $mode, $submode, $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy, $listener_in, $listener_timezone;
@@ -1889,7 +1773,7 @@ function log_upload()
                                          "  <td>"
                                         ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
                                         .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
-                                            "<font color='darkorange'><b>".(float)$row['khz']."</b></font>"
+                                            "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
                                          :
                                             (float)$row['khz']
                                         )
@@ -1901,7 +1785,9 @@ function log_upload()
                                         ." title='Please provide a value for QTH if you have one'").">"
                                         ."<font color='#606060'>".$row['QTH']."</font>"
                                         ."</td>\n"
-                                        ."  <td><font color='#606060'>".$row['SP']."</font></td>\n"
+                                        ."  <td>"
+                                        .($row['SP'] ? "<font color='#606060'>".$row['SP']."</font>" : "&nbsp;")
+                                        ."</td>\n"
                                         ."  <td><font color='#606060'>".$row['ITU']."</font></td>\n"
                                         ."  <td><font color='#606060'>"
                                         .($row["GSQ"] ?
@@ -1964,7 +1850,7 @@ function log_upload()
                                     $out.=
                                         "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                 } else {
-                                    $out.=    ($YYYY<2005 ? "<font color='darkorange'><b>$YYYY</b></font>" : "$YYYY");
+                                    $out.=    ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
                                         $out.=
@@ -1998,7 +1884,7 @@ function log_upload()
                                     ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
                                     ."<input type='hidden' name='LSB[]' value='$LSB'>"
                                     .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
-                                        "<font color='darkorange'><b>$LSB_approx$LSB</b></font>"
+                                        "<font color='#FF8C00'><b>$LSB_approx$LSB</b></font>"
                                     :
                                         "$LSB_approx$LSB"
                                     )
@@ -2007,7 +1893,7 @@ function log_upload()
                                     ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
                                     ."<input type='hidden' name='USB[]' value='$USB'>"
                                     .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
-                                        "<font color='darkorange'><b>$USB_approx$USB</b></font>"
+                                        "<font color='#FF8C00'><b>$USB_approx$USB</b></font>"
                                      :
                                         "$USB_approx$USB"
                                     )
@@ -2021,7 +1907,7 @@ function log_upload()
                                      "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
                                     ."  <td>"
                                     .(((float)$KHZ<198 || (float)$KHZ > 530) ?
-                                        "<font color='darkorange'><b>".(float)$KHZ."</b></font>"
+                                        "<font color='#FF8C00'><b>".(float)$KHZ."</b></font>"
                                      :
                                         (float)$KHZ
                                     )
@@ -2040,7 +1926,7 @@ function log_upload()
                                     $date_fail = true;
                                     $out.=    "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                 } else {
-                                    $out.=    ($YYYY<2003 ? "<font color='darkorange'><b>$YYYY</b></font>" : "$YYYY");
+                                    $out.=    ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
                                         $out.=    "<font color='red'><b><strike>$MM</strike></b></font>";
@@ -2075,17 +1961,20 @@ function log_upload()
                          "  <tr class='downloadTableHeadings_nosort'>\n"
                         ."    <th colspan='14'>"
                         ."<input type='button' value='Submit Log' class='formbutton' name='go'"
-                        ." onclick='this.value=\"Please wait..\";this.disabled=true;submit_log()'></th>\n"
-                        ."  </tr>\n"
-                        ."<script type='text/javascript'>document.form.go.focus()</script>\n";
+                        ." onclick='this.value=\"Please wait..\";this.disabled=true;submit_log()'>"
+                        ."<script type='text/javascript'>document.form.go.focus()</script>\n"
+                        ."</th>\n"
+                        ."  </tr>\n";
+
                 } else {
                     $out.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
                         ."    <th colspan='14'>"
                         ."<input type='button' value='Serious errors found - Go Back...' class='formbutton' name='go'"
-                        ." onclick='history.back()'></th>\n"
-                        ."  </tr>\n"
-                        ."<script type='text/javascript'>document.form.go.focus()</script>\n";
+                        ." onclick='history.back()'>"
+                        ."<script type='text/javascript'>document.form.go.focus()</script>\n"
+                        ."</th>\n"
+                        ."  </tr>\n";
                 }
 
                 $out.=  "</table>\n";
@@ -2111,10 +2000,10 @@ function log_upload()
                 }
 
                 $out.=
-                     "<p><a name='next'></a><b>Next Steps...</b><small>\n"
+                     "<p><a name='next'></a><b>Next Steps...</b></p>\n"
                     ."<ul>\n"
                     ."<li>Please review the results shown above, especially warnings"
-                    ." (<font color='darkorange'><b>orange</b></font>) and serious errors"
+                    ." (<font color='#FF8C00'><b>orange</b></font>) and serious errors"
                     ." (<font color='red'><b>red</b></font>).</li>\n"
                     ."<li>Serious errors (invalid dates and unrecognised signals) prevent the"
                     ." <b>Submit Log</b> button from appearing.</li>"
@@ -2141,9 +2030,7 @@ function log_upload()
             $out.=
                  "<br><input type='submit' value='&nbsp;Done&nbsp;' name='go'"
                 ." onclick='window.close();' class='formbutton'>"
-                ."<script language='javascript' type='text/javascript'>"
-                ."document.form.go.focus();\n"
-                ."</script>\n";
+                ."<script type='text/javascript'>document.form.go.focus();</script>\n";
             break;
     }
 
@@ -2225,9 +2112,7 @@ function log_upload()
             ."document.form.go.disabled=true;document.form.conv.disabled=true;"
             ."document.form.save.disabled=true;document.form.submode.value=\"parse_log\";"
             ."document.form.submit();}'> "
-            ."<script language='javascript' type='text/javascript'>"
-            ."document.form.go.focus();\n"
-            ."</script>"
+            ."<script type='text/javascript'>document.form.go.focus();</script>"
             ."</th>\n"
             ."  </tr>\n"
             ."</table>\n";
