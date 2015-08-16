@@ -90,7 +90,7 @@ function signal_dgps_messages()
     ."<table border='0' align='center' cellpadding='0' cellspacing='1' class='tableContainer' width='100%'>\n"
     ."  <tr>\n"
     ."    <td bgcolor='#F5F5F5' class='itemTextCell' height='100%' valign='top'>\n";
-    $dgps_messages = $Obj->get_dgps_messages();
+    $dgps_messages = $Obj->getDgpsMessages();
     if (count($dgps_messages)) {
         $out.=
          "      <table width='100%' border='0' cellpadding='2' cellspacing='1' class='downloadTable'>\n"
@@ -454,7 +454,8 @@ function signal_listeners()
     if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
         switch ($submode) {
             case "delete":
-                log_delete($targetID);
+                $log = new Log($targetID);
+                $log->delete();
                 break;
         }
     }
@@ -1673,7 +1674,8 @@ function signal_log() {
   if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
     switch ($submode) {
       case "delete":
-        log_delete($targetID);
+        $log = new Log($targetID);
+        $log->delete();
       break;
     }
   }

@@ -731,7 +731,8 @@ function listener_log() {
   if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
     switch ($submode) {
       case "delete":
-        log_delete($targetID);
+        $log = new Log($targetID);
+        $log->delete();
       break;
     }
   }
@@ -1251,7 +1252,8 @@ function listener_signals() {
   if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
     switch ($submode) {
       case "delete":
-        log_delete($targetID);
+        $log = new Log($targetID);
+        $log->delete();
       break;
     }
   }

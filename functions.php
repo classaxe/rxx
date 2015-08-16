@@ -1356,53 +1356,8 @@ function table_uniqID($table) {
 
 
 function update_listener_log_count($listenerID) {
-  $count =  array();
-  $types =  array(DGPS,DSC,HAMBCN,NAVTEX,NDB,TIME,OTHER);
-  $sql =
-     "SELECT\n"
-	."  MAX(`date`) AS `log_latest`,\n"
-	."  COUNT(*) AS `count_logs`,\n"
-	."  COUNT(DISTINCT(`signalID`)) AS `count_signals`\n"
-	."FROM\n"
-	."  `logs`\n"
-	."WHERE `listenerID` = \"".$listenerID."\"";
-  $result =		        mysql_query($sql);
-  $row =	    	    mysql_fetch_array($result,MYSQL_ASSOC);
-  $count['logs'] =		$row["count_logs"];
-  $count['signals'] =	$row["count_signals"];
-  $log_latest =		    $row["log_latest"];
-  foreach ($types as $type){
-    $sql =
-       "SELECT\n"
-      ."  COUNT(DISTINCT(`signalID`)) AS `count`\n"
-      ."FROM\n"
-      ."  `logs`,`signals`\n"
-      ."WHERE\n"
-      ."  `signals`.`ID` = `logs`.`signalID` AND\n"
-      ."  `signals`.`type` = ".$type." AND\n"
-      ."  `listenerID` = \"".$listenerID."\"";
-    $result =		mysql_query($sql);
-    $row =		    mysql_fetch_array($result,MYSQL_ASSOC);
-    $count[$type] =	$row["count"];
-  }
-  $sql =
-     "UPDATE\n"
-	."  `listeners`\n"
-	."SET\n"
-	."  `count_logs` = ".$count['logs'].",\n"
-	."  `count_signals` = ".$count['signals'].",\n"
-	."  `count_DGPS` = ".$count[DGPS].",\n"
-	."  `count_DSC` = ".$count[DSC].",\n"
-	."  `count_HAMBCN` = ".$count[HAMBCN].",\n"
-	."  `count_NAVTEX` = ".$count[NAVTEX].",\n"
-	."  `count_NDB` = ".$count[NDB].",\n"
-	."  `count_TIME` = ".$count[TIME].",\n"
-	."  `count_OTHER` = ".$count[OTHER].",\n"
-	."  `log_latest` = \"".$log_latest."\"\n"
-	."WHERE\n"
-	."  `ID` = \"".$listenerID."\"";
-  mysql_query($sql);
-  return mysql_affected_rows();
+    $listener = new Listener($listenerID);
+    return $listener->updateLogCount();
 }
 
 

@@ -48,6 +48,11 @@ class Record
         return mysql_fetch_array($result, MYSQL_ASSOC);
     }
 
+    public static function getAffectedRows()
+    {
+        return mysql_affected_rows();
+    }
+
     public function getFieldForSql($sql)
     {
         if (!$result = $this->doSqlQuery($sql)) {
@@ -83,5 +88,39 @@ class Record
             $out[] = mysql_fetch_array($result, MYSQL_ASSOC);
         }
         return $out;
+    }
+
+    public function insert($data)
+    {
+        $fields = array();
+        foreach ($data as $key => $value) {
+            $fields[] = "  `".$key."` = \"".$value."\"";
+        }
+        natcasesort($fields);
+        $sql =
+             "INSERT INTO\n"
+            ."  `".$this->table."`\n"
+            ."SET\n"
+            .implode(",\n", $fields);
+        // z($sql);
+        return $this->doSqlQuery($sql);
+    }
+
+    public function update($data)
+    {
+        $fields = array();
+        foreach ($data as $key => $value) {
+            $fields[] = "  `".$key."` = \"".$value."\"";
+        }
+        natcasesort($fields);
+        $sql =
+             "UPDATE\n"
+            ."  `".$this->table."`\n"
+            ."SET\n"
+            .implode(",\n", $fields)."\n"
+            ."WHERE\n"
+            ."  `ID` = ".$this->getID();
+        // z($sql);
+        return $this->doSqlQuery($sql);
     }
 }

@@ -16,16 +16,16 @@ class Awards
         }
         switch (system) {
             case "RNA":
-                $filter_listener_SQL =            "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
+                $filter_listener_SQL =      "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
                 break;
             case "REU":
-                $filter_listener_SQL =            "(`region` = 'eu')";
+                $filter_listener_SQL =      "(`region` = 'eu')";
                 break;
             case "RWW":
                 if ($region!="") {
-                    $filter_listener_SQL =            "(`region` = '$region')";
+                    $filter_listener_SQL =  "(`region` = '$region')";
                 } else {
-                    $filter_listener_SQL =            "1";
+                    $filter_listener_SQL =  "1";
                 }
                 break;
         }
@@ -106,22 +106,22 @@ class Awards
                 ."<p align='justify'>Since requested certificates will be sent electronically to the email address given for the listener for whom they are to be created, "
                 ."please verify that your email address is shown in the <a href='#checkout'><b>checkout form</b></a>.<br><br><hr><br>"
                 ."<h2>Awards available to ".$this->_listener_details.":</h2><br><br>"
-                .$this->_draw_award_daytime()
-                .$this->_draw_award_longranger()
-                .$this->_draw_award_continental()
-                .$this->_draw_award_country()
-                .$this->_draw_award_north_60()
-                .$this->_draw_award_lt()
-                .$this->_draw_award_transatlantic()
-                .$this->_draw_award_transpacific()
-                .$this->_draw_award_canadian_transcontinental()
-                .$this->_draw_award_us_transcontinental()
-                .$this->_draw_checkout();
+                .$this->drawDaytime()
+                .$this->drawLongranger()
+                .$this->drawContinental()
+                .$this->drawCountry()
+                .$this->drawNorth60()
+                .$this->drawLt()
+                .$this->drawTransatlantic()
+                .$this->drawTranspacific()
+                .$this->drawCanadianTranscontinental()
+                .$this->drawUsTranscontinental()
+                .$this->drawCheckout();
         }
         return $out;
     }
 
-    private function _draw_award_canadian_transcontinental()
+    protected function drawCanadianTranscontinental()
     {
         $can_transcont_awards = array(1,2,4,6);
         $sql =
@@ -234,7 +234,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_continental()
+    protected function drawContinental()
     {
         $continent_awards = array(
             "eu^European NDB DX Awards^This certificate recognises reception of NDBs located in Europe at the levels shown below.^10^20^30^40",
@@ -323,7 +323,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_country()
+    protected function drawCountry()
     {
         // Search locations^number^must include all^Title^blub^Level1^Level2 (etc)
         $country_awards = array(
@@ -335,11 +335,11 @@ class Awards
             "`ITU` = 'ITA' OR `ITU` = 'SAR' OR `ITU` = 'SCY'^3^0^Italian NDB Award^This certificate recognises reception of NDBs located in Italy (including Sardinia and Sicily) at the following levels:^20^40^60^90",
             "`ITU` = 'ESP' OR `ITU` = 'POR' OR `ITU` = 'BAL'^3^0^Iberian NDB Award^This certificate recognises reception of NDBs located in Spain and Portugal (including the Baleric Islands but excluding the Azores, the Canary Islands and spanish enclaves in Morocco) at the following levels:^20^40^80^120"
         );
-    $out = '';
-    for ($country=0; $country<count($country_awards); $country++) {
-        $this_country =    explode("^", $country_awards[$country]);
-        if ($this_country[2]) {
-            $sql =
+        $out = '';
+        for ($country=0; $country<count($country_awards); $country++) {
+            $this_country =    explode("^", $country_awards[$country]);
+            if ($this_country[2]) {
+                $sql =
                  "SELECT\n"
                 ."  `signals`.`ID`\n"
                 ."FROM\n"
@@ -348,13 +348,13 @@ class Awards
                 ."  (".$this_country[0].")\n"
                 ."GROUP BY\n"
                 ."  `signals`.`ITU`";
-            $result =    @mysql_query($sql);
-            $first =    array();
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                $first[] =    $row['ID'];
-            }
-            $sql =
+                $result =    @mysql_query($sql);
+                $first =    array();
+                for ($i=0; $i<mysql_num_rows($result); $i++) {
+                    $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                    $first[] =    $row['ID'];
+                }
+                $sql =
                  "SELECT DISTINCT\n"
                 ."  `signals`.`ID`,\n"
                 ."  `signals`.`call`,\n"
@@ -369,8 +369,8 @@ class Awards
                 ."  (".$this_country[0].") AND\n"
                 ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
                 ."ORDER BY (`signals`.`ID`=".implode($first, "  OR `signals`.`ID`=").") DESC";
-        } else {
-            $sql =
+            } else {
+                $sql =
                  "SELECT DISTINCT\n"
                 ."  `signals`.`ID`,\n"
                 ."  `signals`.`call`,\n"
@@ -385,10 +385,10 @@ class Awards
                 ."  (".$this_country[0].") AND\n"
                 ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
                 ."ORDER BY `khz`,`call`";
-        }
-        $result =        mysql_query($sql);
-        if (mysql_num_rows($result)) {
-            $out.=
+            }
+            $result =        mysql_query($sql);
+            if (mysql_num_rows($result)) {
+                $out.=
                  "<b>".$this_country[3]."</b> (".mysql_num_rows($result)." qualifying stations)<br>\n"
                 .$this_country[4]
                 ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
@@ -398,57 +398,57 @@ class Awards
                 ."    <td width='480' valign='top'><b>NDB Details</b></td>\n"
                 ."    <td width='20'  valign='top'><b>Order</b></td>\n"
                 ."  </tr>\n";
-            $old_level = 0;
-            for ($i=5; $i<count($this_country); $i++) {
-                $level =    $this_country[$i];
-                $out.=
+                $old_level = 0;
+                for ($i=5; $i<count($this_country); $i++) {
+                    $level =    $this_country[$i];
+                    $out.=
                      "  <tr>\n"
                     ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
-                if (mysql_num_rows($result)>$old_level) {
-                    $Eligible = (mysql_num_rows($result) >= $level);
-                    $out.=
+                    if (mysql_num_rows($result)>$old_level) {
+                        $Eligible = (mysql_num_rows($result) >= $level);
+                        $out.=
                          "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                         .($Eligible ? "" : "<font color='#808080'>");
-                    $this_level =    0;
-                    for ($j = $old_level; $j < $level; $j++) {
-                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        if ($row['call']) {
-                            $out.=    "<nobr>".pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? pad_dot($row['call'], 4)."(".$row['ITU'].")" : pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
+                        $this_level =    0;
+                        for ($j = $old_level; $j < $level; $j++) {
+                            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                            if ($row['call']) {
+                                $out.=    "<nobr>".pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? pad_dot($row['call'], 4)."(".$row['ITU'].")" : pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
+                            }
+                            $this_level++;
                         }
-                        $this_level++;
-                    }
-                    $out.=
+                        $out.=
                          ($Eligible ? "" : "</font>")
                         ."</td>"
                         ."    <td bgcolor='#f0f0f0' align='center' valign='top'";
-                    if ($Eligible) {
-                        $thisAward =    $this_country[3]." (".$level." stations)";
-                        $out.=
+                        if ($Eligible) {
+                            $thisAward =    $this_country[3]." (".$level." stations)";
+                            $out.=
                              " onclick=\"award(document.form,'$thisAward')\">"
                             ."<input type='hidden' name='Award: $thisAward' value='0'>"
                             ."<span id='".$thisAward."_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
                             ."<span id='".$thisAward."_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                        } else {
+                            $out.=    ">&nbsp;";
+                        }
+                        $out.=    "</td>";
+                        $old_level =    $level;
                     } else {
-                        $out.=    ">&nbsp;";
-                    }
-                    $out.=    "</td>";
-                    $old_level =    $level;
-                } else {
-                    $out.=
+                        $out.=
                          "    <td bgcolor='#f0f0f0'>&nbsp;</td>\n"
                         ."    <td valign='top' bgcolor='#f0f0f0' align='center'>&nbsp;</td>";
+                    }
+                    $out.=    "  </tr>\n";
                 }
-                $out.=    "  </tr>\n";
-            }
-            $out.=
+                $out.=
                  "</table>\n"
                 ."<br><br>\n";
+            }
         }
-    }
-    return $out;
+        return $out;
     }
 
-    private function _draw_award_daytime()
+    protected function drawDaytime()
     {
         $daytime_dx = array(
             "250^499^402^804",
@@ -520,7 +520,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_longranger()
+    protected function drawLongranger()
     {
         $longranger_dx = array(
             "500^999^805^1607",
@@ -593,7 +593,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_lt()
+    protected function drawLt()
     {
         $sql =
              "SELECT DISTINCT\n"
@@ -648,7 +648,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_north_60()
+    protected function drawNorth60()
     {
         $n60_awards = array(
             5,10,20,30
@@ -727,7 +727,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_transatlantic()
+    protected function drawTransatlantic()
     {
         $transatlantic_awards_eu = array(1,10);
         $transatlantic_awards_na = array(1,3);
@@ -827,7 +827,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_transpacific()
+    protected function drawTranspacific()
     {
         $transpacific_awards = array(1,2,3,4);
         if (
@@ -931,7 +931,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_award_us_transcontinental()
+    protected function drawUsTranscontinental()
     {
         $usa_transcont_awards = array(1,2,3,4);
         $sql =
@@ -1046,7 +1046,7 @@ class Awards
         return $out;
     }
 
-    private function _draw_checkout()
+    protected function drawCheckout()
     {
         global $mode;
         return
@@ -1066,7 +1066,7 @@ class Awards
             ."</form>\n";
     }
 
-    function send($awards_requested, $awards_email, $awards_name)
+    protected function send($awards_requested, $awards_email, $awards_name)
     {
         $mail = new PHPMailer();
         $mail->PluginDir =      "../";

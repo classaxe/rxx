@@ -80,13 +80,47 @@ class Listener extends Record
         }
         $sql =
              "SELECT\n"
-            ."  COUNT(*) AS `count`\n"
+            ."    COUNT(*) AS `count`\n"
             ."FROM\n"
-            ."  `logs`\n"
+            ."    `logs`\n"
             ."WHERE\n"
-            ." `listenerID` = ".$this->getID();
+            ."   `listenerID` = ".$this->getID();
   //  z($sql);
         $result = $this->getRecordForSql($sql);
         return $result['count'];
+    }
+
+    public function updateLogCount()
+    {
+        $types =  array(DGPS,DSC,HAMBCN,NAVTEX,NDB,TIME,OTHER);
+        $sql =
+             "SELECT\n"
+            ."    MAX(`date`) AS `log_latest`,\n"
+            ."    COUNT(*) AS `count_logs`,\n"
+            ."    COUNT(DISTINCT(`signalID`)) AS `count_signals`\n"
+            ."FROM\n"
+            ."    `logs`\n"
+            ."WHERE\n"
+            ."    `listenerID` = ".$this->getID();
+        $row = $this->getRecordForSql($sql);
+        $data =  array(
+            'count_logs' =>     $row["count_logs"],
+            'count_signals' =>  $row["count_signals"],
+            'log_latest' =>     $row["log_latest"]
+        );
+        foreach (array_keys(Signal::$types) as $type) {
+            $sql =
+                 "SELECT\n"
+                ."    COUNT(DISTINCT(`signalID`)) AS `count`\n"
+                ."FROM\n"
+                ."    `logs`\n"
+                ."INNER JOIN `signals` ON\n"
+                ."    `signals`.`ID` = `logs`.`signalID`\n"
+                ."WHERE\n"
+                ."    `signals`.`type` = ".$type." AND\n"
+                ."    `listenerID` = ".$this->getID();
+            $data['count_'.Signal::$types[$type]] = $this->getFieldForSql($sql);
+        }
+        return $this->update($data);
     }
 }

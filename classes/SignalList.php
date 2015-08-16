@@ -93,8 +93,7 @@ class SignalList
         if ($this->rows) {
             if ($this->show!='map') {
                 $this->drawListing();
-            }
-            else {
+            } else {
                 $this->drawMap();
             }
         } else {
@@ -104,7 +103,8 @@ class SignalList
         $this->html.= $this->drawButtons();
     }
 
-    protected function drawButtons() {
+    protected function drawButtons()
+    {
         $this->html .=
              "<p class='noprint buttons'>\n"
             ."<input type='button' value='Print...' onclick='"
@@ -374,9 +374,11 @@ class SignalList
             ."        <td nowrap>"
             .show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
             ."<div style='float:right'>"
-            ."<input type='radio' id='show_list' name='show' value='list'".($this->show=='map' ? '' : 'checked="checked"').">"
+            ."<input type='radio' id='show_list' name='show' value='list'"
+            .($this->show=='map' ? '' : ' checked="checked"').">"
             ."<label for='show_list'>List</label>&nbsp;"
-            ."<input type='radio' id='show_map' name='show' value='map'".($this->show=='map' ? 'checked="checked"' : '').">"
+            ."<input type='radio' id='show_map' name='show' value='map'"
+            .($this->show=='map' ? ' checked="checked"' : '').">"
             ."<label for='show_map'>Map</label></div>"
             ."</td>\n"
             ."      </tr>"
@@ -491,8 +493,13 @@ class SignalList
             ."            <td>"
             .$this->drawControlColumnSortby()
             ."</td>"
-            ."            <td width='45'><label for='sort_by_d'><input type='checkbox' id='sort_by_d' onclick='signalsListChangeSortControl()' name='sort_by_d' value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">Z-A</label></td>"
-            ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active' type='checkbox' name='filter_active' value='1'".($this->filter_active ? " checked" : "").">Only active&nbsp;</label></td>"
+            ."            <td width='45'><label for='sort_by_d'>"
+            ."<input type='checkbox' name='sort_by_d' id='sort_by_d' onclick='signalsListChangeSortControl()'"
+            ." value='_d'".(substr($this->sort_by, strlen($this->sort_by)-2, 2)=="_d" ? " checked" : "").">"
+            ."Z-A</label></td>"
+            ."            <td align='right'><label for='chk_filter_active'>"
+            ."<input type='checkbox' name='filter_active' id='chk_filter_active' value='1'"
+            .($this->filter_active ? " checked" : "").">Only active&nbsp;</label></td>"
             ."          </tr>\n"
             ."	 </table></td>"
             ."      </tr>\n"
@@ -500,10 +507,18 @@ class SignalList
             "      <tr class='rowForm'>\n"
             ."        <th align='left'>Admin:</th>\n"
             ."        <td nowrap><select name='filter_system' class='formField'>\n"
-            ."<option value='1'".($this->filter_system=='1' ? " selected" : "").">RNA</option>\n"
-            ."<option value='2'".($this->filter_system=='2' ? " selected" : "").">REU</option>\n"
-            ."<option value='3'".($this->filter_system=='3' ? " selected" : "").">RWW</option>\n"
-            ."<option value='not_logged'".($this->filter_system=='not_logged' ? " selected" : "").">Unlogged signals</option>\n"
+            ."<option value='1'"
+            .($this->filter_system=='1' ? " selected" : "")
+            .">RNA</option>\n"
+            ."<option value='2'"
+            .($this->filter_system=='2' ? " selected" : "")
+            .">REU</option>\n"
+            ."<option value='3'"
+            .($this->filter_system=='3' ? " selected" : "")
+            .">RWW</option>\n"
+            ."<option value='not_logged'"
+            .($this->filter_system=='not_logged' ? " selected" : "")
+            .">Unlogged signals</option>\n"
             ."<option value='all'".($this->filter_system=='all' ? " selected" : "").">Show everything</option>\n"
             ."</select> Select system</td>\n"
             ."      </tr>"
@@ -518,8 +533,10 @@ class SignalList
             ."      </tr>"
             ."      <tr class='rowForm noprint'>\n"
             ."        <th colspan='2'>"
-            ."<input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
-            ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
+            ."<input type='submit' onclick='return send_form(form)' name='go' value='Go'"
+            ." style='width: 100px;' class='formButton' title='Execute search'>\n"
+            ."<input name='clear' type='button' class='formButton' value='Clear'"
+            ." style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
             ."      </tr>\n"
             ."    </table></div></div></form>"
             ."<script type='text/javascript'>\n"
@@ -616,7 +633,8 @@ class SignalList
         return $html;
     }
 
-    protected function drawListing(){
+    protected function drawListing()
+    {
         $this->html.=
              $this->drawResultsInfo()
             ."<table cellpadding='2' cellspacing='0' border='1' class='listTable'>\n"
@@ -629,11 +647,14 @@ class SignalList
             ."</span>\n";
     }
 
-    protected function drawMap() {
+    protected function drawMap()
+    {
         $this->head.=
              "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js\"></script>\n"
             ."<script type=\"text/javascript\" src=\"".BASE_PATH."assets/markerclusterer.js\"></script>\n"
-            ."<script type=\"text/javascript\">google.maps.event.addDomListener(window, 'load', signal.init);</script>\n"
+            ."<script type=\"text/javascript\">"
+            ."google.maps.event.addDomListener(window, 'load', signal.init);"
+            ."</script>\n"
             ."<script type=\"text/javascript\">\n"
             ."//<!--\n"
             ."var signals = [\n";
@@ -710,12 +731,34 @@ class SignalList
                     ."\"lat\":".($row['lat'] ? $row['lat'] : "0").","
                     ."\"lon\":".($row['lon'] ? $row['lon'] : "0").","
                     ."\"gsq\":'".$row["GSQ"]."',"
-                    ."\"lsb\":'".$row["LSB_approx"].($row["LSB"]<>"" ? ($this->offsets=="" ? $row["LSB"] : number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')): "")."',"
-                    ."\"usb\":'".$row["USB_approx"].($row["USB"]<>"" ? ($this->offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')): "")."',"
+                    ."\"lsb\":'"
+                    .$row["LSB_approx"]
+                    .($row["LSB"]<>"" ?
+                        ($this->offsets=="" ?
+                            $row["LSB"]
+                         :
+                            number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')
+                        )
+                        :
+                        ""
+                     )
+                    ."',"
+                    ."\"usb\":'"
+                    .$row["USB_approx"]
+                    .($row["USB"]<>"" ?
+                        ($this->offsets=="" ?
+                            $row["USB"]
+                          :
+                            number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')
+                         )
+                         :
+                         ""
+                     )
+                     ."',"
                     ."\"sec\":'".$row['sec']."',"
                     ."\"fmt\":'".($row["format"] ? stripslashes($row["format"]) : "")."',"
                     ."\"heard\":'".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "")."',"
-                    ."\"heard_in\":\"".str_replace(array('</a>','</b>'),array('<\/a>','<\/b>'),$heard_in)."\""
+                    ."\"heard_in\":\"".str_replace(array('</a>','</b>'), array('<\/a>','<\/b>'), $heard_in)."\""
                     ."},\n";
             }
         }
@@ -804,25 +847,91 @@ class SignalList
             );
             $html.=
                  "<tr class='rownormal ".$class."' title='".$title."'>"
-                ."<td><a href='".system_URL."/signal_list?filter_khz_1=".(float)$row["khz"]."&amp;filter_khz_2=".(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
-                ."<td><a onmouseover='window.status=\"View profile for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\"><b>$call</b></a></td>\n";
+                ."<td><a href='".system_URL."/signal_list?filter_khz_1="
+                .(float)$row["khz"]."&amp;filter_khz_2="
+                .(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
+                ."<td><a href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\">"
+                ."<b>$call</b></a></td>\n";
             if ($this->type_NDB) {
                 $html.=
-                     "<td align='right'>".$row["LSB_approx"].($row["LSB"]<>"" ? ($this->offsets=="" ? $row["LSB"] : number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
-                    ."<td align='right'>".$row["USB_approx"].($row["USB"]<>"" ? ($this->offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')): "&nbsp;")."</td>\n"
+                     "<td align='right'>"
+                     .$row["LSB_approx"]
+                     .($row["LSB"]<>"" ?
+                        ($this->offsets=="" ?
+                            $row["LSB"]
+                          :
+                            number_format((float) ($row["khz"]-($row["LSB"]/1000)), 3, '.', '')
+                         )
+                         :
+                            "&nbsp;"
+                     )
+                    ."</td>\n"
+                    ."<td align='right'>"
+                    .$row["USB_approx"]
+                    .($row["USB"]<>"" ?
+                        ($this->offsets=="" ?
+                            $row["USB"]
+                         :
+                            number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')
+                         )
+                         :
+                            "&nbsp;"
+                     )
+                    ."</td>\n"
                     ."<td>".($row["sec"] ? $row["sec"] : "&nbsp;")."</td>\n"
                     ."<td>".($row["format"] ? stripslashes($row["format"]) : "&nbsp;")."</td>\n";
             }
             $html.=
-                 "<td>".($row["QTH"] ? get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"]) : "&nbsp;")."</td>\n"
-                ."<td>".($SP ? "<a href='".system_URL."/signal_list?filter_sp=".$row["SP"]."' title='Filter on this value'>".$SP."</a>" : "&nbsp;")."</td>\n"
-                ."<td>".($ITU ? "<a href='".system_URL."/signal_list?filter_itu=".$row["ITU"]."' title='Filter on this value'>".$ITU."</a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["GSQ"] ? "<a href='.' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["pwr"] ? $row["pwr"] : "&nbsp;")."</td>\n"
-                ."<td>".($row["notes"] ? stripslashes($row["notes"]) : "&nbsp;")."</td>\n"
-                ."<td>".($heard_in ? $heard_in : "&nbsp;")."</td>\n"
+                 "<td>"
+                .($row["QTH"] ?
+                    get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"])
+                  :
+                    "&nbsp;"
+                 )
+                ."</td>\n"
+                ."<td>"
+                .($SP ?
+                     "<a href='".system_URL."/signal_list?filter_sp=".$row["SP"]."'"
+                    ." title='Filter on this value'>".$SP."</a>"
+                  :
+                    "&nbsp;"
+                 )
+                ."</td>\n"
+                ."<td>"
+                .($ITU ?
+                     "<a href='".system_URL."/signal_list?filter_itu=".$row["ITU"]."'"
+                    ." title='Filter on this value'>".$ITU."</a>"
+                 :
+                    "&nbsp;"
+                 )
+                ."</td>\n"
+                ."<td>"
+                .($row["GSQ"] ?
+                     "<a href='.'"
+                    ." onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;'"
+                    ." title='Show map (accuracy limited to nearest Grid Square)'>"
+                    ."<span class='fixed'>".$row["GSQ"]."</span></a>"
+                  :
+                    "&nbsp;"
+                 )
+                ."</td>\n"
+                ."<td>"
+                .($row["pwr"] ? $row["pwr"] : "&nbsp;")
+                ."</td>\n"
+                ."<td>"
+                .($row["notes"] ? stripslashes($row["notes"]) : "&nbsp;")
+                ."</td>\n"
+                ."<td>"
+                .($heard_in ? $heard_in : "&nbsp;")
+                ."</td>\n"
                 ."<td align='right'>"
-                .($row["logs"] ? "<a href=\"".system_URL."/signal_log/".$row["ID"]."\" onclick='signal_log(\"".$row["ID"]."\");return false;'><b>".$row["logs"]."</b></a>" : "&nbsp;")."</td>\n"
+                .($row["logs"] ?
+                     "<a href=\"".system_URL."/signal_log/".$row["ID"]."\""
+                    ." onclick='signal_log(\"".$row["ID"]."\");return false;'><b>".$row["logs"]."</b></a>"
+                  :
+                    "&nbsp;"
+                 )
+                ."</td>\n"
                 ."<td>".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "&nbsp;")."</td>\n";
 
             if ($this->filter_listener) {
@@ -833,15 +942,24 @@ class SignalList
 
             if ($this->filter_dx_gsq) {
                 $html.=
-                     "<td align='right'>".($row["range_dx_km"]!=='' ? round($row["range_dx_km"]) : "&nbsp;")."</td>\n"
-                    ."<td align='right'>".($row["range_dx_miles"]!=='' ? round($row["range_dx_miles"]) : "&nbsp;")."</td>\n"
-                    ."<td align='right'>".($row["range_dx_deg"]!=='' ? round($row["range_dx_deg"]) : "&nbsp;")."</td>\n";
+                     "<td align='right'>"
+                    .($row["range_dx_km"]!=='' ? round($row["range_dx_km"]) : "&nbsp;")
+                    ."</td>\n"
+                    ."<td align='right'>"
+                    .($row["range_dx_miles"]!=='' ? round($row["range_dx_miles"]) : "&nbsp;")
+                    ."</td>\n"
+                    ."<td align='right'>"
+                    .($row["range_dx_deg"]!=='' ? round($row["range_dx_deg"]) : "&nbsp;")
+                    ."</td>\n";
             }
 
             if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
                 $html.=
                      "<td nowrap>"
-                    ."<a href='#' onclick='if (confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")) { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\"; document.form.submit();};return false'>Del</a>\n"
+                    ."<a href='#' onclick='if ("
+                    ."confirm(\"CONFIRM\\n\\nAre you sure you wish to delete this signal and\\nall associated logs?\")"
+                    .") { document.form.submode.value=\"delete\"; document.form.targetID.value=\"".$row["ID"]."\";"
+                    ." document.form.submit();};return false'>Del</a>\n"
                     ."<a href='#' onclick='signal_merge(".$row["ID"].")'>Merge</a></td>\n";
             }
         }
@@ -1317,7 +1435,7 @@ class SignalList
                 .$this->sql_filter_system
                 .($this->filter_heard_in ?  " AND\n".$this->sql_filter_heard_in : "")
                 .($this->filter_listener ?  " AND\n".$this->sql_filter_listener : "")
-               :
+                :
                  "    `signals`.*"
                 .($this->filter_dx_gsq ? ",\n".$this->getSqlDxColumns() : "\n")
                 ."FROM\n"
@@ -1886,11 +2004,13 @@ class SignalList
                 break;
             case "sec":
                 $this->sql_sort_by =
-                    "`active` DESC, `signals`.`sec`='' OR `signals`.`sec` IS NULL, CAST(`signals`.`sec` AS UNSIGNED) ASC";
+                     "`active` DESC, `signals`.`sec`='' OR `signals`.`sec` IS NULL,"
+                    ." CAST(`signals`.`sec` AS UNSIGNED) ASC";
                 break;
             case "sec_d":
                 $this->sql_sort_by =
-                    "`active` DESC, `signals`.`sec`='' OR `signals`.`sec` IS NULL, CAST(`signals`.`sec` AS UNSIGNED) DESC";
+                     "`active` DESC, `signals`.`sec`='' OR `signals`.`sec` IS NULL,"
+                    ." CAST(`signals`.`sec` AS UNSIGNED) DESC";
                 break;
             case "sp":
                 $this->sql_sort_by =
@@ -1921,13 +2041,15 @@ class SignalList
             case "CLE64":
                 if ($this->filter_dx_gsq) {
                     $this->sql_sort_by =
-                        "`lat` IS NULL, `active` DESC, LEFT(`signals`.`call`,1)>='A' DESC, LEFT(`signals`.`call`,1) ASC, `range_dx_km` DESC";
+                         "`lat` IS NULL, `active` DESC, LEFT(`signals`.`call`,1)>='A' DESC,"
+                        ." LEFT(`signals`.`call`,1) ASC, `range_dx_km` DESC";
                 }
                 break;
             case "CLE64_d":
                 if ($this->filter_dx_gsq) {
                     $this->sql_sort_by =
-                        "`lat` IS NULL, `active` DESC, LEFT(`signals`.`call`,1)<='Z' ASC, LEFT(`signals`.`call`,1) DESC, `range_dx_km` DESC";
+                         "`lat` IS NULL, `active` DESC, LEFT(`signals`.`call`,1)<='Z' ASC,"
+                        ." LEFT(`signals`.`call`,1) DESC, `range_dx_km` DESC";
                 }
                 break;
         }

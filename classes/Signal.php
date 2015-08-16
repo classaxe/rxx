@@ -12,6 +12,16 @@ class Signal extends Record
         OTHER =>    '#b8f8ff'
     );
 
+    public static $types = array(
+        0 =>    "NDB",
+        1 =>    "DGPS",
+        2 =>    "TIME",
+        3 =>    "NAVTEX",
+        4 =>    "HAMBCN",
+        5 =>    "OTHER",
+        6 =>    "DSC"
+    );
+
     public function __construct($ID = false)
     {
         parent::__construct($ID, 'signals');
@@ -22,9 +32,37 @@ class Signal extends Record
         return count_attachments($this->table, $this->ID, 'DGPS Message');
     }
 
-    public function get_dgps_messages()
+    public function getDgpsMessages()
     {
         return get_attachments($this->table, $this->ID, 'DGPS Message');
+    }
+
+    public function getRegionsHeardIn()
+    {
+        $sql =
+             "SELECT DISTINCT\n"
+            ."  `region`\n"
+            ."FROM\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ."  `signalID` = ".$this->getID();
+        return $this->getRecordsForSql($sql);
+
+    }
+
+    public function getLogsAndLastHeardDate()
+    {
+        $sql =
+             "SELECT\n"
+            ."    COUNT(*) AS `logs`,\n"
+            ."    MAX(`date`) AS `last_heard`\n"
+            ."FROM\n"
+            ."    `logs`\n"
+            ."WHERE\n"
+            ."    `signalID` = ".$this->getID()." AND\n"
+            ."    `listenerID` IS NOT NULL AND\n"
+            ."    `listenerID` !=0";
+        return $this->getRecordForSql($sql);
     }
 
     public function tabs()
@@ -49,5 +87,71 @@ class Signal extends Record
              tabItem("Messages (".$messages.")", "signal_dgps_messages", 110);
         }
         return $out;
+    }
+
+    public function updateHeardInList()
+    {
+        $sql =
+             "SELECT DISTINCT\n"
+            ."    `heard_in`,\n"
+            ."     MAX(`daytime`) as `daytime`,\n"
+            ."    `region`\n"
+            ."FROM\n"
+            ."    `logs`\n"
+            ."WHERE\n"
+            ."    `signalID` = ".$this->getID()."\n"
+            ."GROUP BY\n"
+            ."    `heard_in`\n"
+            ."ORDER BY\n"
+            ."    (`region`='na' OR `region`='ca' OR (`region`='oc' AND `heard_in`='HI')),\n"
+            ."    `region`,\n"
+            ."    `heard_in`";
+        $rows = $this->getRecordsForSql($sql);
+        $arr =        array();
+        $html_arr =        array();
+        $region =        "";
+        $old_link =        "";
+        foreach ($rows as $row) {
+            $heard_in = $row["heard_in"];
+            $daytime =  $row["daytime"];
+            $region =   $row["region"];
+            $link =     "";
+            switch ($region) {
+                case "ca":
+                    $link =
+                         "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                        ." title='North American Reception Map'>";
+                    break;
+                case "na":
+                    $link =
+                         "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                        ." title='North American Reception Map'>";
+                    break;
+                case "oc":
+                    if ($heard_in=='HI') {
+                        $link =
+                             "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                            ." title='North American Reception Map'>";
+                    }
+                    break;
+                case "eu":
+                    $link =
+                         "<a class='hover' href='#' onclick='signal_map_eu(".$this->getID().");return false'"
+                        ." title='European Reception Map'>";
+                    break;
+            }
+            $html_arr[] =
+                 ($old_link!="" && $old_link != $link ? "</a>" : "")
+                .($link != $old_link ? $link : "")
+                .($daytime ? "<b>".$heard_in."</b>" : $heard_in);
+            $arr[] =        $heard_in;
+            $old_link =     $link;
+        }
+        $data = array(
+            'heard_in' =>       implode($arr, " "),
+            'heard_in_html' =>  implode($html_arr, " ")
+        );
+        $this->update($data);
+        return $this->getAffectedRows();
     }
 }
