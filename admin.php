@@ -33,22 +33,45 @@ function admin_manage()
             }
             break;
     }
+    $url = system_URL."/".$mode;
     $out =
          "<form name='form' method='post' enctype='multipart/form-data' action='".system_URL."'>\n"
         ."<input type='hidden' name='mode' value='$mode'>\n"
         ."<input type='hidden' name='submode' value=''>\n"
         ."<input type='hidden' name='MAX_FILE_SIZE' value='800000'>\n"
         ."<h2>Administrator Management Tools</h2><br>\n<ol class='p'>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_signalUpdateFromGSQ\"'> <b>Signals: Update Lat and Lon values from GSQ</b> (use after importing new signals using phpMyAdmin)</li>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_signalUpdateLogCount\"'> <b>Signals: Update log counts and 'Heard In' lists</b> (run periodically)</li>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_signalUpdateRegionsHeard\"'> <b>Signals: Update all for regions heard and heard_in lists</b> (run if problems are seen)</li><br><br>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_logsUpdateDX\"'> <b>Logs: Recalculate all distances</b> (use after adding GSQs for existing logging or function above)</li>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_setDaytimeLogs\"'> <b>Logs: Mark daytime loggings</b> (run periodically)</li><br><br>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_listenersUpdateLogCount\"'> <b>Listeners: Update log counts</b> (run periodically)</li><br><br>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_importICAO\"'> <b>ICAO: Get latest data</b> (run once a month)</li><br><br>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='document.location=\"".system_URL."/db_export\"'> <b>System: Export Database</b> (run periodically)</li>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='this.disabled=1;document.location=\"".system_URL."/".$mode."?submode=admin_systemSendTestEmail&sendToEmail=\"+document.getElementById(\"sendToEmail\").value'> <b>System: Send Test Email to </b><input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''></li><br><br>\n"
-        ."<li><input type='button' class='formButton' value='Go' onclick='document.form.submode.value=\"upload\";document.form.submit()'> <b>System: Upload</b> <INPUT TYPE='FILE' NAME='file1' SIZE='20' class='formField'> (saves file to http://www.classaxe.com/dx/ndb/) <font color='red'><b>$msg</b></font></li>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_signalUpdateFromGSQ\"'>"
+        ." <b>Signals: Update Lat and Lon values from GSQ</b>"
+        ." (use after importing new signals using phpMyAdmin)</li>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_signalUpdateLogCount\"'>"
+        ." <b>Signals: Update log counts and 'Heard In' lists</b> (run periodically)</li>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_signalUpdateRegionsHeard\"'>"
+        ." <b>Signals: Update all for regions heard and heard_in lists</b> (run if problems are seen)</li><br><br>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_logsUpdateDX\"'>"
+        ." <b>Logs: Recalculate all distances</b> (use after adding GSQs for existing logging or function above)</li>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_setDaytimeLogs\"'>"
+        ." <b>Logs: Mark daytime loggings</b> (run periodically)</li><br><br>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_listenersUpdateLogCount\"'>"
+        ." <b>Listeners: Update log counts</b> (run periodically)</li><br><br>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_importICAO\"'>"
+        ." <b>ICAO: Get latest data</b> (run once a month)</li><br><br>\n"
+        ."<li><input type='button' value='Go' onclick='document.location=\""
+        .system_URL."/db_export\"'>"
+        ." <b>System: Export Database</b> (run periodically)</li>\n"
+        ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
+        .$url."?submode=admin_systemSendTestEmail&sendToEmail=\"+document.getElementById(\"sendToEmail\").value'>"
+        ." <b>System: Send Test Email to </b>"
+        ."<input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''></li><br><br>\n"
+        ."<li><input type='button' value='Go' onclick='document.form.submode.value=\"upload\";document.form.submit()'>"
+        ." <b>System: Upload</b> <INPUT TYPE='FILE' NAME='file1' SIZE='20' class='formField'>"
+        ." (saves file to http://www.classaxe.com/dx/ndb/) <font color='red'><b>$msg</b></font></li>\n"
         ."</ol><br>\n";
     switch ($submode) {
         case "admin_logsUpdateDX":
@@ -129,7 +152,8 @@ function admin_dbRestore()
         sort($files);
  
         $out.=
-             "<form name='form' action='".system_URL."/".$mode."?submode=$submode' method='POST' onsubmit='this.go.disabled=1'>\n"
+             "<form name='form' action='".system_URL."/".$mode."?submode=$submode' method='POST'"
+            ." onsubmit='this.go.disabled=1'>\n"
             ."<input type='hidden' name='mode' value='$mode'>\n"
             ."<input type='hidden' name='submode' value='$submode'>\n"
             ."<select name='file' size='15' class='formField'>\n";
@@ -294,10 +318,15 @@ function admin_importICAO()
         ."<h2>Import ICAO</h2><br><br>\n"
         ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
-        ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+        ."    <th class='downloadTableHeadings_nosort'>"
+        ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
-        ."        <th align='left' class='downloadTableHeadings_nosort'><a name='dx'></a>ICAO Data</th>\n"
-        ."        <th align='right' class='downloadTableHeadings_nosort'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small></th>\n"
+        ."        <th align='left' class='downloadTableHeadings_nosort'>"
+        ."<a name='dx'></a>ICAO Data"
+        ."</th>\n"
+        ."        <th align='right' class='downloadTableHeadings_nosort'>"
+        ."<small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small>"
+        ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n";
@@ -350,20 +379,32 @@ function admin_importICAO()
             ."Data extracted from\n".$url."\n\n";
 
         if ($my_file = @file($url)) {
-            $out.=    "STATION          SP CN ICAO  LAT     LONG    ELEV\n--------------------------------------------------\n";
+            $out.=
+                 "STATION          SP CN ICAO  LAT     LONG    ELEV\n"
+                ."--------------------------------------------------\n";
             $num =    0;
             for ($i=0; $i<count($my_file); $i++) {
                 if (substr($my_file[$i], 62, 1)=="X") {
                     $num++;
-                    $out.=    substr($my_file[$i], 3, 17).substr($my_file[$i], 0, 3).substr($my_file[$i], 81, 2)." ".substr($my_file[$i], 20, 5)." ".substr($my_file[$i], 39, 20)."\n";
+                    $out.=
+                         substr($my_file[$i], 3, 17)
+                        .substr($my_file[$i], 0, 3)
+                        .substr($my_file[$i], 81, 2)." "
+                        .substr($my_file[$i], 20, 5)." "
+                        .substr($my_file[$i], 39, 20)
+                        ."\n";
                 }
             }
             $out.=
-                 "--------------------------------------------------\nTotal entries: $num"
+                 "--------------------------------------------------\n"
+                ."Total entries: ".$num
                 ."</textarea></td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
-                ."    <td class='downloadTableContent' align='center'><input type='submit' name='go' value='Update' class='formButton' onclick='document.form.subsubmode.value=\"Update\";document.form.go.disabled=true;document.form.submit()'></td>"
+                ."    <td class='downloadTableContent' align='center'>"
+                ."<input type='submit' name='go' value='Update' class='formButton' onclick='"
+                ."document.form.subsubmode.value=\"Update\";document.form.go.disabled=true;document.form.submit()'"
+                ."></td>"
                 ."  </tr>\n";
         } else {
             $out.=
@@ -577,7 +618,8 @@ function log_update(
     $USB,
     $USB_approx
 ) {
-  // Add listener name and log details for an existing non-specific log matching the listener's heard_in location (original NDBRNA import)
+  // Add listener name and log details for an existing non-specific log matching
+  // the listener's heard_in location (original NDBRNA import)
   // Don't need to set system or signalID - these haven't changed
     $sql =
          "UPDATE `logs` SET\n"
@@ -672,14 +714,21 @@ function log_upload()
             break;
         case "submit_log":
             set_time_limit(600);    // Extend maximum execution time to 10 mins
-            $log_first_for_listener =        0;    // First time listener has been named for this signal
-            $log_first_for_state_or_itu =    0;    // First time signal has been logged specifically from this state
-            $log_first_for_system =        0;    // First time signal has been logged at all
-            $log_repeat_for_listener =    0;    // Listener has logged this signal before
-            $log_exact_duplicate =        0;    // This logging has been submitted once already
-            $signal_updates =            0;    // The signal record has been updated - this data is most recent
+            $log_first_for_listener =       0;    // First time listener has been named for this signal
+            $log_first_for_state_or_itu =   0;    // First time signal has been logged specifically from this state
+            $log_first_for_system =         0;    // First time signal has been logged at all
+            $log_repeat_for_listener =      0;    // Listener has logged this signal before
+            $log_exact_duplicate =          0;    // This logging has been submitted once already
+            $signal_updates =               0;    // The signal record has been updated - this data is most recent
             $sql =
-                "SELECT `lat`, `lon`, `region` FROM `listeners` WHERE `ID` = $listenerID";
+                 "SELECT\n"
+                ."  `lat`,\n"
+                ."  `lon`,\n"
+                ."  `region`\n"
+                ."FROM\n"
+                ."  `listeners`\n"
+                ."WHERE\n"
+                ."  `ID` = ".$listenerID;
             $result =        mysql_query($sql);
             $row =        mysql_fetch_array($result, MYSQL_ASSOC);
             $region =        $row["region"];
@@ -701,14 +750,30 @@ function log_upload()
                 // ++++++++++++++++++++++++++++++++++++
                 // + Get DX (if possible)             +
                 // ++++++++++++++++++++++++++++++++++++
-                $tmp =        get_signal_dx($ID[$i], $qth_lat, $qth_lon);
-                $dx_miles =    $tmp[0];
+                $tmp =      get_signal_dx($ID[$i], $qth_lat, $qth_lon);
+                $dx_miles = $tmp[0];
                 $dx_km =    $tmp[1];
-                $daytime =    ($hhmm[$i]+2400 >= ($listener_timezone*100) + 3400 && $hhmm[$i]+2400 < ($listener_timezone*100)+3800 ? 1 : 0);
+                $daytime = (
+                    (
+                        $hhmm[$i]+2400 >= ($listener_timezone*100) + 3400 &&
+                        $hhmm[$i]+2400 < ($listener_timezone*100)+3800
+                    ) ?
+                        1
+                    :
+                        0
+                );
                 // ++++++++++++++++++++++++++++++++++++++++++++
                 // + See if log is first for state or country +
                 // ++++++++++++++++++++++++++++++++++++++++++++
-                $sql =        "SELECT `ID`,`listenerID` FROM `logs` WHERE `signalID` = ".$ID[$i]." AND `heard_in` = \"$listener_in\"";
+                $sql =
+                     "SELECT\n"
+                    ."  `ID`,\n"
+                    ."  `listenerID`\n"
+                    ."FROM\n"
+                    ."  `logs`\n"
+                    ."WHERE\n"
+                    ."  `signalID` = ".$ID[$i]." AND\n"
+                    ."  `heard_in` = \"".$listener_in."\"";
                 $result =    mysql_query($sql);
                 if (mysql_num_rows($result)) {
                     // No, signal has been logged at least once from this state:
@@ -743,8 +808,10 @@ function log_upload()
                         if ($debug) {
                             $out.=    "<pre>$sql</pre>";
                         }
-                        mysql_query($sql);                            // Write in name for this listener
-                        $update_signal =         true;                    // Update signal record (IF this data is the most recent...)
+                        mysql_query($sql);
+                        // Write in name for this listener
+                        $update_signal =         true;
+                         // Update signal record (IF this data is the most recent...)
                         $log_first_for_listener++;
                     } else {
                         // A listener from this state has been named before
@@ -776,7 +843,14 @@ function log_upload()
                                 $out.= "3 ";
                             }
 
-                            $sql =    "SELECT COUNT(*) AS `log_repeat_for_listener`FROM `logs` WHERE `listenerID` = \"$listenerID\" AND `signalID` = \"".$ID[$i]."\"";
+                            $sql =
+                                 "SELECT\n"
+                                ."  COUNT(*) AS `log_repeat_for_listener`\n"
+                                ."FROM\n"
+                                ."  `logs`\n"
+                                ."WHERE\n"
+                                ."  `listenerID` = \"".$listenerID."\" AND\n"
+                                ."  `signalID` = \"".$ID[$i]."\"";
                             $result =    mysql_query($sql);
                             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
                             if ($row["log_repeat_for_listener"]) {
@@ -819,7 +893,8 @@ function log_upload()
                             }
                             $log = new Log;
                             $log->insert($data);
-                            $update_signal = true;                        // Update signal record (IF this data is the most recent...)
+                            $update_signal = true;
+                            // Update signal record (IF this data is the most recent...)
                         }
                     }
                 } else {
@@ -874,7 +949,8 @@ function log_upload()
                     $log_first_for_listener++;
                 }
                 if ($debug) {
-                    $out.=    "<li>update_signal = $update_signal, update_signal_heard_in = $update_signal_heard_in</li>\n";
+                    $out.=
+                        "<li>update_signal = $update_signal, update_signal_heard_in = $update_signal_heard_in</li>\n";
                 }
 
 
@@ -914,12 +990,22 @@ function log_upload()
                             ."Last: $last_heard_YYYY$last_heard_MM$last_heard_DD<br>";
                     }
 
-                    if ((int)($last_heard_YYYY."".$last_heard_MM."".$last_heard_DD) >= (int)($this_YYYY."".$this_MM."".$this_DD)) {
+                    if (
+                        (int)($last_heard_YYYY."".$last_heard_MM."".$last_heard_DD) >=
+                        (int)($this_YYYY."".$this_MM."".$this_DD)
+                    ) {
                         $update_signal =        false;                        // So clear update flag
                     }
                 }
 
-                $sql =        "SELECT COUNT(*) as `logs` FROM `logs` WHERE `signalID` = ".$ID[$i]." AND `listenerID` != ''";
+                $sql =
+                     "SELECT\n"
+                    ."  COUNT(*) as `logs`\n"
+                    ."FROM\n"
+                    ."  `logs`\n"
+                    ."WHERE\n"
+                    ."  `signalID` = ".$ID[$i]." AND\n"
+                    ."  `listenerID` != ''";
                 $result =    mysql_query($sql);
                 $row =        mysql_fetch_array($result, MYSQL_ASSOC);
                 $logs =        $row["logs"];
@@ -927,9 +1013,27 @@ function log_upload()
                 if ($update_signal) {
                     $signal_updates++;
                     $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
-                    signal_update_full($ID[$i], $LSB[$i], $LSB_approx[$i], $USB[$i], $USB_approx[$i], $sec[$i], htmlentities($fmt[$i]), $logs, $last_heard, $region);
+                    signal_update_full(
+                        $ID[$i],
+                        $LSB[$i],
+                        $LSB_approx[$i],
+                        $USB[$i],
+                        $USB_approx[$i],
+                        $sec[$i],
+                        htmlentities($fmt[$i]),
+                        $logs,
+                        $last_heard,
+                        $region
+                    );
                 } else {
-                    $sql =     "UPDATE `signals` SET `logs` = $logs, `heard_in_$region`=1 WHERE `ID` = ".$ID[$i];
+                    $sql =
+                         "UPDATE\n"
+                        ."  `signals`\n"
+                        ."SET\n"
+                        ."  `logs` = $logs,\n"
+                        ."  `heard_in_$region`=1\n"
+                        ."WHERE\n"
+                        ."  `ID` = ".$ID[$i];
                     mysql_query($sql);
                     if ($debug) {
                         $out.=    "<pre>$sql</pre>";
@@ -947,7 +1051,8 @@ function log_upload()
             $row =        mysql_fetch_array($result, MYSQL_ASSOC);
             $log_format =    $row["log_format"];
             $out.=
-                 "<h1>Add Log > Parse Data</h1><br><img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+                 "<h1>Add Log > Parse Data</h1><br>"
+                ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
                 ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                 ."  <tr>\n"
                 ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
@@ -955,7 +1060,8 @@ function log_upload()
                 ."  <tr class='rownormal'>\n"
                 ."    <th align='left'>Listener</th>"
                 ."    <td colspan='3'>"
-                ."<select name='listenerID' class='formfield' onchange='document.form.submit()' style='font-family: monospace;'> "
+                ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
+                ." style='font-family: monospace;'> "
                 .get_listener_options_list("1", $listenerID, "Select Listener")
                 ."</select>"
                 ."</td>\n"
@@ -975,7 +1081,8 @@ function log_upload()
             }
             $listener_timezone =    $row['timezone'];
             $out.=
-                 "<h1>Add Log > Confirm Data</h1><br><img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+                 "<h1>Add Log > Confirm Data</h1><br>"
+                ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
                 ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                 ."  <tr>\n"
                 ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
@@ -986,7 +1093,12 @@ function log_upload()
                 ."    <input type='hidden' name='listener_in' value='$listener_in'>\n"
                 ."    <input type='hidden' name='listenerID' value='$listenerID'>"
                 ."    <input type='hidden' name='listener_timezone' value='$listener_timezone'>"
-                .$row["name"].($row["callsign"] ? " <b>".$row["callsign"]."</b>" : "")." ".$row["QTH"].", ".$row["SP"].", ".$row["ITU"].($row["notes"] ? " (".stripslashes($row["notes"]).")" : "")
+                .$row["name"]
+                .($row["callsign"] ? " <b>".$row["callsign"]."</b>" : "")." "
+                .$row["QTH"].", "
+                .($row["SP"] ? $row["SP"].", " : "")
+                .$row["ITU"]
+                .($row["notes"] ? " (".stripslashes($row["notes"]).")" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n";
@@ -997,7 +1109,8 @@ function log_upload()
             $result = mysql_query($sql);
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             $out.=
-                "<h1>Add Log > Results</h1><br><img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+                 "<h1>Add Log > Results</h1><br>"
+                ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
                 ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                 ."  <tr>\n"
                 ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
@@ -1005,7 +1118,12 @@ function log_upload()
                 ."  <tr class='rownormal'>\n"
                 ."    <th align='left'>Listener</th>"
                 ."    <td colspan='3'><input type='hidden' name='listenerID' value='$listenerID'>"
-                .$row["name"].($row["callsign"] ? " <b>".$row["callsign"]."</b>" : "")." ".$row["QTH"].", ".$row["SP"].", ".$row["ITU"].($row["notes"] ? " (".stripslashes($row["notes"]).")" : "")
+                .$row["name"]
+                .($row["callsign"] ? " <b>".$row["callsign"]."</b>" : "")." "
+                .$row["QTH"].", "
+                .($row["SP"] ? $row["SP"].", " : "")
+                .$row["ITU"]
+                .($row["notes"] ? " (".stripslashes($row["notes"]).")" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table><br><br>\n"
@@ -1100,7 +1218,8 @@ function log_upload()
             ."  </tr>\n"
             .$log_format_errors
             ."</table>\n\n"
-            ."Click <a href='javascript:history.back()'><b><u>here</u></b></a> to check your log format and try again.</p>";
+            ."Click <a href='javascript:history.back()'><b><u>here</u></b></a>"
+            ." to check your log format and try again.</p>";
         return $out;
     }
 
@@ -1111,50 +1230,54 @@ function log_upload()
     $log_shows_MM =    false;
     $log_shows_DD =    false;
 
-    if (isset($param_array["DDMMYY"]) ||    isset($param_array["DD.MM.YY"]) ||
-    isset($param_array["DDYYMM"]) ||    isset($param_array["DD.YY.MM"]) ||
-    isset($param_array["MMDDYY"]) ||    isset($param_array["MM.DD.YY"]) ||
-    isset($param_array["MMYYDD"]) ||    isset($param_array["MM.YY.DD"]) ||
-    isset($param_array["YYDDMM"]) ||    isset($param_array["YY.DD.MM"]) ||
-    isset($param_array["YYMMDD"]) ||    isset($param_array["YY.MM.DD"]) ||
+    if (
+        isset($param_array["DDMMYY"]) ||    isset($param_array["DD.MM.YY"]) ||
+        isset($param_array["DDYYMM"]) ||    isset($param_array["DD.YY.MM"]) ||
+        isset($param_array["MMDDYY"]) ||    isset($param_array["MM.DD.YY"]) ||
+        isset($param_array["MMYYDD"]) ||    isset($param_array["MM.YY.DD"]) ||
+        isset($param_array["YYDDMM"]) ||    isset($param_array["YY.DD.MM"]) ||
+        isset($param_array["YYMMDD"]) ||    isset($param_array["YY.MM.DD"]) ||
 
-    isset($param_array["DDMMMYY"]) ||    isset($param_array["DD.MMM.YY"]) ||
-    isset($param_array["DDYYMMM"]) ||    isset($param_array["DD.YY.MMM"]) ||
-    isset($param_array["MMMDDYY"]) ||    isset($param_array["MMM.DD.YY"]) ||
-    isset($param_array["MMMYYDD"]) ||    isset($param_array["MMM.YY.DD"]) ||
-    isset($param_array["YYDDMMM"]) ||    isset($param_array["YY.DD.MMM"]) ||
-    isset($param_array["YYMMMDD"]) ||    isset($param_array["YY.MMM.DD"]) ||
+        isset($param_array["DDMMMYY"]) ||   isset($param_array["DD.MMM.YY"]) ||
+        isset($param_array["DDYYMMM"]) ||   isset($param_array["DD.YY.MMM"]) ||
+        isset($param_array["MMMDDYY"]) ||   isset($param_array["MMM.DD.YY"]) ||
+        isset($param_array["MMMYYDD"]) ||   isset($param_array["MMM.YY.DD"]) ||
+        isset($param_array["YYDDMMM"]) ||   isset($param_array["YY.DD.MMM"]) ||
+        isset($param_array["YYMMMDD"]) ||   isset($param_array["YY.MMM.DD"]) ||
 
-    isset($param_array["DDMMYYYY"]) ||    isset($param_array["DD.MM.YYYY"]) ||
-    isset($param_array["DDYYYYMM"]) ||    isset($param_array["DD.YYYY.MM"]) ||
-    isset($param_array["MMDDYYYY"]) ||    isset($param_array["MM.DD.YYYY"]) ||
-    isset($param_array["MMYYYYDD"]) ||    isset($param_array["MM.YYYY.DD"]) ||
-    isset($param_array["YYYYDDMM"]) ||    isset($param_array["YYYY.DD.MM"]) ||
-    isset($param_array["YYYYMMDD"]) ||    isset($param_array["YYYY.MM.DD"]) ||
+        isset($param_array["DDMMYYYY"]) ||  isset($param_array["DD.MM.YYYY"]) ||
+        isset($param_array["DDYYYYMM"]) ||  isset($param_array["DD.YYYY.MM"]) ||
+        isset($param_array["MMDDYYYY"]) ||  isset($param_array["MM.DD.YYYY"]) ||
+        isset($param_array["MMYYYYDD"]) ||  isset($param_array["MM.YYYY.DD"]) ||
+        isset($param_array["YYYYDDMM"]) ||  isset($param_array["YYYY.DD.MM"]) ||
+        isset($param_array["YYYYMMDD"]) ||  isset($param_array["YYYY.MM.DD"]) ||
 
-    isset($param_array["DDMMMYYYY"]) ||    isset($param_array["DD.MMM.YYYY"]) ||
-    isset($param_array["DDYYYYMMM"]) ||    isset($param_array["DD.YYYY.MMM"]) ||
-    isset($param_array["MMMDDYYYY"]) ||    isset($param_array["MMM.DD.YYYY"]) ||
-    isset($param_array["MMMYYYYDD"]) ||    isset($param_array["MMM.YYYY.DD"]) ||
-    isset($param_array["YYYYDDMMM"]) ||    isset($param_array["YYYY.DD.MMM"]) ||
-    isset($param_array["YYYYMMMDD"]) ||    isset($param_array["YYYY.MMM.DD"])) {
+        isset($param_array["DDMMMYYYY"]) || isset($param_array["DD.MMM.YYYY"]) ||
+        isset($param_array["DDYYYYMMM"]) || isset($param_array["DD.YYYY.MMM"]) ||
+        isset($param_array["MMMDDYYYY"]) || isset($param_array["MMM.DD.YYYY"]) ||
+        isset($param_array["MMMYYYYDD"]) || isset($param_array["MMM.YYYY.DD"]) ||
+        isset($param_array["YYYYDDMMM"]) || isset($param_array["YYYY.DD.MMM"]) ||
+        isset($param_array["YYYYMMMDD"]) || isset($param_array["YYYY.MMM.DD"])
+    ) {
         $log_shows_YYYY =    true;
         $log_shows_MM =    true;
         $log_shows_DD =    true;
     }
-    if (isset($param_array["DM"]) ||        isset($param_array["D.M"]) ||
-    isset($param_array["DDM"]) ||        isset($param_array["DD.M"]) ||
-    isset($param_array["DMM"]) ||        isset($param_array["D.MM"]) ||
-    isset($param_array["DDMM"]) ||        isset($param_array["DD.MM"]) ||
-    isset($param_array["DMMM"]) ||        isset($param_array["D.MMM"]) ||
-    isset($param_array["DDMMM"]) ||        isset($param_array["DD.MMM"]) ||
+    if (
+        isset($param_array["DM"]) ||        isset($param_array["D.M"]) ||
+        isset($param_array["DDM"]) ||       isset($param_array["DD.M"]) ||
+        isset($param_array["DMM"]) ||       isset($param_array["D.MM"]) ||
+        isset($param_array["DDMM"]) ||      isset($param_array["DD.MM"]) ||
+        isset($param_array["DMMM"]) ||      isset($param_array["D.MMM"]) ||
+        isset($param_array["DDMMM"]) ||     isset($param_array["DD.MMM"]) ||
 
-    isset($param_array["MD"]) ||        isset($param_array["M.D"]) ||
-    isset($param_array["MDD"]) ||        isset($param_array["M.DD"]) ||
-    isset($param_array["MMD"]) ||        isset($param_array["MM.D"]) ||
-    isset($param_array["MMDD"]) ||        isset($param_array["MM.DD"]) ||
-    isset($param_array["MMMD"]) ||        isset($param_array["MMM.D"]) ||
-    isset($param_array["MMMDD"]) ||        isset($param_array["MMM.DD"])) {
+        isset($param_array["MD"]) ||        isset($param_array["M.D"]) ||
+        isset($param_array["MDD"]) ||       isset($param_array["M.DD"]) ||
+        isset($param_array["MMD"]) ||       isset($param_array["MM.D"]) ||
+        isset($param_array["MMDD"]) ||      isset($param_array["MM.DD"]) ||
+        isset($param_array["MMMD"]) ||      isset($param_array["MMM.D"]) ||
+        isset($param_array["MMMDD"]) ||     isset($param_array["MMM.DD"])
+    ) {
         $log_shows_MM =    true;
         $log_shows_DD =    true;
     }
@@ -1184,10 +1307,12 @@ function log_upload()
             if (!isset($param_array["ID"])) {
                 $out.=
                      "<br><h1>Error</h1><p>Your log format must include the ID field.<br>"
-                    ."Click <a href='javascript:history.back()'><b><u>here</u></b></a> to check your log format and try again.</p>";
+                    ."Click <a href='javascript:history.back()'><b><u>here</u></b></a>"
+                    ." to check your log format and try again.</p>";
             } else {
                 $out.=
-                     "<br><span class='p'><b>Parser Results</b><small> - see <a href='#next'><b>below</b></a> for suggested <b>Next Steps</b></small></span>\n"
+                     "<br><span class='p'><b>Parser Results</b><small> - see"
+                    ." <a href='#next'><b>below</b></a> for suggested <b>Next Steps</b></small></span>\n"
                     ."<table border='0' cellpadding='2' cellspacing='1' bgcolor='#c0c0c0'>\n"
                     ."  <tr class='downloadTableHeadings_nosort'>\n"
                     ."    <th>KHz</th>\n"
@@ -1366,32 +1491,43 @@ function log_upload()
                     $DD =        D_to_DD($log_dd);
 
                     if (function_exists("parse")) {
-                        $YYYYMMDD =    parse($param_array, $lines[$i], $YYYY, $MM, $DD);
-                        $YYYY =    substr($YYYYMMDD, 0, 4);
-                        $MM =    substr($YYYYMMDD, 4, 2);
-                        $DD =    substr($YYYYMMDD, 6, 2);
-                    } elseif (isset($param_array["D"]) || isset($param_array["DD"]) || isset($param_array["M"]) || isset($param_array["MM"])) {
+                        $YYYYMMDD = parse($param_array, $lines[$i], $YYYY, $MM, $DD);
+                        $YYYY =     substr($YYYYMMDD, 0, 4);
+                        $MM =       substr($YYYYMMDD, 4, 2);
+                        $DD =       substr($YYYYMMDD, 6, 2);
+                    } elseif (
+                        isset($param_array["D"]) ||
+                        isset($param_array["DD"]) ||
+                        isset($param_array["M"]) ||
+                        isset($param_array["MM"])
+                    ) {
                         if (isset($param_array["D"])) {
-                            $DD =        D_to_DD(trim(substr($lines[$i], $param_array["D"][0], 2)));
+                            $DD =
+                                D_to_DD(trim(substr($lines[$i], $param_array["D"][0], 2)));
                         }
                         if (isset($param_array["DD"])) {
-                            $DD =        trim(substr($lines[$i], $param_array["DD"][0], $param_array["DD"][1]));
+                            $DD =
+                                trim(substr($lines[$i], $param_array["DD"][0], $param_array["DD"][1]));
                         }
                         if (isset($param_array["M"])) {
                             // DD shown in log
-                            $MM =        M_to_MM(trim(substr($lines[$i], $param_array["M"][0], $param_array["M"][1])));
+                            $MM =
+                                M_to_MM(trim(substr($lines[$i], $param_array["M"][0], $param_array["M"][1])));
                         }
                         if (isset($param_array["MM"])) {
                             // DD shown in log
-                            $MM =        trim(substr($lines[$i], $param_array["MM"][0], $param_array["MM"][1]));
+                            $MM =
+                                trim(substr($lines[$i], $param_array["MM"][0], $param_array["MM"][1]));
                         }
                         if (isset($param_array["YY"])) {
                             // DD shown in log
-                            $YYYY =        YY_to_YYYY(trim(substr($lines[$i], $param_array["YY"][0], $param_array["YY"][1])));
+                            $YYYY =
+                                YY_to_YYYY(trim(substr($lines[$i], $param_array["YY"][0], $param_array["YY"][1])));
                         }
                         if (isset($param_array["YYYY"])) {
                             // DD shown in log
-                            $YYYY =        trim(substr($lines[$i], $param_array["YYYY"][0], $param_array["YYYY"][1]));
+                            $YYYY =
+                                trim(substr($lines[$i], $param_array["YYYY"][0], $param_array["YYYY"][1]));
                         }
                     }
 
@@ -1403,22 +1539,35 @@ function log_upload()
                         // hh:mm shown in log
                         $hhmm_arr = explode(":", trim(substr($lines[$i], $param_array["hh:mm"][0], 6)));
                         if (isset($hhmm_arr[1])) {
-                            $hhmm =        (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
+                            $hhmm =
+                                (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
                         }
                     }
                     if (isset($param_array["hhmm"])) {
                         // hhmm shown in log
-                        $hhmm =        substr(trim(substr($lines[$i], $param_array["hhmm"][0], $param_array["hhmm"][1])), 0, 4);
+                        $hhmm =
+                            substr(trim(substr($lines[$i], $param_array["hhmm"][0], $param_array["hhmm"][1])), 0, 4);
                     }
                     if (!is_numeric($hhmm)) {
                         $hhmm =    "";
                     }
-                    $KHZ =    (float)(isset($param_array["KHZ"]) ? str_replace(",", ".", trim(substr($lines[$i], $param_array["KHZ"][0], $param_array["KHZ"][1]))) : "");
-                    $ID =        strtoUpper(trim(substr($lines[$i], $param_array["ID"][0], $param_array["ID"][1])));
+                    $KHZ =    (float)(isset($param_array["KHZ"]) ?
+                        str_replace(",", ".", trim(substr($lines[$i], $param_array["KHZ"][0], $param_array["KHZ"][1])))
+                     :
+                        ""
+                    );
+                    $ID =     strtoUpper(trim(substr($lines[$i], $param_array["ID"][0], $param_array["ID"][1])));
 
-                    $sec =    (isset($param_array["sec"]) ? htmlentities(trim(substr($lines[$i], $param_array["sec"][0], $param_array["sec"][1]))) : "");
-                    $fmt =    (isset($param_array["fmt"]) ? htmlentities(trim(substr($lines[$i], $param_array["fmt"][0], $param_array["fmt"][1]))) : "");
-
+                    $sec =    (isset($param_array["sec"]) ?
+                        htmlentities(trim(substr($lines[$i], $param_array["sec"][0], $param_array["sec"][1])))
+                     :
+                        ""
+                    );
+                    $fmt =    (isset($param_array["fmt"]) ?
+                        htmlentities(trim(substr($lines[$i], $param_array["fmt"][0], $param_array["fmt"][1])))
+                     :
+                        ""
+                    );
                     $LSB =    "";
                     $USB =    "";
                     $LSB_approx =    "";
@@ -1453,16 +1602,41 @@ function log_upload()
                         $USB_approx =    "~";
                     }
 
-                    // The following parameters are only used for simplifying adding of new signals if the input format happens to include them:
-                    $GSQ =    (isset($param_array["GSQ"]) ?  trim(substr($lines[$i], $param_array["GSQ"][0], $param_array["GSQ"][1])) : "");
-                    $QTH =    (isset($param_array["QTH"]) ?  trim(substr($lines[$i], $param_array["QTH"][0], $param_array["QTH"][1])) : "");
-                    $ITU =    (isset($param_array["ITU"]) ?  trim(substr($lines[$i], $param_array["ITU"][0], $param_array["ITU"][1])) : "");
-                    $SP =     (isset($param_array["SP"]) ?   trim(substr($lines[$i], $param_array["SP"][0], $param_array["SP"][1])) : "");
-                    $PWR =    (isset($param_array["PWR"]) ?  trim(substr($lines[$i], $param_array["PWR"][0], $param_array["PWR"][1])) : "");
+                    // The following parameters are only used for simplifying adding of new signals"
+                    // if the input format happens to include them:
+                    $GSQ =    (isset($param_array["GSQ"]) ?
+                        trim(substr($lines[$i], $param_array["GSQ"][0], $param_array["GSQ"][1]))
+                     :
+                        ""
+                    );
+                    $QTH =    (isset($param_array["QTH"]) ?
+                        trim(substr($lines[$i], $param_array["QTH"][0], $param_array["QTH"][1]))
+                     :
+                        ""
+                    );
+                    $ITU =    (isset($param_array["ITU"]) ?
+                        trim(substr($lines[$i], $param_array["ITU"][0], $param_array["ITU"][1]))
+                     :
+                        ""
+                    );
+                    $SP =     (isset($param_array["SP"]) ?
+                        trim(substr($lines[$i], $param_array["SP"][0], $param_array["SP"][1]))
+                     :
+                        ""
+                    );
+                    $PWR =    (isset($param_array["PWR"]) ?
+                        trim(substr($lines[$i], $param_array["PWR"][0], $param_array["PWR"][1]))
+                     :
+                        ""
+                    );
 
 
                     if (isset($param_array["+SB-"])) {
-                        $sb =    str_replace("–", "-", trim(substr($lines[$i], $param_array["+SB-"][0], $param_array["+SB-"][1])));
+                        $sb =    str_replace(
+                            "–",
+                            "-",
+                            trim(substr($lines[$i], $param_array["+SB-"][0], $param_array["+SB-"][1]))
+                        );
                         // Convert hyphen symbol to - (For Steve R's Offsets)
                         $sb_arr =    explode(" ", $sb);
                         for ($j=0; $j<count($sb_arr); $j++) {
@@ -1471,19 +1645,28 @@ function log_upload()
                                 // Format used by Jim Smith to indicate sb not present
                                 $sb="";
                             }
-                            if ($sb=="DAID" or $sb=="DA2ID" or $sb=="DA3ID" or $sb=="DBID" or $sb=="DB2ID" or $sb=="DB3ID") {
+                            if (
+                                $sb=="DAID" ||
+                                $sb=="DA2ID" ||
+                                $sb=="DA3ID" ||
+                                $sb=="DBID" ||
+                                $sb=="DB2ID" ||
+                                $sb=="DB3ID") {
                                 $fmt = $sb;
                             }
-                            if ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") || (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")) {
+                            if (
+                                (substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
+                            ) {
                                 $USB = abs($sb);
                                 $LSB = $USB;
                             } elseif (substr($sb, 0, 1)=="±") {
                                 $USB = abs(substr($sb, 1));
                                 $LSB = $USB;
-                            } elseif (substr($sb, 0, 3)=="+/-" or substr($sb, 0, 3)=="-/+") {
+                            } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
                                 $USB = abs(substr($sb, 3));
                                 $LSB = $USB;
-                            } elseif (substr($sb, 0, 2)=="+-" or substr($sb, 0, 2)=="-+") {
+                            } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
                                 $USB = abs(substr($sb, 2));
                                 $LSB = $USB;
                             } else {
@@ -1505,7 +1688,8 @@ function log_upload()
                                     $USB = abs(substr($sb, 1));
                                     $LSB = $USB;
                                 } elseif (is_numeric($sb)) {
-                                    $USB = $sb;                                 // neither + nor -, therefore USB
+                                    $USB = $sb;
+                                    // neither + nor -, therefore USB
                                     $USB_approx =    $approx;
                                 }
                             }
@@ -1513,15 +1697,29 @@ function log_upload()
                     }
 
                     if (isset($param_array["+~SB-"])) {
-                        $sb =    str_replace("–", "-", trim(substr($lines[$i], $param_array["+~SB-"][0], $param_array["+~SB-"][1])));
-                                // Convert hyphen symbol to - (For Steve R's Offsets)
+                        $sb =    str_replace(
+                            "–",
+                            "-",
+                            trim(substr($lines[$i], $param_array["+~SB-"][0], $param_array["+~SB-"][1]))
+                        );
+                        // Convert hyphen symbol to - (For Steve R's Offsets)
                         $sb =    str_replace("~", "", $sb); // Remove ~ symbol now we know it's approx
                         $sb_arr =    explode(" ", $sb);
                         for ($j=0; $j<count($sb_arr); $j++) {
                             $sb =    trim($sb_arr[$j]);
-                            if ($sb=="DAID" or $sb=="DA2ID" or $sb=="DA3ID" or $sb=="DBID" or $sb=="DB2ID" or $sb=="DB3ID") {
+                            if (
+                                $sb=="DAID" ||
+                                $sb=="DA2ID" ||
+                                $sb=="DA3ID" ||
+                                $sb=="DBID" ||
+                                $sb=="DB2ID" ||
+                                $sb=="DB3ID"
+                            ) {
                                 $fmt = $sb;
-                            } elseif ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") || (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")) {
+                            } elseif (
+                                (substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
+                            ) {
                                 $USB_approx =    "~";
                                 $LSB_approx =    "~";
                                 $USB = abs($sb);
@@ -1531,12 +1729,12 @@ function log_upload()
                                 $LSB_approx =    "~";
                                 $USB = abs(substr($sb, 1));
                                 $LSB = $USB;
-                            } elseif (substr($sb, 0, 3)=="+/-" or substr($sb, 0, 3)=="-/+") {
+                            } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
                                 $USB_approx =    "~";
                                 $LSB_approx =    "~";
                                 $USB = abs(substr($sb, 3));
                                 $LSB = $USB;
-                            } elseif (substr($sb, 0, 2)=="+-" or substr($sb, 0, 2)=="-+") {
+                            } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
                                 $USB_approx =    "~";
                                 $LSB_approx =    "~";
                                 $USB = abs(substr($sb, 2));
@@ -1563,7 +1761,13 @@ function log_upload()
 
                     // Cope with Brian Keyte's +0.4 1- offsets
                     if (isset($param_array["+K-"])) {
-                        $sb =    trim(str_replace("–", "-", trim(substr($lines[$i], $param_array["+K-"][0], $param_array["+K-"][1])))); // Convert hyphen symbol to -
+                        $sb = trim(
+                            str_replace(
+                                "–",
+                                "-",
+                                trim(substr($lines[$i], $param_array["+K-"][0], $param_array["+K-"][1]))
+                            )
+                        ); // Convert hyphen symbol to -
                         if ($sb ===    "0.4") {
                             $USB_approx =    "~";
                             $LSB_approx =    "~";
@@ -1657,60 +1861,121 @@ function log_upload()
                                     $row =    mysql_fetch_array($result, MYSQL_ASSOC);
                                     $bgcolor =    "";
                                     if (!$row["active"]) {
-                                        $bgcolor =    " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
+                                        $bgcolor =
+                                            " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
                                     } else {
                                         switch ($row["type"]) {
-                                            case NDB:    $bgcolor = "";
+                                            case NDB:
+                                                $bgcolor = "";
                                                 break;
-                                            case DGPS:    $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
+                                            case DGPS:
+                                                $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
                                                 break;
-                                            case TIME:    $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
+                                            case TIME:
+                                                $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
                                                 break;
-                                            case NAVTEX:    $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
+                                            case NAVTEX:
+                                                $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
                                                 break;
-                                            case HAMBCN:    $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
+                                            case HAMBCN:
+                                                $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
                                                 break;
-                                            case OTHER:    $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
+                                            case OTHER:
+                                                $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
                                                 break;
                                         }
                                     }
                                     $out.=
-                                         "  <td><input type='hidden' name='ID[]' value='".$row["ID"]."'>".(((float)$row['khz']<198 || (float)$row['khz'] > 530) ? "<font color='darkorange'><b>".(float)$row['khz']."</b></font>" : (float)$row['khz'])."</td>\n"
-                                        ."  <td$bgcolor><a href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a></td>\n"
-                                        ."  <td".($row['QTH']?"":" bgcolor='#FFE7B9' title='Please provide a value for QTH if you have one'")."><font color='#606060'>".$row['QTH']."</font></td>\n"
+                                         "  <td>"
+                                        ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
+                                        .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
+                                            "<font color='darkorange'><b>".(float)$row['khz']."</b></font>"
+                                         :
+                                            (float)$row['khz']
+                                        )
+                                        ."</td>\n"
+                                        ."  <td$bgcolor>"
+                                        ."<a href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
+                                        ."</td>\n"
+                                        ."  <td".($row['QTH']?"":" bgcolor='#FFE7B9'"
+                                        ." title='Please provide a value for QTH if you have one'").">"
+                                        ."<font color='#606060'>".$row['QTH']."</font>"
+                                        ."</td>\n"
                                         ."  <td><font color='#606060'>".$row['SP']."</font></td>\n"
                                         ."  <td><font color='#606060'>".$row['ITU']."</font></td>\n"
-                                        ."  <td><font color='#606060'>".($row["GSQ"] ? "<a onmouseover='window.status=\"View map for ".(float)$row["khz"]."-".$row["call"]."\";return true;' onmouseout='window.status=\"\";return true;' href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show map (accuracy limited to nearest Grid Square)'>".$row["GSQ"]."</a>" : "&nbsp;")."</font></td>\n"
-                                        ."  <td><font color='#606060'>".(strpos($row['heard_in'], $listener_in)===false ? "<font color='#008000'><b>".$row['heard_in']."</b></font>" : highlight($row['heard_in'], $listener_in))."</font></td>\n";
+                                        ."  <td><font color='#606060'>"
+                                        .($row["GSQ"] ?
+                                             "<a href='javascript:popup_map("
+                                            ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
+                                            .")' title='Show map (accuracy limited to nearest Grid Square)'>"
+                                            .$row["GSQ"]."</a>"
+                                         :
+                                            "&nbsp;"
+                                         )
+                                         ."</font></td>\n"
+                                         ."  <td><font color='#606060'>"
+                                         .(strpos($row['heard_in'], $listener_in)===false ?
+                                            "<font color='#008000'><b>".$row['heard_in']."</b></font>"
+                                          :
+                                            highlight($row['heard_in'], $listener_in)
+                                         )
+                                         ."</font></td>\n";
                                 } else {
                                     $out.=
                                          "<tr bgcolor='#ffe0a0'>\n"
-                                        ."  <td colspan='7'><select name='ID[]' class='formfixed'>\n";
+                                        ."  <td colspan='7'>"
+                                        ."<select name='ID[]' class='formfixed'>\n";
+                                    $defaultChosen =    false;
+                                    $selected =         false;
                                     for ($j=0; $j<mysql_num_rows($result); $j++) {
                                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                                        $out.=    "<option".($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")." value='".$row["ID"]."'>".(float)$row["khz"]." ".$ID." ".$row["QTH"]." ".pad_nbsp($row["SP"], 3)." ".$row["ITU"]." ".$row["GSQ"]." ".$row["heard_in"]."</option>\n";
+                                        if (!$defaultChosen && $row["active"]=="1") {
+                                            $selected = true;
+                                            $defaultChosen =  true;
+                                        }
+                                        $out.=
+                                             "<option"
+                                            .($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")
+                                            ." value='".$row["ID"]."'"
+                                            .($selected ? " selected='selected'" : "")
+                                            .">"
+                                            .(float)$row["khz"]." "
+                                            .$ID." "
+                                            .$row["QTH"]." "
+                                            .pad_nbsp($row["SP"], 3)." "
+                                            .$row["ITU"]." "
+                                            .$row["GSQ"]." "
+                                            .$row["heard_in"]
+                                            ."</option>\n";
+                                        $selected = false;
                                     }
-                                    $out.=    "</select></td>\n";
+                                    $out.=
+                                        "</select></td>\n";
                                 }
-                                $out.=    "  <td align='center'><input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
+                                $out.=
+                                    "  <td align='center'><input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
 
                                 if (strlen($YYYYMMDD)!=8) {
                                     $date_fail = true;
-                                    $out.=    "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                    $out.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                 } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
                                     $date_fail = true;
-                                    $out.=    "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                    $out.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                 } else {
                                     $out.=    ($YYYY<2005 ? "<font color='darkorange'><b>$YYYY</b></font>" : "$YYYY");
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
-                                        $out.=    "<font color='red'><b><strike>$MM</strike></b></font>";
+                                        $out.=
+                                            "<font color='red'><b><strike>$MM</strike></b></font>";
                                     } else {
                                         $out.=    $MM;
                                     }
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
-                                        $out.=    "<font color='red'><b><strike>$DD</strike></b></font>";
+                                        $out.=
+                                            "<font color='red'><b><strike>$DD</strike></b></font>";
                                     } else {
                                         $out.=    $DD;
                                     }
@@ -1718,7 +1983,10 @@ function log_upload()
                                 $out.=
                                      "</td>\n"
                                     ."  <td align='center'><input type='hidden' name='hhmm[]' value='$hhmm'>";
-                                if ((strlen($hhmm)!=0 && strlen($hhmm)!=4) || substr($hhmm, 0, 2)>23 || substr($hhmm, 2, 2)>59) {
+                                if (
+                                    (strlen($hhmm)!=0 && strlen($hhmm)!=4) ||
+                                    substr($hhmm, 0, 2)>23 || substr($hhmm, 2, 2)>59
+                                ) {
                                     $date_fail = true;
                                     $out.=    "<font color='red'><b><strike>$hhmm</strike></b></font>";
                                 } else {
@@ -1726,8 +1994,24 @@ function log_upload()
                                 }
                                 $out.=
                                      "</td>\n"
-                                    ."  <td><input type='hidden' name='LSB_approx[]' value='$LSB_approx'><input type='hidden' name='LSB[]' value='$LSB'>".((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ? "<font color='darkorange'><b>$LSB_approx$LSB</b></font>" : "$LSB_approx$LSB")."</td>\n"
-                                    ."  <td><input type='hidden' name='USB_approx[]' value='$USB_approx'><input type='hidden' name='USB[]' value='$USB'>".((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ? "<font color='darkorange'><b>$USB_approx$USB</b></font>" : "$USB_approx$USB")."</td>\n"
+                                    ."  <td>"
+                                    ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
+                                    ."<input type='hidden' name='LSB[]' value='$LSB'>"
+                                    .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
+                                        "<font color='darkorange'><b>$LSB_approx$LSB</b></font>"
+                                    :
+                                        "$LSB_approx$LSB"
+                                    )
+                                    ."</td>\n"
+                                    ."  <td>"
+                                    ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
+                                    ."<input type='hidden' name='USB[]' value='$USB'>"
+                                    .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
+                                        "<font color='darkorange'><b>$USB_approx$USB</b></font>"
+                                     :
+                                        "$USB_approx$USB"
+                                    )
+                                    ."</td>\n"
                                     ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
                                     ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
                                     ."  <td>&nbsp;</td>\n"
@@ -1735,7 +2019,13 @@ function log_upload()
                             } else {
                                 $out.=
                                      "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
-                                    ."  <td>".(((float)$KHZ<198 || (float)$KHZ > 530) ? "<font color='darkorange'><b>".(float)$KHZ."</b></font>" : (float)$KHZ)."</td>\n"
+                                    ."  <td>"
+                                    .(((float)$KHZ<198 || (float)$KHZ > 530) ?
+                                        "<font color='darkorange'><b>".(float)$KHZ."</b></font>"
+                                     :
+                                        (float)$KHZ
+                                    )
+                                    ."</td>\n"
                                     ."  <td>$ID</td>\n"
                                     ."  <td>$QTH</td>\n"
                                     ."  <td>$SP</td>\n"
@@ -1771,7 +2061,9 @@ function log_upload()
                                     ."  <td>$USB_approx$USB</td>\n"
                                     ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
                                     ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                    ."  <td><a href='javascript:signal_add(\"$ID\",\"$KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\")'><b>Add...</b></a></td>\n"
+                                    ."  <td><a href='javascript:signal_add("
+                                    ."\"$ID\",\"$KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
+                                    .")'><b>Add...</b></a></td>\n"
                                     ."</tr>";
                                 $unresolved_signals[] =    $lines[$i];
                             }
@@ -1781,13 +2073,17 @@ function log_upload()
                 if (!count($unresolved_signals) && !$date_fail) {
                     $out.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
-                        ."    <th colspan='14'><input type='button' value='Submit Log' class='formbutton' name='go' onclick='this.value=\"Please wait..\";this.disabled=true;submit_log()'></th>\n"
+                        ."    <th colspan='14'>"
+                        ."<input type='button' value='Submit Log' class='formbutton' name='go'"
+                        ." onclick='this.value=\"Please wait..\";this.disabled=true;submit_log()'></th>\n"
                         ."  </tr>\n"
                         ."<script type='text/javascript'>document.form.go.focus()</script>\n";
                 } else {
                     $out.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
-                        ."    <th colspan='14'><input type='button' value='Serious errors found - Go Back...' class='formbutton' name='go' onclick='history.back()'></th>\n"
+                        ."    <th colspan='14'>"
+                        ."<input type='button' value='Serious errors found - Go Back...' class='formbutton' name='go'"
+                        ." onclick='history.back()'></th>\n"
                         ."  </tr>\n"
                         ."<script type='text/javascript'>document.form.go.focus()</script>\n";
                 }
@@ -1797,8 +2093,18 @@ function log_upload()
                 if (count($unresolved_signals)) {
                     $out.=
                          "<p><b>Issues:</b><br>\n"
-                        ."<small>There ".(count($unresolved_signals)!=1 ? "are <b><font color='red'>".count($unresolved_signals)." unresolved signals</font></b>" : "<b><font color='red'>is one</font></b> unresolved signal")." contained in the log</b>.</small><br>"
-                        ."<textarea rows='10' cols='90'>Unresolved records\n---------------------------------\n".implode("", $unresolved_signals)."</textarea>";
+                        ."<small>There "
+                        .(count($unresolved_signals)!=1 ?
+                            "are <b><font color='red'>".count($unresolved_signals)." unresolved signals</font></b>"
+                         :
+                            "<b><font color='red'>is one</font></b> unresolved signal"
+                        )
+                        ." contained in the log</b>.</small><br>"
+                        ."<textarea rows='10' cols='90'>"
+                        ."Unresolved records\n"
+                        ."---------------------------------\n"
+                        .implode("", $unresolved_signals)
+                        ."</textarea>";
                 } else {
                     $out.=
                         "<span class='p'><small><b>Total Loggings in this report: $total_loggings</b></small></span>";
@@ -1807,15 +2113,25 @@ function log_upload()
                 $out.=
                      "<p><a name='next'></a><b>Next Steps...</b><small>\n"
                     ."<ul>\n"
-                    ."<li>Please review the results shown above, especially warnings (<font color='darkorange'><b>orange</b></font>) and serious errors (<font color='red'><b>red</b></font>).</li>\n"
-                    ."<li>Serious errors (invalid dates and unrecognised signals) prevent the <b>Submit Log</b> button from appearing.</li>"
-                    ."<li>If LSB or USB appear to be too high or low, click on the link shown for the signal ID to see the offset history.</li>\n"
-                    ."<li>If data seems to have been misread, click <a href='javascript:history.back()'><b><u>here</u></b></a> to check your formatting and try again.<br>\n"
+                    ."<li>Please review the results shown above, especially warnings"
+                    ." (<font color='darkorange'><b>orange</b></font>) and serious errors"
+                    ." (<font color='red'><b>red</b></font>).</li>\n"
+                    ."<li>Serious errors (invalid dates and unrecognised signals) prevent the"
+                    ." <b>Submit Log</b> button from appearing.</li>"
+                    ."<li>If LSB or USB appear to be too high or low, click on the link shown for the signal ID"
+                    ." to see the offset history.</li>\n"
+                    ."<li>If data seems to have been misread, click"
+                    ." <a href='javascript:history.back()'><b><u>here</u></b></a>"
+                    ." to check your formatting and try again.<br>\n"
                     ."(See the <b>Help</b> page on the main menu for details on acceptable formats).</li>\n"
-                    ."<li>If a signal is not in the system, a link is provided to add the signal - check the details carefully before you add a new signal.</li>\n"
-                    ."<li>If you have just added a signal for this log and you are asked by your browser whether you wish to 'Repost Data', say 'Yes'.</li>\n";
+                    ."<li>If a signal is not in the system, a link is provided to add the signal -"
+                    ." check the details carefully before you add a new signal.</li>\n"
+                    ."<li>If you have just added a signal for this log and you are asked by your browser whether"
+                    ." you wish to 'Repost Data', say 'Yes'.</li>\n";
                 if (!count($unresolved_signals) && !$date_fail) {
-                    $out.=    "<li>If you are happy with the results shown above, press <b>Submit Log</b> to process the data.</li>\n";
+                    $out.=
+                         "<li>If you are happy with the results shown above, press"
+                        ." <b>Submit Log</b> to process the data.</li>\n";
                 }
                 $out.=    "</ul>\n";
             }
@@ -1823,7 +2139,8 @@ function log_upload()
 
         case "submit_log":
             $out.=
-                 "<br><input type='submit' value='&nbsp;Done&nbsp;' name='go' onclick='window.close();' class='formbutton'>"
+                 "<br><input type='submit' value='&nbsp;Done&nbsp;' name='go'"
+                ." onclick='window.close();' class='formbutton'>"
                 ."<script language='javascript' type='text/javascript'>"
                 ."document.form.go.focus();\n"
                 ."</script>\n";
@@ -1838,10 +2155,17 @@ function log_upload()
             ."    <th class='downloadTableHeadings_nosort'>Log to Parse</th>\n"
             ."  </tr>\n"
             ."  <tr class='rownormal'>\n"
-            ."    <td><input name='log_format' class='fixed_heading' size='105' value='$log_format'><input class='formbutton' name='save' type='button' value='Save' onclick='this.disabled=true;document.form.go.disabled=true;document.form.conv.disabled=true;document.form.submode.value=\"save_format\";document.form.submit()'>"
+            ."    <td><input name='log_format' class='fixed_heading' size='105' value='$log_format'>"
+            ."<input class='formbutton' name='save' type='button' value='Save' onclick='"
+            ."this.disabled=true;document.form.go.disabled=true;document.form.conv.disabled=true;"
+            ."document.form.submode.value=\"save_format\";document.form.submit()'>"
             ."  </tr>\n"
             ."  <tr class='rownormal'>\n"
-            ."    <td><textarea rows='30' cols='110' class='fixed' name='log_entries' onKeyUp='check_for_tabs(document.form);' onchange='check_for_tabs(document.form);'>".stripslashes($log_entries)."</textarea>\n"
+            ."    <td><textarea rows='30' cols='110' class='fixed' name='log_entries'"
+            ." onKeyUp='check_for_tabs(document.form);'"
+            ." onchange='check_for_tabs(document.form);'>"
+            .stripslashes($log_entries)
+            ."</textarea>\n"
             ."  </tr>\n";
         if ((!$log_shows_YYYY || !$log_shows_MM || !$log_shows_DD)) {
             $out.=
@@ -1849,15 +2173,18 @@ function log_upload()
                 ."    <td>The following details are also required: &nbsp; \n";
             if (!$log_shows_DD) {
                 $out.=
-                    "Day <input type='text' name='log_dd' size='2' maxlength='2' class='formfield' value='$log_dd'>\n";
+                     "Day "
+                    ."<input type='text' name='log_dd' size='2' maxlength='2' class='formfield' value='$log_dd'>\n";
             }
             if (!$log_shows_MM) {
                 $out.=
-                    "Month <input type='text' name='log_mm' size='2' maxlength='2' class='formfield' value='$log_mm'>\n";
+                     "Month "
+                    ."<input type='text' name='log_mm' size='2' maxlength='2' class='formfield' value='$log_mm'>\n";
             }
             if (!$log_shows_YYYY) {
                 $out.=
-                    "Year <input type='text' name='log_yyyy' size='4' maxlength='4' class='formfield' value='$log_yyyy'>\n";
+                     "Year "
+                    ."<input type='text' name='log_yyyy' size='4' maxlength='4' class='formfield' value='$log_yyyy'>\n";
             }
             $now =        mktime();
             $now_DD =        gmdate("d", $now);
@@ -1866,9 +2193,21 @@ function log_upload()
 
             $out.=
                  "<input type='button' value='&lt;-- Current' class='formButton' onclick=\""
-                .(!$log_shows_DD ?   "if (document.form.log_dd.value=='')   { document.form.log_dd.value='$now_DD'; };" : "")
-                .(!$log_shows_MM ?   "if (document.form.log_mm.value=='')   { document.form.log_mm.value='$now_MM'; };" : "")
-                .(!$log_shows_YYYY ? "if (document.form.log_yyyy.value=='') { document.form.log_yyyy.value='$now_YYYY'; };" : "")
+                .(!$log_shows_DD ?
+                    "if (document.form.log_dd.value=='')   { document.form.log_dd.value='$now_DD'; };"
+                 :
+                    ""
+                )
+                .(!$log_shows_MM ?
+                    "if (document.form.log_mm.value=='')   { document.form.log_mm.value='$now_MM'; };"
+                 :
+                    ""
+                )
+                .(!$log_shows_YYYY ?
+                    "if (document.form.log_yyyy.value=='') { document.form.log_yyyy.value='$now_YYYY'; };"
+                 :
+                    ""
+                )
                 ."\"></td>\n"
                 ."  </tr>\n";
         }
@@ -1876,10 +2215,16 @@ function log_upload()
         $out.=
              "  <tr class='rownormal'>\n"
             ."    <th>"
-            ."<input type='button' value='Tabs > Spaces' class='formbutton' name='conv' onclick='tabs_to_spaces(document.form)'"
+            ."<input type='button' value='Tabs > Spaces' class='formbutton' name='conv'"
+            ." onclick='tabs_to_spaces(document.form)'"
             .(!preg_match("/	/", $log_entries) ? " disabled='disabled'" : "").">\n"
-            ."<input type='button' value='Line Up' class='formbutton' name='lineup' onclick='line_up(document.form)'>\n"
-            ."<input type='button' name='go' value='Parse Log' class='formbutton' onclick='if (parse_log(document.form)) { document.form.go.value=\"Please wait..\";document.form.go.disabled=true;document.form.conv.disabled=true;document.form.save.disabled=true;document.form.submode.value=\"parse_log\";document.form.submit();}'> "
+            ."<input type='button' value='Line Up' class='formbutton' name='lineup'"
+            ." onclick='line_up(document.form)'>\n"
+            ."<input type='button' name='go' value='Parse Log' class='formbutton'"
+            ." onclick='if (parse_log(document.form)) { document.form.go.value=\"Please wait..\";"
+            ."document.form.go.disabled=true;document.form.conv.disabled=true;"
+            ."document.form.save.disabled=true;document.form.submode.value=\"parse_log\";"
+            ."document.form.submit();}'> "
             ."<script language='javascript' type='text/javascript'>"
             ."document.form.go.focus();\n"
             ."</script>"
