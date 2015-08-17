@@ -133,7 +133,7 @@ switch (getenv("SERVER_NAME")) {
   break;
 }
 
-$stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/HEAD');
+$stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/ORIG_HEAD');
 define("system_date", gmdate("d M Y H:i",$stat['mtime']));
 $gitlog = explode(":", `git log master -n 1 --format="%s"`);
 define("system_version", array_shift($gitlog));
