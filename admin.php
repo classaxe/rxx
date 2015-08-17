@@ -12,20 +12,6 @@
 function admin_manage()
 {
     global $mode, $submode;
-    global $HTTP_POST_FILES;
-    $msg =    "";
-    switch ($submode) {
-        case "upload":
-            $source = $HTTP_POST_FILES['file1']['tmp_name'];
-            $dest = "../".$HTTP_POST_FILES['file1']['name'];
-
-            if (move_uploaded_file($source, $dest)) {
-                $msg = 'Saved '.$HTTP_POST_FILES['file1']['name'];
-            } else {
-                $msg = 'File could not be stored';
-            }
-            break;
-    }
     $url = system_URL."/".$mode;
     $out =
          "<form name='form' method='post' enctype='multipart/form-data' action='".system_URL."'>\n"
@@ -42,30 +28,27 @@ function admin_manage()
         ." <b>Signals: Update log counts and 'Heard In' lists</b> (run periodically)</li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
         .$url."?submode=admin_signalUpdateRegionsHeard\"'>"
-        ." <b>Signals: Update all for regions heard and heard_in lists</b> (run if problems are seen)</li><br><br>\n"
+        ." <b>Signals: Update all for regions heard and heard_in lists</b> (run if problems are seen)<br><br></li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
         .$url."?submode=admin_logsUpdateDX\"'>"
         ." <b>Logs: Recalculate all distances</b> (use after adding GSQs for existing logging or function above)</li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
         .$url."?submode=admin_setDaytimeLogs\"'>"
-        ." <b>Logs: Mark daytime loggings</b> (run periodically)</li><br><br>\n"
+        ." <b>Logs: Mark daytime loggings</b> (run periodically)<br><br></li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
         .$url."?submode=admin_listenersUpdateLogCount\"'>"
-        ." <b>Listeners: Update log counts</b> (run periodically)</li><br><br>\n"
+        ." <b>Listeners: Update log counts</b> (run periodically)<br><br></li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
         .$url."?submode=admin_importICAO\"'>"
-        ." <b>ICAO: Get latest data</b> (run once a month)</li><br><br>\n"
+        ." <b>ICAO: Get latest data</b> (run once a month)<br><br></li>\n"
         ."<li><input type='button' value='Go' onclick='document.location=\""
         .system_URL."/db_export\"'>"
         ." <b>System: Export Database</b> (run periodically)</li>\n"
         ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
-        .$url."?submode=admin_systemSendTestEmail&sendToEmail=\"+document.getElementById(\"sendToEmail\").value'>"
+        .$url."?submode=admin_systemSendTestEmail&amp;sendToEmail=\"+document.getElementById(\"sendToEmail\").value'>"
         ." <b>System: Send Test Email to </b>"
-        ."<input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''></li><br><br>\n"
-        ."<li><input type='button' value='Go' onclick='document.form.submode.value=\"upload\";document.form.submit()'>"
-        ." <b>System: Upload</b> <INPUT TYPE='FILE' NAME='file1' SIZE='20' class='formField'>"
-        ." (saves file to http://www.classaxe.com/dx/ndb/) <font color='red'><b>$msg</b></font></li>\n"
-        ."</ol><br>\n";
+        ."<input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''><br><br></li>\n"
+        ."</ol><br></form>\n";
     switch ($submode) {
         case "admin_logsUpdateDX":
             $out.= admin_logsUpdateDX();
@@ -474,18 +457,19 @@ function sys_info()
         ."img {float: right; border: 0px;}\n"
         ."#phpinfo table { width: 800px; }\n"
         ."</style>\n"
-        ."<h2>RNA / REU / RWW SYSTEM</h2><br>\n"
-        ."<table border=\"0\" cellpadding=\"3\" width=\"800\">\n"
+        ."<div id='phpinfo'>\n"
+        ."<table border=\"0\" cellpadding=\"3\" width=\"800\" align='center'>\n"
+        ."<tr class='h'><td colspan='2'><h2>RNA / REU / RWW SYSTEM</h2></td></tr>\n"
         ."<tr><td class=\"e\">system</td><td class=\"v\">".system."</td></tr>\n"
-        ."<tr><td class=\"e\">system_software</td><td class=\"v\">".system_software." UTC</td></tr>\n"
+        ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date." UTC</td></tr>\n"
+        ."<tr><td class=\"e\">system_version</td><td class=\"v\">".system_version."</td></tr>\n"
+        ."<tr><td class=\"e\">system_revision</td><td class=\"v\">".system_revision."</td></tr>\n"
         ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system_editor."</td></tr>\n"
         ."<tr><td class=\"e\">system_ID</td><td class=\"v\">".system_ID."</td></tr>\n"
         ."<tr><td class=\"e\">system_title</td><td class=\"v\">".system_title."</td></tr>\n"
         ."<tr><td class=\"e\">system_URL</td><td class=\"v\">".system_URL."</td></tr>\n"
         ."</table>\n"
-        ."<div id='phpinfo'>\n"
-        ."<hr />\n"
-        ."<h2>PHP INFO</h2>\n"
+        ."<br>\n"
         .$out[1]
         ."</div>";
 }

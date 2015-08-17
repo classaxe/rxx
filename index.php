@@ -133,11 +133,15 @@ switch (getenv("SERVER_NAME")) {
   break;
 }
 
-define ("system_software",gmdate("d M Y H:i",filemtime("functions.php")));
+$stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/HEAD');
+define("system_date", gmdate("d M Y H:i",$stat['mtime']));
+$gitlog = explode(":", `git log master -n 1 --format="%s"`);
+define("system_version", array_shift($gitlog));
+define("system_revision", implode(":", $gitlog));
 
 $script =	getenv("SCRIPT_NAME");
 $server =	getenv("SERVER_NAME");
-$root =	getenv('DOCUMENT_ROOT');
+$root =	    getenv('DOCUMENT_ROOT');
 ini_set("mysql.trace_mode",1);
 
 include_once("backup.php");
