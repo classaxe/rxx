@@ -537,7 +537,7 @@ function main() {
 	."<body onload='show_time()'><span><a name='top'></a></span>\n"
 	."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
 	."  <tr>\n"
-	."    <td align='center'><h1 title='Version ".system_version." (".system_date."UTC)' style='cursor: pointer;cursor: hand;'>"
+	."    <td align='center'><h1 title='Version ".system_version." (".system_date.")' style='cursor: pointer;cursor: hand;'>"
     .system_title."</h1></td>\n"
 	."  </tr>\n"
 	."</table>\n"

@@ -1,12 +1,4 @@
 <?php
-/*
-Version History:
-  1.0.2 (2013-09-28)
-    1) Safety code added to redirect if system was not one of rna, reu or rww
-  1.0.1 (2013-09-24)
-    1) Added constant for type DSC
-*/ 
-
 //ob_start("ob_gzhandler");
 ini_set('display_errors',1);
 
@@ -134,7 +126,7 @@ switch (getenv("SERVER_NAME")) {
 }
 
 $stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/ORIG_HEAD');
-define("system_date", gmdate("d M Y H:i",$stat['mtime']));
+define("system_date", date("d M Y H:i T",$stat['mtime']));
 $gitlog = explode(":", `git log master -n 1 --format="%s"`);
 define("system_version", array_shift($gitlog));
 define("system_revision", implode(":", $gitlog));

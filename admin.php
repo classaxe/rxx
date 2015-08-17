@@ -461,7 +461,7 @@ function sys_info()
         ."<table border=\"0\" cellpadding=\"3\" width=\"800\" align='center'>\n"
         ."<tr class='h'><td colspan='2'><h2>RNA / REU / RWW SYSTEM</h2></td></tr>\n"
         ."<tr><td class=\"e\">system</td><td class=\"v\">".system."</td></tr>\n"
-        ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date." UTC</td></tr>\n"
+        ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date."</td></tr>\n"
         ."<tr><td class=\"e\">system_version</td><td class=\"v\">".system_version."</td></tr>\n"
         ."<tr><td class=\"e\">system_revision</td><td class=\"v\">".system_revision."</td></tr>\n"
         ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system_editor."</td></tr>\n"
