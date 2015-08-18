@@ -13,6 +13,12 @@ function __autoload($className)
         require_once($filePath);
         return;
     }
+    $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $className.'.php');
+    $filePath = 'classes/'.$fileName;
+    if (file_exists($filePath)) {
+        require_once($filePath);
+        return;
+    }
     print 'looking for '.$className;
 }
 

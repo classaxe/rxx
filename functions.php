@@ -477,6 +477,9 @@ function main()
 
 
     switch ($mode) {
+        case 'admin_manage':
+            $Obj = new \Managers\Admin;
+            break;
         case 'awards':
             $Obj = new Awards;
             break;
@@ -649,6 +652,9 @@ function main()
     ."  <tr>\n"
     ."    <td width='100%' valign='top'>";
     switch ($mode) {
+        case 'admin_manage':
+            $out.= $Obj->draw();
+            break;
         case 'awards':
             $out.= $Obj->draw();
             break;

@@ -474,7 +474,7 @@ pre {margin: 0px; font-family: monospace;}
 a:link {color: #000099; text-decoration: none;}
 a:hover {text-decoration: underline;}
 .center table { margin-left: auto; margin-right: auto; text-align: left;}
-.center th { text-align: center; !important }
+.center th { text-align: center; }
 h1 {font-size: 150%;}
 h2 {font-size: 125%;}
 .p {text-align: left;}
@@ -483,5 +483,5 @@ h2 {font-size: 125%;}
 .v {background-color: #cccccc; word-wrap: break-word;}
 i {color: #666666;}
 img {float: right; border: 0px;}
-#phpinfo table { width: 810px; margin: auto; }
+#phpinfo table { width: 810px !important; margin: auto; }
 #phpinfo h1, #phpinfo h2 { display: block; width: 800px; margin: auto; text-align: center; }
