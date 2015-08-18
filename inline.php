@@ -28,19 +28,19 @@
 
 define ("READONLY",0);
 
+session_name("RXX");
+session_cache_limiter('must-revalidate');
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid', false);
+session_start();
+
 $REQUEST_ICAO =	@$_GET['ICAO'];
 $REQUEST_hours =	@$_GET['hours'];
 $REQUEST_list =	@$_GET['list'];
 
 extract($_REQUEST);		// Extracts all request variables (GET and POST) into global scope.
-$cookie_key =		@$_COOKIE['cookie_key'];
-$cookie_user =	@$_COOKIE['cookie_user'];
 
-//$li = mysql_connect("localhost","ndb-ndbrna","kj356y9945m");
 $li = mysql_connect("localhost","rxx","k24l3459");
-// mysqldump -undb-ndbrna -pkj356y9945m
-
-//if (!mysql_selectdb("ndb-ndbrna",$li)) {
 if (!mysql_selectdb("rxx",$li)) {
   print("Cannot connect to database!");
   die;
@@ -93,9 +93,9 @@ switch ($mode) {
 
   case "logon":
     if (isset($submode) && $submode == "logon"  && strtolower($user)==admin_user && strtolower($password)==admin_password) {
-      setcookie('cookie_admin',admin_session);
+      $_SESSION['admin'] = true;
       header("Location: ".system_URL."/".$mode);
-    }  
+    }
     main();
   break;
 
@@ -259,7 +259,7 @@ switch ($mode) {
   // Admin functions
   case "admin_manage":
   case "sys_info":
-    if (@$_COOKIE['cookie_admin']!=admin_session) {
+    if (!isAdmin()) {
       header("Location: ".system_URL."/logon");
     }
     else {
@@ -269,7 +269,7 @@ switch ($mode) {
 
   case "log_upload":
   case "poll_edit":
-    if (@$_COOKIE['cookie_admin']!=admin_session) {
+    if (!isAdmin()) {
       header("Location: ".system_URL."/logon");
     }
     else {
@@ -278,7 +278,7 @@ switch ($mode) {
   break;
 
   case "db_export":
-    if (@$_COOKIE['cookie_admin']!=admin_session) {
+    if (!isAdmin()) {
       header("Location: ".system_URL."/logon");
     }
     else {
@@ -288,8 +288,8 @@ switch ($mode) {
 
 
   case "logoff":
-    setcookie('cookie_admin','');
-    header("Location: ".system_URL."/logon");
+    unset($_SESSION['admin']);
+    header("Location: ".system_URL);
   break;
 
   default:

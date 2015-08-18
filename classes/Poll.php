@@ -159,7 +159,7 @@ class Poll
             ."  `poll_answer`\n"
             ."WHERE\n"
             ."  `poll_question`.`ID` = `poll_answer`.`questionID`\n"
-            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "" : " AND `active` = '0'\n")
+            .(isAdmin() ? "" : " AND `active` = '0'\n")
             ."GROUP BY `poll_question`.`ID`\n"
             .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
         $result =     @mysql_query($sql);
@@ -215,7 +215,7 @@ class Poll
             .($sortBy=='votes_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings_nosort'>Answers</th>\n";
-        if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+        if (isAdmin()) {
             $html.=
                  "    <th valign='bottom' class='downloadTableHeadings' title='Sort by Active status' align='left'"
                 ." onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\""
@@ -237,7 +237,7 @@ class Poll
             $html.=
                  "  <tr class='rownormal'>"
                 ."    <td valign='top'>"
-                .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+                .(isAdmin() ?
                     "<a href=\"javascript:poll_edit('".$row['ID']."')\" title=\"Edit this poll\"><b>".$date."</b></a>"
                  :
                     "<b>$date</b>"
@@ -260,7 +260,7 @@ class Poll
             }
             $html.=
                 "</table></td>";
-            if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+            if (isAdmin()) {
                 $html.=
                      "    <td valign='top'>"
                     ."<a href='javascript:document.form.submode.value=\"activate\";"
@@ -275,7 +275,7 @@ class Poll
             ."<span class='noprint'>\n"
             ."<input type='button' value='Print...' onclick='window.print();'"
             ." class='formbutton' style='width: 150px;' /> ";
-        if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+        if (isAdmin()) {
             $html.=
                  "<input type='button' class='formbutton' value='Add poll...' style='width: 150px'"
                 ." onclick='poll_edit(\"\")'> ";

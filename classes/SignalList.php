@@ -115,7 +115,7 @@ class SignalList
                 ."Continue anyway?\""
                 .")) { window.print(); }": "window.print()"
             )."'/> "
-            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+            .(isAdmin() ?
              "<input type='button' value='Add signal...'"
                 ." onclick=\"signal_add("
                 ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
@@ -503,7 +503,7 @@ class SignalList
             ."          </tr>\n"
             ."	 </table></td>"
             ."      </tr>\n"
-            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+            .(isAdmin() ?
             "      <tr class='rowForm'>\n"
             ."        <th align='left'>Admin:</th>\n"
             ."        <td nowrap><select name='filter_system' class='formField'>\n"
@@ -953,7 +953,7 @@ class SignalList
                     ."</td>\n";
             }
 
-            if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+            if (isAdmin()) {
                 $html.=
                      "<td nowrap>"
                     ."<a href='#' onclick='if ("
@@ -1021,7 +1021,7 @@ class SignalList
         if ($this->filter_dx_gsq) {
             $html.=    "    <th class='nosort txt_c' colspan='3'>Range from<br />GSQ</th>\n";
         }
-        if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+        if (isAdmin()) {
             $html.=    "    <th class='nosort' rowspan='2'>&nbsp;</th>\n";
         }
         if ($this->filter_listener || $this->filter_dx_gsq) {
@@ -1190,7 +1190,7 @@ class SignalList
             ."        <th align='left'>RWW</th>\n"
             ."        <td align='right'>".$this->stats['RWW']."</td>\n"
             ."      </tr>\n"
-            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+            .(isAdmin() ?
                  "      <tr class='rowForm'>\n"
                 ."        <th align='left'>Unlogged</th>\n"
                 ."        <td align='right'>".$this->stats['Unassigned']."</td>\n"
@@ -1557,10 +1557,7 @@ class SignalList
 
     protected function setupDoSubmode()
     {
-        if (!isset($_COOKIE['cookie_admin'])) {
-            return;
-        }
-        if ($_COOKIE['cookie_admin']!=admin_session) {
+        if (!isAdmin()) {
             return;
         }
         switch ($this->submode){

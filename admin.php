@@ -1,14 +1,4 @@
 <?php
-// *******************************************
-// * FILE HEADER:                            *
-// *******************************************
-// * Project:   RNA / REU / RWW              *
-// * Filename:  admin.php                    *
-// * Created:   25/04/2004 (MF)              *
-// * Email:     martin@classaxe.com          *
-// *******************************************
-// Note: all functions are declared in alphabetical order
-
 function admin_manage()
 {
     global $mode, $submode;
@@ -434,43 +424,27 @@ function sys_info()
     ob_start();
     phpinfo();
     $tmp = ob_get_contents();
-    $tmp = str_replace(" width=\"600\"", " width=\"600\"", $tmp);
     ob_end_clean();
+    $tmp = str_replace(" width=\"600\"", "", $tmp);
     $out = preg_split("/<body>|<\/body>/i", $tmp);
-//  print_r($out);die;
-//  return $tmp;
-
+    $phpinfo = $out[1];
     return
-         "<style type=\"text/css\">\n"
-        ."pre {margin: 0px; font-family: monospace;}\n"
-        ."a:link {color: #000099; text-decoration: none;}\n"
-        ."a:hover {text-decoration: underline;}\n"
-        .".center table { margin-left: auto; margin-right: auto; text-align: left;}\n"
-        .".center th { text-align: center; !important }\n"
-        ."h1 {font-size: 150%;}\n"
-        ."h2 {font-size: 125%;}\n"
-        .".p {text-align: left;}\n"
-        .".e {background-color: #ccccff; font-weight: bold;}\n"
-        .".h {background-color: #9999cc; font-weight: bold;}\n"
-        .".v {background-color: #cccccc; width: 700px; word-wrap: break-word;}\n"
-        ."i {color: #666666;}\n"
-        ."img {float: right; border: 0px;}\n"
-        ."#phpinfo table { width: 800px; }\n"
-        ."</style>\n"
-        ."<div id='phpinfo'>\n"
-        ."<table border=\"0\" cellpadding=\"3\" width=\"800\" align='center'>\n"
-        ."<tr class='h'><td colspan='2'><h2>RNA / REU / RWW SYSTEM</h2></td></tr>\n"
+         "<div id='phpinfo'>\n"
+        ."<table border=\"0\" cellpadding=\"3\">\n"
+        ."<tr class='h'><td colspan='2'><h1 class='p'>RNA / REU / RWW SYSTEM</h1></td></tr>\n"
         ."<tr><td class=\"e\">system</td><td class=\"v\">".system."</td></tr>\n"
+        ."<tr><td class=\"e\">system_title</td><td class=\"v\">".system_title."</td></tr>\n"
+        ."<tr><td class=\"e\">system_URL</td><td class=\"v\">".system_URL."</td></tr>\n"
+        ."<tr><td class=\"e\">system_ID</td><td class=\"v\">".system_ID."</td></tr>\n"
+        ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system.': '.system_editor."</td></tr>\n"
         ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date."</td></tr>\n"
         ."<tr><td class=\"e\">system_version</td><td class=\"v\">".system_version."</td></tr>\n"
         ."<tr><td class=\"e\">system_revision</td><td class=\"v\">".system_revision."</td></tr>\n"
-        ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system_editor."</td></tr>\n"
-        ."<tr><td class=\"e\">system_ID</td><td class=\"v\">".system_ID."</td></tr>\n"
-        ."<tr><td class=\"e\">system_title</td><td class=\"v\">".system_title."</td></tr>\n"
-        ."<tr><td class=\"e\">system_URL</td><td class=\"v\">".system_URL."</td></tr>\n"
+        ."<tr><td class=\"e\">awardsAdminEmail</td><td class=\"v\">".awardsAdminEmail."</td></tr>\n"
+        ."<tr><td class=\"e\">awardsAdminName</td><td class=\"v\">".awardsAdminName."</td></tr>\n"
         ."</table>\n"
         ."<br>\n"
-        .$out[1]
+        .$phpinfo
         ."</div>";
 }
 
@@ -536,7 +510,7 @@ function logon()
     global $server,$mode,$submode;
     global $user,$password;
 
-    if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+    if (isAdmin()) {
         return
              "<h2>Logon</h2><p>You are now logged on as an Administrator and may perform administrative functions."
             ."<br><br>\nTo log off, select <b>Log Off</b> from the main menu.</p>";

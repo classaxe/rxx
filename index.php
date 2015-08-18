@@ -73,7 +73,6 @@ if (isset($request_arr[1])){
 
 define ("admin_user","admin");
 define ("admin_password","j35g8sc");
-define ("admin_session","24tl2yl");
 
 define ("NDB",0);
 define ("DGPS",1);

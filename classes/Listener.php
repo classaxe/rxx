@@ -17,7 +17,7 @@ class Listener extends Record
             .tabItem("Export", "listener_log_export", 45)
             .(isset($GSQ) ? tabItem("QNH", "listener_QNH", 35) : "")
             .tabItem("Stats", "listener_stats", 45)
-            .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+            .(isAdmin() ?
                  "                <td class='tabOff' onclick='log_upload(\"".$this->ID."\");'"
                 ." onmouseover='return tabOver(this,1);' onmouseout='return tabOver(this,0);' width='45'>Add...</td>\n"
              :

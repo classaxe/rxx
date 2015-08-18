@@ -77,12 +77,9 @@ function cle_set_type($prefix){
 
 function cle() {
   global $ID, $mode, $submode, $script, $sortBy, $target;
-
   $special = false;
 
-  $isAdmin = isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session;
-
-  if ($isAdmin && $submode=='save'){
+  if (isAdmin() && $submode=='save'){
     $sql =
        "UPDATE\n"
       ."  `cle`\n"
@@ -183,7 +180,7 @@ function cle() {
 
   $out =
      "<h2>CLE ".$record['cle']." Seek Lists and Signal Lists "
-    .($isAdmin ?
+    .(isAdmin() ?
          "<span style='font-size: 80%'>\n"
         ."<a href=\"#\" id=\"show_editor\" onclick=\"window.focus();document.getElementById('cle_editor').style.display='';document.getElementById('show_editor').style.display='none';document.getElementById('hide_editor').style.display='';return false;\">[Show Editor]</a>"
         ."<a href=\"#\" id=\"hide_editor\" style='display: none;' onclick=\"window.focus();document.getElementById('cle_editor').style.display='none';document.getElementById('show_editor').style.display='';document.getElementById('hide_editor').style.display='none';return false;\">[Hide Editor]</a>"
@@ -191,7 +188,7 @@ function cle() {
       :  ""
      )
     ."</h2>\n";
-  if ($isAdmin) {
+  if (isAdmin()) {
     $out.=
        "<script type=\"text/javascript\" src=\"".BASE_PATH."assets/calendar_db.js\"></script>\n"
       ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\" />\n"

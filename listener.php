@@ -41,7 +41,7 @@ function listener_edit() {
   $Obj = new Listener($ID);
   $error_msg =	"";
   $out = "";
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     if ($submode=="add" or $submode=="update") {
       $lat =	0;
       $lon =	0;
@@ -161,7 +161,7 @@ function listener_edit() {
     ."        <table border='0' align='center' cellspacing='0' cellpadding='0' class='tableContainer' width='100%' height='100%'>\n"
     ."          <tr>\n"
     ."            <td bgcolor='#F5F5F5' class='itemTextCell' height='325' valign='top'><p></p>\n"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
         "            <form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
        ."            <input type='hidden' name='ID' value='$ID'>\n"
        ."            <input type='hidden' name='mode' value='$mode'>\n"
@@ -175,40 +175,40 @@ function listener_edit() {
     ."              </tr>\n"
     ."              <tr class='rownormal'>\n"
     ."                <th class='downloadTableContent' align='left' width='107'>Name</th>\n"
-    ."                <td class='downloadTableContent' colspan='2'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' title='Listener Name' name='name' value=\"$name\" size='20' style='width: 100%;'>":($name ? $name : "&nbsp;"))."</td>\n"
+    ."                <td class='downloadTableContent' colspan='2'>".(isAdmin() ? "<input class='formField' title='Listener Name' name='name' value=\"$name\" size='20' style='width: 100%;'>":($name ? $name : "&nbsp;"))."</td>\n"
     ."                <td class='downloadTableContent' align='left'><b>Callsign</b></td>\n"
-    ."                <td class='downloadTableContent' align='right'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' title='Listener Ham Radio Callsign' name=\"callsign\" value=\"$callsign\" size='10'>":($callsign ? $callsign : "&nbsp;"))."</td>\n"
+    ."                <td class='downloadTableContent' align='right'>".(isAdmin() ? "<input class='formField' title='Listener Ham Radio Callsign' name=\"callsign\" value=\"$callsign\" size='10'>":($callsign ? $callsign : "&nbsp;"))."</td>\n"
     ."              </tr>\n"
     ."              <tr class='rownormal'>\n"
     ."                <th class='downloadTableContent' align='left'>Email Address</th>\n"
-    ."                <td class='downloadTableContent' colspan='4'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='email' value=\"$email\" size='40' style='width: 100%;'>":($email!="" ? "<a href='mailto:$email?subject=".system."'><b>$email</b></a>" : "&nbsp;"))."</td>\n"
+    ."                <td class='downloadTableContent' colspan='4'>".(isAdmin() ? "<input class='formField' name='email' value=\"$email\" size='40' style='width: 100%;'>":($email!="" ? "<a href='mailto:$email?subject=".system."'><b>$email</b></a>" : "&nbsp;"))."</td>\n"
     ."              </tr>\n"
     ."              <tr class='rownormal'>\n"
     ."                <th class='downloadTableContent' align='left'>Web Site</th>\n"
-    ."                <td class='downloadTableContent' colspan='4'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='website' value=\"$website\" size='40' style='width: 100%;'>":($website!="" ? "<a href='$website' target='_blank'><b>$website</b></a>" : "&nbsp;"))."</td>\n"
+    ."                <td class='downloadTableContent' colspan='4'>".(isAdmin() ? "<input class='formField' name='website' value=\"$website\" size='40' style='width: 100%;'>":($website!="" ? "<a href='$website' target='_blank'><b>$website</b></a>" : "&nbsp;"))."</td>\n"
     ."              </tr>\n"
     ."              <tr class='rownormal'>\n"
     ."                <th colspan='5' class='downloadTableHeadings_nosort' align='left'>&nbsp;Other Details</th>\n"
     ."              </tr>\n"
     ."              <tr class='rownormal'>\n"
     ."                <th class='downloadTableContent' align='left'>Location</th>\n"
-    ."                <td class='downloadTableContent'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='QTH' value=\"$QTH\" size='15'>":($QTH ? $QTH : "&nbsp;"))."</td>\n"
+    ."                <td class='downloadTableContent'>".(isAdmin() ? "<input class='formField' name='QTH' value=\"$QTH\" size='15'>":($QTH ? $QTH : "&nbsp;"))."</td>\n"
     ."                <td class='downloadTableContent' align='left'><table cellpadding='0' cellspacing='0' width='100%'>"
     ."                  <tr>\n"
     ."                    <td><span title='State or Province'><a href='javascript:show_sp()' title='NDBList State and Province codes'><b>State / Province</b></a></span></td>\n"
-    ."                    <td align='right'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='SP' value=\"$SP\" size='2' maxlength='2'>":($SP ? $SP : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>".(isAdmin() ? "<input class='formField' name='SP' value=\"$SP\" size='2' maxlength='2'>":($SP ? $SP : "&nbsp;"))."</td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."                <td class='downloadTableContent' align='left'><table cellpadding='0' cellspacing='0' width='100%'>"
     ."                  <tr>\n"
     ."                    <td><span title='Country Codes'><a href='javascript:show_itu()' title='NDBList Country codes'><b>Country</b></a></span></td>\n"
-    ."                    <td align='right'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='ITU' value=\"$ITU\" size='3' maxlength='3'>":($ITU ? $ITU : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>".(isAdmin() ? "<input class='formField' name='ITU' value=\"$ITU\" size='3' maxlength='3'>":($ITU ? $ITU : "&nbsp;"))."</td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."                <td class='downloadTableContent' align='left'><table cellpadding='0' cellspacing='0' width='100%'>"
     ."                  <tr>\n"
     ."                    <td><a href=\"javascript:popWin('".system_URL."/tools_coordinates_conversion','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre')\"><b>GSQ</b></a></td>\n"
-    ."                    <td align='right'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='GSQ' value=\"$GSQ\" size='6' maxlength='6'>":($GSQ ? $GSQ : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>".(isAdmin() ? "<input class='formField' name='GSQ' value=\"$GSQ\" size='6' maxlength='6'>":($GSQ ? $GSQ : "&nbsp;"))."</td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."              </tr>\n"
@@ -217,14 +217,14 @@ function listener_edit() {
     ."                <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' width='100%'>"
     ."                  <tr>\n"
     ."                    <td><span title='Number of hours behind UTC for Standard time (Not DST)'><b>After UTC</b></span></td>\n"
-    ."                    <td align='right'>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='timezone' value=\"$timezone\" size='2' maxlength='3'>":($timezone!="" ? $timezone : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>".(isAdmin() ? "<input class='formField' name='timezone' value=\"$timezone\" size='2' maxlength='3'>":($timezone!="" ? $timezone : "&nbsp;"))."</td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."                <td class='downloadTableContent' align='left'><table cellpadding='0' cellspacing='0' width='100%'>"
     ."                  <tr>\n"
     ."                    <td><b>Primary QTH?</b></td>\n"
     ."                    <td align='right'>"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
        "<select name='primary_QTH' class='formField'>"
       ."  <option value='0'".($primary_QTH==1 ? " selected" : "").">No</option>\n"
       ."  <option value='1'".($primary_QTH==1 ? " selected" : "").">Yes</option>\n"
@@ -241,8 +241,8 @@ function listener_edit() {
     ."Map Position"
     .(($region=="eu" || $region=="na" || $region=="ca") ? "</a>" : "")
     ."</b></td>\n"
-    ."                    <td align='right'>X&nbsp;".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='map_x' value=\"$map_x\" size='3' maxlength='3'>":($map_x!="" ? $map_x : "&nbsp;"))."</td>\n"
-    ."                    <td align='right'>Y&nbsp;".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input class='formField' name='map_y' value=\"$map_y\" size='3' maxlength='3'>":($map_y!="" ? $map_y : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>X&nbsp;".(isAdmin() ? "<input class='formField' name='map_x' value=\"$map_x\" size='3' maxlength='3'>":($map_x!="" ? $map_x : "&nbsp;"))."</td>\n"
+    ."                    <td align='right'>Y&nbsp;".(isAdmin() ? "<input class='formField' name='map_y' value=\"$map_y\" size='3' maxlength='3'>":($map_y!="" ? $map_y : "&nbsp;"))."</td>\n"
     ."                  </tr>\n"
     ."                </table></td>\n"
     ."              </tr>\n"
@@ -258,7 +258,7 @@ function listener_edit() {
     ."                <td class='downloadTableContent' colspan='5' align='center'>\n"
     ."<input type='button' name='print' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
     ."<input type='button' name='close' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin'] == admin_session ?
+    .(isAdmin() ?
         "<input type='submit' name='save' class='formButton' value='Save' onclick='document.form.save.disabled=1;document.form.close.disabled=1;document.form.print.disabled=1;document.form.submode.value=\"".$submode."\"' style='width: 60px;'>"
      :
        ""
@@ -322,7 +322,7 @@ function listener_list() {
   global $script, $mode, $submode, $targetID, $filter, $region, $sortBy;
   global $type_DGPS, $type_DSC, $type_HAMBCN, $type_NAVTEX, $type_NDB, $type_TIME, $type_OTHER;
   $listener_list_limit = 25;
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     switch ($submode) {
       case "delete":
         $sql =	"SELECT COUNT(*) AS `logs` FROM `logs` WHERE `listenerID` = \"".addslashes($targetID)."\"";
@@ -431,7 +431,7 @@ function listener_list() {
 	."  </tr>\n"
 	."</table>"
 	;
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session  & !READONLY) {
+  if (isAdmin()  & !READONLY) {
     $sql =
        "SELECT\n"
       ."  MAX(`log_latest`) as `log_latest`\n"
@@ -593,7 +593,7 @@ function listener_list() {
 	  ."  <thead>\n"
 	  ."  <tr height='75'>\n"
 	  ."    ".show_sortable_column_head("Sort by Name","Name",$sortBy,"name","A-Z",false)
-	  .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session && !READONLY ?
+	  .(isAdmin() && !READONLY ?
 	      "    <th class=\"downloadTableHeadings_nosort\" valign=\"bottom\" align=\"left\">Log</th>\n" :
 	      "")
 	  ."    ".show_sortable_column_head("Sort by Callsign","Callsign",$sortBy,"callsign","A-Z",false)
@@ -623,7 +623,7 @@ function listener_list() {
        )
 	  ."    ".show_sortable_column_head("Sort by Web Site","Web",$sortBy,"WWW","A-Z",false)
 	  ."    ".show_sortable_column_head("Sort by NDB WebLog","NWL",$sortBy,"NDBWebLog","A-Z",false)
-	  .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+	  .(isAdmin() ?
           "    ".show_sortable_column_head("Sort by Map Position","Map Pos",$sortBy,"map_x","A-Z",false)
 	     ."    <th class='downloadTableHeadings_nosort' valign='bottom'>Admin</th>\n"
        :
@@ -644,7 +644,7 @@ function listener_list() {
             highlight(stripslashes($row["name"]),$filter)
          )
         ."</a></td>"
-        .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session && !READONLY ?
+        .(isAdmin() && !READONLY ?
           "<td nowrap><a href='javascript:log_upload(\"".$row["ID"]."\")'>Add...</a></td>\n"
          :
           ""
@@ -692,7 +692,7 @@ function listener_list() {
          )
         ."<td>".($row["website"]!="" ? "<a title='View Web Page for this listener' href='".$row["website"]."' target='_blank'>WWW</a>" : "&nbsp;")."</td>\n"
         ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
-        .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+        .(isAdmin() ?
            "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
            ."<td><a href='javascript:if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();}'>Delete</a></td>\n"
          :
@@ -708,7 +708,7 @@ function listener_list() {
   $out.=
      "<p>\n"
     ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 120px;'> "
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "<input type='button' value='Add listener...' style='width: 120px;' onclick='listener_edit(\"\",document.form.filter.value)' class='formbutton'>\n" : "")
+    .(isAdmin() ? "<input type='button' value='Add listener...' style='width: 120px;' onclick='listener_edit(\"\",document.form.filter.value)' class='formbutton'>\n" : "")
     ."</p>\n"
     ."</form>\n";
   if (isset($error_msg)) {
@@ -728,7 +728,7 @@ function listener_log() {
       $ID = array_pop($path_arr);
     }
   }
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     switch ($submode) {
       case "delete":
         $log = new Log($targetID);
@@ -831,7 +831,7 @@ function listener_log() {
      : "")
     ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
     ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
         "                    <th class='scroll_list' width='5' align='left'><small>X</small></th>\n"
      : "")
     ."                  </tr>\n"
@@ -859,7 +859,7 @@ function listener_log() {
     : "")
     ."                    <th class='scroll_list'><small>KM</small></th>\n"
     ."                    <th class='scroll_list'><small>Miles</small></th>\n"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
        "                    <th class='scroll_list'><small>X</small></th>\n"
      : "")
     ."                  </tr>\n"
@@ -900,7 +900,7 @@ function listener_log() {
        : "")
       ."<td class='scroll_list' width='40' align='right'>".($row["dx_km"]? $row["dx_km"] : "&nbsp;")."</td>\n"
       ."<td class='scroll_list' width='40' align='right'>".($row["dx_miles"]? $row["dx_miles"] : "&nbsp;")."</td>\n"
-      .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+      .(isAdmin() ?
            "<td class='scroll_list' width='5'>"
           ."<a href='".system_URL."/".$mode."/".$ID."?submode=delete&targetID=".$row["ID"]."'>X</a>"
           ."</td>\n"
@@ -1189,7 +1189,7 @@ function listener_QNH() {
   if ($logs) {
     $out[] =	"                <td ".tabItem("listener_stats")." width='45'>Stats</td>\n";
   }
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     $out[] =	"                <td class='tabOff' onclick='log_upload(\"$ID\");' onMouseOver='return tabOver(this,1);' onMouseOut='return tabOver(this,0);' width='45'>Add...</td>\n";
   }
   $out[] =	"              </tr>\n";
@@ -1249,7 +1249,7 @@ function listener_signals() {
       $ID = array_pop($path_arr);
     }
   }
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     switch ($submode) {
       case "delete":
         $log = new Log($targetID);

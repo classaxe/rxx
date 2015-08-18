@@ -261,7 +261,7 @@ function signal_info()
     ."      <tr>\n"
     ."        <td colspan='2' width='100%'><table border='0' cellpadding='0' cellspacing='0' width='100%'>\n"
     ."          <tr>\n"
-    ."            <td><h1>".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? ($ID=="" ? "Add Signal" : "Edit Signal")."":"Signal")."</h1></td>\n"
+    ."            <td><h1>".(isAdmin() ? ($ID=="" ? "Add Signal" : "Edit Signal")."":"Signal")."</h1></td>\n"
     ."            <td align='right' valign='bottom'><table border='0' cellpadding='2' cellspacing='0' class='tabTable'>\n"
     ."              <tr>\n"
     .$Obj->tabs()
@@ -272,7 +272,7 @@ function signal_info()
     ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
     ."          <tr>\n"
     ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
         "            <form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
        ."            <input type='hidden' name='ID' value='".$ID."'>\n"
        ."            <input type='hidden' name='mode' value='".$mode."'>\n"
@@ -295,7 +295,7 @@ function signal_info()
     ."                    <td align='right'><b>KHz</b> <input type='text' size='6' maxlength='9' name='khz' value='".(float)$khz."' class='formfield'></td>\n"
     ."                    <td align='right'><b>Pwr</b> <input type='text' size='5' maxlength='7' name='pwr' value='".($pwr ? $pwr : "")."' class='formfield'>W</td>\n"
     ."                    <td align='right'><b>Type</b> ";
-    if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+    if (isAdmin()) {
         $out.=
          "<select name='type' class='formField'>\n"
         ."<option value='".DGPS."'".($type==DGPS ? " selected" : "")." style='background-color:".Signal::$colors[DGPS]."'>DGPS</option>\n"
@@ -338,7 +338,7 @@ function signal_info()
     ."                <th align='left'>State/Province</th>\n"
     ."                <td><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"SP\" value=\"".$SP."\" class=\"formfield\"><span title='State or Province'> <a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>(List)</b></a></span></td>\n"
     ."                <th align='right'>Country</th>\n"
-    ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "" : " (".get_ITU($ITU).")")." <span title='Country Codes'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
+    ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(isAdmin() ? "" : " (".get_ITU($ITU).")")." <span title='Country Codes'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
     ."              <tr class='rowForm'>\n"
     ."                <th align='left'>GSQ</th>\n"
     ."                <td colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -359,7 +359,7 @@ function signal_info()
     ."                <td class='downloadTableHeadings_nosort' align='left' colspan='4'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."                  <tr>\n"
     ."                    <td class='downloadTableHeadings_nosort'>&nbsp;Latest Values</td>\n"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
         "                    <td class='downloadTableHeadings_nosort' align='right'><small>(All fields except Status and Notes are updated each time signal is logged)</small></td>\n"
       : ""
      )
@@ -368,7 +368,7 @@ function signal_info()
     ."              <tr class='rowForm'>\n"
     ."                <th align='left'>LSB</th>\n"
     ."                <td>"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
         "~<input type='text' size='1' maxlength='1' name='LSB_approx' value='".$LSB_approx."' class='formField'> <input type='text' size='4' maxlength='5' name='LSB' value='".$LSB."' class='formField'>"
      :
         "<input type='text' size='4' maxlength='5' name='LSB' value='".$LSB_approx.$LSB."' class='formField'>"
@@ -376,7 +376,7 @@ function signal_info()
     ."</td>\n"
     ."                <th align='right'>USB</th>\n"
     ."                <td>"
-    .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+    .(isAdmin() ?
        "~<input type='text' size='1' maxlength='1' name='USB_approx' value='".$USB_approx."' class='formField'> <input type='text' size='4' maxlength='5' name='USB' value='".$USB."' class='formField'>"
      :
        "<input type='text' size='4' maxlength='5' name='USB' value='".$USB_approx.$USB."' class='formField'>"
@@ -392,7 +392,7 @@ function signal_info()
      ."                <td>".$last_heard."</td>\n"
      ."                <th align='right'>Status</th>\n"
      ."                <td>"
-     .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+     .(isAdmin() ?
          "<select name='active' class='formfield'>\n"
         ."  <option value='0'".($active ? "": " selected").">Out Of Service</option>\n"
         ."  <option value='1'".($active ? " selected": "").">Active</option>\n"
@@ -406,19 +406,19 @@ function signal_info()
      ."                <td colspan='3'>".$heard_in_html."</td>\n"
      ."              <tr class='rowForm'>\n"
      ."                <th align='left' valign='top'>Notes</th align='left'>\n"
-     ."                <td colspan='3' valign='top'><textarea class='formField' name='notes' rows='3' cols='40' style='width: 450px; height: ".(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ? "70px;" : "80px;")."'>".$notes."</textarea></td>\n"
+     ."                <td colspan='3' valign='top'><textarea class='formField' name='notes' rows='3' cols='40' style='width: 450px; height: ".(isAdmin() ? "70px;" : "80px;")."'>".$notes."</textarea></td>\n"
      ."              <tr class='rowForm'>\n"
      ."                <td colspan='4' align='center' style='height: 30px;'>\n"
      ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
      ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
-     .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+     .(isAdmin() ?
          "<input type='submit' value='".($submode=="update" ? "Save" : "Add")."' class='formbutton' style='width: 60px;'>"
        : ""
       )
      ."</td>\n"
      ."              </tr>\n"
      ."            </table>\n"
-     .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+     .(isAdmin() ?
          "            </form>\n"
        : ""
       )
@@ -451,7 +451,7 @@ function signal_listeners()
     $call =    strToUpper(urldecode($call));
     $ITU =    strToUpper($ITU);
     $SP =        strToUpper($SP);
-    if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+    if (isAdmin()) {
         switch ($submode) {
             case "delete":
                 $log = new Log($targetID);
@@ -546,7 +546,7 @@ function signal_listeners()
     ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
     ."          <tr>\n"
     ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
-    if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+    if (isAdmin()) {
         $out.=
          "            <form action='".system_URL.'/'.$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
         ."            <input type='hidden' name='ID' value='$ID'>\n"
@@ -1671,7 +1671,7 @@ function signal_log() {
   $call =	strToUpper(urldecode($call));
   $ITU =	strToUpper($ITU);
   $SP =		strToUpper($SP);
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     switch ($submode) {
       case "delete":
         $log = new Log($targetID);
@@ -1766,7 +1766,7 @@ function signal_log() {
     ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
     ."          <tr>\n"
     ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
-  if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session) {
+  if (isAdmin()) {
     $out.=
        "            <form action='".system_URL."/".$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
       ."            <input type='hidden' name='ID' value='$ID'>\n"
@@ -1798,7 +1798,7 @@ function signal_log() {
        ."                    <th class='scroll_list' width='35' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=heard_in".($sortBy=='heard_in' ? '_d' : '')."'>".($sortBy=='heard_in'||$sortBy=='heard_in_d'?'<font color="#ff0000">In</font>':'In')."</a></small></th>\n"
        ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
        ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
-       .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+       .(isAdmin() ?
           "                    <th class='scroll_list' width='35' align='left'><small>Del</small></th>\n"
         :
           ""
@@ -1827,7 +1827,7 @@ function signal_log() {
       ."                    <th class='scroll_list'><small>In</small></th>\n"
       ."                    <th class='scroll_list'><small>KM</small></th>\n"
       ."                    <th class='scroll_list'><small>Mi</small></th>\n"
-      .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+      .(isAdmin() ?
          "                    <th class='scroll_list'><small>Del</small></th>\n"
        :
          ""
@@ -1852,7 +1852,7 @@ function signal_log() {
         ."                    <td class='scroll_list' width='35'>".($row["heard_in"]   ? $row["heard_in"]   : "&nbsp;")."</td>\n"
         ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_km"]   ? $row["dx_km"]   : "&nbsp;")."</td>\n"
         ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_miles"]   ? $row["dx_miles"]   : "&nbsp;")."</td>\n"
-        .(isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin']==admin_session ?
+        .(isAdmin() ?
            "                    <td class='scroll_list' width='35' align='right'><a href='".system_URL."/".$mode."?submode=delete&ID=$ID&targetID=".$row["ID"]."'>X</a></td>\n"
          :
            ""
