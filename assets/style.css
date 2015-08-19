@@ -480,7 +480,7 @@ h2 {font-size: 125%;}
 .p {text-align: left;}
 .e {background-color: #ccccff; font-weight: bold; width: 150px; vertical-align: top;}
 .h {background-color: #9999cc; font-weight: bold;}
-.v {background-color: #cccccc; word-wrap: break-word;}
+.v {background-color: #cccccc; word-wrap: break-word; max-width: 650px; }
 i {color: #666666;}
 img {float: right; border: 0px;}
 #phpinfo table { width: 810px !important; margin: auto; }
