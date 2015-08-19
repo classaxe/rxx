@@ -7,15 +7,18 @@ switch(system){
         define(
             "system_editor",
             "<script type='text/javascript'>//<!--\n"
-            ."document.write("
-            ."\"<a title='Contact the NDB Editor' href='mail\"+\"to\"+\":"
+            ."document.write(\""
+
+            ."<a title='Contact the NDB / Ham BCN Editor' href='mail\"+\"to\"+\":"
             ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs) and"
+            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
+
             ." <a title='Contact the Data Modes Editor' href='mail\"+\"to\"+\":"
             ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
             ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)\""
-            .");\n"
+            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)"
+
+            ."\");\n"
             ."//--></script>"
         );
         break;
@@ -25,15 +28,21 @@ switch(system){
         define(
             "system_editor",
             "<script type='text/javascript'>//<!--\n"
-            ."document.write("
-            ."\"<a title='Contact the Editor' href='mail\"+\"to\"+\":"
+            ."document.write(\""
+
+            ."<a title='Contact the NDB Editor' href='mail\"+\"to\"+\":"
             ."aunumero73\"+\"@\"+\"gmail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>Pat Vignoud\"+\"<\/a> (for NDBs) and"
+            ."?subject=".system."%20System'>Pat Vignoud\"+\"<\/a> (for NDBs)<br />"
+
+            ."<a title='Contact the Ham BCN Editor' href='mail\"+\"to\"+\":"
+            ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
+            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for Ham Beacons)<br />"
+
             ." <a title='Contact the Data Modes Editor' href='mail\"+\"to\"+\":"
             ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
             ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)\""
-            .");\n"
+            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)"
+            ."\");\n"
             ."//--></script>"
         );
         break;
@@ -43,15 +52,16 @@ switch(system){
         define(
             "system_editor",
             "<script type='text/javascript'>//<!--\n"
-            ."document.write(\"<a title='Contact the Editor' href='mail\"+\"to\"+\":"
-            ."martin\"+\"@\"+\"classaxe\"+\".\"+\"com"
-            ."?subject=".system."%20System'>"
-            ."Martin Francis\"+\"<\/a> (NDB Logs) and"
+            ."document.write(\""
+            ."<a title='Contact the NDB / Ham BCN Editor' href='mail\"+\"to\"+\":"
+            ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
+            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
+
             ." <a title='Contact the Data Modes Editor' href='mail\"+\"to\"+\":"
             ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
             ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)\""
-            .");\n"
+            ."Roelof Bakker\"+\"<\/a> (for DGPS, DSC and Navtex signals)"
+            ."\");\n"
             ."//--></script>"
         );
         break;

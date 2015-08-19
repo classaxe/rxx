@@ -469,6 +469,12 @@ img.nav
     max-width: 360px;
     overflow: hidden;
 }
+.footer p {
+    text-align: center; margin: 0.5em 0; font-size: 60%;
+}
+.footer p a {
+    font-weight: bold;
+}
 
 pre {margin: 0px; font-family: monospace;}
 a:link {color: #000099; text-decoration: none;}
