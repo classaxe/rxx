@@ -441,7 +441,7 @@ function line_up(frm) {
 }
 
 function listener_edit(ID,name){
-  popWin(system_URL+'/listener_edit/'+ID+(typeof name!=='undefined' ? '?name='+name : ''),'popListener','scrollbars=0,resizable=1',640,380,'centre');
+  popWin(system_URL+'/listener_edit/'+ID+(typeof name!=='undefined' ? '?name='+name : ''),'popListener','scrollbars=0,resizable=1',640,420,'centre');
 }
 
 function listener_log(ID){
