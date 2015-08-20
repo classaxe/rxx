@@ -1,7 +1,8 @@
 <?php
 namespace Managers;
 
-class Admin {
+class Admin
+{
     public function draw()
     {
         global $mode, $submode;
@@ -21,10 +22,12 @@ class Admin {
             ." <b>Signals: Update log counts and 'Heard In' lists</b> (run periodically)</li>\n"
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_signalUpdateRegionsHeard\"'>"
-            ." <b>Signals: Update all for regions heard and heard_in lists</b> (run if problems are seen)<br><br></li>\n"
+            ." <b>Signals: Update all for regions heard and heard_in lists</b>"
+            ." (run if problems are seen)<br><br></li>\n"
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_logsUpdateDX\"'>"
-            ." <b>Logs: Recalculate all distances</b> (use after adding GSQs for existing logging or function above)</li>\n"
+            ." <b>Logs: Recalculate all distances</b>"
+            ." (use after adding GSQs for existing logging or function above)</li>\n"
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_setDaytimeLogs\"'>"
             ." <b>Logs: Mark daytime loggings</b> (run periodically)<br><br></li>\n"
@@ -38,7 +41,8 @@ class Admin {
             .system_URL."/db_export\"'>"
             ." <b>System: Export Database</b> (run periodically)</li>\n"
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
-            .$url."?submode=admin_systemSendTestEmail&amp;sendToEmail=\"+document.getElementById(\"sendToEmail\").value'>"
+            .$url."?submode=admin_systemSendTestEmail&amp;"
+            ."sendToEmail=\"+document.getElementById(\"sendToEmail\").value'>"
             ." <b>System: Send Test Email to </b>"
             ."<input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''><br><br></li>\n"
             ."</ol><br></form>\n";
@@ -420,5 +424,4 @@ class Admin {
         }
         return "<h2>Test email to ".$sendToEmail." via ".smtp_host." failed.</h2>";
     }
-
 }

@@ -480,6 +480,12 @@ function main()
         case 'admin_manage':
             $Obj = new \Managers\Admin;
             break;
+        case 'logon':
+            $Obj = new \Managers\Logon;
+            break;
+        case 'sys_info':
+            $Obj = new \Managers\SysInfo;
+            break;
         case 'awards':
             $Obj = new Awards;
             break;
@@ -498,10 +504,10 @@ function main()
 
 
     $out =
-     "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
-    ."<html><head>\n"
-    ."<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n"
-    ."<title>".system." > ";
+         "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
+        ."<html><head>\n"
+        ."<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n"
+        ."<title>".system." > ";
     switch ($mode) {
         case "admin_help":
             $out.=    "Administrator Help";
@@ -550,35 +556,35 @@ function main()
             break;
     }
     $out.=
-     (isAdmin() ? " (ADMIN)" : "")
-    ."</title>\n"
-    ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
-    ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
-    ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
-    .($Obj && isset($Obj->head) ? $Obj->head : "")
-    ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
-    ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
-    ."<script type='text/javascript'>\n"
-    ."//<!--\n"
-    .piwik_tracking()
-    ."var system =     '".system."';\n"
-    ."var system_URL = '".system_URL."';\n"
-    ."//-->\n"
-    ."</script>\n"
-    ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
-    ."</head>\n"
-    ."<body onload='show_time()'><span><a name='top'></a></span>\n"
-    ."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
-    ."  <tr>\n"
-    ."    <td align='center'>"
-    ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
-    .system_title."</h1></td>\n"
-    ."  </tr>\n"
-    ."</table>\n"
-    ."<table cellpadding='0' cellspacing='0' border='0' class='noprint'>\n"
-    ."  <tr>\n"
-    ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
-    ."      <tr>\n";
+         (isAdmin() ? " (ADMIN)" : "")
+        ."</title>\n"
+        ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
+        ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
+        ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+        .($Obj && isset($Obj->head) ? $Obj->head : "")
+        ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
+        ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
+        ."<script type='text/javascript'>\n"
+        ."//<!--\n"
+        .piwik_tracking()
+        ."var system =     '".system."';\n"
+        ."var system_URL = '".system_URL."';\n"
+        ."//-->\n"
+        ."</script>\n"
+        ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+        ."</head>\n"
+        ."<body onload='show_time()'><span><a name='top'></a></span>\n"
+        ."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
+        ."  <tr>\n"
+        ."    <td align='center'>"
+        ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
+        .system_title."</h1></td>\n"
+        ."  </tr>\n"
+        ."</table>\n"
+        ."<table cellpadding='0' cellspacing='0' border='0' class='noprint'>\n"
+        ."  <tr>\n"
+        ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
+        ."      <tr>\n";
     switch (system) {
         case "RNA":
             $out.=
@@ -655,6 +661,12 @@ function main()
         case 'admin_manage':
             $out.= $Obj->draw();
             break;
+        case 'logon':
+            $out.= $Obj->draw();
+            break;
+        case 'sys_info':
+            $out.= $Obj->draw();
+            break;
         case 'awards':
             $out.= $Obj->draw();
             break;
@@ -674,12 +686,13 @@ function main()
     ."</table>\n"
     ."<br><br><hr noshade>\n"
     ."<div class='footer'>"
-    ."<p>Your ".system." Editors are:</b></p>\n"
-    ."<p>".system_editor."</p>"
-    ."<p>Concept".(system=='RNA' ? " and initial data" : "").": Andy Robins.<br />"
-    ."&copy;2015 "
-    ."<script type='text/javascript'>//<!--\ndocument.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com?subject=".system."%20System'>Martin Francis\"+\"<\/a>\");\n//--></script>"
-    ."</p>\n"
+    ."<p><b>Your ".system." Editors are:</b><br>\n"
+    .system_editor."</p>"
+    ."<p><b>Other Credits:</b><br>"
+    ."<b>".awardsAdminName."</b> Awards Coordinator<br>"
+    ."<b>Andy Robins</b> Original Concept".(system=='RNA' ? " and initial data" : "")."<br />"
+    ."<b><script type='text/javascript'>//<!--\ndocument.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com?subject=".system."%20System'>Martin Francis\"+\"<\/a>\");\n//--></script></b> Software Design</p>"
+    ."<p>&copy;".date('Y',time())." Martin Francis</p>\n"
     ."</div>\n"
     ."</body>\n"
     ."</html>\n";

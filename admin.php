@@ -1,46 +1,5 @@
 <?php
 
-function sys_info()
-{
-    ob_start();
-    phpinfo();
-    $tmp = ob_get_contents();
-    ob_end_clean();
-    $out = preg_split("/<body>|<\/body>/i", $tmp);
-    $phpinfo = $out[1];
-
-    $changelog = explode("\n", `git log master --pretty=format:"%ad %s" --date=short`);
-    foreach($changelog as &$entry) {
-        $bits =     explode(' ', $entry);
-        $date =     array_shift($bits);
-        $version =  trim(array_shift($bits), ':');
-        $details =  implode(' ', $bits);
-        $entry =    $date.'  '.pad($version, 7).' '.$details;
-    }
-    $changelog = implode("\n", $changelog);
-
-    return
-         "<div id='phpinfo'>\n"
-        ."<table border=\"0\" cellpadding=\"3\">\n"
-        ."<tr class='h'><td colspan='2'><h1 class='p'>RNA / REU / RWW SYSTEM</h1></td></tr>\n"
-        ."<tr><td class=\"e\">system</td><td class=\"v\">".system."</td></tr>\n"
-        ."<tr><td class=\"e\">system_title</td><td class=\"v\">".system_title."</td></tr>\n"
-        ."<tr><td class=\"e\">system_URL</td><td class=\"v\">".system_URL."</td></tr>\n"
-        ."<tr><td class=\"e\">system_ID</td><td class=\"v\">".system_ID."</td></tr>\n"
-        ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system.': '.system_editor."</td></tr>\n"
-        ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date."</td></tr>\n"
-        ."<tr><td class=\"e\">system_version</td><td class=\"v\">".system_version."</td></tr>\n"
-        ."<tr><td class=\"e\">system_revision</td><td class=\"v\">".system_revision."</td></tr>\n"
-        ."<tr><td class=\"e\">Recent Changes</td><td class=\"v\"><pre>".$changelog."</pre></td></tr>\n"
-        ."<tr><td class=\"e\">awardsAdminEmail</td><td class=\"v\">".awardsAdminEmail."</td></tr>\n"
-        ."<tr><td class=\"e\">awardsAdminName</td><td class=\"v\">".awardsAdminName."</td></tr>\n"
-        ."</table>\n"
-        ."<br>\n"
-        .$phpinfo
-        ."</div>";
-}
-
-
 function log_update(
     $ID,
     $date,
@@ -82,52 +41,6 @@ function log_update(
     if (!mysql_query($sql)) {
         print("<pre>$sql</pre>");
     }
-}
-
-
-function admin_polls()
-{
-    global $mode, $submode;
-    global $HTTP_POST_FILES;
-
-    $out = array();
-
-    $out[] =    "<h2>Manage Polls</h2>";
-    return implode($out, "");
-}
-
-
-function logon()
-{
-    global $server,$mode,$submode;
-    global $user,$password;
-
-    if (isAdmin()) {
-        return
-             "<h2>Logon</h2><p>You are now logged on as an Administrator and may perform administrative functions."
-            ."<br><br>\nTo log off, select <b>Log Off</b> from the main menu.</p>";
-    }
-    return
-         "<h2>Logon</h2><p>You must logon in order to perform administrative functions.</p>"
-        ."<form name='form' action='".system_URL."' method='post'>\n"
-        ."<input type='hidden' name='mode' value='$mode'>\n"
-        ."<input type='hidden' name='submode' value='logon'>\n"
-        ."<br><br><table cellpadding='4' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
-        ."  <tr>\n"
-        ."    <td colspan='2' class='downloadTableHeadings_nosort'>Administrator Logon</td>"
-        ."  </tr>\n"
-        ."  <tr class='rownormal'>\n"
-        ."    <td>Username</td>"
-        ."    <td><input name='user' value='$user' size='20'</td>"
-        ."  </tr>\n"
-        ."  <tr class='rownormal'>\n"
-        ."    <td>Password</td>"
-        ."    <td><input type='password' name='password' size='20'</td>"
-        ."  </tr>\n"
-        ."  <tr class='rownormal'>\n"
-        ."    <td colspan='2' align='center'><input type='submit' value='Logon'></td>"
-        ."  </tr>\n"
-        ."</table><script type='text/javascript'>document.form.user.focus();</script>\n";
 }
 
 
@@ -1510,8 +1423,8 @@ function log_upload()
                     $out.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
                         ."    <th colspan='14'>"
-                        ."<input type='button' value='Submit Log' class='formbutton' name='go'"
-                        ." onclick='this.value=\"Please wait..\";this.disabled=true;submit_log()'>"
+                        ."<input type='button' value='Submit Log' class='formbutton' id='btn_go' name='go'"
+                        ." onclick='submit_log()'>"
                         ."<script type='text/javascript'>document.form.go.focus()</script>\n"
                         ."</th>\n"
                         ."  </tr>\n";
@@ -1520,7 +1433,7 @@ function log_upload()
                     $out.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
                         ."    <th colspan='14'>"
-                        ."<input type='button' value='Serious errors found - Go Back...' class='formbutton' name='go'"
+                        ."<input type='button' value='Serious errors found - Go Back...' id='btn_go' class='formbutton' name='go'"
                         ." onclick='history.back()'>"
                         ."<script type='text/javascript'>document.form.go.focus()</script>\n"
                         ."</th>\n"
@@ -1658,9 +1571,7 @@ function log_upload()
             ."<input type='button' value='Line Up' class='formbutton' name='lineup'"
             ." onclick='line_up(document.form)'>\n"
             ."<input type='button' name='go' value='Parse Log' class='formbutton'"
-            ." onclick='if (parse_log(document.form)) { document.form.go.value=\"Please wait..\";"
-            ."document.form.go.disabled=true;document.form.conv.disabled=true;"
-            ."document.form.save.disabled=true;document.form.submode.value=\"parse_log\";"
+            ." onclick='if (parse_log(document.form)) { document.form.submode.value=\"parse_log\";"
             ."document.form.submit();}'> "
             ."<script type='text/javascript'>document.form.go.focus();</script>"
             ."</th>\n"

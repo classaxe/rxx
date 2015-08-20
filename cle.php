@@ -191,7 +191,7 @@ function cle() {
   if (isAdmin()) {
     $out.=
        "<script type=\"text/javascript\" src=\"".BASE_PATH."assets/calendar_db.js\"></script>\n"
-      ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\" />\n"
+      ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\">\n"
       ."<div id='cle_editor' style='display:none;text-align:center;border:2px solid #888;background-color:#f0f0ff'>\n"
       ."<form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
       ."<input type='hidden' name='mode' value='$mode'>\n"

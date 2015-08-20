@@ -286,7 +286,7 @@ function signal_info()
     ."                <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' alt=''></td>\n"
     ."              </tr>\n"
     ."            </table>\n"
-    ."            <table width='100%' cellpadding='0' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm'>\n"
+    ."            <table width='100%' cellpadding='0' cellspacing='0' border='1' class='tableForm'>\n"
     ."              <tr class='rowForm'>\n"
     ."                <th align='left' width='90'>ID</th>\n"
     ."                <td colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -1063,7 +1063,7 @@ function signal_seeklist()
     $last =    $row["last"];
 
 
-    $filter_size =    270;
+    $filter_size =    300;
     $line_height =    14;
     $heading_height =    20;
     $heading_gap =    11;
@@ -1293,7 +1293,7 @@ function signal_seeklist()
     ."<input type='hidden' name='mode' value='$mode'>\n"
     ."<input type='hidden' name='submode' value=''>\n"
     ."<input type='hidden' name='targetID' value=''>\n"
-    ."<h2><a name='top'></a>Signal Seeklist</h2>\n"
+    ."<h2>Signal Seeklist</h2>\n"
     ."<table cellpadding='2' border='0' cellspacing='1'>\n"
     ."  <tr>\n"
     ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
@@ -1303,17 +1303,19 @@ function signal_seeklist()
     ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
     ."      </tr>\n"
     ."    </table>\n"
-    ."    <table cellpadding='2' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm'>\n"
+    ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm'>\n"
     ."      <tr class='rowForm'>\n"
     ."        <th align='left'>Page Size</th>\n"
-    ."        <td nowrap><select name='paper' class='formField' onchange='document.form.go.value=\"Please wait...\";document.form.go.disabled=1;document.form.submit()'>\n"
-    ."          <option value='ltr'".($paper=='ltr' ? " selected" : "").">Letter (Portrait) - 8.5&quot; x 11&quot;</option>"
-    ."          <option value='lgl'".($paper=='lgl' ? " selected" : "").">Legal (Portrait) - 8.5&quot; x 14&quot;</option>"
-    ."          <option value='a4'".($paper=='a4' ? " selected" : "").">A4 (Portrait) - 21.6cm x 27.9cm</option>"
-    ."          <option value='ltr_l'".($paper=='ltr_l' ? " selected" : "").">Letter (Landscape) - 11&quot; x 8.5&quot;</option>"
-    ."          <option value='lgl_l'".($paper=='lgl_l' ? " selected" : "").">Legal (Landscape) - 14&quot; x 8.5&quot;</option>"
-    ."          <option value='a4_l'".($paper=='a4_l' ? " selected" : "").">A4 (Landscape) - 27.9cm x 21.6cm</option>"
-    ."</select> <span class='noprint'>Click <a href='javascript:alert(\"Tips:\\n\\nYou should make sure that the size chosen matches the\\npaper size selected in your browser.\\n\\nUse \\\"Print Preview\\\" if available to check that report will fit.\\n\\nYou do not need to print the last page - this just contains\\nsoftware copyright info - save trees!\\n\\nSorry - page breaks don`t quite work in Netscape.\")'><b>here</b></a> for tips...</span>"
+    ."        <td nowrap>\n"
+    ."          <select name='paper' class='formField' onchange='document.form.go.value=\"Please wait...\";document.form.go.disabled=1;document.form.submit()'>\n"
+    ."            <option value='ltr'".($paper=='ltr' ? " selected" : "").">Letter (Portrait) - 8.5&quot; x 11&quot;</option>\n"
+    ."            <option value='lgl'".($paper=='lgl' ? " selected" : "").">Legal (Portrait) - 8.5&quot; x 14&quot;</option>\n"
+    ."            <option value='a4'".($paper=='a4' ? " selected" : "").">A4 (Portrait) - 21.6cm x 27.9cm</option>\n"
+    ."            <option value='ltr_l'".($paper=='ltr_l' ? " selected" : "").">Letter (Landscape) - 11&quot; x 8.5&quot;</option>\n"
+    ."            <option value='lgl_l'".($paper=='lgl_l' ? " selected" : "").">Legal (Landscape) - 14&quot; x 8.5&quot;</option>\n"
+    ."            <option value='a4_l'".($paper=='a4_l' ? " selected" : "").">A4 (Landscape) - 27.9cm x 21.6cm</option>\n"
+    ."          </select>\n"
+    ."          <span class='noprint'>Click <a href='#' onclick='alert(\"Tips:\\n\\nYou should make sure that the size chosen matches the\\npaper size selected in your browser.\\n\\nUse \\\"Print Preview\\\" if available to check that report will fit.\\n\\nYou do not need to print the last page - this just contains\\nsoftware copyright info - save trees!\\n\")'><b>here</b></a> for tips...</span>"
     ."        </td>"
     ."      </tr>\n"
     ."      <tr class='rowForm'>\n"
@@ -1347,7 +1349,7 @@ function signal_seeklist()
         ."<option value='1'".($filter_channels=='1' ? ' selected' : '').">Only 1 KHz</option>\n"
         ."<option value='2'".($filter_channels=='2' ? ' selected' : '').">Not 1 KHz</option>\n"
         ."</select></td>\n"
-    ."            <td align='right'><span title='Callsign or DGPS ID (Exact matches are shown at the top of the report, partial matches are shown later)'><b>Call / ID</b></span> <input type='text' name='filter_id' size='6' maxlength='12' value='$filter_id' class='formfield' title='Limit results to signals with this ID or partial ID -\nuse _ to indicate a wildcard character'></nobr></td>"
+    ."            <td align='right'><span title='Callsign or DGPS ID (Exact matches are shown at the top of the report, partial matches are shown later)'><b>Call / ID</b></span> <input type='text' name='filter_id' size='6' maxlength='12' value='$filter_id' class='formfield' title='Limit results to signals with this ID or partial ID -\nuse _ to indicate a wildcard character'></td>"
     ."          </tr>\n"
     ."        </table></td>"
     ."      </tr>\n"
@@ -1355,8 +1357,8 @@ function signal_seeklist()
     ."        <th align='left'>Locations&nbsp;</th>\n"
     ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."          <tr>\n"
-    ."            <td nowrap>&nbsp;<span title='List of States or Provinces'><a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>States</b></a></span> <input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically located there' type='text' name='filter_sp' size='20' value='$filter_sp' class='formfield'></nobr></td>\n"
-    ."            <td nowrap align='right'><span title='List of Countries'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>&nbsp;<b>Countries</b></a></span> <input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only signals physically located there' type='text' name='filter_itu' size='20' value='$filter_itu' class='formfield'></nobr></td>"
+    ."            <td nowrap>&nbsp;<span title='List of States or Provinces'><a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>States</b></a></span> <input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically located there' type='text' name='filter_sp' size='20' value='$filter_sp' class='formfield'></td>\n"
+    ."            <td nowrap align='right'><span title='List of Countries'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>&nbsp;<b>Countries</b></a></span> <input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only signals physically located there' type='text' name='filter_itu' size='20' value='$filter_itu' class='formfield'></td>"
     ."          </tr>\n"
     ."	 </table></td>"
     ."      </tr>\n"
@@ -1373,7 +1375,7 @@ function signal_seeklist()
     ."	 </table></td>"
     ."      </tr>\n"
     ."      <tr class='rowForm'>\n"
-    ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></th>"
+    ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
     ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
     .get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
     ."</select></td>\n"
@@ -1410,7 +1412,7 @@ function signal_seeklist()
     ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."          <tr>\n"
     ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($filter_date_1 != "1900-01-01" ? $filter_date_1 : "")."' class='formfield'> -\n"
-    ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield'></nobr></td>"
+    ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield'></td>"
     ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active'type='checkbox' name='filter_active' value='1'".($filter_active ? " checked" : "").">Only active stations&nbsp;</label></td>"
     ."          </tr>\n"
     ."	 </table></td>"
@@ -1422,10 +1424,10 @@ function signal_seeklist()
     ."<option value='cle160'".($filter_custom=='cle160' ? " selected" : "").">CLE160</option>\n"
     ."</select></td>\n"
     ."      </tr>"
-    ."      <span class='noprint'><tr class='rowForm'>\n"
+    ."      <tr class='rowForm noprint'>\n"
     ."        <th colspan='2'><center><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
     ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></center></th>"
-    ."      </tr></span>\n"
+    ."      </tr>\n"
     ."    </table></td>\n"
     ."  </tr>\n"
     ."</table><br>\n";
@@ -1440,39 +1442,39 @@ function signal_seeklist()
     $row =    $page_len-$filter_size;
     $listener =    get_listener_name($createFor);
     $out.=
-     "<table cellpadding='2' cellspacing='1' border='0' style='page-break-after: always;' valign='top' class='downloadtable'>\n"
-    ."  <tr>\n"
-    ."    <th colspan='$page_cols' class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-    ."      <tr>\n"
-    ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".system." Seeklist</b></th>\n"
-    ."        <th class='downloadTableHeadings_nosort' width='60%'>".($listener ? "$listener" : "")."</th>\n"
-    ."        <th class='downloadTableHeadings_nosort' align='right' width='20%'>&nbsp; Page $page\n"
-    ."<span class='noprint'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small>&nbsp;</span></th>\n"
-    ."      </tr>\n"
-    ."    </table></th>\n"
-    ."  </tr>\n"
-    ."  <tr>\n"
-    ."    <td colspan='$page_cols' class='downloadTableContent' width='100%'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-    ."      <tr>\n"
-    ."        <td height='18' valign='top'>Signals\n"
-    .($filter_heard_in ? " heard in [<b>$filter_heard_in</b>]" : "")
-    .($filter_khz_1 ? " from ".$filter_khz_1."KHz" : "")
-    .($filter_khz_2 && $filter_khz_2 != "100000" ? " to ".$filter_khz_2."KHz" : "")
-    .($filter_sp || $filter_itu ? " located in " : "")
-    .($filter_sp ? " ".$filter_sp : "")
-    .($filter_itu ? " ".$filter_itu : "")
-    .($filter_id ? " with ID containing ".$filter_id : "")
-    .($filter_active!="1" ? " including <span style='border-bottom: 1px dashed #000000; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'>inactive stations</span>" : "")
-    ." (".($createFor ? $heard." of " : "total: ")."$total)"
-    ."</td>\n"
-    ."        <td align='right'>Updated $last</td>\n"
-    ."      </tr>\n"
-    ."    </table></td>\n"
-    ."  </tr>\n";
+         "<table cellpadding='2' cellspacing='1' border='1' style='page-break-after: always;' class='downloadtable'>\n"
+        ."  <tr>\n"
+        ."    <th colspan='$page_cols' class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+        ."      <tr>\n"
+        ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".system." Seeklist</b></th>\n"
+        ."        <th class='downloadTableHeadings_nosort' width='60%'>".($listener ? "$listener" : "")."</th>\n"
+        ."        <th class='downloadTableHeadings_nosort' align='right' width='20%'>&nbsp; Page $page\n"
+        ."<span class='noprint'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small>&nbsp;</span></th>\n"
+        ."      </tr>\n"
+        ."    </table></th>\n"
+        ."  </tr>\n"
+        ."  <tr>\n"
+        ."    <td colspan='$page_cols' class='downloadTableContent' width='100%'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+        ."      <tr>\n"
+        ."        <td height='18' valign='top'>Signals\n"
+        .($filter_heard_in ? " heard in [<b>$filter_heard_in</b>]" : "")
+        .($filter_khz_1 ? " from ".$filter_khz_1."KHz" : "")
+        .($filter_khz_2 && $filter_khz_2 != "100000" ? " to ".$filter_khz_2."KHz" : "")
+        .($filter_sp || $filter_itu ? " located in " : "")
+        .($filter_sp ? " ".$filter_sp : "")
+        .($filter_itu ? " ".$filter_itu : "")
+        .($filter_id ? " with ID containing ".$filter_id : "")
+        .($filter_active!="1" ? " including <span style='border-bottom: 1px dashed #000000; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'>inactive stations</span>" : "")
+        ." (".($createFor ? $heard." of " : "total: ")."$total)"
+        ."</td>\n"
+        ."        <td align='right'>Updated $last</td>\n"
+        ."      </tr>\n"
+        ."    </table></td>\n"
+        ."  </tr>\n";
     $page++;
     $out.=
-     "  <tr>\n"
-    ."    <td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>\n";
+         "  <tr>\n"
+        ."    <td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>\n";
     foreach ($signals as $key => $value) {
         if ($value['SP'] != $SP || $value['ITU'] != $ITU) {
             if ($SP.$ITU!="" && $xpos) {
@@ -1513,12 +1515,11 @@ function signal_seeklist()
             }
         }
         $out.=     "<span class='fixed'$bgcolor>".pad_dot($value["khz"], 8).pad_dot($value['call'], 8)
-        .($value['heard'] ? "<img src='".BASE_PATH."assets/icon-tick-on.gif'>" : "<img src='".BASE_PATH."assets/icon-tick-off.gif'>")."<br></span>\n";
+        .($value['heard'] ? "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>" : "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>")."<br></span>\n";
         $xpos+=    $line_height;
         if ($xpos>$row) {
             $xpos=0;
             $col++;
-            $out.=    "</td>\n";
             if ($col<$page_cols) {
                 $out.=        "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>";
             } else {
@@ -1527,7 +1528,7 @@ function signal_seeklist()
                 ."</table>\n"
                 ."<br>\n"
                 ."<br>\n"
-                ."<table cellpadding='2' cellspacing='1' border='0' style='page-break-after: always;' valign='top' class='downloadtable'>\n"
+                ."<table cellpadding='2' cellspacing='1' border='1' style='page-break-after: always;' class='downloadtable'>\n"
                 ."  <tr>\n"
                 ."    <th colspan='$page_cols' class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
                 ."      <tr>\n"
@@ -1566,10 +1567,11 @@ function signal_seeklist()
         }
     }
 
-    $out.=         "</tr>\n"
-    ."</table>\n"
-    ."</form>\n"
-    ."<script language='javascript' type='text/javascript'>document.form.filter_id.focus();document.form.filter_id.select();</script>\n";
+    $out.=
+         "</tr>\n"
+        ."</table>\n"
+        ."</form>\n"
+        ."<script type='text/javascript'>document.form.filter_id.focus();document.form.filter_id.select();</script>\n";
     return $out;
 }
 

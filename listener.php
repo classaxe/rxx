@@ -425,8 +425,10 @@ function listener_list() {
 	."  </tr>\n"
 	."  <tr>\n"
 	."    <td class='downloadTableContent'>\n"
-	."      <li><a href='javascript:listener_map(1)'><b>RNA</b> (North &amp; Central America + Hawaii)</a></li>\n"
-	."      <li><a href='javascript:listener_map(2)'><b>REU</b> (Europe)</a></li>\n"
+	."      <ul>\n"
+    ."        <li><a href='javascript:listener_map(1)'><b>RNA</b> (North &amp; Central America + Hawaii)</a></li>\n"
+	."        <li><a href='javascript:listener_map(2)'><b>REU</b> (Europe)</a></li>\n"
+    ."      </ul>\n"
 	."    </td>\n"
 	."  </tr>\n"
 	."</table>"
@@ -499,9 +501,10 @@ function listener_list() {
         ." (".($row['SP']!='' ? $row['SP'] : $row['ITU']).")";
     }
     $out.=
-       "<nobr>"
-      .implode($listener_links," | </nobr> <nobr>\n")
-      ."</nobr> ] (last ".$listener_list_limit." contributors)</small></b></td></tr></table><br>";
+       "<span style='white-space:nowrap'>"
+      .implode($listener_links," | </span> <span style='white-space:nowrap'>\n")
+      ."</span> ] (last ".$listener_list_limit." contributors)</small>\n"
+      ."</td></tr></table><br>";
   }
   else {
     if (READONLY) {
@@ -510,7 +513,8 @@ function listener_list() {
   }
 
   if ($region_SQL=="") {
-    $sql =	 "SELECT\n"
+    $sql =
+         "SELECT\n"
 		."  `listeners`.*\n"
 		."FROM\n"
 		."  `listeners`\n"
@@ -518,7 +522,8 @@ function listener_list() {
 		.($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
   }
   else {
-    $sql =	 "SELECT\n"
+    $sql =
+         "SELECT\n"
 		."  `listeners`.*\n"
 		."FROM\n"
 		."  `listeners`\n"
@@ -545,7 +550,7 @@ function listener_list() {
 	."        <td width='18'><img class='noprint' src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' alt='' /></td>\n"
 	."      </tr>\n"
 	."    </table>\n"
-	."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1' bordercolor='#c0c0c0'>\n"
+	."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1'>\n"
 	."      <tr class='rowForm'>\n"
 	."        <th align='left'>Search for &nbsp;</th>\n"
 	."        <td nowrap><input type='text' name='filter' size='30' value='".stripslashes($filter)."' class='formfield'> "
@@ -591,7 +596,7 @@ function listener_list() {
     $out.=
        "<table cellpadding='2' cellspacing='1' border='1' bgcolor='#ffffff' class='downloadtable'>\n"
 	  ."  <thead>\n"
-	  ."  <tr height='75'>\n"
+	  ."  <tr>\n"
 	  ."    ".show_sortable_column_head("Sort by Name","Name",$sortBy,"name","A-Z",false)
 	  .(isAdmin() && !READONLY ?
 	      "    <th class=\"downloadTableHeadings_nosort\" valign=\"bottom\" align=\"left\">Log</th>\n" :
@@ -649,7 +654,7 @@ function listener_list() {
          :
           ""
          )
-        ."<td>".($row["callsign"] ? "<a href='http://www.qrz.com/callsign?callsign=".$row["callsign"]."' target='_blank' onmouseover=\"window.status='Lookup callsign ".addslashes($row["callsign"])." at QRZ';return true;\" onmouseout='window.status=\"\";return true;' title='Lookup callsign at QRZ.com'>".highlight($row["callsign"],$filter)."</a>" : "&nbsp;")."</td>\n"
+        ."<td>".($row["callsign"] ? "<a href='http://www.qrz.com/callsign?callsign=".$row["callsign"]."' target='_blank' title='Lookup callsign at QRZ.com'>".highlight($row["callsign"],$filter)."</a>" : "&nbsp;")."</td>\n"
         ."<td>".highlight($row["QTH"],$filter)."</td>\n"
         ."<td>".($row["SP"] ? $row["SP"] : "&nbsp;")."</td>\n"
         ."<td>".($row["ITU"] ? $row["ITU"] : "&nbsp;")."</td>\n"
@@ -662,7 +667,7 @@ function listener_list() {
          )
         ."<td>"
         .($row["GSQ"] ?
-           "<a onmouseover=\"window.status='View map for ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>"
+           "<a href='#' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>"
          :
            "&nbsp;"
          )."</td>\n"
@@ -694,7 +699,7 @@ function listener_list() {
         ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
         .(isAdmin() ?
            "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
-           ."<td><a href='javascript:if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();}'>Delete</a></td>\n"
+           ."<td><a href='#' onclick='if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();};return false;'>Delete</a></td>\n"
          :
            ""
          )
