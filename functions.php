@@ -780,59 +780,84 @@ function popup()
     ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
     ."<title>".system." > ";
     switch ($mode) {
-        case "find_ICAO":            $out.= "Find ICAO Weather Station";
+        case "find_ICAO":
+            $out.= "Find ICAO Weather Station";
             break;
-        case "listener_signals":    $out.= "Listener Signals";
+        case "listener_signals":
+            $out.= "Listener Signals";
             break;
-        case "listener_edit":        $out.= "Listener Info";
+        case "listener_edit":
+            $out.= "Listener Info";
             break;
-        case "listener_log":        $out.= "Listener Log";
+        case "listener_log":
+            $out.= "Listener Log";
             break;
-        case "listener_log_export":    $out.= "Listener Log Export";
+        case "listener_log_export":
+            $out.= "Listener Log Export";
             break;
-        case "listener_map":        $out.= "Listener Map";
+        case "listener_map":
+            $out.= "Listener Map";
             break;
-        case "listener_QNH":        $out.= "Listener QNH";
+        case "listener_QNH":
+            $out.= "Listener QNH";
             break;
-        case "listener_stats":        $out.= "Listener Stats";
+        case "listener_stats":
+            $out.= "Listener Stats";
             break;
         case "log_upload":
             switch ($submode) {
-                case "":                $out.= "Log Upload (Step 1)";
+                case "":
+                    $out.= "Log Upload (Step 1)";
                     break;
-                case "save_format":        $out.= "Log Upload (Step 1)";
+                case "save_format":
+                    $out.= "Log Upload (Step 1)";
                     break;
-                case "parse_log":        $out.= "Log Upload (Step 2)";
+                case "parse_log":
+                    $out.= "Log Upload (Step 2)";
                     break;
-                case "submit_log":        $out.= "Log Upload (Step 3)";
+                case "submit_log":
+                    $out.= "Log Upload (Step 3)";
                     break;
             }
             break;
-        case "poll_edit":            $out.= "Poll Edit";
+        case "poll_edit":
+            $out.= "Poll Edit";
             break;
-        case "show_sp":                $out.= "State / Province Code Locator";
+        case "show_sp":
+            $out.= "State / Province Code Locator";
             break;
-        case "show_itu":            $out.= "Country Code Locator";
+        case "show_itu":
+            $out.= "Country Code Locator";
             break;
-        case "signal_attachments":    $out.= "Signal Attachments";
+        case "signal_attachments":
+            $out.= "Signal Attachments";
             break;
-        case "signal_dgps_messages":$out.= "Signal DGPS Messages";
+        case "signal_dgps_messages":
+            $out.= "Signal DGPS Messages";
             break;
-        case "signal_info":            $out.= "Signal Info";
+        case "signal_info":
+            $out.= "Signal Info";
             break;
-        case "signal_listeners":    $out.= "Signal Listeners";
+        case "signal_listeners":
+            $out.= "Signal Listeners";
             break;
-        case "signal_log":            $out.= "Signal Log";
+        case "signal_log":
+            $out.= "Signal Log";
             break;
-        case "signal_map_eu":        $out.= "Reception Map > EU";
+        case "signal_map_eu":
+            $out.= "Reception Map > EU";
             break;
-        case "signal_map_na":        $out.= "Reception Map > NA";
+        case "signal_map_na":
+            $out.= "Reception Map > NA";
             break;
-        case "signal_merge":        $out.= "Signal Move";
+        case "signal_merge":
+            $out.= "Signal Move";
             break;
-        case "signal_QNH":            $out.= "signal QNH";
+        case "signal_QNH":
+            $out.= "signal QNH";
             break;
-        case "state_map":            $out.= "Detailed State Map > $SP";
+        case "state_map":
+            $out.= "Detailed State Map > $SP";
             break;
     }
     if (isAdmin()) {
@@ -865,6 +890,14 @@ function popup()
     ."</head>\n"
     ."<body>\n";
     switch ($mode) {
+        case "poll_edit":
+            $Obj = new Poll;
+            $out.= $Obj->edit();
+            break;
+        case "log_upload":
+            $Obj = new \Managers\LogUploader;
+            $out.= $Obj->draw();
+            break;
         case "tools_DGPS_popup":
         case "find_ICAO":
         case "listener_signals":
@@ -874,7 +907,6 @@ function popup()
         case "listener_map":
         case "listener_QNH":
         case "listener_stats":
-        case "log_upload":
         case "show_itu":
         case "show_sp":
         case "signal_attachments":
@@ -888,10 +920,6 @@ function popup()
         case "signal_QNH":
         case "state_map":
             $out.= call_user_func($mode);
-            break;
-        case "poll_edit":
-            $Obj = new Poll;
-            $out.= $Obj->edit();
             break;
     }
     $out.=

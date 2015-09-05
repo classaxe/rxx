@@ -59,7 +59,6 @@ include_once("backup.php");
 include_once("donate.php");
 include_once("img.php");
 include_once("attachment.php");
-include_once("admin.php");
 include_once("functions.php");
 include_once("cle.php");
 include_once("export.php");
