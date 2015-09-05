@@ -1364,7 +1364,7 @@ function log_upload()
                                     ."</td>\n"
                                     ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
                                     ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                    ."  <td>&nbsp;</td>\n"
+                                    ."  <td align='center'>Y</td>\n"
                                     ."</tr>\n";
                             } else {
                                 $out.=
@@ -1377,10 +1377,10 @@ function log_upload()
                                     )
                                     ."</td>\n"
                                     ."  <td>$ID</td>\n"
-                                    ."  <td>$QTH</td>\n"
-                                    ."  <td>$SP</td>\n"
                                     ."  <td>$ITU</td>\n"
+                                    ."  <td>$SP</td>\n"
                                     ."  <td>$GSQ</td>\n"
+                                    ."  <td>$QTH</td>\n"
                                     ."  <td>&nbsp;</td>\n"
                                     ."  <td align='center'>";
                                 if (strlen($YYYYMMDD)!=8) {
@@ -1453,9 +1453,10 @@ function log_upload()
                             "<b><font color='red'>is one</font></b> unresolved signal"
                         )
                         ." contained in the log</b>.</small><br>"
-                        ."<textarea rows='10' cols='90'>"
-                        ."Unresolved records\n"
-                        ."---------------------------------\n"
+                        ."<textarea rows='10' cols='90' style='width:1040px'>"
+                        .str_repeat('-', 1+strlen($log_format))."\n"
+                        .$log_format."\n"
+                        .str_repeat('-', 1+strlen($log_format))
                         .implode("", $unresolved_signals)
                         ."</textarea>";
                 } else {
