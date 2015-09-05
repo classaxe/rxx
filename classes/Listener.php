@@ -127,4 +127,9 @@ class Listener extends Record
         }
         return $this->update($data);
     }
+
+    public function updateLogFormat($logFormat)
+    {
+        return $this->updateField('log_format', addslashes($logFormat));
+    }
 }

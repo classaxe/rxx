@@ -464,7 +464,7 @@ function listener_signals(ID){
 }
 
 function log_upload(ID){
-  popWin(system_URL+'/log_upload?listenerID='+ID,'popLogUpload','scrollbars=1,resizable=1',960,680,'centre');
+  popWin(system_URL+'/log_upload?listenerID='+ID,'popLogUpload','scrollbars=1,resizable=1',1160,680,'centre');
 }
 
 function navOver(targ,over) {

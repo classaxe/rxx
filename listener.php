@@ -1558,17 +1558,4 @@ function listener_stats() {
     ."    </table>\n";
 }
 
-// ************************************
-// * listener_update_format()         *
-// ************************************
-function listener_update_format($listenerID,$log_format) {
-  $sql = "UPDATE\n"
-	."  `listeners`\n"
-	."SET\n"
-	."  `log_format` = ".	($log_format ?	"\"".addslashes($log_format)."\"" : "NULL").	"\n"
-	."WHERE"
-	."  `ID` = \"".addslashes($listenerID)."\"";
-  mysql_query($sql);
-}
-
 ?>

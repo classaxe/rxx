@@ -1,49 +1,5 @@
 <?php
 
-function log_update(
-    $ID,
-    $date,
-    $daytime,
-    $dx_km,
-    $dx_miles,
-    $format,
-    $heard_in,
-    $listenerID,
-    $LSB,
-    $LSB_approx,
-    $sec,
-    $time,
-    $USB,
-    $USB_approx
-) {
-  // Add listener name and log details for an existing non-specific log matching
-  // the listener's heard_in location (original NDBRNA import)
-  // Don't need to set system or signalID - these haven't changed
-    $sql =
-         "UPDATE `logs` SET\n"
-        ."  `date` =		\"$date\",\n"
-        ."  `daytime` =		\"".($daytime ? 1 : 0)."\",\n"
-        .($dx_km ?
-           "  `dx_km` =		\"$dx_km\",\n"
-        ."  `dx_miles` =		\"$dx_miles\",\n" : "")
-        .($format ?
-           "  `format` =		\"$format\",\n" : "")
-        ."  `heard_in` =		\"$heard_in\",\n"
-        .($LSB != "" ?    "  `LSB` = 		\"$LSB\",\n" : "")
-        .($LSB_approx ?    "  `LSB_approx` =	\"~\",\n" : "")
-        .($sec != "" ?    "  `sec` =		\"$sec\",\n" : "")
-        .($time != "" ?    "  `time` =		\"$time\",\n" : "")
-        .($USB != "" ?    "  `USB` =		\"$USB\",\n" : "")
-        .($USB_approx ?    "  `USB_approx` =	\"~\",\n" : "")
-        ."  `listenerID` =	\"$listenerID\"\n"
-        ."WHERE `ID` = \"$ID\"";
-
-    if (!mysql_query($sql)) {
-        print("<pre>$sql</pre>");
-    }
-}
-
-
 function log_upload()
 {
     global $mode, $submode, $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy, $listener_in, $listener_timezone;
@@ -54,10 +10,11 @@ function log_upload()
     $out =
          "<form name='form' action='".system_URL."/".$mode."' method='POST'>"
         ."<input type='hidden' name='submode' value=''>";
+    $listener = new Listener($listenerID);
     switch ($submode) {
         case "save_format":
-            listener_update_format($listenerID, $log_format);
-            $submode= '';
+            $listener->updateLogFormat($log_format);
+            $submode = '';
             break;
         case "submit_log":
             set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -67,20 +24,10 @@ function log_upload()
             $log_repeat_for_listener =      0;    // Listener has logged this signal before
             $log_exact_duplicate =          0;    // This logging has been submitted once already
             $signal_updates =               0;    // The signal record has been updated - this data is most recent
-            $sql =
-                 "SELECT\n"
-                ."  `lat`,\n"
-                ."  `lon`,\n"
-                ."  `region`\n"
-                ."FROM\n"
-                ."  `listeners`\n"
-                ."WHERE\n"
-                ."  `ID` = ".$listenerID;
-            $result =        mysql_query($sql);
-            $row =        mysql_fetch_array($result, MYSQL_ASSOC);
-            $region =        $row["region"];
-            $qth_lat =    $row["lat"];
-            $qth_lon =    $row["lon"];
+            $listener->load();
+            $region =     $listener->record["region"];
+            $qth_lat =    $listener->record["lat"];
+            $qth_lon =    $listener->record["lon"];
             if ($debug) {
                 $out.=
                      "1: Logged at least once from this state<br>"
@@ -136,22 +83,42 @@ function log_upload()
                         if ($debug) {
                             $out.=    "2 ";
                         }
-                        log_update(
-                            $row["ID"],
-                            $YYYYMMDD[$i],
-                            $daytime,
-                            $dx_km,
-                            $dx_miles,
-                            htmlentities($fmt[$i]),
-                            $listener_in,
-                            $listenerID,
-                            $LSB[$i],
-                            $LSB_approx[$i],
-                            $sec[$i],
-                            $hhmm[$i],
-                            $USB[$i],
-                            $USB_approx[$i]
+
+                        $log = new Log($row["ID"]);
+                        $data = array(
+                            'signalID' =>   $ID[$i],
+                            'date' =>       $YYYYMMDD[$i],
+                            'daytime' =>    ($daytime ? 1 : 0),
+                            'heard_in' =>   $listener_in,
+                            'listenerID' => $listenerID,
+                            'region' =>     $region
                         );
+                        if ($dx_km) {
+                            $data['dx_km'] =      $dx_km;
+                            $data['dx_miles'] =   $dx_miles;
+                        }
+                        if (htmlentities($fmt[$i])) {
+                            $data['format'] =     htmlentities($fmt[$i]);
+                        }
+                        if ($LSB[$i] !== "") {
+                            $data['LSB'] =        $LSB[$i];
+                        }
+                        if ($LSB_approx[$i]) {
+                            $data['LSB_approx'] = "~";
+                        }
+                        if ($USB[$i] !== "") {
+                            $data['USB'] =        $USB[$i];
+                        }
+                        if ($USB_approx[$i]) {
+                            $data['USB_approx'] = "~";
+                        }
+                        if ($sec[$i]) {
+                            $data['sec'] =        $sec[$i];
+                        }
+                        if ($hhmm[$i]) {
+                            $data['time'] =        $hhmm[$i];
+                        }
+                        $log->update($data);
                         if ($debug) {
                             $out.=    "<pre>$sql</pre>";
                         }
@@ -417,7 +384,8 @@ function log_upload()
             break;
 
         case "parse_log":
-            listener_update_format($listenerID, $log_format);
+            $listener = new Listener($listenerID);
+            $listener->updateLogFormat($log_format);
             $sql =    "SELECT * FROM `listeners` WHERE `ID` = \"".$listenerID."\"";
             $result =     mysql_query($sql);
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
@@ -533,6 +501,17 @@ function log_upload()
     }
     //  print "<pre>$log_format</pre>\n";
     $log_format_errors = "";
+    $valid = explode(
+        ',',
+        "KHZ,ID,hh:mm,hhmm,GSQ,PWR,QTH,SP,ITU,LSB,USB,~LSB,~USB,+SB-,+~SB-,+K-,ABS,~ABS,sec,fmt,X,D,DD,M,MM,MMM,YY,YYYY,"
+        ."DDMMYY,DD.MM.YY,DDYYMM,DD.YY.MM,MMDDYY,MM.DD.YY,MMYYDD,MM.YY.DD,YYDDMM,YY.DD.MM,YYMMDD,YY.MM.DD"
+        ."DDMMMYY,DD.MMM.YY,DDYYMMM,DD.YY.MMM,MMMDDYY,MMM.DD.YY,MMMYYDD,MMM.YY.DD,YYDDMMM,YYMMMDD,YY.MMM.DD"
+        ."DDMMYYYY,DD.MM.YYYY,DDYYYYMM,DD.YYYY.MM,MMDDYYYY,MM.DD.YYYY,MMYYYYDD,MM.YYYY.DD,YYYYDDMM,YYYY.DD.MM,YYYYMMDD,YYYY.MM.DD"
+        ."DDMMMYYYY,DD.MMM.YYYY,DDYYYYMMM,DD.YYYY.MMM,MMMDDYYYY,MMM.DD.YYYY,MMMYYYYDD,MMM.YYYY.DD,YYYYDDMMM,YYYY.DD.MMM,YYYYMMMDD,YYYY.MMM.DD"
+        ."DM,D.M,DDM,DD.M,DMM,D.MM,DDMM,DD.MM,DMMM,D.MMM,DDMMM,DD.MMM,MD,M.D,MDD,M.DD,MMD,MM.D,MMDD,MM.DD,MMMD,MMM.D,MMMDD,MMM.DD"
+    );
+    $tokens = array();
+    $flags = array();
     while ($start<strlen($log_format_parse)) {
         $len =        strpos(substr($log_format_parse, $start), " ");
         $param_name =    substr($log_format_parse, $start, $len);
@@ -542,26 +521,39 @@ function log_upload()
             }
             if ($param_name=="X" || !isset($param_array[$param_name])) {
                 $param_array[$param_name] = array($start,$len+1);
+                if (!in_array($param_name, $valid)) {
+                    $tokens[] = $param_name;
+                    $flags[] = "<span style='color:#ff0000;font-weight:bold;cursor:pointer' title='Token not recognised'>".$param_name."</span>";
+                    $log_format_errors.=
+                         "<tr class='rownormal'>\n"
+                        ."  <th align='left'>".$param_name."</th>\n"
+                        ."  <td><span style='color:#ff0000;'>Token not recognised</span></td>\n"
+                        ."</tr>\n";
+
+                }
             } else {
+                $tokens[] = $param_name;
+                $flags[] = "<span style='color:#ff00ff;font-weight:bold;cursor:pointer' title='Token occurs more than once'>".$param_name."</span>";
                 $log_format_errors.=
                      "<tr class='rownormal'>\n"
-                    ."  <th>$param_name</th>\n"
-                    ."  <td>Occurs twice: char ".$param_array[$param_name][0]." and char $start</td>\n"
+                    ."  <th align='left'>".$param_name."</th>\n"
+                    ."  <td><span style='color:#ff00ff;'>Token occurs more than once</span></td>\n"
                     ."</tr>\n";
             }
         }
         $start = $start+$len;
     }
+    $log_format = str_replace($tokens, $flags, $log_format);
     if ($submode=="parse_log" && $log_format_errors!="") {
         $out.=
              "<br><span class='p'><b>Log Format Errors</b></span>\n"
             ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0' width='100%'>\n"
             ."  <tr class='downloadTableHeadings'>\n"
-            ."    <th colspan='2'>Input Format Errors</th>\n"
+            ."    <th colspan='2'>Problems Seen</th>\n"
             ."  </tr>\n"
             ."  <tr class='rownormal'>\n"
-            ."    <th>Input</th>\n"
-            ."    <td><pre style='margin:0;'>$log_format</pre></td>\n"
+            ."    <th align='left'>Input</th>\n"
+            ."    <td><pre style='margin:0;'>".$log_format."</pre></td>\n"
             ."  </tr>\n"
             .$log_format_errors
             ."</table>\n\n"
@@ -662,20 +654,20 @@ function log_upload()
                     ." <a href='#next'><b>below</b></a> for suggested <b>Next Steps</b></small></span>\n"
                     ."<table border='0' cellpadding='2' cellspacing='1' bgcolor='#c0c0c0'>\n"
                     ."  <tr class='downloadTableHeadings_nosort'>\n"
-                    ."    <th>KHz</th>\n"
-                    ."    <th>ID</th>\n"
-                    ."    <th>QTH</th>\n"
-                    ."    <th>SP</th>\n"
-                    ."    <th>ITU</th>\n"
-                    ."    <th>GSQ</th>\n"
-                    ."    <th>Heard In</th>\n"
-                    ."    <th>YYYYMMDD</th>\n"
-                    ."    <th>HHMM</th>\n"
-                    ."    <th>LSB</th>\n"
-                    ."    <th>USB</th>\n"
-                    ."    <th>Sec</th>\n"
-                    ."    <th>Format</th>\n"
-                    ."    <th>New?</th>\n"
+                    ."    <th style='width:38px;font-family:monospace'>KHz</th>\n"
+                    ."    <th style='width:36px;font-family:monospace'>ID</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>ITU</th>\n"
+                    ."    <th style='width:23px;font-family:monospace'>SP</th>\n"
+                    ."    <th style='width:40px;font-family:monospace'>GSQ</th>\n"
+                    ."    <th style='width:202px;font-family:monospace'>QTH</th>\n"
+                    ."    <th style='width:600px;font-family:monospace'>Heard In</th>\n"
+                    ."    <th style='width:60px;font-family:monospace'>YYYYMMDD</th>\n"
+                    ."    <th style='width:40px;font-family:monospace'>hhmm</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>LSB</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>USB</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>Sec</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>Format</th>\n"
+                    ."    <th style='width:30px;font-family:monospace'>New?</th>\n"
                     ."  </tr>\n";
                 $lines =        explode("\r", " ".stripslashes($log_entries));
                 $unresolved_signals =    array();
@@ -1233,7 +1225,7 @@ function log_upload()
                                         }
                                     }
                                     $out.=
-                                         "  <td>"
+                                         "  <td style='font-family:monospace'>"
                                         ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
                                         .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
                                             "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
@@ -1242,25 +1234,23 @@ function log_upload()
                                         )
                                         ."</td>\n"
                                         ."  <td$bgcolor>"
-                                        ."<a href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
+                                        ."<a  style='font-family:monospace' href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
                                         ."</td>\n"
-                                        ."  <td".($row['QTH']?"":" bgcolor='#FFE7B9'"
-                                        ." title='Please provide a value for QTH if you have one'").">"
-                                        ."<font color='#606060'>".$row['QTH']."</font>"
-                                        ."</td>\n"
+                                        ."  <td style='font-family:monospace;color:#666'>".$row['ITU']."</td>\n"
+                                        ."  <td style='font-family:monospace;color:#666'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
                                         ."  <td>"
-                                        .($row['SP'] ? "<font color='#606060'>".$row['SP']."</font>" : "&nbsp;")
-                                        ."</td>\n"
-                                        ."  <td><font color='#606060'>".$row['ITU']."</font></td>\n"
-                                        ."  <td><font color='#606060'>"
                                         .($row["GSQ"] ?
-                                             "<a href='javascript:popup_map("
+                                             "<a style='font-family:monospace' href='javascript:popup_map("
                                             ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
                                             .")' title='Show map (accuracy limited to nearest Grid Square)'>"
                                             .$row["GSQ"]."</a>"
                                          :
                                             "&nbsp;"
                                          )
+                                        ."  <td".($row['QTH']?"":" bgcolor='#FFE7B9'"
+                                        ." title='Please provide a value for QTH if you have one'").">"
+                                        ."<font color='#606060'>".$row['QTH']."</font>"
+                                        ."</td>\n"
                                          ."</font></td>\n"
                                          ."  <td><font color='#606060'>"
                                          .(strpos($row['heard_in'], $listener_in)===false ?
@@ -1273,7 +1263,7 @@ function log_upload()
                                     $out.=
                                          "<tr bgcolor='#ffe0a0'>\n"
                                         ."  <td colspan='7'>"
-                                        ."<select name='ID[]' class='formfixed'>\n";
+                                        ."<select name='ID[]' class='formfixed' style='width:840px;overflow:hidden;text-overflow:ellipsis'>\n";
                                     $defaultChosen =    false;
                                     $selected =         false;
                                     for ($j=0; $j<mysql_num_rows($result); $j++) {
@@ -1282,19 +1272,30 @@ function log_upload()
                                             $selected = true;
                                             $defaultChosen =  true;
                                         }
+                                        $title =
+                                             (float)$row["khz"]." | "
+                                            .$ID." | "
+                                            .$row["ITU"]." | "
+                                            .$row["SP"]." | "
+                                            .$row["GSQ"]." | "
+                                            .$row["QTH"]." | "
+                                            .$row["heard_in"];
+                                        $label =
+                                             pad_nbsp((float)$row["khz"],5)."|"
+                                            .pad_nbsp($ID,5)."|"
+                                            .$row["ITU"]." |"
+                                            .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")." |"
+                                            .pad_nbsp($row["GSQ"], 6)."|"
+                                            .(strlen($row["QTH"])<25 ? pad_nbsp($row["QTH"], 25) : pad_nbsp(substr($row["QTH"],0,22).'...', 25))." | "
+                                            .$row["heard_in"];
+
                                         $out.=
-                                             "<option"
+                                             "<option title='".$title."'"
                                             .($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")
                                             ." value='".$row["ID"]."'"
                                             .($selected ? " selected='selected'" : "")
                                             .">"
-                                            .(float)$row["khz"]." "
-                                            .$ID." "
-                                            .$row["QTH"]." "
-                                            .pad_nbsp($row["SP"], 3)." "
-                                            .$row["ITU"]." "
-                                            .$row["GSQ"]." "
-                                            .$row["heard_in"]
+                                            .$label
                                             ."</option>\n";
                                         $selected = false;
                                     }
@@ -1505,13 +1506,13 @@ function log_upload()
             ."    <th class='downloadTableHeadings_nosort'>Log to Parse</th>\n"
             ."  </tr>\n"
             ."  <tr class='rownormal'>\n"
-            ."    <td><input name='log_format' class='fixed_heading' size='105' value='$log_format'>"
+            ."    <td><input name='log_format' class='fixed_heading' size='105' style='width:1040px' value='$log_format'> "
             ."<input class='formbutton' name='save' type='button' value='Save' onclick='"
             ."this.disabled=true;document.form.go.disabled=true;document.form.conv.disabled=true;"
             ."document.form.submode.value=\"save_format\";document.form.submit()'>"
             ."  </tr>\n"
             ."  <tr class='rownormal'>\n"
-            ."    <td><textarea rows='30' cols='110' class='fixed' name='log_entries'"
+            ."    <td><textarea rows='30' cols='110' class='fixed' style='width:1100px' name='log_entries'"
             ." onKeyUp='check_for_tabs(document.form);'"
             ." onchange='check_for_tabs(document.form);'>"
             .stripslashes($log_entries)

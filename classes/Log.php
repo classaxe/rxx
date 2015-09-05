@@ -27,4 +27,18 @@ class Log extends Record
         $signal->update($data);
         $signal->updateHeardInList();
     }
+
+    public function checkIfFirstForState($signalID, $heardIn)
+    {
+        $sql =
+             "SELECT\n"
+            ."  `ID`,\n"
+            ."  `listenerID`\n"
+            ."FROM\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ."  `signalID` = ".$signalID." AND\n"
+            ."  `heard_in` = \"".$heardIn."\"";
+        return $this->getRecordForSql($sql);
+    }
 }
