@@ -2,9 +2,9 @@
 
 class Record
 {
-    protected   $ID;
-    protected   $table;
-    public      $record;
+    protected $ID;
+    protected $table;
+    public $record;
 
     public function __construct($ID = '', $table = '')
     {

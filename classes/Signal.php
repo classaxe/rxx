@@ -37,6 +37,26 @@ class Signal extends Record
         return get_attachments($this->table, $this->ID, 'DGPS Message');
     }
 
+    public function getDX($qth_lat, $qth_lon)
+    {
+        if (!$qth_lat) {
+            return array(false,false);
+        }
+        $sql =
+             "SELECT\n"
+            ."    `lat`,\n"
+            ."    `lon`\n"
+            ."FROM\n"
+            ."    `signals`\n"
+            ."WHERE\n"
+            ."    `ID` = ".$this->getID();
+        $row =    $this->getRecordForSql($sql);
+        if (!$row["lat"]) {
+            return array(false,false);
+        }
+        return get_dx($qth_lat, $qth_lon, $row["lat"], $row["lon"]);
+    }
+
     public function getRegionsHeardIn()
     {
         $sql =

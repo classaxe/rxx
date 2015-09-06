@@ -491,3 +491,30 @@ i {color: #666666;}
 img {float: right; border: 0px;}
 #phpinfo table { width: 810px !important; margin: auto; }
 #phpinfo h1, #phpinfo h2 { display: block; width: 800px; margin: auto; text-align: center; }
+
+
+.uploadParse th   { font-family: monospace; }
+.uploadParse td   { font-family: monospace; color:#666; }
+.uploadParse td a { font-family: monospace; }
+.uploadParse .num       { text-align: right; }
+.uploadParse .center    { text-align: center; }
+
+.uploadParse .KHz       { width: 37px; }
+.uploadParse .ID        { width: 32px; }
+.uploadParse .ITU       { width: 28px; }
+.uploadParse .SP        { width: 20px; }
+.uploadParse .GSQ       { width: 40px; }
+.uploadParse .QTH       { width: 162px; }
+.uploadParse .HeardIn   { width: 380px; min-width: 380px; }
+.uploadParse .km        { width: 40px; }
+.uploadParse .mi        { width: 40px; }
+.uploadParse .Combined  { width: 798px; }
+
+.uploadParse .YYYYMMDD  { width: 50px; }
+.uploadParse .hhmm      { width: 26px; }
+.uploadParse .LSB       { width: 30px; }
+.uploadParse .USB       { width: 30px; }
+.uploadParse .Sec       { width: 30px; }
+.uploadParse .Fmt       { width: 45px; }
+.uploadParse .DT        { width: 20px; cursor:pointer; }
+.uploadParse .New       { width: 30px; }

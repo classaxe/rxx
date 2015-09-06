@@ -94,6 +94,14 @@ class Listener extends Record
         return $result['count'];
     }
 
+    public function isDaytime($hhmm)
+    {
+        return
+            $hhmm + 2400 >= ($this->record['timezone']*100) + 3400 &&
+            $hhmm + 2400 <  ($this->record['timezone']*100) + 3800;
+
+    }
+
     public function updateLogCount()
     {
         $types =  array(DGPS,DSC,HAMBCN,NAVTEX,NDB,TIME,OTHER);

@@ -70,21 +70,26 @@ function get_bestDX($listenerID, $dayonly, $min_dx, $max_dx)
 // ************************************
 function get_dx($qth_lat, $qth_lon, $dx_lat, $dx_lon)
 {
-// Check for same point:
     if ($qth_lat == $dx_lat && $qth_lon==$dx_lon) {
-        return array(0,0);
+        return array(0, 0);
+    }
+    if (($qth_lat==0 && $qth_lon==0) || ($dx_lat==0 && $dx_lon==0)){
+        return array('', '');
     }
     $dlon = ($dx_lon - $qth_lon);
     if (abs($dlon) > 180) {
         $dlon = (360 - abs($dlon))*(0-($dlon/abs($dlon)));
     }
-    $rinlat =        $qth_lat*0.01745;    // convert to radians
-    $rinlon =        $qth_lon*0.01745;
-    $rfnlat =        $dx_lat*0.01745;
+    $rinlat =       $qth_lat*0.01745;    // convert to radians
+    $rinlon =       $qth_lon*0.01745;
+    $rfnlat =       $dx_lat*0.01745;
     $rdlon =        $dlon*0.01745;
-    $rgcdist =        acos(sin($rinlat)*sin($rfnlat)+cos($rinlat)*cos($rfnlat)*cos($rdlon));
+    $rgcdist =      acos(sin($rinlat)*sin($rfnlat)+cos($rinlat)*cos($rfnlat)*cos($rdlon));
 
-    return array(round(abs($rgcdist)*3958.284),round(abs($rgcdist)*6370.614));
+    return array(
+        round(abs($rgcdist)*3958.284),
+        round(abs($rgcdist)*6370.614)
+    );
 }
 
 
@@ -121,27 +126,6 @@ function get_sp_maplinks($SP, $ID, $text)
             ." title='Show signal map for ".$SP."' target='blank'><b>".$text."</b></a>";
     }
     return $text;
-}
-
-
-
-// ************************************
-// * get_signal_dx()                  *
-// ************************************
-function get_signal_dx($ID, $qth_lat, $qth_lon)
-{
-    if (!$qth_lat) {
-        return array(false,false);
-    }
-    $sql =    "SELECT `lat`,`lon` FROM `signals` WHERE `ID` = \"$ID\"";
-    $result =    mysql_query($sql);
-    $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-    $dx_lat =    $row["lat"];
-    $dx_lon =    $row["lon"];
-    if (!$dx_lat) {
-        return array(false,false);
-    }
-    return get_dx($qth_lat, $qth_lon, $dx_lat, $dx_lon);
 }
 
 
@@ -1942,6 +1926,13 @@ function pad_nbsp($text, $places)
 {
     $text = translate_chars($text);
     $text = $text.(substr("                                                   ", 0, $places-strLen($text)));
+    return str_replace(" ", "&nbsp;", $text);
+}
+
+function lead_nbsp($text, $places)
+{
+    $text = translate_chars($text);
+    $text = (substr("                                                   ", 0, $places-strLen($text))).$text;
     return str_replace(" ", "&nbsp;", $text);
 }
 
