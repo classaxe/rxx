@@ -3,7 +3,7 @@ namespace Managers;
 
 class LogUploader
 {
-    protected $debug = true;
+    protected $debug = false;
     protected $html = '';
     protected $listener;
     protected $tokens = array();
@@ -98,7 +98,7 @@ class LogUploader
                     // ++++++++++++++++++++++++++++++++++++++++++++
                     // + See if log is first for state or country +
                     // ++++++++++++++++++++++++++++++++++++++++++++
-                    if ($row = Log::checkIfFirstForPlace($ID[$i], $heardIn)) {
+                    if ($row = \Log::checkIfFirstForPlace($ID[$i], $heardIn)) {
                         // No, signal has been logged at least once from this state:
                         if ($this->debug) {
                             $this->html.=    "1 ";
@@ -1108,10 +1108,10 @@ class LogUploader
                                                     break;
                                             }
                                         }
-                                        $dx = get_dx($this->listener->record['lat'], $this->listener->record['lat'], $row["lat"], $row["lon"]);
+                                        $dx = get_dx($this->listener->record['lat'], $this->listener->record['lon'], $row["lat"], $row["lon"]);
                                         $this->html.=
                                              "  <td class='KHz'>"
-                                           // ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
+                                            ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
                                             .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
                                                 "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
                                              :
