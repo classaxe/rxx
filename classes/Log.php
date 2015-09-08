@@ -28,7 +28,7 @@ class Log extends Record
         $signal->updateHeardInList();
     }
 
-    public function checkIfFirstForState($signalID, $heardIn)
+    public static function checkIfFirstForPlace($signalID, $heardIn)
     {
         $sql =
              "SELECT\n"
@@ -39,6 +39,6 @@ class Log extends Record
             ."WHERE\n"
             ."  `signalID` = ".$signalID." AND\n"
             ."  `heard_in` = \"".$heardIn."\"";
-        return $this->getRecordForSql($sql);
+        return static::getRecordForSql($sql);
     }
 }

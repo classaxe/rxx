@@ -3,7 +3,7 @@ namespace Managers;
 
 class LogUploader
 {
-    protected $debug = false;
+    protected $debug = true;
     protected $html = '';
     protected $listener;
     protected $tokens = array();
@@ -14,6 +14,46 @@ class LogUploader
         'exact_duplicate' =>        0,
         'latest_for_signal' =>      0
     );
+
+    protected $logHas = array(
+        'YYYY' =>   false,
+        'MM' =>     false,
+        'DD' =>     false
+    );
+
+    public static $YYYYMMDDTokens = array(
+        'DDMMYY',    'DD.MM.YY',    'DDYYMM',    'DD.YY.MM',
+        'DDMMMYY',   'DD.MMM.YY',   'DDYYMMM',   'DD.YY.MMM',
+        'DDMMYYYY',  'DD.MM.YYYY',  'DDYYYYMM',  'DD.YYYY.MM',
+        'DDMMMYYYY', 'DD.MMM.YYYY', 'DDYYYYMMM', 'DD.YYYY.MMM',
+
+        'MMDDYY',    'MM.DD.YY',    'MMYYDD',    'MM.YY.DD',
+        'MMMDDYY',   'MMM.DD.YY',   'MMMYYDD',   'MMM.YY.DD',
+        'MMDDYYYY',  'MM.DD.YYYY',  'MMYYYYDD',  'MM.YYYY.DD',
+        'MMMDDYYYY', 'MMM.DD.YYYY', 'MMMYYYYDD', 'MMM.YYYY.DD',
+
+        'YYDDMM',    'YY.DD.MM',    'YYMMDD',    'YY.MM.DD',
+        'YYDDMMM',   'YY.DD.MMM',   'YYMMMDD',   'YY.MMM.DD',
+        'YYYYDDMM',  'YYYY.DD.MM',  'YYYYMMDD',  'YYYY.MM.DD',
+        'YYYYDDMMM', 'YYYY.DD.MMM', 'YYYYMMMDD', 'YYYY.MMM.DD'
+    );
+
+    public static $MMDDTokens = array(
+        'DM',        'D.M',         'DDM',       'DD.M',
+        'DMM',       'D.MM',        'DDMM',      'DD.MM',
+        'DMMM',      'D.MMM',       'DDMMM',     'DD.MMM',
+        'MD',        'M.D',         'MDD',       'M.DD',
+        'MMD',       'MM.D',        'MMDD',      'MM.DD',
+        'MMMD',      'MMM.D',       'MMMDD',     'MMM.DD'
+    );
+
+    public static $singleTokens = array(
+        'KHZ', 'ID',  'GSQ',  'PWR',  'QTH',   'SP',    'ITU',
+        'LSB', 'USB', '~LSB', '~USB', '+SB-',  '+~SB-', '+K-', 'ABS', '~ABS',
+        'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm',
+        'D',   'DD',  'M',    'MM',   'MMM',   'YY',    'YYYY'
+    );
+
 
     public function draw()
     {
@@ -53,28 +93,18 @@ class LogUploader
                     $dx_miles = $dx[0];
                     $dx_km =    $dx[1];
                     $daytime =  $this->listener->isDaytime($hhmm[$i]);
+                    $heardIn =  ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
 
                     // ++++++++++++++++++++++++++++++++++++++++++++
                     // + See if log is first for state or country +
                     // ++++++++++++++++++++++++++++++++++++++++++++
-                    $sql =
-                         "SELECT\n"
-                        ."  `ID`,\n"
-                        ."  `listenerID`\n"
-                        ."FROM\n"
-                        ."  `logs`\n"
-                        ."WHERE\n"
-                        ."  `signalID` = ".$ID[$i]." AND\n"
-                        ."  `heard_in` = \"".($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU'])."\"";
-                    $result =    mysql_query($sql);
-                    if (mysql_num_rows($result)) {
+                    if ($row = Log::checkIfFirstForPlace($ID[$i], $heardIn)) {
                         // No, signal has been logged at least once from this state:
                         if ($this->debug) {
                             $this->html.=    "1 ";
                         }
                         $update_signal = true;
                         // Update signal record (IF this data is the most recent...)
-                        $row =    mysql_fetch_array($result);
                         if ($row["listenerID"] == "") {
                             // First row doesn't list listener, so must be first time
                             // First time listener from this state named, so
@@ -418,29 +448,19 @@ class LogUploader
         $len =    0;
 
         $log_format_parse =    $log_format." ";
+        //  print "<pre>$log_format</pre>\n";
+        $log_format_errors = "";
+        $valid = array_merge(
+            static::$singleTokens,
+            static::$MMDDTokens,
+            static::$YYYYMMDDTokens
+        );
+        $tokens =       array();
+        $fieldFlags =   array();
+        $flags =        array();
         while (substr($log_format_parse, $start, 1)==" ") {
             $start++;
         }
-        //  print "<pre>$log_format</pre>\n";
-        $log_format_errors = "";
-        $valid = explode(
-            ',',
-            str_replace(
-                ' ',
-                '',
-                "KHZ, ID, GSQ, PWR, QTH, SP, ITU, LSB, USB, ~LSB, ~USB, +SB-, +~SB-, +K-, ABS, ~ABS, sec, fmt, x, X, hh:mm, hhmm,"
-                ."D,         DD,          M,         MM,          MMM,       YY,          YYYY,"
-                ."DM,        D.M,         DDM,       DD.M,        DMM,       D.MM,        DDMM,      DD.MM,       DMMM,      D.MMM,       DDMMM,      DD.MMM,"
-                ."MD,        M.D,         MDD,       M.DD,        MMD,       MM.D,        MMDD,      MM.DD,       MMMD,      MMM.D,       MMMDD,      MMM.DD,"
-                ."DDMMYY,    DD.MM.YY,    DDYYMM,    DD.YY.MM,    MMDDYY,    MM.DD.YY,    MMYYDD,    MM.YY.DD,    YYDDMM,    YY.DD.MM,    YYMMDD,     YY.MM.DD,"
-                ."DDMMMYY,   DD.MMM.YY,   DDYYMMM,   DD.YY.MMM,   MMMDDYY,   MMM.DD.YY,   MMMYYDD,   MMM.YY.DD,   YYDDMMM,   YY.DD.MMM,   YYMMMDD,    YY.MMM.DD,"
-                ."DDMMYYYY,  DD.MM.YYYY,  DDYYYYMM,  DD.YYYY.MM,  MMDDYYYY,  MM.DD.YYYY,  MMYYYYDD,  MM.YYYY.DD,  YYYYDDMM,  YYYY.DD.MM,  YYYYMMDD,   YYYY.MM.DD,"
-                ."DDMMMYYYY, DD.MMM.YYYY, DDYYYYMMM, DD.YYYY.MMM, MMMDDYYYY, MMM.DD.YYYY, MMMYYYYDD, MMM.YYYY.DD, YYYYDDMMM, YYYY.DD.MMM, YYYYMMMDD,  YYYY.MMM.DD,"
-            )
-        );
-        $tokens = array();
-        $fieldFlags = array();
-        $flags = array();
         while ($start<strlen($log_format_parse)) {
             $len =        strpos(substr($log_format_parse, $start), " ");
             $param_name =    substr($log_format_parse, $start, $len);
@@ -491,83 +511,7 @@ class LogUploader
                 ."</ul>\n";
         }
 
-        //   foreach($this->tokens as $key=>$value){ print("<li>$key = ".$value[0].", ".$value[1]."</li>\n"); }
-
-        $log_shows_YYYY =    false;
-        $log_shows_MM =    false;
-        $log_shows_DD =    false;
-
-        if (
-            isset($this->tokens["DDMMYY"]) ||    isset($this->tokens["DD.MM.YY"]) ||
-            isset($this->tokens["DDYYMM"]) ||    isset($this->tokens["DD.YY.MM"]) ||
-            isset($this->tokens["MMDDYY"]) ||    isset($this->tokens["MM.DD.YY"]) ||
-            isset($this->tokens["MMYYDD"]) ||    isset($this->tokens["MM.YY.DD"]) ||
-            isset($this->tokens["YYDDMM"]) ||    isset($this->tokens["YY.DD.MM"]) ||
-            isset($this->tokens["YYMMDD"]) ||    isset($this->tokens["YY.MM.DD"]) ||
-
-            isset($this->tokens["DDMMMYY"]) ||   isset($this->tokens["DD.MMM.YY"]) ||
-            isset($this->tokens["DDYYMMM"]) ||   isset($this->tokens["DD.YY.MMM"]) ||
-            isset($this->tokens["MMMDDYY"]) ||   isset($this->tokens["MMM.DD.YY"]) ||
-            isset($this->tokens["MMMYYDD"]) ||   isset($this->tokens["MMM.YY.DD"]) ||
-            isset($this->tokens["YYDDMMM"]) ||   isset($this->tokens["YY.DD.MMM"]) ||
-            isset($this->tokens["YYMMMDD"]) ||   isset($this->tokens["YY.MMM.DD"]) ||
-
-            isset($this->tokens["DDMMYYYY"]) ||  isset($this->tokens["DD.MM.YYYY"]) ||
-            isset($this->tokens["DDYYYYMM"]) ||  isset($this->tokens["DD.YYYY.MM"]) ||
-            isset($this->tokens["MMDDYYYY"]) ||  isset($this->tokens["MM.DD.YYYY"]) ||
-            isset($this->tokens["MMYYYYDD"]) ||  isset($this->tokens["MM.YYYY.DD"]) ||
-            isset($this->tokens["YYYYDDMM"]) ||  isset($this->tokens["YYYY.DD.MM"]) ||
-            isset($this->tokens["YYYYMMDD"]) ||  isset($this->tokens["YYYY.MM.DD"]) ||
-
-            isset($this->tokens["DDMMMYYYY"]) || isset($this->tokens["DD.MMM.YYYY"]) ||
-            isset($this->tokens["DDYYYYMMM"]) || isset($this->tokens["DD.YYYY.MMM"]) ||
-            isset($this->tokens["MMMDDYYYY"]) || isset($this->tokens["MMM.DD.YYYY"]) ||
-            isset($this->tokens["MMMYYYYDD"]) || isset($this->tokens["MMM.YYYY.DD"]) ||
-            isset($this->tokens["YYYYDDMMM"]) || isset($this->tokens["YYYY.DD.MMM"]) ||
-            isset($this->tokens["YYYYMMMDD"]) || isset($this->tokens["YYYY.MMM.DD"])
-        ) {
-            $log_shows_YYYY =    true;
-            $log_shows_MM =    true;
-            $log_shows_DD =    true;
-        }
-        if (
-            isset($this->tokens["DM"]) ||        isset($this->tokens["D.M"]) ||
-            isset($this->tokens["DDM"]) ||       isset($this->tokens["DD.M"]) ||
-            isset($this->tokens["DMM"]) ||       isset($this->tokens["D.MM"]) ||
-            isset($this->tokens["DDMM"]) ||      isset($this->tokens["DD.MM"]) ||
-            isset($this->tokens["DMMM"]) ||      isset($this->tokens["D.MMM"]) ||
-            isset($this->tokens["DDMMM"]) ||     isset($this->tokens["DD.MMM"]) ||
-
-            isset($this->tokens["MD"]) ||        isset($this->tokens["M.D"]) ||
-            isset($this->tokens["MDD"]) ||       isset($this->tokens["M.DD"]) ||
-            isset($this->tokens["MMD"]) ||       isset($this->tokens["MM.D"]) ||
-            isset($this->tokens["MMDD"]) ||      isset($this->tokens["MM.DD"]) ||
-            isset($this->tokens["MMMD"]) ||      isset($this->tokens["MMM.D"]) ||
-            isset($this->tokens["MMMDD"]) ||     isset($this->tokens["MMM.DD"])
-        ) {
-            $log_shows_MM =    true;
-            $log_shows_DD =    true;
-        }
-        if (isset($this->tokens["MM"])) {
-            $log_shows_MM =    true;
-        }
-        if (isset($this->tokens["M"])) {
-            $log_shows_MM =    true;
-        }
-        if (isset($this->tokens["D"])) {
-            $log_shows_DD =    true;
-        }
-        if (isset($this->tokens["DD"])) {
-            $log_shows_DD =    true;
-        }
-        if (isset($this->tokens["YY"])) {
-            $log_shows_YYYY =    true;
-        }
-        if (isset($this->tokens["YYYY"])) {
-            $log_shows_YYYY =    true;
-        }
-
-
+        $this->checkLogDateTokens();
 
         switch ($submode) {
             case "parse_log":
@@ -757,8 +701,8 @@ class LogUploader
                     for ($i=0; $i<count($lines); $i++) {
                         //          print "<pre>".$lines[$i]."</pre>";
                         $YYYY =    YY_to_YYYY($log_yyyy);
-                        $MM =        M_to_MM($log_mm);
-                        $DD =        D_to_DD($log_dd);
+                        $MM =      M_to_MM($log_mm);
+                        $DD =      D_to_DD($log_dd);
 
                         if (function_exists("parse")) {
                             $YYYYMMDD = parse($this->tokens, $lines[$i], $YYYY, $MM, $DD);
@@ -769,7 +713,10 @@ class LogUploader
                             isset($this->tokens["D"]) ||
                             isset($this->tokens["DD"]) ||
                             isset($this->tokens["M"]) ||
-                            isset($this->tokens["MM"])
+                            isset($this->tokens["MM"]) ||
+                            isset($this->tokens["MMM"]) ||
+                            isset($this->tokens["YY"]) ||
+                            isset($this->tokens["YYYY"])
                         ) {
                             if (isset($this->tokens["D"])) {
                                 $DD =
@@ -789,10 +736,16 @@ class LogUploader
                                 $MM =
                                     trim(substr($lines[$i], $this->tokens["MM"][0], $this->tokens["MM"][1]));
                             }
+                            if (isset($this->tokens["MMM"])) {
+                                // DD shown in log
+                                $MM =
+                                    MMM_to_MM(trim(substr($lines[$i], $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
+                            }
                             if (isset($this->tokens["YY"])) {
                                 // DD shown in log
                                 $YYYY =
                                     YY_to_YYYY(trim(substr($lines[$i], $this->tokens["YY"][0], $this->tokens["YY"][1])));
+                                    print 'yes';
                             }
                             if (isset($this->tokens["YYYY"])) {
                                 // DD shown in log
@@ -1476,21 +1429,21 @@ class LogUploader
                 .stripslashes($log_entries)
                 ."</textarea>\n"
                 ."  </tr>\n";
-            if ((!$log_shows_YYYY || !$log_shows_MM || !$log_shows_DD)) {
+            if ((!$this->logHas['YYYY'] || !$this->logHas['MM'] || !$this->logHas['DD'])) {
                 $this->html.=
                      "  <tr class='rownormal'>\n"
                     ."    <td>The following details are also required: &nbsp; \n";
-                if (!$log_shows_DD) {
+                if (!$this->logHas['DD']) {
                     $this->html.=
                          "Day "
                         ."<input type='text' name='log_dd' size='2' maxlength='2' class='formfield' value='$log_dd'>\n";
                 }
-                if (!$log_shows_MM) {
+                if (!$this->logHas['MM']) {
                     $this->html.=
                          "Month "
                         ."<input type='text' name='log_mm' size='2' maxlength='2' class='formfield' value='$log_mm'>\n";
                 }
-                if (!$log_shows_YYYY) {
+                if (!$this->logHas['YYYY']) {
                     $this->html.=
                          "Year "
                         ."<input type='text' name='log_yyyy' size='4' maxlength='4' class='formfield' value='$log_yyyy'>\n";
@@ -1502,17 +1455,17 @@ class LogUploader
 
                 $this->html.=
                      "<input type='button' value='&lt;-- Current' class='formButton' onclick=\""
-                    .(!$log_shows_DD ?
+                    .(!$this->logHas['DD'] ?
                         "if (document.form.log_dd.value=='')   { document.form.log_dd.value='$now_DD'; };"
                      :
                         ""
                     )
-                    .(!$log_shows_MM ?
+                    .(!$this->logHas['MM'] ?
                         "if (document.form.log_mm.value=='')   { document.form.log_mm.value='$now_MM'; };"
                      :
                         ""
                     )
-                    .(!$log_shows_YYYY ?
+                    .(!$this->logHas['YYYY'] ?
                         "if (document.form.log_yyyy.value=='') { document.form.log_yyyy.value='$now_YYYY'; };"
                      :
                         ""
@@ -1609,6 +1562,34 @@ class LogUploader
             ."    <td>".$this->listener->record["count_logs"]."</td>\n"
             ."  </tr>\n"
             ."</table>\n";
+    }
+
+    protected function checkLogDateTokens()
+    {
+        foreach (static::$YYYYMMDDTokens as $token) {
+            if (isset($this->tokens[$token])) {
+                $this->logHas['YYYY'] = true;
+                $this->logHas['MM'] =   true;
+                $this->logHas['DD'] =   true;
+                return;
+            }
+        }
+        foreach (static::$MMDDTokens as $token) {
+            if (isset($this->tokens[$token])) {
+                $this->logHas['MM'] =   true;
+                $this->logHas['DD'] =   true;
+                break;
+            }
+        }
+        if (isset($this->tokens["YYYY"]) || isset($this->tokens["YY"])) {
+            $this->logHas['YYYY'] = true;
+        }
+        if (isset($this->tokens["MMM"]) || isset($this->tokens["MM"]) || isset($this->tokens["M"])) {
+            $this->logHas['MM'] =   true;
+        }
+        if (isset($this->tokens["DD"]) || isset($this->tokens["D"])) {
+            $this->logHas['DD'] =   true;
+        }
     }
 
     protected function updateLogFormat()
