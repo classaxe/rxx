@@ -28,12 +28,26 @@ class Log extends Record
         $signal->updateHeardInList();
     }
 
-    public static function checkIfFirstForPlace($signalID, $heardIn)
+    public static function checkIfDuplicate($signalID, $listenerID, $YYYYMMDD, $hhmm = false)
     {
         $sql =
              "SELECT\n"
-            ."  `ID`,\n"
-            ."  `listenerID`\n"
+            ."  `ID`\n"
+            ."FROM\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ."  `signalID` = ".$signalID." AND\n"
+            ."  `date` = \"".$YYYYMMDD."\" AND\n"
+            .($hhmm ?    "  `time` = \"".$hhmm."\" AND\n" : "")
+            ."  `listenerID` = ".$listenerID;
+        return static::getRecordForSql($sql);
+    }
+
+    public static function checkIfHeardAtPlace($signalID, $heardIn)
+    {
+        $sql =
+             "SELECT\n"
+            ."  `ID`\n"
             ."FROM\n"
             ."  `logs`\n"
             ."WHERE\n"
@@ -41,4 +55,52 @@ class Log extends Record
             ."  `heard_in` = \"".$heardIn."\"";
         return static::getRecordForSql($sql);
     }
+
+    public static function countTimesHeardByListener($signalID, $listenerID)
+    {
+        $sql =
+             "SELECT\n"
+            ."  COUNT(*) AS `count`\n"
+            ."FROM\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ."  `signalID` = ".$signalID." AND\n"
+            ."  `listenerID` = ".$listenerID;
+        return static::getRecordForSql($sql);
+    }
+
+    public static function getLogDateRange($system, $region=false)
+    {
+        $filter = "1";
+        switch ($system) {
+            case "1":
+                $filter =
+                    "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `heard_in` = 'hi'))";
+                break;
+            case "2":
+                $filter =
+                    "(`region` = 'eu')";
+                break;
+            case "3":
+                if ($region!="") {
+                    $filter =
+                        "(`region` = '".$region."')";
+                }
+                break;
+        }
+        $sql =
+             "SELECT\n"
+            ."    DATE_FORMAT(MIN(`date`),'%e %b %Y') AS `first_log`,\n"
+            ."    DATE_FORMAT(MAX(`date`),'%e %b %Y') AS `last_log`,\n"
+            ."    DATE_FORMAT(MIN(`date`),'%Y-%m-%d') AS `first_log_iso`,\n"
+            ."    DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last_log_iso`\n"
+            ."FROM\n"
+            ."    `logs`\n"
+            ."WHERE\n"
+            ."    ".$filter." AND\n"
+            ."    `date` !=\"\" AND\n"
+            ."    `date` !=\"0000-00-00\"";
+        return static::getRecordForSql($sql);
+    }
+
 }

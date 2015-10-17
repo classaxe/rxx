@@ -87,256 +87,112 @@ class LogUploader
                         $this->html.=    "<li>ID=".$ID[$i]." ";
                     }
                     $update_signal =            false;
-                    $update_signal_heard_in =   true; //false;
+                    $update_signal_heard_in =   true;
                     $signal =   new \Signal($ID[$i]);
                     $dx =       $signal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
                     $dx_miles = $dx[0];
                     $dx_km =    $dx[1];
-                    $daytime =  $this->listener->isDaytime($hhmm[$i]);
+                    $daytime =  ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
                     $heardIn =  ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
 
-                    // ++++++++++++++++++++++++++++++++++++++++++++
-                    // + See if log is first for state or country +
-                    // ++++++++++++++++++++++++++++++++++++++++++++
-                    if ($row = \Log::checkIfFirstForPlace($ID[$i], $heardIn)) {
-                        // No, signal has been logged at least once from this state:
+                    $data = array(
+                        'signalID' =>   $ID[$i],
+                        'date' =>       $YYYYMMDD[$i],
+                        'daytime' =>    $daytime,
+                        'heard_in' =>   $heardIn,
+                        'listenerID' => $this->listener->getID(),
+                        'region' =>     $this->listener->record["region"]
+                    );
+                    if ($dx_km) {
+                        $data['dx_km'] =      $dx_km;
+                        $data['dx_miles'] =   $dx_miles;
+                    }
+                    if (htmlentities($fmt[$i])) {
+                        $data['format'] =     htmlentities($fmt[$i]);
+                    }
+                    if ($LSB[$i] !== "") {
+                        $data['LSB'] =        $LSB[$i];
+                    }
+                    if ($LSB_approx[$i]) {
+                        $data['LSB_approx'] = "~";
+                    }
+                    if ($USB[$i] !== "") {
+                        $data['USB'] =        $USB[$i];
+                    }
+                    if ($USB_approx[$i]) {
+                        $data['USB_approx'] = "~";
+                    }
+                    if ($sec[$i]) {
+                        $data['sec'] =        $sec[$i];
+                    }
+                    if ($hhmm[$i]) {
+                        $data['time'] =        $hhmm[$i];
+                    }
+
+                    if ($row = \Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
                         if ($this->debug) {
                             $this->html.=    "1 ";
                         }
-                        $update_signal = true;
-                        // Update signal record (IF this data is the most recent...)
-                        if ($row["listenerID"] == "") {
-                            // First row doesn't list listener, so must be first time
-                            // First time listener from this state named, so
-                            if ($this->debug) {
-                                $this->html.=    "2 ";
-                            }
-
-                            $log = new \Log($row["ID"]);
-                            $data = array(
-                                'signalID' =>   $ID[$i],
-                                'date' =>       $YYYYMMDD[$i],
-                                'daytime' =>    ($daytime ? 1 : 0),
-                                'heard_in' =>   ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']),
-                                'listenerID' => $this->listener->getID(),
-                                'region' =>     $this->listener->record["region"]
-                            );
-                            if ($dx_km) {
-                                $data['dx_km'] =      $dx_km;
-                                $data['dx_miles'] =   $dx_miles;
-                            }
-                            if (htmlentities($fmt[$i])) {
-                                $data['format'] =     htmlentities($fmt[$i]);
-                            }
-                            if ($LSB[$i] !== "") {
-                                $data['LSB'] =        $LSB[$i];
-                            }
-                            if ($LSB_approx[$i]) {
-                                $data['LSB_approx'] = "~";
-                            }
-                            if ($USB[$i] !== "") {
-                                $data['USB'] =        $USB[$i];
-                            }
-                            if ($USB_approx[$i]) {
-                                $data['USB_approx'] = "~";
-                            }
-                            if ($sec[$i]) {
-                                $data['sec'] =        $sec[$i];
-                            }
-                            if ($hhmm[$i]) {
-                                $data['time'] =        $hhmm[$i];
-                            }
-                            $log->update($data);
-                            if ($this->debug) {
-                                $this->html.=    "<pre>$sql</pre>";
-                            }
-                            mysql_query($sql);
-                            // Write in name for this listener
-                            $update_signal =         true;
-                             // Update signal record (IF this data is the most recent...)
-                            $this->stats['first_for_listener']++;
+                        if ($row = \Log::checkIfDuplicate(
+                            $ID[$i],
+                            $this->listener->getID(),
+                            $YYYYMMDD[$i],
+                            $hhmm[$i]
+                        )) {
+                            $this->stats['exact_duplicate']++;
                         } else {
-                            // A listener from this state has been named before
-                            // ++++++++++++++++++++++++++++++++++++
-                            // + See if log is exact duplicate    +
-                            // ++++++++++++++++++++++++++++++++++++
-                            $sql =
-                                 "SELECT `ID` FROM `logs`\n"
-                                ."WHERE\n"
-                                .($hhmm[$i] ?    "  `time` = \"".$hhmm[$i]."\" AND\n" : "")
-                                .        "  `signalID` = ".$ID[$i]." AND\n"
-                                .        "  `date` = \"".$YYYYMMDD[$i]."\" AND\n"
-                                .        "  `listenerID` = ".$this->listener->getID();
-
+                            $update_signal = true;
                             if ($this->debug) {
-                                $this->html.=    "<pre>$sql</pre>";
+                                $this->html.= "3 ";
                             }
-                            $result =    mysql_query($sql);
-
-                            if (mysql_num_rows($result)) {
-                                // Yes, it's a duplicate
-                                $this->stats['exact_duplicate']++;
+                            $row = \Log::countTimesHeardByListener($this->listener->getID(), $ID[$i]);
+                            if ($row["count"]) {
+                                $this->stats['repeat_for_listener']++;
                             } else {
-                                // No, not a duplicate
-                                // +++++++++++++++++++++++++++++++++++++++
-                                // + this is a new logging for old state +
-                                // +++++++++++++++++++++++++++++++++++++++
-                                if ($this->debug) {
-                                    $this->html.= "3 ";
-                                }
-
-                                $sql =
-                                     "SELECT\n"
-                                    ."  COUNT(*) AS `log_repeat_for_listener`\n"
-                                    ."FROM\n"
-                                    ."  `logs`\n"
-                                    ."WHERE\n"
-                                    ."  `listenerID` = \"".$this->listener->getID()."\" AND\n"
-                                    ."  `signalID` = \"".$ID[$i]."\"";
-                                $result =    mysql_query($sql);
-                                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                                if ($row["log_repeat_for_listener"]) {
-                                    $this->stats['repeat_for_listener']++;
-                                } else {
-                                    $this->stats['first_for_listener']++;
-                                }
-                                $data = array(
-                                    'signalID' =>   $ID[$i],
-                                    'date' =>       $YYYYMMDD[$i],
-                                    'daytime' =>    ($daytime ? 1 : 0),
-                                    'heard_in' =>   ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']),
-                                    'listenerID' => $this->listener->getID(),
-                                    'region' =>     $this->listener->record["region"]
-                                );
-                                if ($dx_km) {
-                                    $data['dx_km'] =      $dx_km;
-                                    $data['dx_miles'] =   $dx_miles;
-                                }
-                                if (htmlentities($fmt[$i])) {
-                                    $data['format'] =     htmlentities($fmt[$i]);
-                                }
-                                if ($LSB[$i] !== "") {
-                                    $data['LSB'] =        $LSB[$i];
-                                }
-                                if ($LSB_approx[$i]) {
-                                    $data['LSB_approx'] = "~";
-                                }
-                                if ($USB[$i] !== "") {
-                                    $data['USB'] =        $USB[$i];
-                                }
-                                if ($USB_approx[$i]) {
-                                    $data['USB_approx'] = "~";
-                                }
-                                if ($sec[$i]) {
-                                    $data['sec'] =        $sec[$i];
-                                }
-                                if ($hhmm[$i]) {
-                                    $data['time'] =        $hhmm[$i];
-                                }
-                                $log = new \Log;
-                                $log->insert($data);
-                                $update_signal = true;
-                                // Update signal record (IF this data is the most recent...)
+                                $this->stats['first_for_listener']++;
                             }
+                            $log = new \Log;
+                            $log->insert($data);
+                            $update_signal = true;          // Update signal record (IF this data is the most recent...)
                         }
                     } else {
-                        // signal not logged from this state before (but could be 'everywhere')
                         if ($this->debug) {
                             $this->html.=    "4 ";
-                        }
-                        // +++++++++++++++++++++++++++++++++++++++
-                        // + this is a new logging for new state +
-                        // +++++++++++++++++++++++++++++++++++++++
-                        $data = array(
-                            'signalID' =>   $ID[$i],
-                            'date' =>       $YYYYMMDD[$i],
-                            'daytime' =>    ($daytime ? 1 : 0),
-                            'heard_in' =>   ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']),
-                            'listenerID' => $this->listener->getID(),
-                            'region' =>     $this->listener->record["region"]
-                        );
-                        if ($dx_km) {
-                            $data['dx_km'] =      $dx_km;
-                            $data['dx_miles'] =   $dx_miles;
-                        }
-                        if (htmlentities($fmt[$i])) {
-                            $data['format'] =     htmlentities($fmt[$i]);
-                        }
-                        if ($LSB[$i] !== "") {
-                            $data['LSB'] =        $LSB[$i];
-                        }
-                        if ($LSB_approx[$i]) {
-                            $data['LSB_approx'] = "~";
-                        }
-                        if ($USB[$i] !== "") {
-                            $data['USB'] =        $USB[$i];
-                        }
-                        if ($USB_approx[$i]) {
-                            $data['USB_approx'] = "~";
-                        }
-                        if ($sec[$i]) {
-                            $data['sec'] =        $sec[$i];
-                        }
-                        if ($hhmm[$i]) {
-                            $data['time'] =        $hhmm[$i];
                         }
                         $log = new \Log;
                         $log->insert($data);
 
-                        $update_signal = true;
-                        // Update signal record (IF this data is the most recent...)
-                        $update_signal_heard_in =    true;
-                        // Update signal heard in record
+                        $update_signal = true;              // Update signal record (IF this data is the most recent...)
+                        $update_signal_heard_in =    true;  // Update signal heard in record
                         $this->stats['first_for_state_or_itu']++;
                         $this->stats['first_for_listener']++;
                     }
                     if ($this->debug) {
                         $this->html.=
-                            "<li>update_signal = $update_signal, update_signal_heard_in = $update_signal_heard_in</li>\n";
+                             "<li>update_signal = "
+                            .($update_signal ? 'Y' : 'N')
+                            .", update_signal_heard_in = "
+                            .($update_signal_heard_in ? 'Y' : 'N')
+                            ."</li>\n";
                     }
 
-
-
-
-                    // +++++++++++++++++++++++++++++++++++++++
-                    // + State Heard in list has changed     +
-                    // +++++++++++++++++++++++++++++++++++++++
                     if ($update_signal_heard_in) {
-                        signal_update_heard_in($ID[$i]);
+                        $signal->updateHeardInList();
                     }
-                    // +++++++++++++++++++++++++++++++++++++++
-                    // + Update signal request- is data new? +
-                    // +++++++++++++++++++++++++++++++++++++++
+
                     if ($update_signal) {
                     // See if the data is more recent than MLR:
                         $sql =
                              "SELECT\n"
-                            ."  *,\n"
-                            ."  DATE_FORMAT(`last_heard`,'%Y%m%d') AS `f_last_heard`\n"
+                            ."  DATE_FORMAT(`last_heard`,'%Y%m%d') AS `last_heard`\n"
                             ."FROM\n"
                             ."  `signals`\n"
                             ."WHERE\n"
                             ."  `ID` = \"".$ID[$i]."\"";
                         $result =    mysql_query($sql);
                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        $this_YYYY =    substr($YYYYMMDD[$i], 0, 4);
-                        $this_MM =    substr($YYYYMMDD[$i], 4, 2);
-                        $this_DD =    substr($YYYYMMDD[$i], 6, 2);
-                        $last_heard_YYYY =    substr($row["f_last_heard"], 0, 4);
-                        $last_heard_MM =    substr($row["f_last_heard"], 4, 2);
-                        $last_heard_DD =    substr($row["f_last_heard"], 6, 2);
-
-                        if ($this->debug) {
-                            $this->html.=
-                                 "<br>This: $this_YYYY$this_MM$this_DD<br>"
-                                ."Last: $last_heard_YYYY$last_heard_MM$last_heard_DD<br>";
-                        }
-
-                        if (
-                            (int)($last_heard_YYYY."".$last_heard_MM."".$last_heard_DD) >=
-                            (int)($this_YYYY."".$this_MM."".$this_DD)
-                        ) {
-                            $update_signal =        false;                        // So clear update flag
+                        if ($row["last_heard"] >= $YYYYMMDD[$i]){
+                            $update_signal = false;
                         }
                     }
 
@@ -353,6 +209,9 @@ class LogUploader
                     $logs =        $row["logs"];
 
                     if ($update_signal) {
+                        $this_YYYY =  substr($YYYYMMDD[$i], 0, 4);
+                        $this_MM =    substr($YYYYMMDD[$i], 4, 2);
+                        $this_DD =    substr($YYYYMMDD[$i], 6, 2);
                         $this->stats['latest_for_signal']++;
                         $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
                         signal_update_full(
@@ -389,10 +248,7 @@ class LogUploader
         switch ($submode) {
             case "":
                 if ($this->listener->getID()) {
-                    $sql =        "SELECT * FROM `listeners` WHERE `ID` = ".$this->listener->getID();
-                    $result =     mysql_query($sql);
-                    $row =        mysql_fetch_array($result, MYSQL_ASSOC);
-                    $log_format =    $row["log_format"];
+                    $log_format =    $this->listener->record["log_format"];
                 }
                 $this->html.=
                      "<h1>Add Log > Parse Data</h1><br>"
@@ -445,10 +301,9 @@ class LogUploader
 
         $this->tokens =    array();
         $start =    0;
-        $len =    0;
+        $len =      0;
 
         $log_format_parse =    $log_format." ";
-        //  print "<pre>$log_format</pre>\n";
         $log_format_errors = "";
         $valid = array_merge(
             static::$singleTokens,
@@ -546,7 +401,6 @@ class LogUploader
                         ."  </tr>\n";
                     $lines =        explode("\r", " ".stripslashes($log_entries));
                     $unresolved_signals =    array();
-
 
                     $total_loggings =    0;
                     $date_fail =        false;

@@ -47,7 +47,7 @@ function signal_dgps_messages()
         case "view":
             break;
     }
-    $Obj =      new Signal($ID);
+    $Obj =      new \Signal($ID);
     if ($ID) {
         $row =        $Obj->getRecord();
         $active =        $row["active"];
@@ -225,7 +225,7 @@ function signal_info()
             break;
         }
     }
-    $Obj =      new Signal($ID);
+    $Obj =      new \Signal($ID);
     if ($ID) {
         $row =                $Obj->getRecord();
         $active =            $row["active"];
@@ -454,12 +454,12 @@ function signal_listeners()
     if (isAdmin()) {
         switch ($submode) {
             case "delete":
-                $log = new Log($targetID);
+                $log = new \Log($targetID);
                 $log->delete();
                 break;
         }
     }
-    $Obj =      new Signal($ID);
+    $Obj =      new \Signal($ID);
     if ($ID) {
         $row =        $Obj->getRecord();
         $active =        $row["active"];
@@ -825,10 +825,11 @@ function signal_merge()
     $merged =    0;
     switch($submode) {
         case "merge":
-            $sql =    "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
-            $result =    mysql_query($sql);
-            $merged =    mysql_affected_rows();
-            signal_update_heard_in($ID);
+            $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
+            $result =   mysql_query($sql);
+            $merged =   mysql_affected_rows();
+            $signal =   new \Signal($ID);
+            $signal->updateHeardInList();
 
             $sql =    "select count(*) as `logs` from `logs` where `signalID` = $ID";
             $result =    mysql_query($sql);
@@ -836,7 +837,9 @@ function signal_merge()
             $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $ID";
             $result =    mysql_query($sql);
 
-            signal_update_heard_in($destinationID);
+            $signal =   new \Signal($destinationID);
+            $signal->updateHeardInList();
+
             $sql =    "select count(*) as `logs` from `logs` where `signalID` = $destinationID";
             $result =    mysql_query($sql);
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
@@ -895,7 +898,7 @@ function signal_QNH()
     }
     $pressure =    array();
 
-    $Obj =      new Signal($ID);
+    $Obj =      new \Signal($ID);
     $row =        $Obj->getRecord();
     $call =    $row["call"];
     $GSQ =    $row["GSQ"];
@@ -1409,13 +1412,27 @@ function signal_seeklist()
     ."      </tr>\n"
     ."      <tr class='rowForm'>\n"
     ."        <th align='left'>Last Heard</th>\n"
-    ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+    ."        <td>"
+            ."<div style='float:left'><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
+            ." value='".($filter_date_1 != "1900-01-01" ? $filter_date_1 : "")."' class='formfield' /></div>\n"
+            ."<div style='float:left;padding:0 1em'>-</div>\n"
+            ."<div style='float:left'><input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
+            ." value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield' /></div>"
+/*
+
+
+
+    <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
     ."          <tr>\n"
     ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($filter_date_1 != "1900-01-01" ? $filter_date_1 : "")."' class='formfield'> -\n"
     ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield'></td>"
     ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active'type='checkbox' name='filter_active' value='1'".($filter_active ? " checked" : "").">Only active stations&nbsp;</label></td>"
     ."          </tr>\n"
-    ."	 </table></td>"
+    ."	 </table>"
+*/
+    ."</td>"
     ."      </tr>\n"
     ."      <tr class='rowForm'>\n"
     ."        <th align='left'>Custom Filter:</th>\n"
@@ -1566,12 +1583,36 @@ function signal_seeklist()
             $out.=    "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'><span class='fixed'>&nbsp;</span></td>\n";
         }
     }
-
+    $row = Log::getLogDateRange($filter_system, $region);
     $out.=
          "</tr>\n"
         ."</table>\n"
         ."</form>\n"
-        ."<script type='text/javascript'>document.form.filter_id.focus();document.form.filter_id.select();</script>\n";
+        ."<script type='text/javascript'>"
+            ."//<!--\n"
+            ."\$(function() {\n"
+            ."  var minDate = new Date('".$row['first_log_iso']."');\n"
+            ."  var maxDate = new Date('".$row['last_log_iso']."');\n"
+            ."  minDate.setDate(minDate.getDate()+1);\n"
+            ."  maxDate.setDate(maxDate.getDate()+1);\n"
+            ."  var config = {\n"
+            ."    changeMonth:true,\n"
+            ."    changeYear:true,\n"
+            ."    dateFormat:'yy-mm-dd',\n"
+            ."    minDate:minDate,\n"
+            ."    maxDate:maxDate,\n"
+            ."    showOn:'button',\n"
+            ."    buttonImage:'/dx/ndb/assets/datepicker_".strToLower(system).".gif',\n"
+            ."    buttonImageOnly: true,\n"
+            ."    buttonText: 'Select date'\n"
+            ."  };\n"
+            ."  \$('#filter_date_1').datepicker(config);\n"
+            ."  \$('#filter_date_2').datepicker(config);\n"
+            ."  \$('#filter_id').focus();\n"
+            ."  \$('#filter_id').select();\n"
+            ."})\n"
+            ."//-->\n"
+        ."</script>\n";
     return $out;
 }
 
@@ -1581,84 +1622,22 @@ function signal_seeklist()
 function signal_update_full($ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $last_heard, $region)
 {
     $sql =
-     "UPDATE `signals` SET\n"
-    .($LSB!="" ?      "  `LSB` = \"$LSB\",\n"
-    ."  `LSB_approx` = \"".$LSB_approx."\",\n" : "")
-    .($USB!="" ?      "  `USB` = \"$USB\",\n"
-    ."  `USB_approx` = \"".$USB_approx."\",\n" : "")
-    .($sec!="" ?      "  `sec` =	\"$sec\",\n" : "")
-    .($fmt ?      "  `format` =	\"".$fmt."\",\n" : "")
-    ."  `heard_in_$region` = 1,\n"
-    ."  `logs` = $logs,\n"
-    ."  `last_heard` = \"$last_heard\"\n"
-    ."WHERE `ID` = '$ID'";
+         "UPDATE `signals` SET\n"
+        .($LSB!="" ?      "  `LSB` = \"$LSB\",\n"
+        ."  `LSB_approx` = \"".$LSB_approx."\",\n" : "")
+        .($USB!="" ?      "  `USB` = \"$USB\",\n"
+        ."  `USB_approx` = \"".$USB_approx."\",\n" : "")
+        .($sec!="" ?      "  `sec` =	\"$sec\",\n" : "")
+        .($fmt ?      "  `format` =	\"".$fmt."\",\n" : "")
+        ."  `heard_in_$region` = 1,\n"
+        ."  `logs` = $logs,\n"
+        ."  `last_heard` = \"$last_heard\"\n"
+        ."WHERE `ID` = '$ID'";
     mysql_query($sql);
   //print "<pre>$sql</pre>";
 }
 
 
-
-
-// ************************************
-// * signal_update_heard_in           *
-// ************************************
-function signal_update_heard_in($ID)
-{
-    $sql =         "SELECT DISTINCT\n"
-    ." `heard_in`,\n"
-    ."  MAX(`daytime`) as `daytime`,\n"
-    ." `region`\n"
-    ."FROM\n"
-    ."  `logs`\n"
-    ."WHERE\n"
-    ."  `signalID` = \"$ID\"\n"
-    ."GROUP BY\n"
-    ."  `heard_in`\n"
-    ."ORDER BY\n"
-    ."  (`region`='na' OR `region`='ca' OR (`region`='oc' AND `heard_in`='HI')),\n"
-    ."  `region`,\n"
-    ."  `heard_in`";
-    $result =        @mysql_query($sql);
-    $arr =        array();
-    $html_arr =        array();
-    $region =        "";
-    $old_link =        "";
-    for ($j = 0; $j<mysql_num_rows($result); $j++) {
-        $row =        mysql_fetch_array($result);
-        $heard_in =        $row["heard_in"];
-        $daytime =        $row["daytime"];
-        $region =        $row["region"];
-        $link =        "";
-        switch ($region) {
-            case "ca":
-                $link =        "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
-                break;
-            case "na":
-                $link =        "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
-                break;
-            case "oc":
-                if ($heard_in=='HI') {
-                    $link =    "<a class='hover' href='#' onclick='signal_map_na($ID);return false' title='North American Reception Map'>";
-                }
-                break;
-            case "eu":
-                $link =        "<a class='hover' href='#' onclick='signal_map_eu($ID);return false' title='European Reception Map'>";
-                break;
-        }
-        $html_arr[] =     ($old_link!="" && $old_link != $link ? "</a>" : "")
-        .($link != $old_link ? $link : "")
-        .($daytime ? "<b>$heard_in</b>" : $heard_in);
-        $arr[] =        $heard_in;
-        $old_link =        $link;
-    }
-
-    $sql =         "UPDATE `signals` SET\n"
-    ."  `heard_in` = \"".implode($arr, " ")."\",\n"
-    ."  `heard_in_html` = \"".implode($html_arr, " ")."</a>\"\n"
-    ."WHERE `ID` = $ID";
-    $result =        mysql_query($sql);
-    return (mysql_affected_rows());
-}
 
 function signal_log() {
   global $ID, $mode, $submode, $sortBy, $targetID;
@@ -1676,12 +1655,12 @@ function signal_log() {
   if (isAdmin()) {
     switch ($submode) {
       case "delete":
-        $log = new Log($targetID);
+        $log = new \Log($targetID);
         $log->delete();
       break;
     }
   }
-  $Obj =      new Signal($ID);
+  $Obj =      new \Signal($ID);
   if ($ID) {
     $row =		$Obj->getRecord();
     $active =	$row["active"];

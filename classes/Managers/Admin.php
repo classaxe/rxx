@@ -148,11 +148,13 @@ class Admin
         $result =    @mysql_query($sql);
 
         $affected =    mysql_num_rows($result);
+        $signal = new \Signal;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             $ID =    $row['signalID'];
             $region =    $row['region'];
-            signal_update_heard_in($ID);
+            $signal->setID($ID);
+            $signal->updateHeardInList();
             $sql =
                  "UPDATE\n"
                 ."  `signals`\n"
@@ -315,6 +317,7 @@ class Admin
             ."FROM\n"
             ."  `signals`";
         $result =    mysql_query($sql);
+        $signal = new \Signal;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             $ID =    $row["ID"];
@@ -329,7 +332,9 @@ class Admin
             $result2 =    @mysql_query($sql);
             $row =    mysql_fetch_array($result2, MYSQL_ASSOC);
             $logs =    $row["logs"];
-            signal_update_heard_in($ID);
+            $signal->setID($ID);
+            $signal->updateHeardInList();
+
             $sql =
                  "UPDATE\n"
                 ."  `signals`\n"

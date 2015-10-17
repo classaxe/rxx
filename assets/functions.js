@@ -813,11 +813,11 @@ function signal_log(ID){
 }
 
 function signal_map_eu(ID){
-  popWin(system_URL+'/signal_map_eu/'+ID,'popsignalMapEU','scrollbars=0,resizable=1',870,690,'centre');
+  popWin(system_URL+'/signal_map_eu/'+ID,'popsignalMapEU','scrollbars=0,resizable=1',870,690,'centre'); return false;
 }
 
 function signal_map_na(ID){
-  popWin(system_URL+'/signal_map_na/'+ID,'popsignalMapNA','scrollbars=0,resizable=1',674,640,'centre');
+  popWin(system_URL+'/signal_map_na/'+ID,'popsignalMapNA','scrollbars=0,resizable=1',674,640,'centre'); return false;
 }
 
 function signal_merge(ID){

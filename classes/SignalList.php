@@ -471,13 +471,13 @@ class SignalList
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
             ."            <td>"
-            ."<input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
+            ."<div style='float:left'><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
             ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
-            ." value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield' />\n"
-            ."-\n"
-            ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
+            ." value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield' /></div>\n"
+            ."<div style='float:left;padding:0 1em'>-</div>\n"
+            ."<div style='float:left'><input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
             ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
-            ." value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield' />"
+            ." value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield' /></div>"
             ."</td>"
             ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
             ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"
@@ -1381,37 +1381,7 @@ class SignalList
 
     protected function getDateFirstAndLastLogs()
     {
-        $filter = "1";
-        switch ($this->filter_system) {
-            case "1":
-                $filter =
-                    "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `heard_in` = 'hi'))";
-                break;
-            case "2":
-                $filter =
-                    "(`region` = 'eu')";
-                break;
-            case "3":
-                if ($this->region!="") {
-                    $filter =
-                        "(`region` = '".$this->region."')";
-                }
-                break;
-        }
-        $sql =
-             "SELECT\n"
-            ."    DATE_FORMAT(MIN(`date`),'%e %b %Y') AS `first_log`,\n"
-            ."    DATE_FORMAT(MAX(`date`),'%e %b %Y') AS `last_log`,\n"
-            ."    DATE_FORMAT(MIN(`date`),'%Y-%m-%d') AS `first_log_iso`,\n"
-            ."    DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last_log_iso`\n"
-            ."FROM\n"
-            ."    `logs`\n"
-            ."WHERE\n"
-            ."    ".$filter." AND\n"
-            ."    `date` !=\"\" AND\n"
-            ."    `date` !=\"0000-00-00\"";
-        $row = $this->ObjSignal->getRecordForSql($sql);
-        $this->stats = array_merge($this->stats, $row);
+        $this->stats = array_merge($this->stats, Log::getLogDateRange($this->filter_system, $this->region));
     }
 
     protected function getResultsMatched()

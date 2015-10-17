@@ -139,24 +139,24 @@ class Signal extends Record
             switch ($region) {
                 case "ca":
                     $link =
-                         "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                         "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
                         ." title='North American Reception Map'>";
                     break;
                 case "na":
                     $link =
-                         "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                         "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
                         ." title='North American Reception Map'>";
                     break;
                 case "oc":
                     if ($heard_in=='HI') {
                         $link =
-                             "<a class='hover' href='#' onclick='signal_map_na(".$this->getID().");return false'"
+                             "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
                             ." title='North American Reception Map'>";
                     }
                     break;
                 case "eu":
                     $link =
-                         "<a class='hover' href='#' onclick='signal_map_eu(".$this->getID().");return false'"
+                         "<a class='hover' href='#' onclick='return signal_map_eu(".$this->getID().")'"
                         ." title='European Reception Map'>";
                     break;
             }
