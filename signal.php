@@ -1229,7 +1229,7 @@ function signal_seeklist()
             ."  `logs`\n"
             ."WHERE\n"
             ."  (`signals`.`ID` = `logs`.`signalID`) AND\n"
-            .($filter_heard_in ?   "  (".$filter_heard_in_SQL/") AND\n" : "")
+            .($filter_heard_in ?   "  (".$filter_heard_in_SQL.") AND\n" : "")
             .($filter_listener ?     "  (`logs`.`listenerID`=".implode($filter_listener, " OR `logs`.`listenerID`=").") AND\n" : "")
          :
              "FROM\n"
