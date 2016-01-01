@@ -44,7 +44,7 @@ if (!defined('system_ID')) {
     die();
 }
 
-$stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/ORIG_HEAD');
+$stat = stat(realpath($_SERVER['DOCUMENT_ROOT']).'/dx/ndb/.git/HEAD');
 define("system_date", date("d M Y H:i T", $stat['mtime']));
 $gitlog = explode(":", `git log master -n 1 --format="%s"`);
 define("system_version", array_shift($gitlog));
