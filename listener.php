@@ -654,7 +654,15 @@ function listener_list() {
          :
           ""
          )
-        ."<td>".($row["callsign"] ? "<a href='http://www.qrz.com/callsign?callsign=".$row["callsign"]."' target='_blank' title='Lookup callsign at QRZ.com'>".highlight($row["callsign"],$filter)."</a>" : "&nbsp;")."</td>\n"
+        ."<td>".($row["callsign"] ?
+             "<a href='http://hamcall.net/call?callsign=".$row["callsign"]."' "
+            ."target='_blank' title='Lookup callsign at QRZ.com'>"
+            .highlight($row["callsign"],$filter)
+            ."</a>"
+         :
+            "&nbsp;"
+        )
+        ."</td>\n"
         ."<td>".highlight($row["QTH"],$filter)."</td>\n"
         ."<td>".($row["SP"] ? $row["SP"] : "&nbsp;")."</td>\n"
         ."<td>".($row["ITU"] ? $row["ITU"] : "&nbsp;")."</td>\n"

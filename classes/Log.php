@@ -97,9 +97,7 @@ class Log extends Record
             ."FROM\n"
             ."    `logs`\n"
             ."WHERE\n"
-            ."    ".$filter." AND\n"
-            ."    `date` !=\"\" AND\n"
-            ."    `date` !=\"0000-00-00\"";
+            ."    ".$filter;
         return static::getRecordForSql($sql);
     }
 

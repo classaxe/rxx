@@ -248,14 +248,14 @@ function stats() {
 		."  100*TRUNCATE((".($dx_units=='km' ? "dx_km" : "dx_miles")." / 100),0) AS `dx`,\n"
 		."  COUNT(distinct(logs.signalID)) AS `count`\n"
 		."FROM\n"
-		."  `logs`,\n"
-		."  `signals`\n"
+		."  `logs`\n"
+		."INNER JOIN `signals` ON\n"
+		."  `signals`.`ID` = `logs`.`signalID`\n"
 		."WHERE\n"
 		.($region!="" ? "  `logs`.`region` = '$region' AND\n" : "")
 		.($filter_type ? "  $filter_type AND\n" : "")
 		.($listenerID ? "  `listenerID` = $listenerID AND\n" : "")
-		."  `logs`.`dx_km` IS NOT NULL AND\n"
-		."  `signals`.`ID` = `logs`.`signalID`\n"
+		."  `logs`.`dx_km` IS NOT NULL\n"
 		."GROUP BY\n"
 		."  `dx`\n"
 		."ORDER BY\n"
