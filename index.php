@@ -40,7 +40,7 @@ if (isset($request_arr[1])) {
 require_once('config.php');
 
 if (!defined('system_ID')) {
-    header('location: /dx/ndb/rna', 302);
+    header('location: '.BASE_PATH.'rna', 302);
     die();
 }
 

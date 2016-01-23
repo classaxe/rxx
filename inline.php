@@ -40,11 +40,6 @@ $REQUEST_list =	@$_GET['list'];
 
 extract($_REQUEST);		// Extracts all request variables (GET and POST) into global scope.
 
-$li = mysql_connect("localhost","rxx","k24l3459");
-if (!mysql_selectdb("rxx",$li)) {
-  print("Cannot connect to database!");
-  die;
-}
 $debug=0;
 
 if (!isset($mode)) {

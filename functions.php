@@ -544,7 +544,7 @@ function main()
         ."</title>\n"
         ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
         ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
-        ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+        ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
         .($Obj && isset($Obj->head) ? $Obj->head : "")
         ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
         ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
@@ -850,7 +850,7 @@ function popup()
     $out.=
      "</title>\n"
     ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-    ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+    ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
     ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
     ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
     ."<script type='text/javascript'>\n"
@@ -981,7 +981,7 @@ function mini_popup()
     ."</script>\n"
     ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
     ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-        ."<link href='".BASE_PATH.strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
+        ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
     ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
     ."</head>\n"
     ."<body leftmargin='0' topmargin='0' marginheight='0' marginwidth='0'>\n";

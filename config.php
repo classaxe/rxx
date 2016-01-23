@@ -1,5 +1,11 @@
 <?php
 
+$li = mysql_connect("localhost", "rxx", "k24l3459");
+if (!mysql_selectdb("rxx",$li)) {
+  print("Cannot connect to database!");
+  die;
+}
+
 switch(system){
     case 'RNA':
         define("system_ID", "1");
@@ -89,7 +95,6 @@ define("NAVTEX",    3);
 define("HAMBCN",    4);
 define("OTHER",     5);
 define("DSC",       6);
-
 
 define("admin_user",            "admin");
 define("admin_password",        "j35g8sc");
