@@ -121,7 +121,7 @@ signal.markerClickFunction = function(s, latlng) {
 
         var infoHtml =
             '<div class="info">' +
-            '  <h3><a href="/dx/ndb/rna/signal_info/' + s.id + '" target="_blank">' + title + '</a></h3>' +
+            '  <h3><a href="./rna/signal_info/' + s.id + '" target="_blank">' + title + '</a></h3>' +
             '  <div class="info-body">' +
             '    <label>ID</label>'+s.call + '<br />' +
             '    <label>KHz</label>'+s.khz + '<br />' +
