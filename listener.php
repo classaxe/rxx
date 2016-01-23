@@ -1,6 +1,8 @@
 <?php
 /*
 Version History:
+  1.0.6 (2016-01-23)
+    1) Updated link for callsign lookups - thanks Darek for showing me the bug
   1.0.5 (2014-01-23)
     1) Bug fix for listener_map() when changing sort order
   1.0.4 (2013-12-21)
