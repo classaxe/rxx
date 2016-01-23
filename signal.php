@@ -1602,7 +1602,7 @@ function signal_seeklist()
             ."    minDate:minDate,\n"
             ."    maxDate:maxDate,\n"
             ."    showOn:'button',\n"
-            ."    buttonImage:'/dx/ndb/assets/datepicker_".strToLower(system).".gif',\n"
+            ."    buttonImage:'".BASE_PATH."assets/datepicker_".strToLower(system).".gif',\n"
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
