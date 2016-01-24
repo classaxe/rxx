@@ -393,7 +393,7 @@ class SignalList
             ."<b>Continent</b></label> "
             ."<select title='Choose a continent to show only signals physically located there'"
             ." name='filter_continent' id='filter_continent' class='formfield' style='width:360px'>"
-            .get_region_options_list($this->filter_continent, '(All)')
+            .Rxx::get_region_options_list($this->filter_continent, '(All)')
             ."</select>\n";
     }
 
@@ -492,7 +492,7 @@ class SignalList
              "<select name='filter_listener[]' id='filter_listener' multiple class='formfield'"
             ." onchange='set_listener_and_heard_in(document.form)'"
             ." style='font-family: monospace; width:100%; height: 100px;'>\n"
-            .get_listener_options_list(
+            .Rxx::get_listener_options_list(
                 $this->listeners_list_filter,
                 $this->filter_listener,
                 "Anyone (or enter values in \"Heard here\" box)"
@@ -525,7 +525,7 @@ class SignalList
         return
              "<select name='region' id='region' onchange='document.form.go.disabled=1;document.form.submit()'"
             ." class='formField' style='width: 100%;'>\n"
-            .get_region_options_list($this->region, "(All Continents)")
+            .Rxx::get_region_options_list($this->region, "(All Continents)")
             ."</select>";
 
     }
@@ -620,7 +620,7 @@ class SignalList
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Show</th>\n"
             ."        <td nowrap>"
-            .show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
+            .Rxx::show_page_bar($this->total, $this->limit, $this->offset, 1, 1, 1)
             ."<div style='float:right'>"
             ."<input type='radio' id='show_list' name='show' value='list'"
             .($this->show=='map' ? '' : ' checked="checked"').">"
@@ -1501,7 +1501,7 @@ class SignalList
      */
     protected function getCountLocations()
     {
-        $this->stats['locations'] = \Rxx\Tools\Listener::listener_get_count($this->region);
+        $this->stats['locations'] = Tools\Listener::listener_get_count($this->region);
     }
 
     /**
@@ -1841,7 +1841,7 @@ class SignalList
      */
     protected function setupDoSubmode()
     {
-        if (!isAdmin()) {
+        if (!Rxx::isAdmin()) {
             return;
         }
         switch ($this->submode){
@@ -2417,42 +2417,42 @@ class SignalList
     {
         global $mode, $sort_by;
         $this->mode =                   $mode;
-        $this->submode =                get_var('submode');
-        $this->show =                   get_var('show');
-        $this->targetID =               (int)get_var('targetID');
-        $this->filter_active =          get_var('filter_active');
-        $this->filter_channels =        get_var('filter_channels');
-        $this->filter_continent =       get_var('filter_continent');
-        $this->filter_custom =          get_var('filter_custom');
-        $this->filter_date_1 =          get_var('filter_date_1');
-        $this->filter_date_2 =          get_var('filter_date_2');
-        $this->filter_dx_gsq =          get_var('filter_dx_gsq');
-        $this->filter_dx_max =          get_var('filter_dx_max');
-        $this->filter_dx_min =          get_var('filter_dx_min');
-        $this->filter_dx_units =        get_var('filter_dx_units', 'km');
-        $this->filter_heard_in =        get_var('filter_heard_in');
-        $this->filter_heard_in_mod =    get_var('filter_heard_in_mod');
-        $this->filter_id =              strToUpper(get_var('filter_id'));
-        $this->filter_itu =             strToUpper(get_var('filter_itu'));
-        $this->filter_khz_1 =           get_var('filter_khz_1');
-        $this->filter_khz_2 =           get_var('filter_khz_2');
-        $this->filter_listener =        get_var('filter_listener');
-        $this->filter_system =          get_var('filter_system');
-        $this->filter_sp =              strToUpper(get_var('filter_sp'));
-        $this->offsets =                get_var('offsets');
-        $this->region =                 get_var('region');
+        $this->submode =                Rxx::get_var('submode');
+        $this->show =                   Rxx::get_var('show');
+        $this->targetID =               (int)Rxx::get_var('targetID');
+        $this->filter_active =          Rxx::get_var('filter_active');
+        $this->filter_channels =        Rxx::get_var('filter_channels');
+        $this->filter_continent =       Rxx::get_var('filter_continent');
+        $this->filter_custom =          Rxx::get_var('filter_custom');
+        $this->filter_date_1 =          Rxx::get_var('filter_date_1');
+        $this->filter_date_2 =          Rxx::get_var('filter_date_2');
+        $this->filter_dx_gsq =          Rxx::get_var('filter_dx_gsq');
+        $this->filter_dx_max =          Rxx::get_var('filter_dx_max');
+        $this->filter_dx_min =          Rxx::get_var('filter_dx_min');
+        $this->filter_dx_units =        Rxx::get_var('filter_dx_units', 'km');
+        $this->filter_heard_in =        Rxx::get_var('filter_heard_in');
+        $this->filter_heard_in_mod =    Rxx::get_var('filter_heard_in_mod');
+        $this->filter_id =              strToUpper(Rxx::get_var('filter_id'));
+        $this->filter_itu =             strToUpper(Rxx::get_var('filter_itu'));
+        $this->filter_khz_1 =           Rxx::get_var('filter_khz_1');
+        $this->filter_khz_2 =           Rxx::get_var('filter_khz_2');
+        $this->filter_listener =        Rxx::get_var('filter_listener');
+        $this->filter_system =          Rxx::get_var('filter_system');
+        $this->filter_sp =              strToUpper(Rxx::get_var('filter_sp'));
+        $this->offsets =                Rxx::get_var('offsets');
+        $this->region =                 Rxx::get_var('region');
 
-        $this->limit =                  (int)get_var('limit', 50);
-        $this->offset =                 (int)get_var('offset', 0);
-        $this->sort_by =                get_var('sort_by');
+        $this->limit =                  (int)Rxx::get_var('limit', 50);
+        $this->offset =                 (int)Rxx::get_var('offset', 0);
+        $this->sort_by =                Rxx::get_var('sort_by');
 
-        $this->type_NDB =               get_var('type_NDB');
-        $this->type_TIME =              get_var('type_TIME');
-        $this->type_DGPS =              get_var('type_DGPS');
-        $this->type_DSC =               get_var('type_DSC');
-        $this->type_NAVTEX =            get_var('type_NAVTEX');
-        $this->type_HAMBCN =            get_var('type_HAMBCN');
-        $this->type_OTHER =             get_var('type_OTHER');
+        $this->type_NDB =               Rxx::get_var('type_NDB');
+        $this->type_TIME =              Rxx::get_var('type_TIME');
+        $this->type_DGPS =              Rxx::get_var('type_DGPS');
+        $this->type_DSC =               Rxx::get_var('type_DSC');
+        $this->type_NAVTEX =            Rxx::get_var('type_NAVTEX');
+        $this->type_HAMBCN =            Rxx::get_var('type_HAMBCN');
+        $this->type_OTHER =             Rxx::get_var('type_OTHER');
     }
 
     /**

@@ -297,7 +297,7 @@ class Listener {
      * @param $region
      * @return mixed
      */
-    function listener_get_count($region) {
+    public static function listener_get_count($region) {
 
     $region_SQL =	"";
     if ($region=="") {

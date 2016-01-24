@@ -48,8 +48,8 @@ class Awards
             $this->_listener_record = mysql_fetch_array($result, MYSQL_ASSOC);
             $this->_listener_ITU =    $this->_listener_record['ITU'];
             $this->_listener_name =    $this->_listener_record['name'];
-            $this->_listener_region =    get_listener_region($this->_listenerID);
-            $this->_listener_details =    get_listener_details($this->_listenerID);
+            $this->_listener_region =    Rxx::get_listener_region($this->_listenerID);
+            $this->_listener_details =    Rxx::get_listener_details($this->_listenerID);
         }
         $out =
              "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
@@ -68,7 +68,7 @@ class Awards
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Show for &nbsp;</th>\n"
             ."        <td nowrap><select name='listenerID' class='formfield' onchange='document.form.submit()' style='font-family: monospace;' >\n"
-            .get_listener_options_list($filter_listener_SQL, $this->_listenerID, "(Select a Listener to view Awards)")
+            .Rxx::get_listener_options_list($filter_listener_SQL, $this->_listenerID, "(Select a Listener to view Awards)")
             ."</select></td>\n"
             ."      </tr>\n"
             .(!$this->_listenerID ?
@@ -203,7 +203,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result_atl)) {
                         $row_atl =    mysql_fetch_array($result_atl, MYSQL_ASSOC);
-                        $out.= (float)$row_atl['khz']."-".pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
+                        $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
                 $out.=
@@ -214,7 +214,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result_pac)) {
                         $row_pac =    mysql_fetch_array($result_pac, MYSQL_ASSOC);
-                        $out.= (float)$row_pac['khz']."-".pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
+                        $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }
                 $out.=
@@ -430,7 +430,7 @@ class Awards
                         for ($j = $old_level; $j < $level; $j++) {
                             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
                             if ($row['call']) {
-                                $out.=    "<nobr>".pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? pad_dot($row['call'], 4)."(".$row['ITU'].")" : pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
+                                $out.=    "<nobr>".Rxx::pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? Rxx::pad_dot($row['call'], 4)."(".$row['ITU'].")" : Rxx::pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
                             }
                             $this_level++;
                         }
@@ -478,11 +478,11 @@ class Awards
             "1250^0^1608^0"
         );
         $level =    explode("^", $daytime_dx[0]);
-        if (!get_bestDX($this->_listenerID, 1, $level[0], 0)) {
+        if (!Rxx::get_bestDX($this->_listenerID, 1, $level[0], 0)) {
             return "";
         }
         $out=
-             "<b>Daytime DX Awards (Daytime hours are ".lead_zero(1000 + $this->_listener_record['timezone']*100 % 2400, 4)." - ".lead_zero(1400 + $this->_listener_record['timezone']*100 % 2400, 4)." hrs UTC)</b><br>"
+             "<b>Daytime DX Awards (Daytime hours are ".Rxx::lead_zero(1000 + $this->_listener_record['timezone']*100 % 2400, 4)." - ".Rxx::lead_zero(1400 + $this->_listener_record['timezone']*100 % 2400, 4)." hrs UTC)</b><br>"
             ."This cerificate recognises long distance reception of NDBs between the hours of 1000 and 1400 local standard time -<br>\n"
             ."that is, two hours before and afer noon in the listener's timezone.<br>\n"
             ."There are five levels:"
@@ -505,7 +505,7 @@ class Awards
             ."  </tr>\n";
         for ($i=0; $i<count($daytime_dx); $i++) {
             $level =    explode("^", $daytime_dx[$i]);
-            $result = get_bestDX($this->_listenerID, 1, $level[0], $level[1]);
+            $result = Rxx::get_bestDX($this->_listenerID, 1, $level[0], $level[1]);
             $out.=
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level[0].($level[1] ? "-".$level[1] : "+")."</td>\n"
@@ -555,7 +555,7 @@ class Awards
             "5000^0^8045^0"
         );
         $level =    explode("^", $longranger_dx[0]);
-        if (!get_bestDX($this->_listenerID, 0, $level[0], 0)) {
+        if (!Rxx::get_bestDX($this->_listenerID, 0, $level[0], 0)) {
             return "";
         }
         $out =
@@ -581,7 +581,7 @@ class Awards
             ."  </tr>\n";
         for ($i=0; $i<count($longranger_dx); $i++) {
             $level =    explode("^", $longranger_dx[$i]);
-            $result = get_bestDX($this->_listenerID, 0, $level[0], $level[1]);
+            $result = Rxx::get_bestDX($this->_listenerID, 0, $level[0], $level[1]);
             $out.=
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level[0].($level[1] ? "-".$level[1] : "+")."</td>\n"
@@ -725,7 +725,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result)) {
                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        $out.=    (float)$row['khz']."-".pad_nbsp($row['call'], 3)." ";
+                        $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
                 $out.=
@@ -828,7 +828,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result)) {
                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        $out.=    (float)$row['khz']."-".pad_nbsp($row['call'], 3)." ";
+                        $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
                 $out.=
@@ -935,7 +935,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result)) {
                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        $out.=  (float)$row['khz']."-".pad_nbsp($row['call'], 3)." ";
+                        $out.=  (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
                 $out.=
@@ -1041,7 +1041,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result_atl)) {
                         $row_atl =    mysql_fetch_array($result_atl, MYSQL_ASSOC);
-                        $out.= (float)$row_atl['khz']."-".pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
+                        $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
                 $out.=
@@ -1052,7 +1052,7 @@ class Awards
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<mysql_num_rows($result_pac)) {
                         $row_pac =    mysql_fetch_array($result_pac, MYSQL_ASSOC);
-                        $out.= (float)$row_pac['khz']."-".pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
+                        $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }
                 $out.=
@@ -1094,7 +1094,7 @@ class Awards
              "<hr><br><h1><a name='checkout'></a>Checkout</h1><br>\n"
             ."<b>Reply To:</b>"
             ." <input type='text' size='30' name='awards_email' value=\""
-            .(get_listener_email($this->_listenerID) ? get_listener_email($this->_listenerID) : "(enter email address)")."\">\n"
+            .(Rxx::get_listener_email($this->_listenerID) ? Rxx::get_listener_email($this->_listenerID) : "(enter email address)")."\">\n"
             ."<input type='hidden' name='awards_url' value=\"http://".$_SERVER["SERVER_NAME"].system_URL."/".$mode."/".$this->_listenerID."\">\n"
             ."<input type='hidden' name='awards_coordinator_name' value=\"".awardsAdminName."\">\n"
             ."<input type='hidden' name='awards_requester' value=\"".$this->_listener_details."\">\n"
