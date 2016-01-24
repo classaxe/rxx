@@ -1,7 +1,15 @@
 <?php
+namespace Rxx;
 
+/**
+ * Class Awards
+ * @package Rxx
+ */
 class Awards
 {
+    /**
+     * @return string
+     */
     public function draw()
     {
         global $mode, $submode, $listenerID, $region;
@@ -121,6 +129,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawCanadianTranscontinental()
     {
         $can_transcont_awards = array(1,2,4,6);
@@ -234,6 +245,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawContinental()
     {
         $continent_awards = array(
@@ -323,6 +337,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawCountry()
     {
         // Search locations^number^must include all^Title^blub^Level1^Level2 (etc)
@@ -448,6 +465,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawDaytime()
     {
         $daytime_dx = array(
@@ -520,6 +540,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawLongranger()
     {
         $longranger_dx = array(
@@ -593,6 +616,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawLt()
     {
         $sql =
@@ -648,6 +674,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawNorth60()
     {
         $n60_awards = array(
@@ -727,6 +756,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawTransatlantic()
     {
         $transatlantic_awards_eu = array(1,10);
@@ -827,6 +859,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawTranspacific()
     {
         $transpacific_awards = array(1,2,3,4);
@@ -931,6 +966,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawUsTranscontinental()
     {
         $usa_transcont_awards = array(1,2,3,4);
@@ -1046,6 +1084,9 @@ class Awards
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function drawCheckout()
     {
         global $mode;
@@ -1066,6 +1107,12 @@ class Awards
             ."</form>\n";
     }
 
+    /**
+     * @param $awards_requested
+     * @param $awards_email
+     * @param $awards_name
+     * @return string
+     */
     protected function send($awards_requested, $awards_email, $awards_name)
     {
         $mail = new PHPMailer();

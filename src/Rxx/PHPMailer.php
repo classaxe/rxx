@@ -1,4 +1,6 @@
 <?php
+namespace Rxx;
+
 define("VERSION_PHPMAILER", "2.0.0");
 /*
 Version History:

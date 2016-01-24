@@ -1,7 +1,15 @@
 <?php
+namespace Rxx;
 
+/**
+ * Class Signal
+ * @package Rxx
+ */
 class Signal extends Record
 {
+    /**
+     * @var array
+     */
     public static $colors = array(
         DGPS =>     '#00d8ff',
         DSC =>      '#ffb000',
@@ -12,6 +20,9 @@ class Signal extends Record
         OTHER =>    '#b8f8ff'
     );
 
+    /**
+     * @var array
+     */
     public static $types = array(
         0 =>    "NDB",
         1 =>    "DGPS",
@@ -22,21 +33,35 @@ class Signal extends Record
         6 =>    "DSC"
     );
 
+    /**
+     * @param bool $ID
+     */
     public function __construct($ID = false)
     {
         parent::__construct($ID, 'signals');
     }
 
+    /**
+     * @return int
+     */
     public function countDgpsMessages()
     {
-        return count_attachments($this->table, $this->ID, 'DGPS Message');
+        return \Rxx\Tools\Attachment::countAttachments($this->table, $this->ID, 'DGPS Message');
     }
 
+    /**
+     * @return array
+     */
     public function getDgpsMessages()
     {
-        return get_attachments($this->table, $this->ID, 'DGPS Message');
+        return \Rxx\Tools\Attachment::getAttachments($this->table, $this->ID, 'DGPS Message');
     }
 
+    /**
+     * @param $qth_lat
+     * @param $qth_lon
+     * @return array
+     */
     public function getDX($qth_lat, $qth_lon)
     {
         if (!$qth_lat) {
@@ -57,6 +82,9 @@ class Signal extends Record
         return get_dx($qth_lat, $qth_lon, $row["lat"], $row["lon"]);
     }
 
+    /**
+     * @return array|bool
+     */
     public function getRegionsHeardIn()
     {
         $sql =
@@ -70,6 +98,9 @@ class Signal extends Record
 
     }
 
+    /**
+     * @return array|bool
+     */
     public function getLogsAndLastHeardDate()
     {
         $sql =
@@ -85,6 +116,9 @@ class Signal extends Record
         return $this->getRecordForSql($sql);
     }
 
+    /**
+     * @return string
+     */
     public function tabs()
     {
         $signal = $this->getRecord();
@@ -109,6 +143,9 @@ class Signal extends Record
         return $out;
     }
 
+    /**
+     * @return int
+     */
     public function updateHeardInList()
     {
         $sql =

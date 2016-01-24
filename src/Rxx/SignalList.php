@@ -1,78 +1,272 @@
 <?php
+namespace Rxx;
 
+/**
+ * Class SignalList
+ * @package Rxx
+ */
 class SignalList
 {
+    /**
+     * @var string
+     */
     public $html = '';
+    /**
+     * @var string
+     */
     public $head = '';
+    /**
+     * @var
+     */
     protected $ObjSignal;
 
+    /**
+     * @var
+     */
     protected $total;
+    /**
+     * @var array
+     */
     protected $rows =   array();
+    /**
+     * @var array
+     */
     protected $stats =  array();
+    /**
+     * @var
+     */
     protected $region;
 
+    /**
+     * @var
+     */
     protected $filter_active;
+    /**
+     * @var
+     */
     protected $filter_by_range;
+    /**
+     * @var
+     */
     protected $filter_channels;
+    /**
+     * @var
+     */
     protected $filter_continent;
+    /**
+     * @var
+     */
     protected $filter_custom;
+    /**
+     * @var
+     */
     protected $filter_date_1;
+    /**
+     * @var
+     */
     protected $filter_date_2;
+    /**
+     * @var
+     */
     protected $filter_dx_gsq;
+    /**
+     * @var
+     */
     protected $filter_dx_lat;
+    /**
+     * @var
+     */
     protected $filter_dx_lon;
+    /**
+     * @var
+     */
     protected $filter_dx_max;
+    /**
+     * @var
+     */
     protected $filter_dx_min;
+    /**
+     * @var
+     */
     protected $filter_dx_units;
+    /**
+     * @var
+     */
     protected $filter_heard_in;
+    /**
+     * @var
+     */
     protected $filter_id;
+    /**
+     * @var
+     */
     protected $filter_itu;
+    /**
+     * @var
+     */
     protected $filter_khz_1;
+    /**
+     * @var
+     */
     protected $filter_khz_2;
+    /**
+     * @var
+     */
     protected $filter_listener;
+    /**
+     * @var
+     */
     protected $filter_sp;
+    /**
+     * @var
+     */
     protected $filter_system;
 
+    /**
+     * @var
+     */
     protected $type_NDB;
+    /**
+     * @var
+     */
     protected $type_TIME;
+    /**
+     * @var
+     */
     protected $type_DGPS;
+    /**
+     * @var
+     */
     protected $type_DSC;
+    /**
+     * @var
+     */
     protected $type_NAVTEX;
+    /**
+     * @var
+     */
     protected $type_HAMBCN;
+    /**
+     * @var
+     */
     protected $type_OTHER;
 
+    /**
+     * @var
+     */
     protected $listeners_list_filter;
+    /**
+     * @var
+     */
     protected $offsets;
 
+    /**
+     * @var
+     */
     protected $limit;
+    /**
+     * @var
+     */
     protected $offset;
+    /**
+     * @var
+     */
     protected $sort_by;
+    /**
+     * @var
+     */
     protected $show;
 
+    /**
+     * @var
+     */
     protected $mode;
+    /**
+     * @var
+     */
     protected $submode;
 
+    /**
+     * @var bool
+     */
     protected $sql_filter_active =          false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_channels =        false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_continent =       false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_custom =          false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_frequency =       false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_heard_in =        false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_heard_in_mod =    false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_id =              false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_itu =             false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_last_heard =      false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_listener =        false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_range_max =       false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_range_min =       false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_sp =              false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_system =          false;
+    /**
+     * @var bool
+     */
     protected $sql_filter_type =            false;
+    /**
+     * @var bool
+     */
     protected $sql_limit =                  false;
+    /**
+     * @var bool
+     */
     protected $sql_offset =                 false;
+    /**
+     * @var bool
+     */
     protected $sql_sort_by =                false;
 
 
+    /**
+     *
+     */
     public function draw()
     {
         $this->setup();
@@ -103,6 +297,9 @@ class SignalList
         $this->html.= $this->drawButtons();
     }
 
+    /**
+     *
+     */
     protected function drawButtons()
     {
         $this->html .=
@@ -134,6 +331,9 @@ class SignalList
 
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlChannels()
     {
         return
@@ -144,6 +344,9 @@ class SignalList
             ."</select>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlColumnSortby()
     {
         $columns = array(
@@ -180,6 +383,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlContinents()
     {
         return
@@ -191,6 +397,9 @@ class SignalList
             ."</select>\n";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlCountries()
     {
         return
@@ -203,6 +412,9 @@ class SignalList
             ."' class='formfield' style='width:360px'/>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlDXMax()
     {
         return
@@ -213,6 +425,9 @@ class SignalList
             .">";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlDXMin()
     {
         return
@@ -223,6 +438,9 @@ class SignalList
             .">";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlDXUnits()
     {
         return
@@ -236,6 +454,9 @@ class SignalList
             ."<label for='filter_dx_units_miles'>miles</label>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlFrequencyRange()
     {
         return
@@ -251,6 +472,9 @@ class SignalList
 
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlGSQ()
     {
         return
@@ -259,6 +483,9 @@ class SignalList
             ." value='".$this->filter_dx_gsq."' onkeyup='set_range(form)' onchange='set_range(form)' />";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlHeardBy()
     {
         return
@@ -274,6 +501,9 @@ class SignalList
 
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlHeardIn()
     {
         return
@@ -287,6 +517,9 @@ class SignalList
             .">";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlHeardInContinent()
     {
         return
@@ -297,6 +530,9 @@ class SignalList
 
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlHeardInMatch()
     {
         return
@@ -312,6 +548,9 @@ class SignalList
             ."<label for='radio_filter_heard_in_mod_all' title='Show where all terms match'>All</label>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlId()
     {
         return
@@ -320,6 +559,9 @@ class SignalList
             ."use _ to indicate a wildcard character' />";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlStates()
     {
         return
@@ -332,6 +574,9 @@ class SignalList
             ."' class='formfield' style='width:360px'/>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawControlType()
     {
         $types = array(
@@ -357,6 +602,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawForm()
     {
         $html =
@@ -567,6 +815,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawHelp()
     {
         $html =
@@ -633,6 +884,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     *
+     */
     protected function drawListing()
     {
         $this->html.=
@@ -647,6 +901,9 @@ class SignalList
             ."</span>\n";
     }
 
+    /**
+     *
+     */
     protected function drawMap()
     {
         $this->head.=
@@ -782,6 +1039,9 @@ class SignalList
             ."</div>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawResultsData()
     {
         $html =
@@ -969,6 +1229,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawResultsHeadings()
     {
         $columns = array(
@@ -1112,6 +1375,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawResultsInfo()
     {
         $html = "";
@@ -1139,6 +1405,9 @@ class SignalList
         return $html;
     }
 
+    /**
+     * @return string
+     */
     protected function drawStatsListeners()
     {
         return
@@ -1167,6 +1436,9 @@ class SignalList
             ."</div>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawStatsSignals()
     {
         return
@@ -1203,6 +1475,9 @@ class SignalList
             ."</div>";
     }
 
+    /**
+     * @return string
+     */
     protected function drawVisitorPoll()
     {
         $Obj = new Poll;
@@ -1221,11 +1496,17 @@ class SignalList
             ."</div>";
     }
 
+    /**
+     *
+     */
     protected function getCountLocations()
     {
-        $this->stats['locations'] =    listener_get_count($this->region);
+        $this->stats['locations'] = \Rxx\Tools\Listener::listener_get_count($this->region);
     }
 
+    /**
+     *
+     */
     protected function getCountLogs()
     {
         switch ($this->filter_system) {
@@ -1255,6 +1536,9 @@ class SignalList
         $this->stats['logs'] =    $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountMatched()
     {
         $sql = ($this->filter_heard_in || $this->filter_listener ?
@@ -1293,6 +1577,9 @@ class SignalList
         $this->total = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountSignalsREUOnly()
     {
         $sql =
@@ -1313,6 +1600,9 @@ class SignalList
         $this->stats['REU_only'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountSignalsRNAOnly()
     {
         $sql =
@@ -1333,6 +1623,9 @@ class SignalList
         $this->stats['RNA_only'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountSignalsRNAAndREU()
     {
         $sql =
@@ -1347,6 +1640,9 @@ class SignalList
         $this->stats['RNA_and_REU'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountSignalsRWW()
     {
         $sql =
@@ -1359,6 +1655,9 @@ class SignalList
         $this->stats['RWW'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getCountSignalsUnassigned()
     {
         $sql =
@@ -1379,11 +1678,17 @@ class SignalList
         $this->stats['Unassigned'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
+    /**
+     *
+     */
     protected function getDateFirstAndLastLogs()
     {
         $this->stats = array_merge($this->stats, Log::getLogDateRange($this->filter_system, $this->region));
     }
 
+    /**
+     *
+     */
     protected function getResultsMatched()
     {
         $sql =
@@ -1434,6 +1739,9 @@ class SignalList
         }
     }
 
+    /**
+     * @return string
+     */
     protected function getSqlDxColumns()
     {
         return
@@ -1512,6 +1820,9 @@ class SignalList
           ."    ) AS `range_dx_deg`\n";
     }
 
+    /**
+     *
+     */
     protected function setup()
     {
         $this->ObjSignal = new Signal;
@@ -1525,6 +1836,9 @@ class SignalList
         $this->getResultsMatched();
     }
 
+    /**
+     *
+     */
     protected function setupDoSubmode()
     {
         if (!isAdmin()) {
@@ -1540,6 +1854,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupInitListenersListFilter()
     {
         switch ($this->filter_system) {
@@ -1571,6 +1888,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupInitSql()
     {
         $this->setupInitSqlFilterActive();
@@ -1592,6 +1912,9 @@ class SignalList
 
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterActive()
     {
         if ($this->filter_active) {
@@ -1599,6 +1922,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterChannels()
     {
         switch ($this->filter_channels) {
@@ -1611,6 +1937,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterCustom()
     {
         switch ($this->filter_custom){
@@ -1632,6 +1961,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterFrequency()
     {
         if (!$this->filter_khz_2) {
@@ -1641,6 +1973,9 @@ class SignalList
             "    (`khz` >= ".$this->filter_khz_1." AND `khz` <= ".$this->filter_khz_2.")";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterHeardIn()
     {
         if ($this->filter_heard_in=='') {
@@ -1660,6 +1995,9 @@ class SignalList
             ."'))";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterId()
     {
         if ($this->filter_id===false) {
@@ -1668,6 +2006,9 @@ class SignalList
         $this->sql_filter_id = "    (`signals`.`call` LIKE \"%".$this->filter_id."%\")";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterItu()
     {
         if (!$this->filter_itu) {
@@ -1680,6 +2021,9 @@ class SignalList
         $this->sql_filter_itu = "    (`signals`.`ITU` IN('".implode($this->sql_filter_itu, "', '")."'))";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterLastHeard()
     {
         if (!$this->filter_date_1) {
@@ -1689,6 +2033,9 @@ class SignalList
             "    (`last_heard` >= \"".$this->filter_date_1."\" AND `last_heard` <= \"".$this->filter_date_2."\")";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterListener()
     {
         if (!$this->filter_listener) {
@@ -1698,6 +2045,9 @@ class SignalList
             "    (`logs`.`listenerID` IN(".implode(',', $this->filter_listener)."))";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterRangeMax()
     {
         if (!$this->filter_by_range || !$this->filter_dx_max) {
@@ -1723,6 +2073,9 @@ class SignalList
             ."    ) < ".$this->filter_dx_max.")";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterRangeMin()
     {
         if (!$this->filter_by_range || !$this->filter_dx_min) {
@@ -1748,6 +2101,10 @@ class SignalList
             ."    ) > ".$this->filter_dx_min.")";
 
     }
+
+    /**
+     *
+     */
     protected function setupInitSqlFilterContinent()
     {
         if (!$this->filter_continent) {
@@ -1759,6 +2116,9 @@ class SignalList
             ."    )";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterSP()
     {
         if (!$this->filter_sp) {
@@ -1771,6 +2131,9 @@ class SignalList
         $this->sql_filter_sp =    "    (`signals`.`SP` IN('".implode($this->sql_filter_sp, "', '")."'))";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterSystem()
     {
         switch ($this->filter_system) {
@@ -1804,6 +2167,9 @@ class SignalList
 
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlFilterType()
     {
         $filter_type =    array();
@@ -1834,6 +2200,9 @@ class SignalList
            ."))";
     }
 
+    /**
+     *
+     */
     protected function setupInitSqlSortBy()
     {
         switch ($this->sort_by) {
@@ -2025,6 +2394,9 @@ class SignalList
         }
     }
 
+    /**
+     *
+     */
     protected function setupLoadStats()
     {
         $this->getCountSignalsRNAOnly();
@@ -2038,6 +2410,9 @@ class SignalList
     }
 
 
+    /**
+     *
+     */
     protected function setupLoadVars()
     {
         global $mode, $sort_by;
@@ -2080,6 +2455,9 @@ class SignalList
         $this->type_OTHER =             get_var('type_OTHER');
     }
 
+    /**
+     *
+     */
     protected function setupTweakVars()
     {
         if ($this->filter_date_1 || $this->filter_date_2) {

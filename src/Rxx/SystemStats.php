@@ -1,4 +1,6 @@
 <?php
+namespace Rxx;
+
 class SystemStats
 {
     public function getLastLogDate()
