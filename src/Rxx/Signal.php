@@ -46,7 +46,7 @@ class Signal extends Record
      */
     public function countDgpsMessages()
     {
-        return \Rxx\Tools\Attachment::countAttachments($this->table, $this->ID, 'DGPS Message');
+        return Tools\Attachment::countAttachments($this->table, $this->ID, 'DGPS Message');
     }
 
     /**
@@ -54,7 +54,7 @@ class Signal extends Record
      */
     public function getDgpsMessages()
     {
-        return \Rxx\Tools\Attachment::getAttachments($this->table, $this->ID, 'DGPS Message');
+        return Tools\Attachment::getAttachments($this->table, $this->ID, 'DGPS Message');
     }
 
     /**
@@ -122,23 +122,23 @@ class Signal extends Record
     public function tabs()
     {
         $signal = $this->getRecord();
-        $out = tabItem("Profile", "signal_info", 50);
+        $out = Rxx::tabItem("Profile", "signal_info", 50);
         if (!$signal) {
             return $out;
         }
         if ($signal['logs']) {
             $out.=
-             tabItem("Listeners", "signal_listeners", 80)
-            .tabItem("Logs (".$signal['logs'].")", "signal_log", 85);
+             Rxx::tabItem("Listeners", "signal_listeners", 80)
+            .Rxx::tabItem("Logs (".$signal['logs'].")", "signal_log", 85);
         }
         if ($signal['GSQ']) {
             $out.=
-             tabItem("QNH", "signal_QNH", 35);
+             Rxx::tabItem("QNH", "signal_QNH", 35);
         }
         if ($signal['type']=='1') {
             $messages = $this->countDgpsMessages();
             $out.=
-             tabItem("Messages (".$messages.")", "signal_dgps_messages", 110);
+             Rxx::tabItem("Messages (".$messages.")", "signal_dgps_messages", 110);
         }
         return $out;
     }

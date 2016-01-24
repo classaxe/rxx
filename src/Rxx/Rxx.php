@@ -19,7 +19,7 @@ class Rxx {
      * @param $ITU
      * @return string
      */
-    function check_sp_itu($SP, $ITU)
+    public static function check_sp_itu($SP, $ITU)
     {
         $error_msg =    "";
         if ($SP) {
@@ -51,7 +51,7 @@ class Rxx {
      * @param $max_dx
      * @return array|bool
      */
-    function get_bestDX($listenerID, $dayonly, $min_dx, $max_dx)
+    public static function get_bestDX($listenerID, $dayonly, $min_dx, $max_dx)
     {
         $sql =
             "SELECT\n"
@@ -95,7 +95,7 @@ class Rxx {
      * @param $dx_lon
      * @return array
      */
-    function get_dx($qth_lat, $qth_lon, $dx_lat, $dx_lon)
+    public static function get_dx($qth_lat, $qth_lon, $dx_lat, $dx_lon)
     {
         if ($qth_lat == $dx_lat && $qth_lon==$dx_lon) {
             return array(0, 0);
@@ -123,7 +123,7 @@ class Rxx {
      * @param $itu
      * @return string
      */
-    function get_region_for_itu($itu)
+    public static function get_region_for_itu($itu)
     {
         if (!$itu) {
             return "";
@@ -140,7 +140,7 @@ class Rxx {
      * @param $text
      * @return string
      */
-    function get_sp_maplinks($SP, $ID, $text)
+    public static function get_sp_maplinks($SP, $ID, $text)
     {
         if (preg_match(
             "/AL|AK|AR|AZ|CA|CO|CT|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|MO|MS|MT|"
@@ -159,7 +159,7 @@ class Rxx {
      * @param $ITU
      * @return mixed
      */
-    function get_ITU($ITU)
+    public static function get_ITU($ITU)
     {
         $sql =    "SELECT `name` FROM `itu` WHERE `ITU` = \"$ITU\"";
         $result =    mysql_query($sql);
@@ -171,7 +171,7 @@ class Rxx {
      * @param $listenerID
      * @return string
      */
-    function get_listener_name($listenerID)
+    public static function get_listener_name($listenerID)
     {
         if ($listenerID=="") {
             return "";
@@ -189,7 +189,7 @@ class Rxx {
      * @param $listenerID
      * @return string
      */
-    function get_listener_email($listenerID)
+    public static function get_listener_email($listenerID)
     {
         if ($listenerID=="") {
             return "";
@@ -207,7 +207,7 @@ class Rxx {
      * @param $listenerID
      * @return string
      */
-    function get_listener_region($listenerID)
+    public static function get_listener_region($listenerID)
     {
         if ($listenerID=="") {
             return "";
@@ -225,7 +225,7 @@ class Rxx {
      * @param $listenerID
      * @return string
      */
-    function get_listener_details($listenerID)
+    public static function get_listener_details($listenerID)
     {
         if ($listenerID=="") {
             return "";
@@ -245,7 +245,7 @@ class Rxx {
      * @param $chooseText
      * @return string
      */
-    function get_listener_options_list($filter, $selectedID, $chooseText)
+    public static function get_listener_options_list($filter, $selectedID, $chooseText)
     {
         $out =    array();
         $out[] =
@@ -284,7 +284,7 @@ class Rxx {
             }
             $out[] =
                 " style='font-family: monospace; color: ".($row['primary_QTH'] ? "#000000" : "#666666")."'>"
-                .pad_dot(
+                .Rxx::pad_dot(
                     ($row['primary_QTH'] ? "" : "  ")
                     .$row["name"].", ".$row["QTH"]." ".$row["callsign"],
                     50
@@ -323,7 +323,7 @@ class Rxx {
      * @param bool $default
      * @return bool
      */
-    function get_var($key, $default = false)
+    public static function get_var($key, $default = false)
     {
         return (isset($_GET[$key]) ? $_GET[$key] : (isset($_POST[$key]) ? $_POST[$key] : $default));
     }
@@ -332,7 +332,7 @@ class Rxx {
      * @param $key
      * @param $value
      */
-    function set_var($key, $value)
+    public static function set_var($key, $value)
     {
         $_GET[$key] =     $value;
         $_POST[$key] =    $value;
@@ -343,7 +343,7 @@ class Rxx {
      * @param $chooseText
      * @return string
      */
-    function get_region_options_list($selectedID, $chooseText)
+    public static function get_region_options_list($selectedID, $chooseText)
     {
         $out =
             "<option value=''"
@@ -365,7 +365,7 @@ class Rxx {
      * @param $SP
      * @return mixed
      */
-    function get_SP($SP)
+    public static function get_SP($SP)
     {
         $sql =      "SELECT `name` FROM `sp` WHERE `SP` = \"$SP\"";
         $result =   mysql_query($sql);
@@ -377,7 +377,7 @@ class Rxx {
      * @param $GSQ
      * @return array
      */
-    function GSQ_deg($GSQ)
+    public static function GSQ_deg($GSQ)
     {
         $GSQ = strToUpper($GSQ);
         $offset =    (strlen($GSQ)==6 ? 1/48 : 0);
@@ -405,7 +405,7 @@ class Rxx {
      * @param $lon
      * @return bool|string
      */
-    function deg_GSQ($lat, $lon)
+    public static function deg_GSQ($lat, $lon)
     {
         $letters = "abcdefghijklmnopqrstuvwxyz";
         if ($lat==""||$lon=="") {
@@ -427,7 +427,7 @@ class Rxx {
     /**
      * @return string
      */
-    function help()
+    public static function help()
     {
         $file =    fopen("assets/help.html", "r");
         $out =    fread($file, 1000000);
@@ -438,7 +438,7 @@ class Rxx {
     /**
      * @return string
      */
-    function admin_help()
+    public static function admin_help()
     {
         $file =    fopen("assets/admin_help.html", "r");
         $out =    fread($file, 1000000);
@@ -451,7 +451,7 @@ class Rxx {
      * @param $find
      * @return mixed
      */
-    function highlight($string, $find)
+    public static function highlight($string, $find)
     {
         $find = str_replace("_", "[A-Z0-9]", $find);
         return ($find ?
@@ -464,7 +464,7 @@ class Rxx {
     /**
      * @return bool
      */
-    function isAdmin()
+    public static function isAdmin()
     {
         return (isset($_SESSION['admin']) && $_SESSION['admin']===true);
     }
@@ -472,7 +472,7 @@ class Rxx {
     /**
      * @return string
      */
-    function piwik_tracking()
+    public static function piwik_tracking()
     {
         return
             "var _paq = _paq || [];\n"
@@ -729,7 +729,7 @@ class Rxx {
      * @param $width
      * @return string
      */
-    function menuItem($test, $text, $type, $new, $width)
+    public static function menuItem($test, $text, $type, $new, $width)
     {
         global $mode;
         if ($type=="sys") {
@@ -754,7 +754,7 @@ class Rxx {
      * @param $width
      * @return string
      */
-    function menuItem_box($test, $text, $type, $new, $width)
+    public static function menuItem_box($test, $text, $type, $new, $width)
     {
         global $mode;
         if ($type=="sys") {
@@ -790,7 +790,7 @@ class Rxx {
      * @param $width
      * @return string
      */
-    function menuitem_selected($text, $width)
+    public static function menuitem_selected($text, $width)
     {
         return ("<td width='$width' class='navSelected' title='Currently selected system'><font color='white'>$text</font></td>\n");
     }
@@ -1083,7 +1083,7 @@ class Rxx {
      * @param $string
      * @return mixed
      */
-    function translate_chars($string)
+    public static function translate_chars($string)
     {
         $arr_search = array(  "\n\r",
             "\n",
@@ -1152,7 +1152,7 @@ class Rxx {
      * @param $offset
      * @return string
      */
-    function show_page_bar($record_count, $limit, $offset)
+    public static function show_page_bar($record_count, $limit, $offset)
     {
         $out = '';
         if ($limit>$record_count) {
@@ -1217,7 +1217,7 @@ class Rxx {
     /**
      * @return string
      */
-    function show_itu()
+    public static function show_itu()
     {
         global $region;
         $cols =        2;
@@ -1330,7 +1330,7 @@ class Rxx {
      * @param $lblImage
      * @return string
      */
-    function show_sortable_column_head($hint, $label, $sortBy, $test, $order, $lblImage)
+    public static function show_sortable_column_head($hint, $label, $sortBy, $test, $order, $lblImage)
     {
         return
             "<th class='downloadTableHeadings' valign='bottom' align='left'"
@@ -1352,7 +1352,7 @@ class Rxx {
     /**
      * @return string
      */
-    function show_sp()
+    public static function show_sp()
     {
         $cols =        3;
         $out =
@@ -1528,7 +1528,7 @@ class Rxx {
      * @param $table
      * @return string
      */
-    function table_uniqID($table)
+    public static function table_uniqID($table)
     {
         $notDone =    true;
         $n =         0 ;
@@ -1546,7 +1546,7 @@ class Rxx {
      * @param $listenerID
      * @return mixed
      */
-    function update_listener_log_count($listenerID)
+    public static function update_listener_log_count($listenerID)
     {
         $listener = new Listener($listenerID);
         return $listener->updateLogCount();
@@ -1555,7 +1555,7 @@ class Rxx {
     /**
      * @return string
      */
-    function find_ICAO()
+    public static function find_ICAO()
     {
         global $mode,$submode,$GSQ_icao;
         $out =
@@ -1813,12 +1813,11 @@ class Rxx {
         print $out;
     }
 
-
     /**
      * @param $MMM
      * @return string
      */
-    function MMM_to_MM($MMM)
+    public static function MMM_to_MM($MMM)
     {
         switch (strToUpper($MMM)) {
             case "JAN":
@@ -1864,7 +1863,7 @@ class Rxx {
      * @param $MM
      * @return string
      */
-    function MM_to_MMM($MM)
+    public static function MM_to_MMM($MM)
     {
         switch ($MM) {
             case "01":
@@ -1912,7 +1911,7 @@ class Rxx {
      * @param $width
      * @return string
      */
-    function tabItem($text, $test, $width)
+    public static function tabItem($text, $test, $width)
     {
         global $mode, $ID;
         return
@@ -1928,7 +1927,7 @@ class Rxx {
      * @param $YY
      * @return string
      */
-    function YY_to_YYYY($YY)
+    public static function YY_to_YYYY($YY)
     {
         $YY =    trim($YY);
         if (strLen($YY)==4) {
@@ -1945,7 +1944,7 @@ class Rxx {
      * @param $M
      * @return string
      */
-    function M_to_MM($M)
+    public static function M_to_MM($M)
     {
         $M =    trim($M);
         if (strLen($M)==1) {
@@ -1958,7 +1957,7 @@ class Rxx {
      * @param $D
      * @return string
      */
-    function D_to_DD($D)
+    public static function D_to_DD($D)
     {
         $D =    trim($D);
         if (strLen($D)==1) {
@@ -1972,7 +1971,7 @@ class Rxx {
      * @param $places
      * @return string
      */
-    function pad($text, $places)
+    public static function pad($text, $places)
     {
         return $text.(substr("                                                   ", 0, $places-strLen(preg_replace("/&[^;]+;/", " ", $text))));
     }
@@ -1982,7 +1981,7 @@ class Rxx {
      * @param $places
      * @return string
      */
-    function lead($text, $places)
+    public static function lead($text, $places)
     {
         return (substr("                                                   ", 0, $places-strLen(preg_replace("/&[^;]+;/", " ", $text))).$text);
     }
@@ -1992,7 +1991,7 @@ class Rxx {
      * @param $places
      * @return string
      */
-    function lead_zero($text, $places)
+    public static function lead_zero($text, $places)
     {
         return (substr("0000", 0, $places-strlen($text)).$text);
     }
@@ -2002,7 +2001,7 @@ class Rxx {
      * @param $places
      * @return mixed
      */
-    function pad_dot($text, $places)
+    public static function pad_dot($text, $places)
     {
         $text = translate_chars($text);
         if (strlen($text)>=$places) {
@@ -2017,7 +2016,7 @@ class Rxx {
      * @param $places
      * @return mixed
      */
-    function pad_nbsp($text, $places)
+    public static function pad_nbsp($text, $places)
     {
         $text = translate_chars($text);
         $text = $text.(substr("                                                   ", 0, $places-strLen($text)));
@@ -2029,7 +2028,7 @@ class Rxx {
      * @param $places
      * @return mixed
      */
-    function lead_nbsp($text, $places)
+    public static function lead_nbsp($text, $places)
     {
         $text = translate_chars($text);
         $text = (substr("                                                   ", 0, $places-strLen($text))).$text;
@@ -2041,7 +2040,7 @@ class Rxx {
      * @param $string
      * @return string
      */
-    function titleCase($string)
+    public static function titleCase($string)
     {
         $tmp =    explode(" ", $string);
         for ($i=0; $i<count($tmp); $i++) {
@@ -2057,7 +2056,7 @@ class Rxx {
     /**
      * @param $var
      */
-    function y($var)
+    public static function y($var)
     {
         var_dump($var);
     }
@@ -2065,7 +2064,7 @@ class Rxx {
     /**
      * @param $sql
      */
-    function z($sql)
+    public static function z($sql)
     {
         print("<pre>$sql</pre>");
     }

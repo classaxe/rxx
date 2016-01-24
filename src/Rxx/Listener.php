@@ -12,14 +12,14 @@ class Listener extends Record
     {
         $record = $this->getRecord();
         return
-             tabItem("Profile", "listener_edit", 50)
+             Rxx::tabItem("Profile", "listener_edit", 50)
             .($record['ID'] ?
-                 tabItem("Signals (".$record['count_signals'].")", "listener_signals", 105)
-                .tabItem("Logs (".$record['count_logs'].")", "listener_log", 85)
-                .tabItem("Export", "listener_log_export", 45)
-                .(isset($GSQ) ? tabItem("QNH", "listener_QNH", 35) : "")
-                .tabItem("Stats", "listener_stats", 45)
-                .(isAdmin() ?
+                 Rxx::tabItem("Signals (".$record['count_signals'].")", "listener_signals", 105)
+                .Rxx::tabItem("Logs (".$record['count_logs'].")", "listener_log", 85)
+                .Rxx::tabItem("Export", "listener_log_export", 45)
+                .(isset($GSQ) ? Rxx::tabItem("QNH", "listener_QNH", 35) : "")
+                .Rxx::tabItem("Stats", "listener_stats", 45)
+                .(Rxx::isAdmin() ?
                      "                <td class='tabOff' onclick='log_upload(\"".$this->ID."\");'"
                     ." onmouseover='return tabOver(this,1);' onmouseout='return tabOver(this,0);' width='45'>Add...</td>\n"
                  :

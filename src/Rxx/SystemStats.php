@@ -3,7 +3,7 @@ namespace Rxx;
 
 class SystemStats
 {
-    public function getLastLogDate()
+    public static function getLastLogDate()
     {
         switch(system) {
             case "RNA":

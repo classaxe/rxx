@@ -13,8 +13,8 @@ class Poll
     public function draw()
     {
         global $mode;
-        $my_answer =    (int)get_var('my_answer');
-        $questionID =   (int)get_var('questionID');
+        $my_answer =    (int)Rxx::get_var('my_answer');
+        $questionID =   (int)Rxx::get_var('questionID');
         $sql =      "SELECT `ID` FROM `poll_question` WHERE `active` = 1";
         $result =   mysql_query($sql);
         $row =      mysql_fetch_array($result, MYSQL_ASSOC);
@@ -24,7 +24,7 @@ class Poll
                 . "<p>Click <a href='../../classes?mode=poll_list'><b>here</b></a> for previous.</p>";
         }
         if (
-            get_var('submode')=="vote" && $my_answer && $questionID
+            Rxx::get_var('submode')=="vote" && $my_answer && $questionID
         ) {
             $sql =    "UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
             @mysql_query($sql);
@@ -56,7 +56,7 @@ class Poll
         $YYYY =     substr($row['date'], 0, 4);
         $title =    $row['title'];
         $text =     $row['text'];
-        $date =     MM_to_MMM($MM)." ".$YYYY;
+        $date =     Rxx::MM_to_MMM($MM)." ".$YYYY;
 
         $sql =      "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
         $result =   @mysql_query($sql);
@@ -119,7 +119,6 @@ class Poll
     public function drawList()
     {
         global $mode, $submode, $ID, $sortBy, $script, $mode;
-        $out = array();
         switch ($submode) {
             case "activate":
                 $sql =    "UPDATE `poll_question` SET `active` = 0";
@@ -174,7 +173,7 @@ class Poll
             ."  `poll_answer`\n"
             ."WHERE\n"
             ."  `poll_question`.`ID` = `poll_answer`.`questionID`\n"
-            .(isAdmin() ? "" : " AND `active` = '0'\n")
+            .(Rxx::isAdmin() ? "" : " AND `active` = '0'\n")
             ."GROUP BY `poll_question`.`ID`\n"
             .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
         $result =     @mysql_query($sql);
@@ -230,7 +229,7 @@ class Poll
             .($sortBy=='votes_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings_nosort'>Answers</th>\n";
-        if (isAdmin()) {
+        if (Rxx::isAdmin()) {
             $html.=
                  "    <th valign='bottom' class='downloadTableHeadings' title='Sort by Active status' align='left'"
                 ." onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\""
@@ -248,11 +247,11 @@ class Poll
             ."  </thead>\n";
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-            $date =    MM_to_MMM(substr($row['date'], 5, 2))." ".substr($row['date'], 2, 2);
+            $date =    Rxx::MM_to_MMM(substr($row['date'], 5, 2))." ".substr($row['date'], 2, 2);
             $html.=
                  "  <tr class='rownormal'>"
                 ."    <td valign='top'>"
-                .(isAdmin() ?
+                .(Rxx::isAdmin() ?
                     "<a href=\"javascript:poll_edit('".$row['ID']."')\" title=\"Edit this poll\"><b>".$date."</b></a>"
                  :
                     "<b>$date</b>"
@@ -275,7 +274,7 @@ class Poll
             }
             $html.=
                 "</table></td>";
-            if (isAdmin()) {
+            if (Rxx::isAdmin()) {
                 $html.=
                      "    <td valign='top'>"
                     ."<a href='javascript:document.form.submode.value=\"activate\";"
@@ -290,7 +289,7 @@ class Poll
             ."<span class='noprint'>\n"
             ."<input type='button' value='Print...' onclick='window.print();'"
             ." class='formbutton' style='width: 150px;' /> ";
-        if (isAdmin()) {
+        if (Rxx::isAdmin()) {
             $html.=
                  "<input type='button' class='formbutton' value='Add poll...' style='width: 150px'"
                 ." onclick='poll_edit(\"\")'> ";
@@ -320,7 +319,7 @@ class Poll
         $YYYY =        substr($row['date'], 0, 4);
         $title =    $row['title'];
         $text =        $row['text'];
-        $date =        MM_to_MMM($MM)." ".$YYYY;
+        $date =        Rxx::MM_to_MMM($MM)." ".$YYYY;
 
         $html =
              "<table>\n"
@@ -427,7 +426,7 @@ class Poll
             ."    <td valign='top' nowrap>"
             ."<select name='MMM' class='formField'>\n";
         for ($i=1; $i<=12; $i++) {
-            $html.=    "<option value='$i'".((int)$MMM==(int)$i ? " selected" : "").">".MM_to_MMM($i)."</option>\n";
+            $html.=    "<option value='$i'".((int)$MMM==(int)$i ? " selected" : "").">".Rxx::MM_to_MMM($i)."</option>\n";
         }
         $html.=
              "</select>\n"
