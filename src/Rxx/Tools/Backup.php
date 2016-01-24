@@ -9,12 +9,12 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Backup
  * @package Rxx\Tools
  */
-class Backup {
+class Backup
+{
     /**
      * @param bool $local
      * @param bool $orderBy
@@ -267,7 +267,6 @@ class Backup {
                 $column =        $table['Columns'][$j];
                 switch($column['Type']) {
                     case 'tinyblob':
-                    case 'text':
                     case 'mediumblob':
                     case 'longblob':
                     case 'tinytext':

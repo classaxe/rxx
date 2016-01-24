@@ -8,17 +8,18 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Cle
  * @package Rxx\Tools
  */
-class Cle {
+class Cle
+{
     /**
      * @param $var
      * @return string
      */
-    function cle_set($var){
+    public static function set($var)
+    {
         return addslashes(htmlentities(isset($_POST[$var]) ? $_POST[$var] : ''));
     }
 
@@ -26,67 +27,81 @@ class Cle {
      * @param $prefix
      * @return string
      */
-    function cle_set_type($prefix){
+    public static function setType($prefix)
+    {
         $vars = array();
-        if (isset($_POST[$prefix."_DGPS"]))  { $vars[] = "type_DGPS=1"; }
-        if (isset($_POST[$prefix."_HAMBCN"])){ $vars[] = "type_HAMBCN=1"; }
-        if (isset($_POST[$prefix."_NAVTEX"])){ $vars[] = "type_NAVTEX=1"; }
-        if (isset($_POST[$prefix."_NDB"]))   { $vars[] = "type_NDB=1"; }
-        if (isset($_POST[$prefix."_TIME"]))  { $vars[] = "type_TIME=1"; }
-        if (isset($_POST[$prefix."_OTHER"])) { $vars[] = "type_OTHER=1"; }
-        return implode('&amp;',$vars);
+        if (isset($_POST[$prefix."_DGPS"])) {
+            $vars[] = "type_DGPS=1";
+        }
+        if (isset($_POST[$prefix."_HAMBCN"])) {
+            $vars[] = "type_HAMBCN=1";
+        }
+        if (isset($_POST[$prefix."_NAVTEX"])) {
+            $vars[] = "type_NAVTEX=1";
+        }
+        if (isset($_POST[$prefix."_NDB"])) {
+            $vars[] = "type_NDB=1";
+        }
+        if (isset($_POST[$prefix."_TIME"])) {
+            $vars[] = "type_TIME=1";
+        }
+        if (isset($_POST[$prefix."_OTHER"])) {
+            $vars[] = "type_OTHER=1";
+        }
+        return implode('&amp;', $vars);
     }
 
     /**
      * @return string
      */
-    function cle() {
+    public static function cle()
+    {
         global $ID, $mode, $submode, $script, $sortBy, $target;
         $special = false;
 
-        if (isAdmin() && $submode=='save'){
+        if (\Rxx\Rxx::isAdmin() && $submode=='save') {
             $sql =
                 "UPDATE\n"
                 ."  `cle`\n"
                 ."SET\n"
-                ."  `cle` = '".cle_set('cle')."',\n"
-                ."  `date_start` = '".cle_set('date_start')."',\n"
-                ."  `date_end` = '".cle_set('date_end')."',\n"
-                ."  `date_timespan` = '".cle_set('date_timespan')."',\n"
-                ."  `scope` = '".cle_set('scope')."',\n"
-                ."  `additional` = '".cle_set('additional')."',\n"
-                ."  `world_range_1_low` = '".cle_set('world_range_1_low')."',\n"
-                ."  `world_range_1_high` = '".cle_set('world_range_1_high')."',\n"
-                ."  `world_range_1_channels` = '".cle_set('world_range_1_channels')."',\n"
-                ."  `world_range_1_type` = '".cle_set_type('world_range_1_type')."',\n"
-                ."  `world_range_1_itu` = '".cle_set('world_range_1_itu')."',\n"
-                ."  `world_range_1_sp` = '".cle_set('world_range_1_sp')."',\n"
-                ."  `world_range_1_filter_other` = '".cle_set('world_range_1_filter_other')."',\n"
-                ."  `world_range_1_text_extra` = '".cle_set('world_range_1_text_extra')."',\n"
-                ."  `world_range_2_low` = '".cle_set('world_range_2_low')."',\n"
-                ."  `world_range_2_high` = '".cle_set('world_range_2_high')."',\n"
-                ."  `world_range_2_channels` = '".cle_set('world_range_2_channels')."',\n"
-                ."  `world_range_2_type` = '".cle_set_type('world_range_2_type')."',\n"
-                ."  `world_range_2_itu` = '".cle_set('world_range_2_itu')."',\n"
-                ."  `world_range_2_sp` = '".cle_set('world_range_2_sp')."',\n"
-                ."  `world_range_2_filter_other` = '".cle_set('world_range_2_filter_other')."',\n"
-                ."  `world_range_2_text_extra` = '".cle_set('world_range_2_text_extra')."',\n"
-                ."  `europe_range_1_low` = '".cle_set('europe_range_1_low')."',\n"
-                ."  `europe_range_1_high` = '".cle_set('europe_range_1_high')."',\n"
-                ."  `europe_range_1_channels` = '".cle_set('europe_range_1_channels')."',\n"
-                ."  `europe_range_1_type` = '".cle_set_type('europe_range_1_type')."',\n"
-                ."  `europe_range_1_itu` = '".cle_set('europe_range_1_itu')."',\n"
-                ."  `europe_range_1_sp` = '".cle_set('europe_range_1_sp')."',\n"
-                ."  `europe_range_1_filter_other` = '".cle_set('europe_range_1_filter_other')."',\n"
-                ."  `europe_range_1_text_extra` = '".cle_set('europe_range_1_text_extra')."',\n"
-                ."  `europe_range_2_low` = '".cle_set('europe_range_2_low')."',\n"
-                ."  `europe_range_2_high` = '".cle_set('europe_range_2_high')."',\n"
-                ."  `europe_range_2_channels` = '".cle_set('europe_range_2_channels')."',\n"
-                ."  `europe_range_2_type` = '".cle_set_type('europe_range_2_type')."',\n"
-                ."  `europe_range_2_itu` = '".cle_set('europe_range_2_itu')."',\n"
-                ."  `europe_range_2_sp` = '".cle_set('europe_range_2_sp')."',\n"
-                ."  `europe_range_2_filter_other` = '".cle_set('europe_range_2_filter_other')."',\n"
-                ."  `europe_range_2_text_extra` = '".cle_set('europe_range_2_text_extra')."'\n";
+                ."  `cle` = '".Cle::set('cle')."',\n"
+                ."  `date_start` = '".Cle::set('date_start')."',\n"
+                ."  `date_end` = '".Cle::set('date_end')."',\n"
+                ."  `date_timespan` = '".Cle::set('date_timespan')."',\n"
+                ."  `scope` = '".Cle::set('scope')."',\n"
+                ."  `additional` = '".Cle::set('additional')."',\n"
+                ."  `world_range_1_low` = '".Cle::set('world_range_1_low')."',\n"
+                ."  `world_range_1_high` = '".Cle::set('world_range_1_high')."',\n"
+                ."  `world_range_1_channels` = '".Cle::set('world_range_1_channels')."',\n"
+                ."  `world_range_1_type` = '".Cle::setType('world_range_1_type')."',\n"
+                ."  `world_range_1_itu` = '".Cle::set('world_range_1_itu')."',\n"
+                ."  `world_range_1_sp` = '".Cle::set('world_range_1_sp')."',\n"
+                ."  `world_range_1_filter_other` = '".Cle::set('world_range_1_filter_other')."',\n"
+                ."  `world_range_1_text_extra` = '".Cle::set('world_range_1_text_extra')."',\n"
+                ."  `world_range_2_low` = '".Cle::set('world_range_2_low')."',\n"
+                ."  `world_range_2_high` = '".Cle::set('world_range_2_high')."',\n"
+                ."  `world_range_2_channels` = '".Cle::set('world_range_2_channels')."',\n"
+                ."  `world_range_2_type` = '".Cle::setType('world_range_2_type')."',\n"
+                ."  `world_range_2_itu` = '".Cle::set('world_range_2_itu')."',\n"
+                ."  `world_range_2_sp` = '".Cle::set('world_range_2_sp')."',\n"
+                ."  `world_range_2_filter_other` = '".Cle::set('world_range_2_filter_other')."',\n"
+                ."  `world_range_2_text_extra` = '".Cle::set('world_range_2_text_extra')."',\n"
+                ."  `europe_range_1_low` = '".Cle::set('europe_range_1_low')."',\n"
+                ."  `europe_range_1_high` = '".Cle::set('europe_range_1_high')."',\n"
+                ."  `europe_range_1_channels` = '".Cle::set('europe_range_1_channels')."',\n"
+                ."  `europe_range_1_type` = '".Cle::setType('europe_range_1_type')."',\n"
+                ."  `europe_range_1_itu` = '".Cle::set('europe_range_1_itu')."',\n"
+                ."  `europe_range_1_sp` = '".Cle::set('europe_range_1_sp')."',\n"
+                ."  `europe_range_1_filter_other` = '".Cle::set('europe_range_1_filter_other')."',\n"
+                ."  `europe_range_1_text_extra` = '".Cle::set('europe_range_1_text_extra')."',\n"
+                ."  `europe_range_2_low` = '".Cle::set('europe_range_2_low')."',\n"
+                ."  `europe_range_2_high` = '".Cle::set('europe_range_2_high')."',\n"
+                ."  `europe_range_2_channels` = '".Cle::set('europe_range_2_channels')."',\n"
+                ."  `europe_range_2_type` = '".Cle::setType('europe_range_2_type')."',\n"
+                ."  `europe_range_2_itu` = '".Cle::set('europe_range_2_itu')."',\n"
+                ."  `europe_range_2_sp` = '".Cle::set('europe_range_2_sp')."',\n"
+                ."  `europe_range_2_filter_other` = '".Cle::set('europe_range_2_filter_other')."',\n"
+                ."  `europe_range_2_text_extra` = '".Cle::set('europe_range_2_text_extra')."'\n";
             mysql_query($sql);
         }
         $sql =        "SELECT * FROM `cle`";
@@ -107,7 +122,7 @@ class Cle {
         $a_itu =              $record['world_range_1_itu'];
         $a_sp =               $record['world_range_1_sp'];
         $a_filter_other =     $record['world_range_1_filter_other'];
-        $a_url =              "filter_khz_1=".$a_khz_l."&amp;filter_khz_2=".$a_khz_h."&amp;".$a_type.($a_channels ? "&amp;filter_channels=".$a_channels : "").($a_itu ? "&amp;filter_itu=".str_replace(' ','%20',$a_itu) : "").($a_sp ? "&amp;filter_sp=".str_replace(' ','%20',$a_sp) : "").($a_filter_other ? "&amp;".$a_filter_other : "");
+        $a_url =              "filter_khz_1=".$a_khz_l."&amp;filter_khz_2=".$a_khz_h."&amp;".$a_type.($a_channels ? "&amp;filter_channels=".$a_channels : "").($a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $a_itu) : "").($a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $a_sp) : "").($a_filter_other ? "&amp;".$a_filter_other : "");
         $a_text =             "<b>".$a_khz_l."kHz to ".$a_khz_h."kHz ".$a_text_extra."</b>";
 
         $b_text_extra =       $record['world_range_2_text_extra'];
@@ -118,7 +133,7 @@ class Cle {
         $b_itu =              $record['world_range_2_itu'];
         $b_sp =               $record['world_range_2_sp'];
         $b_filter_other =     $record['world_range_2_filter_other'];
-        $b_url =              "filter_khz_1=".$b_khz_l."&amp;filter_khz_2=".$b_khz_h."&amp;".$b_type.($b_channels ? "&amp;filter_channels=".$b_channels : "").($b_itu ? "&amp;filter_itu=".str_replace(' ','%20',$b_itu) : "").($b_sp ? "&amp;filter_sp=".str_replace(' ','%20',$b_sp) : "").($b_filter_other ? "&amp;".$b_filter_other : "");
+        $b_url =              "filter_khz_1=".$b_khz_l."&amp;filter_khz_2=".$b_khz_h."&amp;".$b_type.($b_channels ? "&amp;filter_channels=".$b_channels : "").($b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $b_itu) : "").($b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $b_sp) : "").($b_filter_other ? "&amp;".$b_filter_other : "");
         $b_text =             "<b>".$b_khz_l."kHz to ".$b_khz_h."kHz ".$b_text_extra."</b>";
 
         $eu_a_text_extra =    ($record['europe_range_1_text_extra'] ?     $record['europe_range_1_text_extra'] :      $record['world_range_1_text_extra']);
@@ -129,7 +144,7 @@ class Cle {
         $eu_a_itu =           ($record['europe_range_1_itu'] ?            $record['europe_range_1_itu'] :             $record['world_range_1_itu']);
         $eu_a_sp =            ($record['europe_range_1_sp'] ?             $record['europe_range_1_sp'] :              $record['world_range_1_sp']);
         $eu_a_filter_other =  ($record['europe_range_1_filter_other'] ?   $record['europe_range_1_filter_other'] :    $record['world_range_1_filter_other']);
-        $eu_a_url =           "filter_khz_1=".$eu_a_khz_l."&amp;filter_khz_2=".$eu_a_khz_h."&amp;".$eu_a_type.($eu_a_channels ? "&amp;filter_channels=".$eu_a_channels : "").($eu_a_itu ? "&amp;filter_itu=".str_replace(' ','%20',$eu_a_itu) : "").($eu_a_sp ? "&amp;filter_sp=".str_replace(' ','%20',$eu_a_sp) : "").($eu_a_filter_other ? "&amp;".$eu_a_filter_other : "");
+        $eu_a_url =           "filter_khz_1=".$eu_a_khz_l."&amp;filter_khz_2=".$eu_a_khz_h."&amp;".$eu_a_type.($eu_a_channels ? "&amp;filter_channels=".$eu_a_channels : "").($eu_a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_a_itu) : "").($eu_a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_a_sp) : "").($eu_a_filter_other ? "&amp;".$eu_a_filter_other : "");
         $eu_a_text =          "<b>".$eu_a_khz_l."kHz to ".$eu_a_khz_h."kHz ".$eu_a_text_extra."</b>";
 
         $eu_b_text_extra =    ($record['europe_range_2_text_extra'] ?     $record['europe_range_2_text_extra'] :      $record['world_range_2_text_extra']);
@@ -140,12 +155,12 @@ class Cle {
         $eu_b_itu =           ($record['europe_range_2_itu'] ?            $record['europe_range_2_itu'] :             $record['world_range_2_itu']);
         $eu_b_sp =            ($record['europe_range_2_sp'] ?             $record['europe_range_2_sp'] :              $record['world_range_2_sp']);
         $eu_b_filter_other =  ($record['europe_range_2_filter_other'] ?   $record['europe_range_2_filter_other'] :    $record['world_range_2_filter_other']);
-        $eu_b_url =           "filter_khz_1=".$eu_b_khz_l."&amp;filter_khz_2=".$eu_b_khz_h."&amp;".$eu_b_type.($eu_b_channels ? "&amp;filter_channels=".$eu_b_channels : "").($eu_b_itu ? "&amp;filter_itu=".str_replace(' ','%20',$eu_b_itu) : "").($eu_b_sp ? "&amp;filter_sp=".str_replace(' ','%20',$eu_b_sp) : "").($eu_b_filter_other ? "&amp;".$eu_b_filter_other : "");
+        $eu_b_url =           "filter_khz_1=".$eu_b_khz_l."&amp;filter_khz_2=".$eu_b_khz_h."&amp;".$eu_b_type.($eu_b_channels ? "&amp;filter_channels=".$eu_b_channels : "").($eu_b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_b_itu) : "").($eu_b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_b_sp) : "").($eu_b_filter_other ? "&amp;".$eu_b_filter_other : "");
         $eu_b_text =          "<b>".$eu_b_khz_l."kHz to ".$eu_b_khz_h."kHz ".$eu_b_text_extra."</b>";
 
         $out =
             "<h2>CLE ".$record['cle']." Seek Lists and Signal Lists "
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "<span style='font-size: 80%'>\n"
                 ."<a href=\"#\" id=\"show_editor\" onclick=\"window.focus();document.getElementById('cle_editor').style.display='';document.getElementById('show_editor').style.display='none';document.getElementById('hide_editor').style.display='';return false;\">[Show Editor]</a>"
                 ."<a href=\"#\" id=\"hide_editor\" style='display: none;' onclick=\"window.focus();document.getElementById('cle_editor').style.display='none';document.getElementById('show_editor').style.display='';document.getElementById('hide_editor').style.display='none';return false;\">[Hide Editor]</a>"
@@ -153,7 +168,7 @@ class Cle {
                 :  ""
             )
             ."</h2>\n";
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "<script type=\"text/javascript\" src=\"".BASE_PATH."assets/calendar_db.js\"></script>\n"
                 ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\">\n"
@@ -289,36 +304,36 @@ class Cle {
                 ."  <tr>\n"
                 ."    <th>Types</th>\n"
                 ."    <td>\n"
-                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_1_type_DGPS'    id='world_range_1_type_DGPS'         ".(strpos($a_type,'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
-                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_1_type_HAMBCN'  id='world_range_1_type_type_HAMBCN'  ".(strpos($a_type,'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
-                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_1_type_NAVTEX'  id='world_range_1_type_type_NAVTEX'  ".(strpos($a_type,'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
-                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_1_type_NDB'     id='world_range_1_type_type_NDB'     ".(strpos($a_type,'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
-                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='world_range_1_type_TIME'    id='world_range_1_type_type_TIME'    ".(strpos($a_type,'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
-                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='world_range_1_type_OTHER'   id='world_range_1_type_type_OTHER'   ".(strpos($a_type,'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
+                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_1_type_DGPS'    id='world_range_1_type_DGPS'         ".(strpos($a_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_1_type_HAMBCN'  id='world_range_1_type_type_HAMBCN'  ".(strpos($a_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
+                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_1_type_NAVTEX'  id='world_range_1_type_type_NAVTEX'  ".(strpos($a_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
+                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_1_type_NDB'     id='world_range_1_type_type_NDB'     ".(strpos($a_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
+                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='world_range_1_type_TIME'    id='world_range_1_type_type_TIME'    ".(strpos($a_type, 'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
+                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='world_range_1_type_OTHER'   id='world_range_1_type_type_OTHER'   ".(strpos($a_type, 'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
                 ."    </td>\n"
                 ."    <td>\n"
-                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_1_type_DGPS'   id='europe_range_1_type_DGPS'        ".(strpos($eu_a_type,'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
-                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_1_type_HAMBCN' id='europe_range_1_type_type_HAMBCN' ".(strpos($eu_a_type,'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
-                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_1_type_NAVTEX' id='europe_range_1_type_type_NAVTEX' ".(strpos($eu_a_type,'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
-                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_1_type_NDB'    id='europe_range_1_type_type_NDB'    ".(strpos($eu_a_type,'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
-                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='europe_range_1_type_TIME'   id='europe_range_1_type_type_TIME'   ".(strpos($eu_a_type,'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
-                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='europe_range_1_type_OTHER'  id='europe_range_1_type_type_OTHER'  ".(strpos($eu_a_type,'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
+                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_1_type_DGPS'   id='europe_range_1_type_DGPS'        ".(strpos($eu_a_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_1_type_HAMBCN' id='europe_range_1_type_type_HAMBCN' ".(strpos($eu_a_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
+                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_1_type_NAVTEX' id='europe_range_1_type_type_NAVTEX' ".(strpos($eu_a_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
+                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_1_type_NDB'    id='europe_range_1_type_type_NDB'    ".(strpos($eu_a_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
+                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='europe_range_1_type_TIME'   id='europe_range_1_type_type_TIME'   ".(strpos($eu_a_type, 'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
+                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='europe_range_1_type_OTHER'  id='europe_range_1_type_type_OTHER'  ".(strpos($eu_a_type, 'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
                 ."    </td>\n"
                 ."    <td>\n"
-                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_2_type_DGPS'    id='world_range_2_type_DGPS'         ".(strpos($b_type,'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
-                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_2_type_HAMBCN'  id='world_range_2_type_type_HAMBCN'  ".(strpos($b_type,'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
-                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_2_type_NAVTEX'  id='world_range_2_type_type_NAVTEX'  ".(strpos($b_type,'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
-                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_2_type_NDB'     id='world_range_2_type_type_NDB'     ".(strpos($b_type,'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
-                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='world_range_2_type_TIME'    id='world_range_2_type_type_TIME'    ".(strpos($b_type,'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
-                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='world_range_2_type_OTHER'   id='world_range_2_type_type_OTHER'   ".(strpos($b_type,'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
+                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_2_type_DGPS'    id='world_range_2_type_DGPS'         ".(strpos($b_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_2_type_HAMBCN'  id='world_range_2_type_type_HAMBCN'  ".(strpos($b_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
+                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_2_type_NAVTEX'  id='world_range_2_type_type_NAVTEX'  ".(strpos($b_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
+                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_2_type_NDB'     id='world_range_2_type_type_NDB'     ".(strpos($b_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
+                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='world_range_2_type_TIME'    id='world_range_2_type_type_TIME'    ".(strpos($b_type, 'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
+                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='world_range_2_type_OTHER'   id='world_range_2_type_type_OTHER'   ".(strpos($b_type, 'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
                 ."    </td>\n"
                 ."    <td>\n"
-                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_2_type_DGPS'   id='europe_range_2_type_DGPS'        ".(strpos($eu_b_type,'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
-                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_2_type_HAMBCN' id='europe_range_2_type_type_HAMBCN' ".(strpos($eu_b_type,'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
-                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_2_type_NAVTEX' id='europe_range_2_type_type_NAVTEX' ".(strpos($eu_b_type,'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
-                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_2_type_NDB'    id='europe_range_2_type_type_NDB'    ".(strpos($eu_b_type,'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
-                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='europe_range_2_type_TIME'   id='europe_range_2_type_type_TIME'   ".(strpos($eu_b_type,'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
-                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='europe_range_2_type_OTHER'  id='europe_range_2_type_type_OTHER'  ".(strpos($eu_b_type,'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
+                ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_2_type_DGPS'   id='europe_range_2_type_DGPS'        ".(strpos($eu_b_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_2_type_HAMBCN' id='europe_range_2_type_type_HAMBCN' ".(strpos($eu_b_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
+                ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_2_type_NAVTEX' id='europe_range_2_type_type_NAVTEX' ".(strpos($eu_b_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
+                ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_2_type_NDB'    id='europe_range_2_type_type_NDB'    ".(strpos($eu_b_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
+                ."      <label style='width:75px;background:#FFE0B0;'><input type='checkbox' name='europe_range_2_type_TIME'   id='europe_range_2_type_type_TIME'   ".(strpos($eu_b_type, 'type_TIME=1')===false ? '' : " checked='checked'")." />TIME</label><br />\n"
+                ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='europe_range_2_type_OTHER'  id='europe_range_2_type_type_OTHER'  ".(strpos($eu_b_type, 'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
                 ."    </td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
@@ -387,12 +402,12 @@ class Cle {
                 ."</div>";
         }
         $out.=
-            "<p><b>Date".($record['date_end']!='0000-00-00' ? 's' : '').":</b><br />".date('l j\<\s\u\p\>S\<\/\s\u\p\> F Y',strtotime($record['date_start']))
-            .($record['date_end']!='0000-00-00' ? " to ".date('l j\<\s\u\p\>S\<\/\s\u\p\> F Y',strtotime($record['date_end'])) : "")
+            "<p><b>Date".($record['date_end']!='0000-00-00' ? 's' : '').":</b><br />".date('l j\<\s\u\p\>S\<\/\s\u\p\> F Y', strtotime($record['date_start']))
+            .($record['date_end']!='0000-00-00' ? " to ".date('l j\<\s\u\p\>S\<\/\s\u\p\> F Y', strtotime($record['date_end'])) : "")
             .($record['date_timespan'] ? " ".$record['date_timespan'] : "").".</p>\n"
             ."<p><b>Scope:</b><br />".$record['scope']."</p>\n"
             .($record['additional'] ? "<p><b>Additional Info:</b><br />".$record['additional']."</p>\n" : "");
-        if ($special){
+        if ($special) {
             $out.=
                 "<ul>\n"
                 ."  <li><b>Logs recorded at University of Twente Web SDR, Enschede</b><br>"
@@ -409,7 +424,7 @@ class Cle {
                 ."  </li>"
                 ."</ul>";
         }
-        if (!$special){
+        if (!$special) {
             $out.=
                 "<ul>\n"
                 ."  <li><b>European listeners:</b><br>"

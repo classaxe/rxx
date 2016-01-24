@@ -312,7 +312,7 @@ class SignalList
                 ."Continue anyway?\""
                 .")) { window.print(); }": "window.print()"
             )."'/> "
-            .(isAdmin() ?
+            .(Rxx::isAdmin() ?
              "<input type='button' value='Add signal...'"
                 ." onclick=\"signal_add("
                 ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
@@ -751,7 +751,7 @@ class SignalList
             ."          </tr>\n"
             ."	 </table></td>"
             ."      </tr>\n"
-            .(isAdmin() ?
+            .(Rxx::isAdmin() ?
             "      <tr class='rowForm'>\n"
             ."        <th align='left'>Admin:</th>\n"
             ."        <td nowrap><select name='filter_system' class='formField'>\n"
@@ -917,7 +917,7 @@ class SignalList
             ."var signals = [\n";
         foreach ($this->rows as $row) {
             if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+                $dx =        Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';
@@ -955,22 +955,22 @@ class SignalList
                 }
             }
             $call =     ($this->filter_id ?
-                highlight($row["call"], $this->filter_id)
+                Rxx::highlight($row["call"], $this->filter_id)
              :
                 $row["call"]
             );
             $heard_in = ($this->filter_heard_in ?
-                highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
+                Rxx::highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
              :
                 $row["heard_in_html"]
             );
             $SP =       ($this->filter_sp ?
-                highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
+                Rxx::highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
              :
                 $row["SP"]
             );
             $ITU =      ($this->filter_itu ?
-                highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
+                Rxx::highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
              :
                 $row["ITU"]
             );
@@ -1048,7 +1048,7 @@ class SignalList
             "  <tbody>";
         foreach ($this->rows as $row) {
             if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+                $dx =        Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';
@@ -1086,22 +1086,22 @@ class SignalList
                 }
             }
             $call =     ($this->filter_id ?
-                highlight($row["call"], $this->filter_id)
+                Rxx::highlight($row["call"], $this->filter_id)
              :
                 $row["call"]
             );
             $heard_in = ($this->filter_heard_in ?
-                highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
+                Rxx::highlight($row["heard_in_html"], str_replace(" ", "|", $this->filter_heard_in))
              :
                 $row["heard_in_html"]
             );
             $SP =       ($this->filter_sp ?
-                highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
+                Rxx::highlight($row["SP"], str_replace(" ", "|", $this->filter_sp))
              :
                 $row["SP"]
             );
             $ITU =      ($this->filter_itu ?
-                highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
+                Rxx::highlight($row["ITU"], str_replace(" ", "|", $this->filter_itu))
              :
                 $row["ITU"]
             );
@@ -1144,7 +1144,7 @@ class SignalList
             $html.=
                  "<td>"
                 .($row["QTH"] ?
-                    get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"])
+                     Rxx::get_sp_maplinks($row['SP'], $row['ID'], $row["QTH"])
                   :
                     "&nbsp;"
                  )
@@ -1213,7 +1213,7 @@ class SignalList
                     ."</td>\n";
             }
 
-            if (isAdmin()) {
+            if (Rxx::isAdmin()) {
                 $html.=
                      "<td nowrap>"
                     ."<a href='#' onclick='if ("
@@ -1284,7 +1284,7 @@ class SignalList
         if ($this->filter_dx_gsq) {
             $html.=    "    <th class='nosort txt_c' colspan='3'>Range from<br />GSQ</th>\n";
         }
-        if (isAdmin()) {
+        if (Rxx::isAdmin()) {
             $html.=    "    <th class='nosort' rowspan='2'>&nbsp;</th>\n";
         }
         if ($this->filter_listener || $this->filter_dx_gsq) {
@@ -1462,7 +1462,7 @@ class SignalList
             ."        <th align='left'>RWW</th>\n"
             ."        <td align='right'>".$this->stats['RWW']."</td>\n"
             ."      </tr>\n"
-            .(isAdmin() ?
+            .(Rxx::isAdmin() ?
                  "      <tr class='rowForm'>\n"
                 ."        <th align='left'>Unlogged</th>\n"
                 ."        <td align='right'>".$this->stats['Unassigned']."</td>\n"
@@ -2474,7 +2474,7 @@ class SignalList
             .strtoLower(substr($this->filter_dx_gsq, 4, 2));
 
         if ($this->filter_dx_gsq) {
-            $a =    GSQ_deg($this->filter_dx_gsq);
+            $a =    Rxx::GSQ_deg($this->filter_dx_gsq);
             $this->filter_dx_lat =    $a["lat"];
             $this->filter_dx_lon =    $a["lon"];
         }
@@ -2522,8 +2522,7 @@ class SignalList
             $this->type_NDB = 1;
         }
 
-        if (
-            !(
+        if (!(
                 $this->filter_listener &&
                 is_array($this->filter_listener)
                 && count($this->filter_listener)

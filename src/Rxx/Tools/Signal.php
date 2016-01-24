@@ -38,16 +38,16 @@ Version History:
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Signal
  * @package Rxx\Tools
  */
-class Signal {
+class Signal
+{
     /**
      * @return string
      */
-    function signal_dgps_messages()
+    public static function signal_dgps_messages()
     {
         global $ID, $mode, $submode, $sortBy, $target;
         if (!$ID) {
@@ -64,7 +64,7 @@ class Signal {
             case "view":
                 break;
         }
-        $Obj =      new \Signal($ID);
+        $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
             $row =        $Obj->getRecord();
             $active =        $row["active"];
@@ -163,7 +163,7 @@ class Signal {
     /**
      * @return array|string
      */
-    function signal_info()
+    public static function signal_info()
     {
         global $ID, $mode, $submode;
         global $active, $call, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx, $notes, $pwr, $QTH, $SP, $type, $USB, $USB_approx;
@@ -181,13 +181,13 @@ class Signal {
         $lon =    0;
         if ($GSQ) {
             $GSQ =    strtoUpper(substr($GSQ, 0, 4)).strtoLower(substr($GSQ, 4, 2));
-            $a =     GSQ_deg($GSQ);
+            $a =     \Rxx\Rxx::GSQ_deg($GSQ);
             $lat =    $a["lat"];
             $lon =    $a["lon"];
         }
         $error_msg =    "";
         if ($submode=="add" or $submode=="update") {
-            $error_msg = check_sp_itu($SP, $ITU);
+            $error_msg = \Rxx\Rxx::check_sp_itu($SP, $ITU);
         }
         if ($error_msg=="") {
             switch ($submode) {
@@ -245,7 +245,7 @@ class Signal {
                     break;
             }
         }
-        $Obj =      new \Signal($ID);
+        $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
             $row =                $Obj->getRecord();
             $active =            $row["active"];
@@ -281,7 +281,7 @@ class Signal {
             ."      <tr>\n"
             ."        <td colspan='2' width='100%'><table border='0' cellpadding='0' cellspacing='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td><h1>".(isAdmin() ? ($ID=="" ? "Add Signal" : "Edit Signal")."":"Signal")."</h1></td>\n"
+            ."            <td><h1>".(\Rxx\Rxx::isAdmin() ? ($ID=="" ? "Add Signal" : "Edit Signal")."":"Signal")."</h1></td>\n"
             ."            <td align='right' valign='bottom'><table border='0' cellpadding='2' cellspacing='0' class='tabTable'>\n"
             ."              <tr>\n"
             .$Obj->tabs()
@@ -292,7 +292,7 @@ class Signal {
             ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
             ."          <tr>\n"
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "            <form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
                 ."            <input type='hidden' name='ID' value='".$ID."'>\n"
                 ."            <input type='hidden' name='mode' value='".$mode."'>\n"
@@ -315,7 +315,7 @@ class Signal {
             ."                    <td align='right'><b>KHz</b> <input type='text' size='6' maxlength='9' name='khz' value='".(float)$khz."' class='formfield'></td>\n"
             ."                    <td align='right'><b>Pwr</b> <input type='text' size='5' maxlength='7' name='pwr' value='".($pwr ? $pwr : "")."' class='formfield'>W</td>\n"
             ."                    <td align='right'><b>Type</b> ";
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "<select name='type' class='formField'>\n"
                 ."<option value='".DGPS."'".($type==DGPS ? " selected" : "")." style='background-color:".Signal::$colors[DGPS]."'>DGPS</option>\n"
@@ -358,7 +358,7 @@ class Signal {
             ."                <th align='left'>State/Province</th>\n"
             ."                <td><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"SP\" value=\"".$SP."\" class=\"formfield\"><span title='State or Province'> <a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>(List)</b></a></span></td>\n"
             ."                <th align='right'>Country</th>\n"
-            ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(isAdmin() ? "" : " (".get_ITU($ITU).")")." <span title='Country Codes'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
+            ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(\Rxx\Rxx::isAdmin() ? "" : " (".\Rxx\Rxx::get_ITU($ITU).")")." <span title='Country Codes'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
             ."              <tr class='rowForm'>\n"
             ."                <th align='left'>GSQ</th>\n"
             ."                <td colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -379,7 +379,7 @@ class Signal {
             ."                <td class='downloadTableHeadings_nosort' align='left' colspan='4'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."                  <tr>\n"
             ."                    <td class='downloadTableHeadings_nosort'>&nbsp;Latest Values</td>\n"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "                    <td class='downloadTableHeadings_nosort' align='right'><small>(All fields except Status and Notes are updated each time signal is logged)</small></td>\n"
                 : ""
             )
@@ -388,7 +388,7 @@ class Signal {
             ."              <tr class='rowForm'>\n"
             ."                <th align='left'>LSB</th>\n"
             ."                <td>"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "~<input type='text' size='1' maxlength='1' name='LSB_approx' value='".$LSB_approx."' class='formField'> <input type='text' size='4' maxlength='5' name='LSB' value='".$LSB."' class='formField'>"
                 :
                 "<input type='text' size='4' maxlength='5' name='LSB' value='".$LSB_approx.$LSB."' class='formField'>"
@@ -396,7 +396,7 @@ class Signal {
             ."</td>\n"
             ."                <th align='right'>USB</th>\n"
             ."                <td>"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "~<input type='text' size='1' maxlength='1' name='USB_approx' value='".$USB_approx."' class='formField'> <input type='text' size='4' maxlength='5' name='USB' value='".$USB."' class='formField'>"
                 :
                 "<input type='text' size='4' maxlength='5' name='USB' value='".$USB_approx.$USB."' class='formField'>"
@@ -412,7 +412,7 @@ class Signal {
             ."                <td>".$last_heard."</td>\n"
             ."                <th align='right'>Status</th>\n"
             ."                <td>"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "<select name='active' class='formfield'>\n"
                 ."  <option value='0'".($active ? "": " selected").">Out Of Service</option>\n"
                 ."  <option value='1'".($active ? " selected": "").">Active</option>\n"
@@ -426,19 +426,19 @@ class Signal {
             ."                <td colspan='3'>".$heard_in_html."</td>\n"
             ."              <tr class='rowForm'>\n"
             ."                <th align='left' valign='top'>Notes</th align='left'>\n"
-            ."                <td colspan='3' valign='top'><textarea class='formField' name='notes' rows='3' cols='40' style='width: 450px; height: ".(isAdmin() ? "70px;" : "80px;")."'>".$notes."</textarea></td>\n"
+            ."                <td colspan='3' valign='top'><textarea class='formField' name='notes' rows='3' cols='40' style='width: 450px; height: ".(\Rxx\Rxx::isAdmin() ? "70px;" : "80px;")."'>".$notes."</textarea></td>\n"
             ."              <tr class='rowForm'>\n"
             ."                <td colspan='4' align='center' style='height: 30px;'>\n"
             ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
             ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "<input type='submit' value='".($submode=="update" ? "Save" : "Add")."' class='formbutton' style='width: 60px;'>"
                 : ""
             )
             ."</td>\n"
             ."              </tr>\n"
             ."            </table>\n"
-            .(isAdmin() ?
+            .(\Rxx\Rxx::isAdmin() ?
                 "            </form>\n"
                 : ""
             )
@@ -459,7 +459,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_listeners()
+    public static function signal_listeners()
     {
         global $ID, $mode, $submode, $sortBy, $targetID;
         global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
@@ -473,15 +473,15 @@ class Signal {
         $call =    strToUpper(urldecode($call));
         $ITU =    strToUpper($ITU);
         $SP =        strToUpper($SP);
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             switch ($submode) {
                 case "delete":
-                    $log = new \Log($targetID);
+                    $log = new \Rxx\Log($targetID);
                     $log->delete();
                     break;
             }
         }
-        $Obj =      new \Signal($ID);
+        $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
             $row =        $Obj->getRecord();
             $active =        $row["active"];
@@ -568,7 +568,7 @@ class Signal {
             ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
             ."          <tr>\n"
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "            <form action='".system_URL.'/'.$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
                 ."            <input type='hidden' name='ID' value='$ID'>\n"
@@ -649,7 +649,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_map_eu()
+    public static function signal_map_eu()
     {
         global $ID,$mode;
         if (!$ID) {
@@ -734,7 +734,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_map_na()
+    public static function signal_map_na()
     {
         global $ID,$mode;
         if (!$ID) {
@@ -829,7 +829,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_merge()
+    public static function signal_merge()
     {
         global $mode, $submode;
         global $ID, $destinationID;
@@ -847,7 +847,7 @@ class Signal {
                 $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
                 $result =   mysql_query($sql);
                 $merged =   mysql_affected_rows();
-                $signal =   new \Signal($ID);
+                $signal =   new \Rxx\Signal($ID);
                 $signal->updateHeardInList();
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $ID";
@@ -856,7 +856,7 @@ class Signal {
                 $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $ID";
                 $result =    mysql_query($sql);
 
-                $signal =   new \Signal($destinationID);
+                $signal =   new \Rxx\Signal($destinationID);
                 $signal->updateHeardInList();
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $destinationID";
@@ -903,7 +903,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_QNH()
+    public static function signal_QNH()
     {
         global $ID, $mode, $submode, $ICAO_signal, $hours_signal;
         if (!$ID) {
@@ -915,7 +915,7 @@ class Signal {
         }
         $pressure =    array();
 
-        $Obj =      new \Signal($ID);
+        $Obj =      new \Rxx\Signal($ID);
         $row =        $Obj->getRecord();
         $call =    $row["call"];
         $GSQ =    $row["GSQ"];
@@ -950,7 +950,7 @@ class Signal {
             $pressure = "HELP\nEnter hours to display, select first valid station in list and press 'QNH'";
         }
         $options = "";
-        $icao_arr =    get_local_icao($GSQ, 10, $ICAO_signal);
+        $icao_arr =  \Rxx\Rxx::get_local_icao($GSQ, 10, $ICAO_signal);
         for ($i=0; $i<10; $i++) {
             $options.=    "              <option value='".$icao_arr[$i]['ICAO']."'".($ICAO_signal==$icao_arr[$i]['ICAO'] ? " selected" : "").">".$icao_arr[$i]['ICAO']." (".$icao_arr[$i]['miles']." Miles, ".$icao_arr[$i]['km']." KM)</option>\n";
         }
@@ -1001,7 +1001,7 @@ class Signal {
     /**
      * @return string
      */
-    function signal_seeklist()
+    public static function signal_seeklist()
     {
         global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_custom, $filter_date_1, $filter_date_2;
         global $filter_dx_gsq, $filter_dx_max, $filter_dx_min, $filter_dx_units;
@@ -1341,20 +1341,20 @@ class Signal {
             ."        <th align='left'>Types&nbsp;</th>\n"
             ."        <td nowrap style='padding: 0px;'><table cellpadding='0' cellspacing='1' border='0' width='100%' class='tableForm'>\n"
             ."          <tr>\n"
-            ."            <td bgcolor='".Signal::$colors[DGPS]."' width='14%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
-            ."            <td bgcolor='".Signal::$colors[DSC]."' width='14%' nowrap onclick='toggle(document.form.type_DSC)'><input type='checkbox' onclick='toggle(document.form.type_DSC);' name='type_DSC' value='1'".($type_DSC? " checked" : "").">DSC</td>"
-            ."            <td bgcolor='".Signal::$colors[HAMBCN]."' width='14%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
-            ."            <td bgcolor='".Signal::$colors[NAVTEX]."' width='15%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
-            ."            <td bgcolor='".Signal::$colors[NDB]."' width='14%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
-            ."            <td bgcolor='".Signal::$colors[TIME]."' width='14%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
-            ."            <td bgcolor='".Signal::$colors[OTHER]."' width='15%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[DGPS]."' width='14%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[DSC]."' width='14%' nowrap onclick='toggle(document.form.type_DSC)'><input type='checkbox' onclick='toggle(document.form.type_DSC);' name='type_DSC' value='1'".($type_DSC? " checked" : "").">DSC</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[HAMBCN]."' width='14%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[NAVTEX]."' width='15%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[NDB]."' width='14%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[TIME]."' width='14%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
+            ."            <td bgcolor='".\Rxx\Signal::$colors[OTHER]."' width='15%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
             ."          </tr>\n"
             ."        </table></td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
             ."        <th align='left' title='Select listener to generate Seeklist for'>Create for</th>\n"
             ."        <td><select name='createFor' class='formfield' style='font-family: monospace' onchange='set_listener_and_heard_in(document.form)'>\n"
-            .get_listener_options_list($filter_listener_SQL, $createFor, "Don't customise list for any listener")
+            .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $createFor, "Don't customise list for any listener")
             ."</select></td>\n"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
@@ -1396,7 +1396,7 @@ class Signal {
             ."      <tr class='rowForm'>\n"
             ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
             ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
-            .get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
+            .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
             ."</select></td>\n"
             ."      </tr>\n";
         if (system=="RWW") {
@@ -1405,7 +1405,7 @@ class Signal {
                 ."       <th align='left'>Heard in&nbsp;</th>\n"
                 ."       <th align='left'>\n"
                 ."<select name='region' onchange='document.form.go.disabled=1;document.form.submit()' class='formField' style='width: 100%;'>\n"
-                .get_region_options_list($region, "(All Continents)")
+                .\Rxx\Rxx::get_region_options_list($region, "(All Continents)")
                 ."</select>"
                 ."</th>"
                 ."      </tr>\n";
@@ -1473,7 +1473,7 @@ class Signal {
         $xpos =    0;
         $col =    0;
         $row =    $page_len-$filter_size;
-        $listener =    get_listener_name($createFor);
+        $listener =    \Rxx\Rxx::get_listener_name($createFor);
         $out.=
             "<table cellpadding='2' cellspacing='1' border='1' style='page-break-after: always;' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -1522,7 +1522,7 @@ class Signal {
             if ($value["active"]!="1") {
                 $bgcolor =    " style='border: 1px dashed #000000; border-right: none; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
             } else {
-                $style = " style='background-color: ".Signal::$colors[$value['type']]."'";
+                $style = " style='background-color: ".\Rxx\Signal::$colors[$value['type']]."'";
                 switch ($value['type']) {
                     case NDB:
                         $bgcolor = $style." title='NDB'";
@@ -1547,7 +1547,7 @@ class Signal {
                         break;
                 }
             }
-            $out.=     "<span class='fixed'$bgcolor>".pad_dot($value["khz"], 8).pad_dot($value['call'], 8)
+            $out.=     "<span class='fixed'$bgcolor>".\Rxx\Rxx::pad_dot($value["khz"], 8).\Rxx\Rxx::pad_dot($value['call'], 8)
                 .($value['heard'] ? "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>" : "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>")."<br></span>\n";
             $xpos+=    $line_height;
             if ($xpos>$row) {
@@ -1599,7 +1599,7 @@ class Signal {
                 $out.=    "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'><span class='fixed'>&nbsp;</span></td>\n";
             }
         }
-        $row = Log::getLogDateRange($filter_system, $region);
+        $row = \Rxx\Log::getLogDateRange($filter_system, $region);
         $out.=
             "</tr>\n"
             ."</table>\n"
@@ -1644,7 +1644,7 @@ class Signal {
      * @param $last_heard
      * @param $region
      */
-    function signal_update_full($ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $last_heard, $region)
+    public static function signal_update_full($ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $last_heard, $region)
     {
         $sql =
             "UPDATE `signals` SET\n"
@@ -1665,74 +1665,101 @@ class Signal {
     /**
      * @return string
      */
-    function signal_log() {
+    public static function signal_log()
+    {
         global $ID, $mode, $submode, $sortBy, $targetID;
         global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
-        $call =	strToUpper(urldecode($call));
-        $ITU =	strToUpper($ITU);
-        $SP =		strToUpper($SP);
-        if (isAdmin()) {
+        $call =     strToUpper(urldecode($call));
+        $ITU =  strToUpper($ITU);
+        $SP =       strToUpper($SP);
+        if (\Rxx\Rxx::isAdmin()) {
             switch ($submode) {
                 case "delete":
-                    $log = new \Log($targetID);
+                    $log = new \Rxx\Log($targetID);
                     $log->delete();
                     break;
             }
         }
-        $Obj =      new \Signal($ID);
+        $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
-            $row =		$Obj->getRecord();
-            $active =	$row["active"];
-            $call =		$row["call"];
-            $GSQ =		$row["GSQ"];
-            $heard_in =	$row["heard_in"];
-            $ITU =		$row["ITU"];
-            $khz =		$row["khz"];
-            $logs =		$row["logs"];
-            $LSB =		$row["LSB"];
-            $notes =	stripslashes($row["notes"]);
-            $QTH =		$row["QTH"];
-            $SP =		$row["SP"];
-            $USB =		$row["USB"];
+            $row =      $Obj->getRecord();
+            $active =   $row["active"];
+            $call =         $row["call"];
+            $GSQ =      $row["GSQ"];
+            $heard_in =     $row["heard_in"];
+            $ITU =      $row["ITU"];
+            $khz =      $row["khz"];
+            $logs =         $row["logs"];
+            $LSB =      $row["LSB"];
+            $notes =    stripslashes($row["notes"]);
+            $QTH =      $row["QTH"];
+            $SP =       $row["SP"];
+            $USB =      $row["USB"];
         }
         if ($sortBy=="") {
             $sortBy = "date";
         }
-        $sortBy_SQL =		"";
+        $sortBy_SQL =       "";
         switch ($sortBy) {
-            case "date":	    $sortBy_SQL =	"`date` DESC, `time` DESC";			break;
-            case "date_d":	    $sortBy_SQL =	"`date` ASC, `time` ASC";			break;
-            case "dx":		    $sortBy_SQL =	"`dx_km`='' OR `dx_km` IS NULL,`dx_km` ASC";	break;
-            case "dx_d":	    $sortBy_SQL =	"`dx_km`='' OR `dx_km` IS NULL,`dx_km` DESC";	break;
-            case "format":	    $sortBy_SQL =	"`format`='' OR `format` IS NULL,`format` ASC";	break;
-            case "format_d":    $sortBy_SQL =	"`format`='' OR `format` IS NULL,`format` DESC";break;
-            case "gsq":		    $sortBy_SQL =	"`GSQ`='' OR `GSQ` IS NULL,`GSQ` ASC";		break;
-            case "gsq_d":	    $sortBy_SQL =	"`GSQ`='' OR `GSQ` IS NULL,`GSQ` DESC";		break;
-            case "ID":		    $sortBy_SQL =	"`logs`.`ID` ASC";				break;
-            case "ID_d":	    $sortBy_SQL =	"`logs`.`ID` DESC";				break;
-            case "itu":		    $sortBy_SQL =	"`ITU` ASC, `signals`.`SP` ASC, `khz` ASC, `call` ASC";	break;
-            case "itu_d":	    $sortBy_SQL =	"`ITU` DESC, `signals`.`SP` ASC, `khz` ASC, `call` ASC";break;
-            case "khz":		    $sortBy_SQL =	"`khz` ASC, `call` ASC";			break;
-            case "khz_d":	    $sortBy_SQL =	"`khz` DESC, `call` ASC";			break;
-            case "heard_in":    $sortBy_SQL =	"`logs`.`heard_in` ASC";			break;
-            case "heard_in_d":  $sortBy_SQL =	"`logs`.`heard_in` DESC";			break;
-            case "sec":		    $sortBy_SQL =	"`sec`='' OR `sec` IS NULL,`sec` ASC";		break;
-            case "sec_d":	    $sortBy_SQL =	"`sec`='' OR `sec` IS NULL,`sec` DESC";		break;
-            case "time":	    $sortBy_SQL =	"`time` IS NULL,`time` ASC";			break;
-            case "time_d":	    $sortBy_SQL =	"`time` IS NULL,`time` DESC";			break;
-            case "listener":    $sortBy_SQL =	"`listeners`.`name` ASC";			break;
-            case "listener_d":  $sortBy_SQL =	"`listeners`.`name` DESC";			break;
-            case "LSB":		    $sortBy_SQL =	"`logs`.`LSB` IS NULL, `logs`.`LSB` ASC";	break;
-            case "LSB_d":	    $sortBy_SQL =	"`logs`.`LSB` IS NULL, `logs`.`LSB` DESC";	break;
-            case "USB":		    $sortBy_SQL =	"`logs`.`USB` IS NULL, `logs`.`USB` ASC";	break;
-            case "USB_d":	    $sortBy_SQL =	"`logs`.`USB` IS NULL, `logs`.`USB` DESC";	break;
+            case "date":        $sortBy_SQL =   "`date` DESC, `time` DESC";
+                break;
+            case "date_d":      $sortBy_SQL =   "`date` ASC, `time` ASC";
+                break;
+            case "dx":          $sortBy_SQL =   "`dx_km`='' OR `dx_km` IS NULL,`dx_km` ASC";
+                break;
+            case "dx_d":        $sortBy_SQL =   "`dx_km`='' OR `dx_km` IS NULL,`dx_km` DESC";
+                break;
+            case "format":      $sortBy_SQL =   "`format`='' OR `format` IS NULL,`format` ASC";
+                break;
+            case "format_d":    $sortBy_SQL =   "`format`='' OR `format` IS NULL,`format` DESC";
+                break;
+            case "gsq":         $sortBy_SQL =   "`GSQ`='' OR `GSQ` IS NULL,`GSQ` ASC";
+                break;
+            case "gsq_d":       $sortBy_SQL =   "`GSQ`='' OR `GSQ` IS NULL,`GSQ` DESC";
+                break;
+            case "ID":          $sortBy_SQL =   "`logs`.`ID` ASC";
+                break;
+            case "ID_d":        $sortBy_SQL =   "`logs`.`ID` DESC";
+                break;
+            case "itu":         $sortBy_SQL =   "`ITU` ASC, `signals`.`SP` ASC, `khz` ASC, `call` ASC";
+                break;
+            case "itu_d":       $sortBy_SQL =   "`ITU` DESC, `signals`.`SP` ASC, `khz` ASC, `call` ASC";
+                break;
+            case "khz":         $sortBy_SQL =   "`khz` ASC, `call` ASC";
+                break;
+            case "khz_d":       $sortBy_SQL =   "`khz` DESC, `call` ASC";
+                break;
+            case "heard_in":    $sortBy_SQL =   "`logs`.`heard_in` ASC";
+                break;
+            case "heard_in_d":  $sortBy_SQL =   "`logs`.`heard_in` DESC";
+                break;
+            case "sec":         $sortBy_SQL =   "`sec`='' OR `sec` IS NULL,`sec` ASC";
+                break;
+            case "sec_d":       $sortBy_SQL =   "`sec`='' OR `sec` IS NULL,`sec` DESC";
+                break;
+            case "time":        $sortBy_SQL =   "`time` IS NULL,`time` ASC";
+                break;
+            case "time_d":      $sortBy_SQL =   "`time` IS NULL,`time` DESC";
+                break;
+            case "listener":    $sortBy_SQL =   "`listeners`.`name` ASC";
+                break;
+            case "listener_d":  $sortBy_SQL =   "`listeners`.`name` DESC";
+                break;
+            case "LSB":         $sortBy_SQL =   "`logs`.`LSB` IS NULL, `logs`.`LSB` ASC";
+                break;
+            case "LSB_d":       $sortBy_SQL =   "`logs`.`LSB` IS NULL, `logs`.`LSB` DESC";
+                break;
+            case "USB":         $sortBy_SQL =   "`logs`.`USB` IS NULL, `logs`.`USB` ASC";
+                break;
+            case "USB_d":       $sortBy_SQL =   "`logs`.`USB` IS NULL, `logs`.`USB` DESC";
+                break;
         }
         $sql =
             "SELECT\n"
@@ -1752,7 +1779,7 @@ class Signal {
             ."  `logs`.`ID`\n"
             ."ORDER BY\n"
             ."  $sortBy_SQL";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
 //  print("<pre>$sql</pre>");
 
         $out=
@@ -1773,7 +1800,7 @@ class Signal {
             ."        <table border='0' align='center' cellpadding='2' cellspacing='1' class='tableContainer' width='100%' height='100%'>\n"
             ."          <tr>\n"
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "            <form action='".system_URL."/".$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
                 ."            <input type='hidden' name='ID' value='$ID'>\n"
@@ -1805,7 +1832,7 @@ class Signal {
                 ."                    <th class='scroll_list' width='35' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=heard_in".($sortBy=='heard_in' ? '_d' : '')."'>".($sortBy=='heard_in'||$sortBy=='heard_in_d'?'<font color="#ff0000">In</font>':'In')."</a></small></th>\n"
                 ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
                 ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
-                .(isAdmin() ?
+                .(\Rxx\Rxx::isAdmin() ?
                     "                    <th class='scroll_list' width='35' align='left'><small>Del</small></th>\n"
                     :
                     ""
@@ -1834,7 +1861,7 @@ class Signal {
                 ."                    <th class='scroll_list'><small>In</small></th>\n"
                 ."                    <th class='scroll_list'><small>KM</small></th>\n"
                 ."                    <th class='scroll_list'><small>Mi</small></th>\n"
-                .(isAdmin() ?
+                .(\Rxx\Rxx::isAdmin() ?
                     "                    <th class='scroll_list'><small>Del</small></th>\n"
                     :
                     ""
@@ -1842,7 +1869,7 @@ class Signal {
                 ."                  </tr>\n"
                 ."                  </thead>\n";
             for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+                $row =  mysql_fetch_array($result, MYSQL_ASSOC);
                 $out.=
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='75'>".($row["date"] ? $row["date"] : "&nbsp;")."</td>\n"
@@ -1859,7 +1886,7 @@ class Signal {
                     ."                    <td class='scroll_list' width='35'>".($row["heard_in"]   ? $row["heard_in"]   : "&nbsp;")."</td>\n"
                     ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_km"]   ? $row["dx_km"]   : "&nbsp;")."</td>\n"
                     ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_miles"]   ? $row["dx_miles"]   : "&nbsp;")."</td>\n"
-                    .(isAdmin() ?
+                    .(\Rxx\Rxx::isAdmin() ?
                         "                    <td class='scroll_list' width='35' align='right'><a href='".system_URL."/".$mode."?submode=delete&ID=$ID&targetID=".$row["ID"]."'>X</a></td>\n"
                         :
                         ""
@@ -1884,7 +1911,7 @@ class Signal {
                 ."</table>\n"
                 ."</table>\n";
         }
-        $out.=	"</form>\n";
+        $out.=  "</form>\n";
 //  $out[] =	"<pre>$sql</pre>";
 
         return $out;

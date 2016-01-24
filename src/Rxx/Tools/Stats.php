@@ -8,86 +8,89 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Stats
  * @package Rxx\Tools
  */
-class Stats {
+class Stats
+{
     /**
      * @return string
      */
-    public static function stats() {
+    public static function stats()
+    {
         global $script, $mode, $region, $listenerID, $dx, $dx_units;
         global $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
 
         switch (system) {
             case "RNA":
-                $filter_system_SQL =			"(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
+                $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 break;
             case "REU":
-                $filter_system_SQL =			"`heard_in_eu` = 1";
+                $filter_system_SQL =            "`heard_in_eu` = 1";
                 break;
             case "RWW":
-                $filter_system_SQL =			"1";
+                $filter_system_SQL =            "1";
                 break;
         }
 
         switch (system) {
             case "RNA":
-                $filter_system_SQL =			"(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
-                $filter_listener_SQL =			"(`listeners`.`region` = 'na' OR `listeners`.`region` = 'ca' OR `listeners`.`SP` = 'hi')";
-                $filter_log_SQL =				"(`logs`.`region` = 'na' OR `logs`.`region` = 'ca' OR `logs`.`heard_in` = 'hi')";
+                $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
+                $filter_listener_SQL =          "(`listeners`.`region` = 'na' OR `listeners`.`region` = 'ca' OR `listeners`.`SP` = 'hi')";
+                $filter_log_SQL =               "(`logs`.`region` = 'na' OR `logs`.`region` = 'ca' OR `logs`.`heard_in` = 'hi')";
                 break;
             case "REU":
-                $filter_system_SQL =			"`heard_in_eu` = 1";
-                $filter_listener_SQL =			"(`region` = 'eu')";
-                $filter_log_SQL =				"(`logs`.`region` = 'eu')";
+                $filter_system_SQL =            "`heard_in_eu` = 1";
+                $filter_listener_SQL =          "(`region` = 'eu')";
+                $filter_log_SQL =               "(`logs`.`region` = 'eu')";
                 break;
             case "RWW":
                 if ($region!="") {
-                    $filter_system_SQL =			"(`heard_in_".$region." = 1)";
-                    $filter_listener_SQL =			"(`region` = '$region')";
-                    $filter_log_SQL =      			"(`region` = '$region')";
-                }
-                else {
-                    $filter_system_SQL =			"1";
-                    $filter_listener_SQL =			"1";
-                    $filter_listener_SQL =			"1";
+                    $filter_system_SQL =            "(`heard_in_".$region." = 1)";
+                    $filter_listener_SQL =          "(`region` = '$region')";
+                    $filter_log_SQL =               "(`region` = '$region')";
+                } else {
+                    $filter_system_SQL =            "1";
+                    $filter_listener_SQL =          "1";
+                    $filter_listener_SQL =          "1";
                 }
                 break;
         }
 
-        $filter_type =	array();
+        $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
             switch (system) {
-                case "RNA":	$type_NDB =	1;	break;
-                case "REU":	$type_NDB =	1;	break;
-                case "RWW":	$type_NDB =	1;	break;
+                case "RNA":     $type_NDB =     1;
+                    break;
+                case "REU":     $type_NDB =     1;
+                    break;
+                case "RWW":     $type_NDB =     1;
+                    break;
             }
         }
 
         if ($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
             if ($type_NDB) {
-                $filter_type[] =	 "`type` = ".NDB;
+                $filter_type[] =     "`type` = ".NDB;
             }
             if ($type_DGPS) {
-                $filter_type[] =	 "`type` = ".DGPS;
+                $filter_type[] =     "`type` = ".DGPS;
             }
             if ($type_TIME) {
-                $filter_type[] =	 "`type` = ".TIME;
+                $filter_type[] =     "`type` = ".TIME;
             }
             if ($type_HAMBCN) {
-                $filter_type[] =	 "`type` = ".HAMBCN;
+                $filter_type[] =     "`type` = ".HAMBCN;
             }
             if ($type_NAVTEX) {
-                $filter_type[] =	 "`type` = ".NAVTEX;
+                $filter_type[] =     "`type` = ".NAVTEX;
             }
             if ($type_OTHER) {
-                $filter_type[] =	 "`type` = ".OTHER;
+                $filter_type[] =     "`type` = ".OTHER;
             }
         }
-        $filter_type =	"(".implode($filter_type," OR ").")";
+        $filter_type =  "(".implode($filter_type, " OR ").")";
 
 
         if ($dx=="" || (!$listenerID && $dx<2000)) {
@@ -119,7 +122,7 @@ class Stats {
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Show for &nbsp;</th>\n"
             ."        <td nowrap><select name='listenerID' class='formfield' onchange='document.form.submit()' style='font-family: monospace;' >\n"
-            .get_listener_options_list($filter_listener_SQL,$listenerID,"(Select a listener to see more specific data)")
+            .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $listenerID, "(Select a listener to see more specific data)")
             ."</select></td>\n"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
@@ -175,7 +178,7 @@ class Stats {
             ."  <tr>\n"
             ."    <td class='downloadTableContent'>";
 
-        $listener =	get_listener_name($listenerID);
+        $listener =     \Rxx\Rxx::get_listener_name($listenerID);
 
         $sql =
             "SELECT\n"
@@ -208,7 +211,7 @@ class Stats {
             ."ORDER BY\n"
             ."`dx_km` is NULL, `dx_km` DESC";
 
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
         $out.=
             "<textarea name='results' rows='20' cols='85' nowrap>"
             ."DX Table for ".($listenerID ? $listener : "all listeners")."\n"
@@ -219,16 +222,16 @@ class Stats {
 
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result);
+            $row =  mysql_fetch_array($result);
             $out.=
                 $row["date"]." "
-                .pad($row["KM"],6)
-                .pad($row["Miles"],6)
-                .pad((float) $row["KHz"],9)
-                .pad($row["ID"],9)
-                .pad($row["SP"],4)
-                .pad($row["ITU"],4)
-                .pad($row["GSQ"],7)
+                .\Rxx\Rxx::pad($row["KM"], 6)
+                .\Rxx\Rxx::pad($row["Miles"], 6)
+                .\Rxx\Rxx::pad((float) $row["KHz"], 9)
+                .\Rxx\Rxx::pad($row["ID"], 9)
+                .\Rxx\Rxx::pad($row["SP"], 4)
+                .\Rxx\Rxx::pad($row["ITU"], 4)
+                .\Rxx\Rxx::pad($row["GSQ"], 7)
                 .(!$listenerID ? " ".$row["listenerName"]." (".($row["listenerSP"] ? $row["listenerSP"]." " : "").$row["listenerITU"].")": "")."\n";
         }
         $out.=
@@ -256,7 +259,7 @@ class Stats {
             ."  <tr>\n"
             ."    <td class='downloadTableContent'>";
 
-        $listener =	get_listener_name($listenerID);
+        $listener =     \Rxx\Rxx::get_listener_name($listenerID);
 
         $sql =
             "SELECT\n"
@@ -275,7 +278,7 @@ class Stats {
             ."  `dx`\n"
             ."ORDER BY\n"
             ."  `dx` ASC";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
 
 //  print("<pre>$sql</pre>");
 
@@ -289,9 +292,9 @@ class Stats {
 
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result);
-            $out.=	 pad(substr("      ".$row["dx"],strlen($row["dx"]))."-".(99+(int)$row["dx"]),14)
-                .pad($row["count"],6)
+            $row =  mysql_fetch_array($result);
+            $out.=   \Rxx\Rxx::pad(substr("      ".$row["dx"], strlen($row["dx"]))."-".(99+(int)$row["dx"]), 14)
+                .\Rxx\Rxx::pad($row["count"], 6)
                 ."\n";
         }
         $out.=
@@ -330,7 +333,7 @@ class Stats {
             ."ORDER BY\n"
             ."  `signals`.`ITU`,\n"
             ."  `signals`.`SP`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
 //   print("<pre>$sql</pre>");
 
         $out.=
@@ -341,8 +344,8 @@ class Stats {
             ."-----------------\n";
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result);
-            $out.=	pad($row["ITU"],4).pad($row["SP"],4).pad($row["signals"],5)."\n";
+            $row =  mysql_fetch_array($result);
+            $out.=  \Rxx\Rxx::pad($row["ITU"], 4).\Rxx\Rxx::pad($row["SP"], 4).\Rxx\Rxx::pad($row["signals"], 5)."\n";
         }
         $out.=
             "-----------------\n"
@@ -395,7 +398,7 @@ class Stats {
             ."  `signals`.`call`,"
             ."  `listeners`.`name`,\n"
             ."  `listeners`.`SP`\n";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
 
         //print("<pre>$sql</pre>");
         $out.=
@@ -406,15 +409,15 @@ class Stats {
             ."----------------------------------------------".(!$listenerID ? "---------------------------" : "")."\n";
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result);
+            $row =  mysql_fetch_array($result);
             $out.=
-                pad((float)$row["khz"],9)
-                .pad($row["call"],7)
-                .pad($row["SP"],3)
-                .pad($row["ITU"],4)
-                .pad($row["GSQ"],7)
-                .pad($row["lat"],8)
-                .pad($row["lon"],9)
+                \Rxx\Rxx::pad((float)$row["khz"], 9)
+                .\Rxx\Rxx::pad($row["call"], 7)
+                .\Rxx\Rxx::pad($row["SP"], 3)
+                .\Rxx\Rxx::pad($row["ITU"], 4)
+                .\Rxx\Rxx::pad($row["GSQ"], 7)
+                .\Rxx\Rxx::pad($row["lat"], 8)
+                .\Rxx\Rxx::pad($row["lon"], 9)
                 .(!$listenerID ? " ".$row["listenerName"]." (".($row["listenerSP"] ? $row["listenerSP"]." " : "").$row["listenerITU"].")": "")."\n";
         }
         $out.=

@@ -1,6 +1,6 @@
 <?php
 
-namespace Managers;
+namespace Rxx\Managers;
 
 class SysInfo
 {
@@ -19,7 +19,7 @@ class SysInfo
             $date =     array_shift($bits);
             $version =  trim(array_shift($bits), ':');
             $details =  implode(' ', $bits);
-            $entry =    $date.'  '.pad($version, 7).' '.$details;
+            $entry =    $date.'  '.\Rxx\Rxx::pad($version, 7).' '.$details;
         }
         $changelog = implode("\n", $changelog);
 

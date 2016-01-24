@@ -8,12 +8,12 @@
 
 namespace Rxx;
 
-
 /**
  * Class Rxx
  * @package Rxx
  */
-class Rxx {
+class Rxx
+{
     /**
      * @param $SP
      * @param $ITU
@@ -100,7 +100,7 @@ class Rxx {
         if ($qth_lat == $dx_lat && $qth_lon==$dx_lon) {
             return array(0, 0);
         }
-        if (($qth_lat==0 && $qth_lon==0) || ($dx_lat==0 && $dx_lon==0)){
+        if (($qth_lat==0 && $qth_lon==0) || ($dx_lat==0 && $dx_lon==0)) {
             return array('', '');
         }
         $dlon = ($dx_lon - $qth_lon);
@@ -305,13 +305,13 @@ class Rxx {
     public static function get_local_icao($GSQ, $num, $selected)
     {
         $out =        array();
-        $deg =        GSQ_deg($GSQ);
+        $deg =        Rxx::GSQ_deg($GSQ);
         $icao_arr =   array();
         $sql =        "SELECT * FROM `icao`";
         $result =     @mysql_query($sql);
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-            $dx =     get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
+            $dx =     Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
             $icao_arr[] =    array("miles" => $dx[0],"km" => $dx[1],"ICAO" => $row["ICAO"], );
         }
         sort($icao_arr);
@@ -474,7 +474,7 @@ class Rxx {
      */
     public static function piwik_tracking()
     {
-        return
+        return (ENABLE_PIWIK) ?
             "var _paq = _paq || [];\n"
             ."(function(){\n"
             ."  var u=document.location.protocol+'//'+document.location.hostname+'/piwik/';\n"
@@ -485,7 +485,7 @@ class Rxx {
             ."  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n"
             ."  g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'piwik.js';\n"
             ."  s.parentNode.insertBefore(g,s);\n"
-            ."})();\n";
+            ."})();\n" : "";
     }
 
     /**
@@ -499,13 +499,13 @@ class Rxx {
 
         switch ($mode) {
             case 'admin_manage':
-                $Obj = new \Managers\Admin;
+                $Obj = new Managers\Admin;
                 break;
             case 'logon':
-                $Obj = new \Managers\Logon;
+                $Obj = new Managers\Logon;
                 break;
             case 'sys_info':
-                $Obj = new \Managers\SysInfo;
+                $Obj = new Managers\SysInfo;
                 break;
             case 'awards':
                 $Obj = new Awards;
@@ -577,7 +577,7 @@ class Rxx {
                 break;
         }
         $out.=
-            (isAdmin() ? " (ADMIN)" : "")
+            (Rxx::isAdmin() ? " (ADMIN)" : "")
             ."</title>\n"
             ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
             ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
@@ -587,7 +587,7 @@ class Rxx {
             ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
             ."<script type='text/javascript'>\n"
             ."//<!--\n"
-            .piwik_tracking()
+            .Rxx::piwik_tracking()
             ."var system =     '".system."';\n"
             ."var system_URL = '".system_URL."';\n"
             ."//-->\n"
@@ -609,21 +609,21 @@ class Rxx {
         switch (system) {
             case "RNA":
                 $out.=
-                    menuItem_selected("<b>North America</b>", 200)
-                    .menuItem("system_REU", "Europe", "sys", 0, 200)
-                    .menuItem("system_RWW", "Worldwide", "sys", 0, 200);
+                    Rxx::menuItem_selected("<b>North America</b>", 200)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 200)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 200);
                 break;
             case "REU":
                 $out.=
-                    menuItem("system_RNA", "North America", "sys", 0, 200)
-                    .menuItem_selected("<b>Europe</b>", 200)
-                    .menuItem("system_RWW", "Worldwide", "sys", 0, 200);
+                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 200)
+                    .Rxx::menuItem_selected("<b>Europe</b>", 200)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 200);
                 break;
             case "RWW":
                 $out.=
-                    menuItem("system_RNA", "North America", "sys", 0, 200)
-                    .menuItem("system_REU", "Europe", "sys", 0, 200)
-                    .menuItem_selected("<b>Worldwide</b>", 200);
+                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 200)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 200)
+                    .Rxx::menuItem_selected("<b>Worldwide</b>", 200);
                 break;
         }
         $out.=
@@ -633,42 +633,42 @@ class Rxx {
             ."  <tr>\n"
             ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
             ."      <tr>\n"
-            .menuItem("signal_list", "Signals", "mode", 0, 50)
-            .menuItem("signal_seeklist", "Seeklist", "mode", 0, 50)
-            .menuItem("listener_list", "Listeners", "mode", 0, 55)
-            .menuItem("cle", "CLE", "mode", 0, 30)
-            .menuItem("maps", "Maps", "mode", 0, 35)
-            .menuItem("tools", "Tools", "mode", 0, 35)
-            .menuItem("weather", "Weather", "mode", 0, 55)
-            .menuItem("stats", "Stats", "mode", 0, 35)
-            .menuItem("awards", "Awards", "mode", 0, 45)
-            .menuItem("poll_list", "Polls", "mode", 0, 35)
-            .(isAdmin() ?
-                menuItem("logoff", "Log Off", "mode", 0, 45)
+            .Rxx::menuItem("signal_list", "Signals", "mode", 0, 50)
+            .Rxx::menuItem("signal_seeklist", "Seeklist", "mode", 0, 50)
+            .Rxx::menuItem("listener_list", "Listeners", "mode", 0, 55)
+            .Rxx::menuItem("cle", "CLE", "mode", 0, 30)
+            .Rxx::menuItem("maps", "Maps", "mode", 0, 35)
+            .Rxx::menuItem("tools", "Tools", "mode", 0, 35)
+            .Rxx::menuItem("weather", "Weather", "mode", 0, 55)
+            .Rxx::menuItem("stats", "Stats", "mode", 0, 35)
+            .Rxx::menuItem("awards", "Awards", "mode", 0, 45)
+            .Rxx::menuItem("poll_list", "Polls", "mode", 0, 35)
+            .(Rxx::isAdmin() ?
+                Rxx::menuItem("logoff", "Log Off", "mode", 0, 45)
                 :
-                menuItem("logon", "Log On", "mode", 0, 45)
+                Rxx::menuItem("logon", "Log On", "mode", 0, 45)
             )
-            .menuItem("help", "Help", "mode", 0, 35)
-            .menuItem("donate", "Donate", "mode", 0, 45)
+            .Rxx::menuItem("help", "Help", "mode", 0, 35)
+            .Rxx::menuItem("donate", "Donate", "mode", 0, 45)
             ."      </tr>\n"
             ."    </table></td>\n"
             ."  </tr>\n";
 
-        if (isAdmin()) {
+        if (Rxx::isAdmin()) {
             $out.=
                 "  <tr><td><img src='".BASE_PATH."assets/spacer.gif' height='3' width='1' alt=' '></td></tr>\n"
                 ."  <tr>\n"
                 ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
                 ."      <tr>\n"
                 ."      <th class='downloadTableContent' align='right' width='51'><font color='#004400'>Admin</font></th>\n"
-                .menuItem_box("admin_help", "Help", "mode", 0, 34)
-                .menuItem_box("sys_info", "Info", "mode", 0, 30)
-                .menuItem_box("admin_manage", "Manage", "mode", 0, 50)
+                .Rxx::menuItem_box("admin_help", "Help", "mode", 0, 34)
+                .Rxx::menuItem_box("sys_info", "Info", "mode", 0, 30)
+                .Rxx::menuItem_box("admin_manage", "Manage", "mode", 0, 50)
                 ."      <th class='downloadTableContent' align='right' width='42'><font color='#004400'>NDBList</font></th>\n"
-                .menuItem_box("http://groups.yahoo.com/group/ndblist/", "Yahoo", "", 1, 32)
+                .Rxx::menuItem_box("http://groups.yahoo.com/group/ndblist/", "Yahoo", "", 1, 32)
                 ."      <th class='downloadTableContent' align='right' width='30'><font color='#004400'>XML</font></th>\n"
-                .menuItem_box("xml_listener_stats", "Listener Stats", "mode", 1, 87)
-                .menuItem_box("xml_signallist", "Signals", "mode", 1, 53)
+                .Rxx::menuItem_box("xml_listener_stats", "Listener Stats", "mode", 1, 87)
+                .Rxx::menuItem_box("xml_signallist", "Signals", "mode", 1, 53)
                 ."      </tr>\n"
                 ."    </table></td>\n"
                 ."  </tr>\n";
@@ -697,8 +697,44 @@ class Rxx {
             case 'poll_list':
                 $out.= $Obj->drawList();
                 break;
+            case 'signal_seeklist':
+                $out.= \Rxx\Tools\Signal::signal_seeklist();
+                break;
+            case 'listener_list':
+                $out.= \Rxx\Tools\Listener::listener_list();
+                break;
+            case 'cle':
+                $out.= \Rxx\Tools\Cle::cle();
+                break;
+            case 'maps':
+                $out.= \Rxx\Tools\Map::maps();
+                break;
+            case 'tools':
+                $out.= \Rxx\Tools\Tools::tools();
+                break;
+            case 'weather':
+                $out .= \Rxx\Tools\Weather::weather();
+                break;
+            case 'stats':
+                $out .= \Rxx\Tools\Stats::stats();
+                break;
+            case 'help':
+                $out .= \Rxx\Rxx::help();
+                break;
+            case 'donate':
+                $out .= \Rxx\Tools\Donate::donate();
+                break;
+            case 'signal_info':
+                $out .= \Rxx\Tools\Signal::signal_info();
+                break;
+            case 'signal_map_na':
+                $out .= \Rxx\Tools\Signal::signal_map_na();
+                break;
+            case 'signal_map_eu':
+                $out .= \Rxx\Tools\Signal::signal_map_eu();
+                break;
             default:
-                $out.= call_user_func($mode);
+                $out.= 'Fatal error: Class is not defined. ' . $mode;
                 break;
         }
         $out.=
@@ -713,7 +749,7 @@ class Rxx {
             ."document.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com"
             ."?subject=".system."%20System'>Martin Francis\"+\"<\/a>\");\n"
             ."//--></script></b>"
-            ." &copy;".date('Y',time())."<br>"
+            ." &copy;".date('Y', time())."<br>"
             ."Original concept".(system=='RNA' ? " &amp; data" : "")." <b>Andy Robins</b></p>\n"
             ."</div>\n"
             ."</body>\n"
@@ -887,7 +923,7 @@ class Rxx {
                 $out.= "Detailed State Map > $SP";
                 break;
         }
-        if (isAdmin()) {
+        if (Rxx::isAdmin()) {
             $out.=    " (ADMIN)";
         }
         $out.=
@@ -922,31 +958,71 @@ class Rxx {
                 $out.= $Obj->edit();
                 break;
             case "log_upload":
-                $Obj = new \Managers\LogUploader;
+                $Obj = new Managers\LogUploader;
                 $out.= $Obj->draw();
                 break;
             case "tools_DGPS_popup":
+                $out .= Tools\Tools::tools_DGPS_lookup();
+                break;
             case "find_ICAO":
+                $out .= Rxx::find_ICAO();
+                break;
             case "listener_signals":
+                $out .= \Rxx\Tools\Listener::listener_signals();
+                break;
             case "listener_edit":
+                $out .= \Rxx\Tools\Listener::listener_edit();
+                break;
             case "listener_log":
+                $out .= \Rxx\Tools\Listener::listener_log();
+                break;
             case "listener_log_export":
+                $out .= \Rxx\Tools\Listener::listener_log_export();
+                break;
             case "listener_map":
+                $out .= \Rxx\Tools\Listener::listener_map();
+                break;
             case "listener_QNH":
+                $out .= \Rxx\Tools\Listener::listener_QNH();
+                break;
             case "listener_stats":
+                $out .= \Rxx\Tools\Listener::listener_stats();
+                break;
             case "show_itu":
+                $out .= \Rxx\Rxx::show_itu();
+                break;
             case "show_sp":
+                $out .= \Rxx\Rxx::show_sp();
+                break;
             case "signal_attachments":
+                // @TODO: Missing function?
+                //$out .= \Rxx\Signal::signal_attachments();
             case "signal_dgps_messages":
+                $out .= \Rxx\Tools\Signal::signal_dgps_messages();
+                break;
             case "signal_info":
+                $out .= \Rxx\Tools\Signal::signal_info();
+                break;
             case "signal_listeners":
+                $out .= \Rxx\Tools\Signal::signal_listeners();
+                break;
             case "signal_log":
+                $out .= \Rxx\Tools\Signal::signal_log();
+                break;
             case "signal_map_eu":
+                $out .= \Rxx\Tools\Signal::signal_map_eu();
+                break;
             case "signal_map_na":
+                $out .= \Rxx\Tools\Signal::signal_map_na();
+                break;
             case "signal_merge":
+                $out .= \Rxx\Tools\Signal::signal_merge();
+                break;
             case "signal_QNH":
+                $out .= \Rxx\Tools\Signal::signal_QNH();
+                break;
             case "state_map":
-                $out.= call_user_func($mode);
+                $out .= \Rxx\Tools\Map::state_map();
                 break;
         }
         $out.=
@@ -1027,51 +1103,51 @@ class Rxx {
             ."</head>\n"
             ."<body leftmargin='0' topmargin='0' marginheight='0' marginwidth='0'>\n";
         switch ($mode) {
-            case "map_af":                $out[] = map_af();
+            case "map_af":                $out[] = Tools\Map::map_af();
                 break;
-            case "map_alaska":                $out[] = map_alaska();
+            case "map_alaska":                $out[] = Tools\Map::map_alaska();
                 break;
-            case "map_as":                $out[] = map_as();
+            case "map_as":                $out[] = Tools\Map::map_as();
                 break;
-            case "map_au":                $out[] = map_au();
+            case "map_au":                $out[] = Tools\Map::map_au();
                 break;
-            case "map_eu":                $out[] = map_eu();
+            case "map_eu":                $out[] = Tools\Map::map_eu();
                 break;
-            case "map_locator":                $out[] = map_locator();
+            case "map_locator":                $out[] = Tools\Map::map_locator();
                 break;
-            case "map_na":                $out[] = map_na();
+            case "map_na":                $out[] = Tools\Map::map_na();
                 break;
-            case "map_pacific":                $out[] = map_pacific();
+            case "map_pacific":                $out[] = Tools\Map::map_pacific();
                 break;
-            case "map_polynesia":            $out[] = map_polynesia();
+            case "map_polynesia":            $out[] = Tools\Map::map_polynesia();
                 break;
-            case "map_sa":                $out[] = map_sa();
+            case "map_sa":                $out[] = Tools\Map::map_sa();
                 break;
-            case "tools_DGPS_popup":            $out[] = tools_DGPS_lookup();
+            case "tools_DGPS_popup":            $out[] = Tools\Tools::tools_DGPS_lookup();
                 break;
-            case "tools_coordinates_conversion":    $out[] = tools_coordinates_conversion();
+            case "tools_coordinates_conversion":    $out[] = Tools\Tools::tools_coordinates_conversion();
                 break;
-            case "tools_navtex_fixer":                $out[] = tools_navtex_fixer();
+            case "tools_navtex_fixer":                $out[] = Tools\Tools::tools_navtex_fixer();
                 break;
-            case "tools_links":                $out[] = tools_links();
+            case "tools_links":                $out[] = Tools\Tools::tools_links();
                 break;
-            case "tools_sunrise_calculator":        $out[] = tools_sunrise_calculator();
+            case "tools_sunrise_calculator":        $out[] = Tools\Tools::tools_sunrise_calculator();
                 break;
-            case "weather_lightning_canada":        $out[] = weather_lightning_canada();
+            case "weather_lightning_canada":        $out[] = Tools\Weather::weather_lightning_canada();
                 break;
-            case "weather_lightning_europe":        $out[] = weather_lightning_europe();
+            case "weather_lightning_europe":        $out[] = Tools\Weather::weather_lightning_europe();
                 break;
-            case "weather_lightning_na":        $out[] = weather_lightning_na();
+            case "weather_lightning_na":        $out[] = Tools\Weather::weather_lightning_na();
                 break;
-            case "weather_metar":            $out[] = weather_metar();
+            case "weather_metar":            $out[] = Tools\Weather::weather_metar();
                 break;
-            case "weather_pressure_europe":        $out[] = weather_pressure_europe();
+            case "weather_pressure_europe":        $out[] = Tools\Weather::weather_pressure_europe();
                 break;
-            case "weather_pressure_au":            $out[] = weather_pressure_au();
+            case "weather_pressure_au":            $out[] = Tools\Weather::weather_pressure_au();
                 break;
-            case "weather_pressure_na":            $out[] = weather_pressure_na();
+            case "weather_pressure_na":            $out[] = Tools\Weather::weather_pressure_na();
                 break;
-            case "weather_solar_map":            $out[] = weather_solar_map();
+            case "weather_solar_map":            $out[] = Tools\Weather::weather_solar_map();
                 break;
         }
         $out[] =    "</body>\n"
@@ -1576,9 +1652,9 @@ class Rxx {
             $out.=
                 "Showing nearest 100 stations<br><span class='formFixed'>ICAO KM   Miles</span><br>\n"
                 ."<select size='5' class='formFixed'>\n";
-            $icao_arr =    get_local_icao($GSQ_icao, 100, 0);
+            $icao_arr =    Rxx::get_local_icao($GSQ_icao, 100, 0);
             for ($i=0; $i<100; $i++) {
-                $out.=    "<option value='".$icao_arr[$i]['ICAO']."'>".$icao_arr[$i]['ICAO']." ".pad_nbsp($icao_arr[$i]['km'], 5).pad_nbsp($icao_arr[$i]['miles'], 5)."</option>\n";
+                $out.=    "<option value='".$icao_arr[$i]['ICAO']."'>".$icao_arr[$i]['ICAO']." ".Rxx::pad_nbsp($icao_arr[$i]['km'], 5).Rxx::pad_nbsp($icao_arr[$i]['miles'], 5)."</option>\n";
             }
             $out.=    "</select>\n";
         }
@@ -2003,7 +2079,7 @@ class Rxx {
      */
     public static function pad_dot($text, $places)
     {
-        $text = translate_chars($text);
+        $text = Rxx::translate_chars($text);
         if (strlen($text)>=$places) {
             return str_replace(" ", "&nbsp;", substr($text, 0, $places));
         }
@@ -2018,7 +2094,7 @@ class Rxx {
      */
     public static function pad_nbsp($text, $places)
     {
-        $text = translate_chars($text);
+        $text = Rxx::translate_chars($text);
         $text = $text.(substr("                                                   ", 0, $places-strLen($text)));
         return str_replace(" ", "&nbsp;", $text);
     }
@@ -2030,7 +2106,7 @@ class Rxx {
      */
     public static function lead_nbsp($text, $places)
     {
-        $text = translate_chars($text);
+        $text = Rxx::translate_chars($text);
         $text = (substr("                                                   ", 0, $places-strLen($text))).$text;
         return str_replace(" ", "&nbsp;", $text);
     }

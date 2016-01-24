@@ -8,16 +8,17 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Tools
  * @package Rxx\Tools
  */
-class Tools {
+class Tools
+{
     /**
      * @return string
      */
-    function tools() {
+    public static function tools()
+    {
         global $script, $mode, $submode;
         return
             "<form name='form' action='".system_URL."' method='POST'>\n"
@@ -32,18 +33,19 @@ class Tools {
             ."<nobr><a href='#sunrise'><b>Sunrise Calculator</b></a></nobr> |\n"
             ."<nobr><a href='#links'><b>Other NDB Databases</b></a></nobr>\n"
             ."]</small></p><br><br>\n"
-            .tools_DGPS_lookup()."<br><br><br>\n"
-            .tools_coordinates_conversion()."<br><br><br>\n"
-            .tools_navtex_fixer()."<br><br><br>\n"
-            .tools_sunrise_calculator()."<br><br><br>\n"
-            .tools_links()
+            .Tools::tools_DGPS_lookup()."<br><br><br>\n"
+            .Tools::tools_coordinates_conversion()."<br><br><br>\n"
+            .Tools::tools_navtex_fixer()."<br><br><br>\n"
+            .Tools::tools_sunrise_calculator()."<br><br><br>\n"
+            .Tools::tools_links()
             ."</form></span>\n";
     }
 
     /**
      * @return string
      */
-    function tools_coordinates_conversion() {
+    public static function tools_coordinates_conversion()
+    {
         global $mode,$script,$GSQ;
         return
             "<form name='coords' onsubmit='return false;'>\n"
@@ -96,7 +98,8 @@ class Tools {
     /**
      * @return string
      */
-    function tools_DGPS_lookup() {
+    public static function tools_DGPS_lookup()
+    {
         global $script, $mode;
         return
             "<script language='JavaScript' type='text/javascript' src='".system_URL."/export_javascript_DGPS'></script>\n"
@@ -147,7 +150,8 @@ class Tools {
     /**
      * @return string
      */
-    function tools_navtex_fixer() {
+    public static function tools_navtex_fixer()
+    {
         global $mode,$script;
         return
             "<script language='javascript' type='text/javascript'>\n"
@@ -237,7 +241,8 @@ class Tools {
     /**
      * @return string
      */
-    function tools_links() {
+    public static function tools_links()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -266,7 +271,8 @@ class Tools {
     /**
      * @return string
      */
-    function tools_sunrise_calculator() {
+    public static function tools_sunrise_calculator()
+    {
         global $mode,$script;
         return "<script language='JavaScript' type='text/javascript' src='".BASE_PATH."assets/sunrise.js'></script>\n"
         ."<form NAME='sunForm' onSubmit='formValues(this, 0); set_sunrise_cookies(this); return false;'>\n"

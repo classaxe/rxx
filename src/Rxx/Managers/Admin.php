@@ -1,5 +1,5 @@
 <?php
-namespace Managers;
+namespace Rxx\Managers;
 
 class Admin
 {
@@ -99,7 +99,7 @@ class Admin
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             if ($row["qth_lat"] && $row["dx_lat"]) {
-                $a =    get_dx($row["qth_lat"], $row["qth_lon"], $row["dx_lat"], $row["dx_lon"]);
+                $a =    \Rxx\Rxx::get_dx($row["qth_lat"], $row["qth_lon"], $row["dx_lat"], $row["dx_lon"]);
                 $sql =
                      "UPDATE\n"
                     ."  `logs`\n"
@@ -148,7 +148,7 @@ class Admin
         $result =    @mysql_query($sql);
 
         $affected =    mysql_num_rows($result);
-        $signal = new \Signal;
+        $signal = new \Rxx\Signal;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             $ID =    $row['signalID'];
@@ -238,7 +238,7 @@ class Admin
                     if (substr($data[$i], 43, 1)=="W") {
                         $lon *=-1;
                     }
-                    $icao_gsq =    deg_GSQ($lat, $lon);
+                    $icao_gsq =    \Rxx\Rxx::deg_GSQ($lat, $lon);
                     $sql =
                          "INSERT INTO `icao` SET \n"
                         ."  `name` = \"$icao_name\",\n"
@@ -317,7 +317,7 @@ class Admin
             ."FROM\n"
             ."  `signals`";
         $result =    mysql_query($sql);
-        $signal = new \Signal;
+        $signal = new \Rxx\Signal;
         for ($i=0; $i<mysql_num_rows($result); $i++) {
             $row =    mysql_fetch_array($result, MYSQL_ASSOC);
             $ID =    $row["ID"];
@@ -367,7 +367,7 @@ class Admin
             $ID =    $row["ID"];
             $GSQ =    $row["GSQ"];
             if ($GSQ) {
-                $a =     GSQ_deg($GSQ);
+                $a =     \Rxx\Rxx::GSQ_deg($GSQ);
                 $lat =    $a["lat"];
                 $lon =    $a["lon"];
                 $sql =
@@ -399,7 +399,7 @@ class Admin
         for ($i=0; $i<mysql_num_rows($result2); $i++) {
             $row2 =        mysql_fetch_array($result2);
             $listenerID =    $row2["ID"];
-            if (update_listener_log_count($listenerID)) {
+            if (\Rxx\Rxx::update_listener_log_count($listenerID)) {
                 $updated++;
             }
         }
@@ -411,7 +411,7 @@ class Admin
     protected function systemSendTestEmail()
     {
         global $sendToEmail;
-        $mail = new \PHPMailer();
+        $mail = new \Rxx\PHPMailer();
         $mail->PluginDir =      "../";
         $mail->IsHtml(true);
         $mail->Mailer =         "smtp";

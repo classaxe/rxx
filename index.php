@@ -61,7 +61,7 @@ ini_set("mysql.trace_mode", 1);
 // Need to display offset graphs
 // When using wildcard chracters, highlight fails to highlight
 
-define ("READONLY",0);
+define("READONLY", 0);
 
 session_name("RXX");
 session_cache_limiter('must-revalidate');
@@ -69,11 +69,11 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', false);
 session_start();
 
-$REQUEST_ICAO =	@$_GET['ICAO'];
-$REQUEST_hours =	@$_GET['hours'];
-$REQUEST_list =	@$_GET['list'];
+$REQUEST_ICAO =     @$_GET['ICAO'];
+$REQUEST_hours =    @$_GET['hours'];
+$REQUEST_list =     @$_GET['list'];
 
-extract($_REQUEST);		// Extracts all request variables (GET and POST) into global scope.
+extract($_REQUEST);         // Extracts all request variables (GET and POST) into global scope.
 
 $debug=0;
 
@@ -105,7 +105,7 @@ switch ($sys) {
 
 switch ($mode) {
     // Public functions
-    case "admin_help":	// made public for Brian
+    case "admin_help":  // made public for Brian
     case "awards":
     case "cle":
     case "donate":
@@ -183,7 +183,7 @@ switch ($mode) {
         die($Obj->getLastLogDate());
         break;
     case "metar":
-        print(METAR(@$REQUEST_ICAO,@$REQUEST_hours,@$REQUEST_list));
+        print(METAR(@$REQUEST_ICAO, @$REQUEST_hours, @$REQUEST_list));
         break;
     case "ILGRadio_signallist":
         header('Content-Type: application/download');
@@ -204,8 +204,7 @@ switch ($mode) {
         global $save;
         if ($save==1) {
             header('Content-Disposition: attachment;filename=config.js');
-        }
-        else {
+        } else {
             header('Content-type: text/javascript');
         }
         print(\Rxx\Tools\Export::export_ndbweblog_config());
@@ -226,8 +225,7 @@ switch ($mode) {
         global $save;
         if ($save==1) {
             header('Content-Disposition: attachment;filename=log.js');
-        }
-        else {
+        } else {
             header('Content-type: text/javascript');
         }
         print(\Rxx\Tools\Export::export_ndbweblog_log());
@@ -236,8 +234,7 @@ switch ($mode) {
         global $save;
         if ($save==1) {
             header('Content-Disposition: attachment;filename=stations.js');
-        }
-        else {
+        } else {
             header('Content-type: text/javascript');
         }
         print(\Rxx\Tools\Export::export_ndbweblog_stations());
@@ -258,7 +255,7 @@ switch ($mode) {
     case "export_text_signals":
         \Rxx\Tools\Export::export_text_signals();
         break;
-    case "export_text":		// old function may still be called from URLs
+    case "export_text":         // old function may still be called from URLs
     case "export_text_log":
         \Rxx\Tools\Export::export_text_log();
         break;
@@ -281,7 +278,7 @@ switch ($mode) {
         \Rxx\Rxx::xml_signallist();
         break;
     case "xml_listener_stats":
-        \Rxx\Rxx::xml_listener_stats(@$submode,@$listenerID);
+        \Rxx\Rxx::xml_listener_stats(@$submode, @$listenerID);
         break;
 
 
@@ -292,8 +289,7 @@ switch ($mode) {
     case "sys_info":
         if (!isAdmin()) {
             header("Location: ".system_URL."/logon");
-        }
-        else {
+        } else {
             \Rxx\Rxx::main();
         }
         break;
@@ -302,8 +298,7 @@ switch ($mode) {
     case "poll_edit":
         if (!isAdmin()) {
             header("Location: ".system_URL."/logon");
-        }
-        else {
+        } else {
             popup();
         }
         break;
@@ -311,8 +306,7 @@ switch ($mode) {
     case "db_export":
         if (!isAdmin()) {
             header("Location: ".system_URL."/logon");
-        }
-        else {
+        } else {
             \Rxx\Tools\Backup::dbBackup(0);
         }
         break;

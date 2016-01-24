@@ -127,7 +127,7 @@ class Record
     {
         $out = array();
         if (!$result = static::doSqlQuery($sql)) {
-            z($sql);
+            \Rxx\Rxx::z($sql);
             print mysql_error();
             return false;
         }
