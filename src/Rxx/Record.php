@@ -1,17 +1,38 @@
 <?php
+namespace Rxx;
 
+/**
+ * Class Record
+ * @package Rxx
+ */
 class Record
 {
+    /**
+     * @var string
+     */
     protected $ID;
+    /**
+     * @var string
+     */
     protected $table;
+    /**
+     * @var
+     */
     public $record;
 
+    /**
+     * @param string $ID
+     * @param string $table
+     */
     public function __construct($ID = '', $table = '')
     {
         $this->ID = addslashes($ID);
         $this->table = $table;
     }
 
+    /**
+     * @return resource
+     */
     public function delete()
     {
         $sql =
@@ -22,17 +43,27 @@ class Record
         return $this->doSqlQuery($sql);
     }
 
+    /**
+     * @param $sql
+     * @return resource
+     */
     public static function doSqlQuery($sql)
     {
         return mysql_query($sql);
     }
 
 
+    /**
+     * @return string
+     */
     public function getID()
     {
         return $this->ID;
     }
 
+    /**
+     * @return array|bool
+     */
     public function getRecord()
     {
         if ($this->getID()=='') {
@@ -49,11 +80,18 @@ class Record
         return mysql_fetch_array($result, MYSQL_ASSOC);
     }
 
+    /**
+     * @return int
+     */
     public static function getAffectedRows()
     {
         return mysql_affected_rows();
     }
 
+    /**
+     * @param $sql
+     * @return bool
+     */
     public static function getFieldForSql($sql)
     {
         if (!$result = static::doSqlQuery($sql)) {
@@ -66,6 +104,10 @@ class Record
         return $record[0];
     }
 
+    /**
+     * @param $sql
+     * @return array|bool
+     */
     public static function getRecordForSql($sql)
     {
         if (!$result = static::doSqlQuery($sql)) {
@@ -77,6 +119,10 @@ class Record
         return mysql_fetch_array($result, MYSQL_ASSOC);
     }
 
+    /**
+     * @param $sql
+     * @return array|bool
+     */
     public static function getRecordsForSql($sql)
     {
         $out = array();
@@ -91,6 +137,10 @@ class Record
         return $out;
     }
 
+    /**
+     * @param $data
+     * @return resource
+     */
     public function insert($data)
     {
         $fields = array();
@@ -106,6 +156,10 @@ class Record
         return static::doSqlQuery($sql);
     }
 
+    /**
+     * @param bool $data
+     * @return array|bool
+     */
     public function load($data = false)
     {
         if ($data!==false) {
@@ -117,17 +171,29 @@ class Record
         return $this->record;
     }
 
+    /**
+     * @param $ID
+     */
     public function setID($ID)
     {
         $this->ID = $ID;
     }
 
+    /**
+     * @param $field
+     * @param $value
+     * @return resource
+     */
     public function updateField($field, $value)
     {
         $data = array($field=>$value);
         return $this->update($data);
     }
 
+    /**
+     * @param $data
+     * @return resource
+     */
     public function update($data)
     {
         $fields = array();

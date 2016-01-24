@@ -1,4 +1,5 @@
 <?php
+namespace Rxx;
 
 class Listener extends Record
 {

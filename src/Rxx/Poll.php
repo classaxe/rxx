@@ -1,6 +1,15 @@
 <?php
+namespace Rxx;
+
+/**
+ * Class Poll
+ * @package Rxx
+ */
 class Poll
 {
+    /**
+     * @return string
+     */
     public function draw()
     {
         global $mode;
@@ -12,7 +21,7 @@ class Poll
         if (!$row) {
             return
                  "<p><b>Sorry!</b><br>The poll function is offline.</p>\n"
-                ."<p>Click <a href='./?mode=poll_list'><b>here</b></a> for previous.</p>";
+                . "<p>Click <a href='../../classes?mode=poll_list'><b>here</b></a> for previous.</p>";
         }
         if (
             get_var('submode')=="vote" && $my_answer && $questionID
@@ -28,6 +37,9 @@ class Poll
         return $this->drawForm();
     }
 
+    /**
+     * @return string
+     */
     protected function drawForm()
     {
         global $poll, $mode;
@@ -101,6 +113,9 @@ class Poll
         return $html;
     }
 
+    /**
+     * @return string
+     */
     public function drawList()
     {
         global $mode, $submode, $ID, $sortBy, $script, $mode;
@@ -287,6 +302,9 @@ class Poll
 
     }
 
+    /**
+     * @return string
+     */
     protected function drawResults()
     {
         global $doThis, $vote, $poll_number, $title, $date, $question, $answers, $my_answer;
@@ -364,6 +382,9 @@ class Poll
         return $html;
     }
 
+    /**
+     * @return string
+     */
     public function edit()
     {
         global $script, $mode, $submode, $ID, $question, $YYYY, $MMM, $title;

@@ -1,4 +1,6 @@
 <?php
+namespace Rxx;
+
 define("VERSION_SMTP", "2.0.0");
 /*
 Version History:
