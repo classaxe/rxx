@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
+
 //ob_start("ob_gzhandler");
 ini_set('display_errors', 1);
 
