@@ -70,7 +70,7 @@ class Log extends Record
         return static::getRecordForSql($sql);
     }
 
-    public static function getLogDateRange($system, $region=false)
+    public static function getLogDateRange($system, $region = false)
     {
         $filter = "1";
         switch ($system) {
@@ -101,5 +101,4 @@ class Log extends Record
             ."    ".$filter;
         return static::getRecordForSql($sql);
     }
-
 }

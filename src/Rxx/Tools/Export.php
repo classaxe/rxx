@@ -36,17 +36,18 @@ Version History:
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Export
  * @package Rxx\Tools
  */
-class Export {
+class Export
+{
     /**
      * @return string
      */
-    public static function export_javascript_DGPS() {
-        $out =	array();
+    public static function export_javascript_DGPS()
+    {
+        $out =  array();
         $sql =
             "SELECT\n"
             ."  `signals`.*\n"
@@ -58,14 +59,14 @@ class Export {
             ."  `signals`.`ITU` = `itu`.`ITU`";
 //  $out[] =	"<pre>$sql</pre>";
 
-        $result =	@mysql_query($sql);
+        $result =   @mysql_query($sql);
 
-        $out[] =	"dgps =	new Array();\r\n";
+        $out[] =    "dgps =	new Array();\r\n";
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result, MYSQL_ASSOC);
-            if (preg_match("/Ref ID: ([0-9]+)\/*([0-9]+)*; *([0-9]+) *bps/i",$row['notes'],$ID_arr)) {
-                $out[] =	"DGPS (\""
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            if (preg_match("/Ref ID: ([0-9]+)\/*([0-9]+)*; *([0-9]+) *bps/i", $row['notes'], $ID_arr)) {
+                $out[] =    "DGPS (\""
                     .(count($ID_arr)>1 ? $ID_arr[1] : "")."\",\""
                     .(count($ID_arr)>2 ? $ID_arr[2] : "")."\",\""
                     .$row['call']."\",\""
@@ -77,18 +78,19 @@ class Export {
                     .$row['active']."\");\r\n";
             }
         }
-        return implode($out,"");
+        return implode($out, "");
     }
 
     /**
      *
      */
-    public static function export_kml_signals() {
+    public static function export_kml_signals()
+    {
         global $ID, $mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -103,18 +105,18 @@ class Export {
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `khz`,`call`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
         $out =
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\r\n"
             ."<Document>\r\n"
             ."  <name>Signals Received</name>\r\n";
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            if ((float)$row['lon'] || (float)$row['lat']){
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            if ((float)$row['lon'] || (float)$row['lat']) {
                 $out.=
                     "  <Placemark>\r\n"
-                    ."    <name>".html_entity_decode(translate_chars($row['call']),ENT_QUOTES, "UTF-8")." ".(float)$row['khz']."KHz</name>"
-                    ."    <description>".html_entity_decode(translate_chars($row['QTH']),ENT_QUOTES, "UTF-8")." ".$row['SP']." ".$row['ITU']."</description>\r\n"
+                    ."    <name>".html_entity_decode(Rxx::translate_chars($row['call']), ENT_QUOTES, "UTF-8")." ".(float)$row['khz']."KHz</name>"
+                    ."    <description>".html_entity_decode(Rxx::translate_chars($row['QTH']), ENT_QUOTES, "UTF-8")." ".$row['SP']." ".$row['ITU']."</description>\r\n"
                     ."    <Point><coordinates>".$row['lon'].",".$row['lat']."</coordinates></Point>\r\n"
                     ."  </Placemark>\r\n";
             }
@@ -129,16 +131,17 @@ class Export {
     /**
      *
      */
-    public static function export_ndbweblog() {
+    public static function export_ndbweblog()
+    {
         global $ID,$mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
-        $out =	array();
+        $out =  array();
 
         $out[] =
             "<html>\r\n"
@@ -158,57 +161,59 @@ class Export {
             ."</ul>\n"
             ."<p><a target=\"_blank\" href=\"".system_URL."/export_ndbweblog_index/".$ID."\"><b>Click here</b></a> to use the hosted version of this NDBWeblog.</p>\r\n"
             ."</body></html>\r\n";
-        print implode($out,"");
+        print implode($out, "");
     }
 
     /**
      * @return string
      */
-    public static function export_ndbweblog_config() {
+    public static function export_ndbweblog_config()
+    {
         global $ID,$mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
-        $out =	array();
+        $out =  array();
 
-        $sql =	"SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
-        if (!$result =	mysql_query($sql)) {
+        $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
+        if (!$result =  mysql_query($sql)) {
             return "Invalid User ID";
         }
-        $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
 
-        $out[] =	"// ***********************************************************************\r\n";
-        $out[] =	"// * FILE HEADER:                                                        *\r\n";
-        $out[] =	"// ***********************************************************************\r\n";
-        $out[] =	"// * Filename:      config.js                                            *\r\n";
-        $out[] =	"// * Generated by:  ".pad(system,7)."                                              *\r\n";
-        $out[] =	"// *                                                                     *\r\n";
-        $out[] =	"// * This is a user editable file with details on the logbook's owner.   *\r\n";
-        $out[] =	"// ***********************************************************************\r\n";
-        $out[] =	"\r\n";
-        $out[] =	"qth_lat =    ".$row['lat'].";\r\n";
-        $out[] =	"qth_lon =    ".$row['lon'].";\r\n";
-        $out[] =	"qth_name =   \"".$row['name'].", ".($row['QTH'] ? $row['QTH'].", ":"").($row['SP'] ? $row['SP'].", ":"").$row['ITU']."\";\r\n";
-        $out[] =	"qth_email =  \"".$row['email']."\";\r\n";
-        $out[] =	"qth_home =   \"".$row['website']."\";\r\n";
-        $out[] =	"monthly =    1;\r\n";
-        $out[] =	"utc_offset = ".$row['timezone'].";\r\n";
-        return implode($out,"");
+        $out[] =    "// ***********************************************************************\r\n";
+        $out[] =    "// * FILE HEADER:                                                        *\r\n";
+        $out[] =    "// ***********************************************************************\r\n";
+        $out[] =    "// * Filename:      config.js                                            *\r\n";
+        $out[] =    "// * Generated by:  ".Rxx::pad(system, 7)."                                              *\r\n";
+        $out[] =    "// *                                                                     *\r\n";
+        $out[] =    "// * This is a user editable file with details on the logbook's owner.   *\r\n";
+        $out[] =    "// ***********************************************************************\r\n";
+        $out[] =    "\r\n";
+        $out[] =    "qth_lat =    ".$row['lat'].";\r\n";
+        $out[] =    "qth_lon =    ".$row['lon'].";\r\n";
+        $out[] =    "qth_name =   \"".$row['name'].", ".($row['QTH'] ? $row['QTH'].", ":"").($row['SP'] ? $row['SP'].", ":"").$row['ITU']."\";\r\n";
+        $out[] =    "qth_email =  \"".$row['email']."\";\r\n";
+        $out[] =    "qth_home =   \"".$row['website']."\";\r\n";
+        $out[] =    "monthly =    1;\r\n";
+        $out[] =    "utc_offset = ".$row['timezone'].";\r\n";
+        return implode($out, "");
     }
 
     /**
      * @return string
      */
-    public static function export_ndbweblog_index() {
+    public static function export_ndbweblog_index()
+    {
         global $ID,$mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -236,12 +241,13 @@ class Export {
     /**
      * @return string
      */
-    public static function export_ndbweblog_log() {
+    public static function export_ndbweblog_log()
+    {
         global $ID,$mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -261,11 +267,11 @@ class Export {
             ."ORDER BY\n"
             ."  `date`,\n"
             ."  `time`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
         $records = array();
         $unique = array();
-        for ($i=0; $i<mysql_num_rows($result); $i++){
-            $r =	mysql_fetch_array($result,MYSQL_ASSOC);
+        for ($i=0; $i<mysql_num_rows($result); $i++) {
+            $r =    mysql_fetch_array($result, MYSQL_ASSOC);
             $records[] = array(
                 'ID' =>       $r['ID'],
                 'khz' =>      (float)$r['khz'],
@@ -275,15 +281,15 @@ class Export {
             );
         }
         $unique = array();
-        foreach($records as $r){
+        foreach ($records as $r) {
             $key = $r['khz'].'-'.$r['call'];
-            if (!isset($unique[$key])){
+            if (!isset($unique[$key])) {
                 $unique[$key] = array();
             }
             $unique[$key][$r['ID']] = $r['ID'];
         }
         $modified = array();
-        foreach($records as $r){
+        foreach ($records as $r) {
             $key =          $r['khz'].'-'.$r['call'];
             $r['idx'] =     $unique[$key];
             $r['count'] =   count($unique[$key]);
@@ -295,7 +301,7 @@ class Export {
             ."// * FILE HEADER:                                                        *\r\n"
             ."// ***********************************************************************\r\n"
             ."// * Filename:      log.js                                               *\r\n"
-            ."// * Generated by:  ".pad(system,7)."                                              *\r\n"
+            ."// * Generated by:  ".Rxx::pad(system, 7)."                                              *\r\n"
             ."// *                                                                     *\r\n"
             ."// * This is a user editable file containing actual log data.            *\r\n"
             ."// *                                                                     *\r\n"
@@ -307,11 +313,11 @@ class Export {
             ."// * Don't use \"quotes\" in the notes field - single 'quotes' are fine.   *\r\n"
             ."// ***********************************************************************\r\n"
             ."\r\n";
-        foreach ($records as $r){
+        foreach ($records as $r) {
             $call = $r['call'];
-            if ($r['count']>1){
+            if ($r['count']>1) {
                 sort($r['idx']);
-                $call.=';'.(1+array_search($r['ID'],$r['idx']));
+                $call.=';'.(1+array_search($r['ID'], $r['idx']));
             }
             $out.=
                 "LOG("
@@ -328,12 +334,13 @@ class Export {
     /**
      * @return string
      */
-    public static function export_ndbweblog_stations() {
+    public static function export_ndbweblog_stations()
+    {
         global $ID,$mode,$ver,$noheader;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -364,23 +371,23 @@ class Export {
             ."  `signals`.`ID` \n"
             ."ORDER BY\n"
             ."  `khz`,`call`,`ID`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
         $records = array();
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $r = mysql_fetch_array($result,MYSQL_ASSOC);
+            $r = mysql_fetch_array($result, MYSQL_ASSOC);
             $r['khz'] = (float)$r['khz'];
             $records[] = $r;
         }
         $unique = array();
-        foreach($records as $r){
+        foreach ($records as $r) {
             $key = $r['khz'].'-'.$r['call'];
-            if (!isset($unique[$key])){
+            if (!isset($unique[$key])) {
                 $unique[$key] = array();
             }
             $unique[$key][] = $r['ID'];
         }
         $modified = array();
-        foreach($records as $r){
+        foreach ($records as $r) {
             $key =          $r['khz'].'-'.$r['call'];
             $r['count'] =   count($unique[$key]);
             $r['idx'] =     $unique[$key];
@@ -424,17 +431,17 @@ class Export {
                 ."// ***********************************************************************\r\n"
                 ."\r\n";
         }
-        foreach($records as $r) {
+        foreach ($records as $r) {
             $call = $r['call'];
-            if ($r['count']>1){
+            if ($r['count']>1) {
                 sort($r['idx']);
-                $call.=';'.(1+array_search($r['ID'],$r['idx']));
+                $call.=';'.(1+array_search($r['ID'], $r['idx']));
             }
             $out.=
                 "STATION ("
                 ."\"".(float)$r['khz']."\","
                 ."\"".$call."\","
-                ."\"".translate_chars($r['QTH'])."\","
+                ."\"".Rxx::translate_chars($r['QTH'])."\","
                 ."\"".$r['SP']."\","
                 ."\"".$r['ITU']."\","
                 ."\"".$r['sec']."\","
@@ -444,7 +451,7 @@ class Export {
                 ."\"".($r['pwr'] ? $r['pwr'] : "")."\","
                 ."\"".$r['lat']."\","
                 ."\"".$r['lon']."\","
-                ."\"".str_replace("\"","\\\"",translate_chars($r['notes']))."\","
+                ."\"".str_replace("\"", "\\\"", Rxx::translate_chars($r['notes']))."\","
                 ."\"".$r['ID']."\","
                 ."\"".$r['active']."\""
                 .");\r\n";
@@ -455,57 +462,58 @@ class Export {
     /**
      *
      */
-    public static function export_signallist_excel() {
-        set_time_limit(600);	// Extend maximum execution time to 10 mins
+    public static function export_signallist_excel()
+    {
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
         global $ID, $mode;
         global $filter_active, $offsets;
         global $type_NDB, $type_TIME, $type_DGPS, $type_DSC, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
         header("Content-Type: application/vnd.ms-excel");
         header("Content-Disposition: attachment;filename=export_".system.".xls");
-        $filter_type =	array();
+        $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
             $type_NDB = 1;
         }
         if ($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
             if ($type_NDB) {
-                $filter_type[] =	 "`type` = ".NDB;
+                $filter_type[] =     "`type` = ".NDB;
             }
             if ($type_DGPS) {
-                $filter_type[] =	 "`type` = ".DGPS;
+                $filter_type[] =     "`type` = ".DGPS;
             }
             if ($type_DSC) {
-                $filter_type[] =	 "`type` = ".DSC;
+                $filter_type[] =     "`type` = ".DSC;
             }
             if ($type_TIME) {
-                $filter_type[] =	 "`type` = ".TIME;
+                $filter_type[] =     "`type` = ".TIME;
             }
             if ($type_HAMBCN) {
-                $filter_type[] =	 "`type` = ".HAMBCN;
+                $filter_type[] =     "`type` = ".HAMBCN;
             }
             if ($type_NAVTEX) {
-                $filter_type[] =	 "`type` = ".NAVTEX;
+                $filter_type[] =     "`type` = ".NAVTEX;
             }
             if ($type_OTHER) {
-                $filter_type[] =	 "`type` = ".OTHER;
+                $filter_type[] =     "`type` = ".OTHER;
             }
         }
-        $filter_type =	"(".implode($filter_type," OR ").")";
+        $filter_type =  "(".implode($filter_type, " OR ").")";
         switch (system) {
             case "RNA":
-                $filter_system_SQL =			"(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
+                $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 break;
             case "REU":
-                $filter_system_SQL =			"`heard_in_eu` = 1";
+                $filter_system_SQL =            "`heard_in_eu` = 1";
                 break;
             case "RWW":
-                $filter_system_SQL =			"1";
+                $filter_system_SQL =            "1";
                 break;
         }
         $sql =
@@ -523,7 +531,7 @@ class Export {
             ."  `call` ASC"
 //    ."LIMIT 0,10"
         ;
-        $result = 	@mysql_query($sql);
+        $result =   @mysql_query($sql);
         print
             "<html><head><title>".system."</title></head>\n"
             ."<table border=\"1\" bordercolor=\"#000000\" cellpadding=\"0\" cellspacing=\"0\">\n"
@@ -547,32 +555,37 @@ class Export {
             ."  </tr>\n";
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $bgcolor =	"";
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            $bgcolor =  "";
             if (!$row["active"]) {
-                $bgcolor =	" bgcolor=\"#D0D0D0\" title=\"(Reportedly off air or decommissioned)\"";
-            }
-            else {
+                $bgcolor =  " bgcolor=\"#D0D0D0\" title=\"(Reportedly off air or decommissioned)\"";
+            } else {
                 switch ($row["type"]) {
-                    case NDB:       $bgcolor = "";                                                          break;
-                    case DGPS:      $bgcolor = " bgcolor=\"#00D8FF\" title=\"DGPS Station\"";               break;
-                    case TIME:      $bgcolor = " bgcolor=\"#FFE0B0\" title=\"Time Signal Station\"";        break;
-                    case NAVTEX:    $bgcolor = " bgcolor=\"#FFB8D8\" title=\"NAVTEX Station\"";             break;
-                    case HAMBCN:    $bgcolor = " bgcolor=\"#D8FFE0\" title=\"Amateur signal\"";             break;
-                    case OTHER:     $bgcolor = " bgcolor=\"#B8F8FF\" title=\"Other form of transmission\""; break;
+                    case NDB:       $bgcolor = "";
+                        break;
+                    case DGPS:      $bgcolor = " bgcolor=\"#00D8FF\" title=\"DGPS Station\"";
+                        break;
+                    case TIME:      $bgcolor = " bgcolor=\"#FFE0B0\" title=\"Time Signal Station\"";
+                        break;
+                    case NAVTEX:    $bgcolor = " bgcolor=\"#FFB8D8\" title=\"NAVTEX Station\"";
+                        break;
+                    case HAMBCN:    $bgcolor = " bgcolor=\"#D8FFE0\" title=\"Amateur signal\"";
+                        break;
+                    case OTHER:     $bgcolor = " bgcolor=\"#B8F8FF\" title=\"Other form of transmission\"";
+                        break;
                 }
             }
             $LSB =
                 $row["LSB_approx"]
                 .($row["LSB"]!="" ?
-                    ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)),3,'.',''))
+                    ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)), 3, '.', ''))
                     :
                     "&nbsp;"
                 );
             $USB =
                 $row["USB_approx"]
                 .($row["USB"]!="" ?
-                    ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)),3,'.',''))
+                    ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', ''))
                     :
                     "&nbsp;"
                 );
@@ -606,47 +619,48 @@ class Export {
     /**
      *
      */
-    public static function export_signallist_pdf() {
-        set_time_limit(600);	// Extend maximum execution time to 10 mins
+    public static function export_signallist_pdf()
+    {
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
         global $filter_active, $offsets;
         global $type_NDB, $type_TIME, $type_DGPS, $type_DSC, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
-        $filter_type =	array();
+        $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
             $type_NDB = 1;
         }
         if ($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
             if ($type_NDB) {
-                $filter_type[] =	 "`type` = ".NDB;
+                $filter_type[] =     "`type` = ".NDB;
             }
             if ($type_DGPS) {
-                $filter_type[] =	 "`type` = ".DGPS;
+                $filter_type[] =     "`type` = ".DGPS;
             }
             if ($type_DSC) {
-                $filter_type[] =	 "`type` = ".DSC;
+                $filter_type[] =     "`type` = ".DSC;
             }
             if ($type_TIME) {
-                $filter_type[] =	 "`type` = ".TIME;
+                $filter_type[] =     "`type` = ".TIME;
             }
             if ($type_HAMBCN) {
-                $filter_type[] =	 "`type` = ".HAMBCN;
+                $filter_type[] =     "`type` = ".HAMBCN;
             }
             if ($type_NAVTEX) {
-                $filter_type[] =	 "`type` = ".NAVTEX;
+                $filter_type[] =     "`type` = ".NAVTEX;
             }
             if ($type_OTHER) {
-                $filter_type[] =	 "`type` = ".OTHER;
+                $filter_type[] =     "`type` = ".OTHER;
             }
         }
-        $filter_type =	"(".implode($filter_type," OR ").")";
+        $filter_type =  "(".implode($filter_type, " OR ").")";
         switch (system) {
             case "RNA":
-                $filter_system_SQL =			"(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
+                $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 break;
             case "REU":
-                $filter_system_SQL =			"`heard_in_eu` = 1";
+                $filter_system_SQL =            "`heard_in_eu` = 1";
                 break;
             case "RWW":
-                $filter_system_SQL =			"1";
+                $filter_system_SQL =            "1";
                 break;
         }
         $sql =
@@ -676,25 +690,25 @@ class Export {
             ."ORDER BY `active` DESC,`khz` ASC, `call` ASC\n"
 //    ."LIMIT 0,10"
         ;
-        $result = 	mysql_query($sql);
+        $result =   mysql_query($sql);
         include('php_pdf/class.ezpdf.php');
-        $pdf =new Cezpdf('LETTER','landscape');
+        $pdf =new Cezpdf('LETTER', 'landscape');
         $pdf->selectFont('./php_pdf/fonts/Helvetica.afm');
-        $pdf->ezText(system_URL.' - '.system.' PDF File',8);
+        $pdf->ezText(system_URL.' - '.system.' PDF File', 8);
         $pdf->ezSetDy(-10);
         $data = array();
         $cols = array(
-            'khz'=>	        '<b>KHz</b>',
-            'call'=>	    '<b>ID</b>',
-            'active'=>		'<b>Active</b>',
-            'lsb'=>		    '<b>LSB</b>',
-            'usb'=>		    '<b>USB</b>',
-            'itu'=>	    	'<b>ITU</b>',
-            'gsq'=>		    '<b>GSQ</b>',
-            'sp'=>		    '<b>S/P</b>',
-            'notes'=>	    '<b>Notes</b>',
-            'heard_in'=>	'<b>Heard In</b>',
-            'last_heard'=>	'<b>Last Heard</b>'
+            'khz'=>         '<b>KHz</b>',
+            'call'=>        '<b>ID</b>',
+            'active'=>      '<b>Active</b>',
+            'lsb'=>         '<b>LSB</b>',
+            'usb'=>         '<b>USB</b>',
+            'itu'=>         '<b>ITU</b>',
+            'gsq'=>         '<b>GSQ</b>',
+            'sp'=>          '<b>S/P</b>',
+            'notes'=>       '<b>Notes</b>',
+            'heard_in'=>    '<b>Heard In</b>',
+            'last_heard'=>  '<b>Last Heard</b>'
         );
         $options = array(
             'shaded' =>         0,
@@ -715,34 +729,35 @@ class Export {
             )
         );
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
             $data[] = array(
-                'khz' =>	        $row['khz'],
-                'call' =>	        $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
-                'active' =>	    $row['active'],
-                'lsb' =>	        $row["LSB_approx"].($row["LSB"]!="" ? ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)),3,'.','')) : ""),
-                'usb' =>	        $row["USB_approx"].($row["USB"]!="" ? ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)),3,'.','')) : ""),
-                'itu' =>	        $row["ITU"],
-                'gsq' =>	        ($row["GSQ"]?$row["GSQ"]:""),
-                'sp' =>		    ($row["SP"]?$row["SP"]:""),
-                'notes' =>	    ($row["notes"]?stripslashes($row["notes"]):""),
-                'heard_in' =>	    ($row["heard_in"]?$row["heard_in"]:""),
-                'last_heard' =>	($row["last_heard"]?$row["last_heard"]:"")
+                'khz' =>            $row['khz'],
+                'call' =>           $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
+                'active' =>     $row['active'],
+                'lsb' =>            $row["LSB_approx"].($row["LSB"]!="" ? ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)), 3, '.', '')) : ""),
+                'usb' =>            $row["USB_approx"].($row["USB"]!="" ? ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')) : ""),
+                'itu' =>            $row["ITU"],
+                'gsq' =>            ($row["GSQ"]?$row["GSQ"]:""),
+                'sp' =>         ($row["SP"]?$row["SP"]:""),
+                'notes' =>      ($row["notes"]?stripslashes($row["notes"]):""),
+                'heard_in' =>       ($row["heard_in"]?$row["heard_in"]:""),
+                'last_heard' =>     ($row["last_heard"]?$row["last_heard"]:"")
             );
         }
-        $pdf->ezTable($data,$cols,system." - signals listing",$options);
+        $pdf->ezTable($data, $cols, system." - signals listing", $options);
         $pdf->ezStream();
     }
 
     /**
      *
      */
-    public static function export_text_signals() {
+    public static function export_text_signals()
+    {
         global $ID,$mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -757,14 +772,14 @@ class Export {
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `khz`,`call`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
         $out = "<pre>KHz\tCall\tQTH\tSP\tITU\tSec\tFmt\tLSB\tUSB\tPwr\tLat\tLon\r\n";
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
             $out.=
                 (float)$row['khz']."\t"
-                .htmlentities(translate_chars($row['call']))."\t"
-                .htmlentities(translate_chars($row['QTH']))."\t"
+                .htmlentities(Rxx::translate_chars($row['call']))."\t"
+                .htmlentities(Rxx::translate_chars($row['QTH']))."\t"
                 .$row['SP']."\t"
                 .$row['ITU']."\t"
                 .$row['sec']."\t"
@@ -781,17 +796,18 @@ class Export {
     /**
      * @return string
      */
-    public static function export_text_log() {
+    public static function export_text_log()
+    {
         global $ID, $mode;
-        if (!$ID){
-            $path_arr = (explode('?',$_SERVER["REQUEST_URI"]));
-            $path_arr = explode('/',$path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode){
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
                 $ID = array_pop($path_arr);
             }
         }
 
-        set_time_limit(600);	// Extend maximum execution time to 10 mins
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
 
         $sql = "SELECT\n"
             ."  MAX(LENGTH(`signals`.`call`)) AS `call_len`,\n"
@@ -809,28 +825,28 @@ class Export {
             ."  `date`,\n"
             ."  `time`";
 
-        $result =	mysql_query($sql);
-        $row =	mysql_fetch_array($result, MYSQL_ASSOC);
-        $call_len =	$row['call_len'];
-        $QTH_len =	$row['QTH_len'];
-        $time_len =	$row['time_len'];
-        $LSB_len =	$row['LSB_len'];
-        $USB_len =	$row['USB_len'];
+        $result =   mysql_query($sql);
+        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $call_len =     $row['call_len'];
+        $QTH_len =  $row['QTH_len'];
+        $time_len =     $row['time_len'];
+        $LSB_len =  $row['LSB_len'];
+        $USB_len =  $row['USB_len'];
 
-        $sql =	"SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
-        if (!$result =	mysql_query($sql)) {
+        $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
+        if (!$result =  mysql_query($sql)) {
             return "Invalid User ID";
         }
-        $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
 
         print
             "<pre>".system." Log for ".$row['name']." on ".date("Y-m-d")."\r\n"
             ."Output sorted by Date\r\n"
             ."----------------------------------------------------------------------\r\n"
-            ."YYYYMMDD ".($time_len ? "UTC  " : "")."KHz   ".(system=="RWW" ? "   " : "").pad("ID",$call_len+1).($LSB_len||$USB_len ? "LSB   USB   " : "")."KM    Miles PWR  GSQ    SP ITU Location\r\n"
+            ."YYYYMMDD ".($time_len ? "UTC  " : "")."KHz   ".(system=="RWW" ? "   " : "").Rxx::pad("ID", $call_len+1).($LSB_len||$USB_len ? "LSB   USB   " : "")."KM    Miles PWR  GSQ    SP ITU Location\r\n"
             ."----------------------------------------------------------------------\r\n";
 
-        $sql =	"SELECT\n"
+        $sql =  "SELECT\n"
             ."  DATE_FORMAT(`logs`.`date`,'%Y%m%d') AS `date`,\n"
             ."  `logs`.`time`,\n"
             ."  `logs`.`LSB`,\n"
@@ -852,22 +868,22 @@ class Export {
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `logs`.`date`,`logs`.`time`, `signals`.`khz`";
-        $result =	mysql_query($sql);
+        $result =   mysql_query($sql);
 
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
             print
                 $row['date']." "
-                .($time_len ? pad($row['time'],5) : "")
-                .pad((float)$row['khz'],(system=='RWW' ? 9 : 6))
-                .pad($row['call'],$call_len)." "
-                .($LSB_len || $USB_len ? pad($row['LSB'],6).pad($row['USB'],6) : "")
-                .pad($row['dx_km'],6)
-                .pad($row['dx_miles'],6)
-                .pad(($row['pwr']?$row['pwr']:""),5)
-                .pad($row['GSQ'],7)
-                .pad($row['SP'],3)
+                .($time_len ? Rxx::pad($row['time'], 5) : "")
+                .Rxx::pad((float)$row['khz'], (system=='RWW' ? 9 : 6))
+                .Rxx::pad($row['call'], $call_len)." "
+                .($LSB_len || $USB_len ? Rxx::pad($row['LSB'], 6).Rxx::pad($row['USB'], 6) : "")
+                .Rxx::pad($row['dx_km'], 6)
+                .Rxx::pad($row['dx_miles'], 6)
+                .Rxx::pad(($row['pwr']?$row['pwr']:""), 5)
+                .Rxx::pad($row['GSQ'], 7)
+                .Rxx::pad($row['SP'], 3)
                 .$row['ITU']." ".$row['QTH']."\r\n";
         }
         print
@@ -880,17 +896,21 @@ class Export {
     /**
      *
      */
-    public static function ILGRadio_signallist() {
-        set_time_limit(600);	// Extend maximum execution time to 10 mins
-        $out =	array();
+    public static function ILGRadio_signallist()
+    {
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
+        $out =  array();
 
         switch (system) {
-            case "RNA":	$filter_system_SQL = "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";	break;
-            case "REU":	$filter_system_SQL = "(`heard_in_eu` = 1)";				break;
-            default:	$filter_system_SQL = "(1)";						break;
+            case "RNA":     $filter_system_SQL = "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
+                break;
+            case "REU":     $filter_system_SQL = "(`heard_in_eu` = 1)";
+                break;
+            default:    $filter_system_SQL = "(1)";
+                break;
         }
 
-        $sql =	 "SELECT\n"
+        $sql =   "SELECT\n"
             ."  ROUND(`khz`,1) AS `khz`,\n"
             ."  `call`,\n"
             ."  `QTH`,\n"
@@ -909,37 +929,37 @@ class Export {
             ."  `khz`,\n"
             ."  `call`";
 
-        $result =	@mysql_query($sql);
+        $result =   @mysql_query($sql);
 
         $arr_search = array(  "DGPS; Ref ID: ");
         $arr_replace= array(  "");
 
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $out[] =	 lead($row['khz'],7)
-                .pad($row['call'],22)
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            $out[] =     lead($row['khz'], 7)
+                .Rxx::pad($row['call'], 22)
                 ."0000-2400"
                 ."1234567"
-                .pad("",18)
-                .pad("",48)
-                .pad("",8)
-                .pad(substr(str_replace($arr_search,$arr_replace,translate_chars($row['QTH'])),0,24),25)
-                .pad("",7)
-                .pad("",3)
-                .pad(substr(str_replace($arr_search,$arr_replace,translate_chars($row['notes'])),0,14),15)
-                .pad("",1)
-                .pad("",18)
-                .pad("",30)
-                .pad("",5)
-                .pad("",3)
-                .pad($row['ITU'],18)
-                .pad("",6)
-                .pad("",5)
-                .pad("",20) //not 1
-                .pad("",20)
+                .Rxx::pad("", 18)
+                .Rxx::pad("", 48)
+                .Rxx::pad("", 8)
+                .Rxx::pad(substr(str_replace($arr_search, $arr_replace, Rxx::translate_chars($row['QTH'])), 0, 24), 25)
+                .Rxx::pad("", 7)
+                .Rxx::pad("", 3)
+                .Rxx::pad(substr(str_replace($arr_search, $arr_replace, Rxx::translate_chars($row['notes'])), 0, 14), 15)
+                .Rxx::pad("", 1)
+                .Rxx::pad("", 18)
+                .Rxx::pad("", 30)
+                .Rxx::pad("", 5)
+                .Rxx::pad("", 3)
+                .Rxx::pad($row['ITU'], 18)
+                .Rxx::pad("", 6)
+                .Rxx::pad("", 5)
+                .Rxx::pad("", 20) //not 1
+                .Rxx::pad("", 20)
                 ." "
                 ."\r\n";
         }
-        print implode($out,"");
+        print implode($out, "");
     }
 }

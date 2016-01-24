@@ -1,5 +1,5 @@
 <?php
-namespace Managers;
+namespace Rxx\Managers;
 
 class LogUploader
 {
@@ -60,7 +60,7 @@ class LogUploader
         global $mode, $submode, $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy;
         global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
 
-        $this->listener = new \Listener(get_var('listenerID'));
+        $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
         if ($this->listener->getID()) {
             $this->listener->load();
         }
@@ -88,7 +88,7 @@ class LogUploader
                     }
                     $update_signal =            false;
                     $update_signal_heard_in =   true;
-                    $signal =   new \Signal($ID[$i]);
+                    $signal =   new \Rxx\Signal($ID[$i]);
                     $dx =       $signal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
                     $dx_miles = $dx[0];
                     $dx_km =    $dx[1];
@@ -129,11 +129,11 @@ class LogUploader
                         $data['time'] =        $hhmm[$i];
                     }
 
-                    if ($row = \Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
+                    if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
                         if ($this->debug) {
                             $this->html.=    "1 ";
                         }
-                        if ($row = \Log::checkIfDuplicate(
+                        if ($row = \Rxx\Log::checkIfDuplicate(
                             $ID[$i],
                             $this->listener->getID(),
                             $YYYYMMDD[$i],
@@ -145,13 +145,13 @@ class LogUploader
                             if ($this->debug) {
                                 $this->html.= "3 ";
                             }
-                            $row = \Log::countTimesHeardByListener($this->listener->getID(), $ID[$i]);
+                            $row = \Rxx\Log::countTimesHeardByListener($this->listener->getID(), $ID[$i]);
                             if ($row["count"]) {
                                 $this->stats['repeat_for_listener']++;
                             } else {
                                 $this->stats['first_for_listener']++;
                             }
-                            $log = new \Log;
+                            $log = new \Rxx\Log;
                             $log->insert($data);
                             $update_signal = true;          // Update signal record (IF this data is the most recent...)
                         }
@@ -159,7 +159,7 @@ class LogUploader
                         if ($this->debug) {
                             $this->html.=    "4 ";
                         }
-                        $log = new \Log;
+                        $log = new \Rxx\Log;
                         $log->insert($data);
 
                         $update_signal = true;              // Update signal record (IF this data is the most recent...)
@@ -191,7 +191,7 @@ class LogUploader
                             ."  `ID` = \"".$ID[$i]."\"";
                         $result =    mysql_query($sql);
                         $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-                        if ($row["last_heard"] >= $YYYYMMDD[$i]){
+                        if ($row["last_heard"] >= $YYYYMMDD[$i]) {
                             $update_signal = false;
                         }
                     }
@@ -214,7 +214,7 @@ class LogUploader
                         $this_DD =    substr($YYYYMMDD[$i], 6, 2);
                         $this->stats['latest_for_signal']++;
                         $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
-                        signal_update_full(
+                        \Rxx\Rxx::signal_update_full(
                             $ID[$i],
                             $LSB[$i],
                             $LSB_approx[$i],
@@ -241,7 +241,7 @@ class LogUploader
                         }
                     }
                 }
-                update_listener_log_count($this->listener->getID());
+                \Rxx\Rxx::update_listener_log_count($this->listener->getID());
                 break;
         }
 
@@ -262,7 +262,7 @@ class LogUploader
                     ."    <td colspan='3'>"
                     ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
                     ." style='font-family: monospace;'>\n"
-                    .get_listener_options_list("1", $this->listener->getID(), "Select Listener")
+                    .\Rxx\Rxx::get_listener_options_list("1", $this->listener->getID(), "Select Listener")
                     ."</select>\n"
                     ."</td>\n"
                     ."  </tr>\n"
@@ -405,151 +405,151 @@ class LogUploader
                     $total_loggings =    0;
                     $date_fail =        false;
                     if (isset($this->tokens["DM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DM\"][0])); return (\$Y.M_to_MM(substr(\$t,1,1)).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DM\"][0])); return (\$Y.M_to_MM(substr(\$t,1,1)).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["D.M"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.M\"][0])); return (\$Y.M_to_MM(substr(\$t,2,1)).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.M\"][0])); return (\$Y.M_to_MM(substr(\$t,2,1)).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["DDM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDM\"][0])); return (\$Y.M_to_MM(substr(\$t,2,1)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDM\"][0])); return (\$Y.M_to_MM(substr(\$t,2,1)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.M"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.M\"][0])); return (\$Y.M_to_MM(substr(\$t,3,1)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.M\"][0])); return (\$Y.M_to_MM(substr(\$t,3,1)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMM\"][0])); return (\$Y.substr(\$t,1,2).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMM\"][0])); return (\$Y.substr(\$t,1,2).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["D.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MM\"][0])); return (\$Y.substr(\$t,2,2).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MM\"][0])); return (\$Y.substr(\$t,2,2).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["DDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMM\"][0])); return (\$Y.substr(\$t,2,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMM\"][0])); return (\$Y.substr(\$t,2,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM\"][0])); return (\$Y.substr(\$t,3,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM\"][0])); return (\$Y.substr(\$t,3,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,1,3)).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,1,3)).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["D.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,2,3)).D_to_DD(substr(\$t,0,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,2,3)).D_to_DD(substr(\$t,0,1))); }");
                     } elseif (isset($this->tokens["DDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM\"][0])); return (\$Y.MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
                     }
 
                     if (isset($this->tokens["MD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).D_to_DD(substr(\$t,1,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).D_to_DD(substr(\$t,1,1))); }");
                     } elseif (isset($this->tokens["M.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.D\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).D_to_DD(substr(\$t,2,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.D\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).D_to_DD(substr(\$t,2,1))); }");
                     } elseif (isset($this->tokens["MDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MDD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).substr(\$t,1,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MDD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).substr(\$t,1,2)); }");
                     } elseif (isset($this->tokens["M.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.DD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.DD\"][0])); return (\$Y.M_to_MM(substr(\$t,0,1)).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["MMD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMD\"][0])); return (\$Y.substr(\$t,0,2).D_to_DD(substr(\$t,2,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMD\"][0])); return (\$Y.substr(\$t,0,2).D_to_DD(substr(\$t,2,1))); }");
                     } elseif (isset($this->tokens["MM.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.D\"][0])); return (\$Y.substr(\$t,0,2).D_to_DD(substr(\$t,3,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.D\"][0])); return (\$Y.substr(\$t,0,2).D_to_DD(substr(\$t,3,1))); }");
                     } elseif (isset($this->tokens["MMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMMD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).D_to_DD(substr(\$t,3,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).D_to_DD(substr(\$t,3,1))); }");
                     } elseif (isset($this->tokens["MMM.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.D\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).D_to_DD(substr(\$t,4,1))); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.D\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).D_to_DD(substr(\$t,4,1))); }");
                     } elseif (isset($this->tokens["MMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD\"][0])); return (\$Y.MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["DDMMYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYY\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).substr(\$t,2,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYY\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).substr(\$t,2,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MM.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YY\"][0])); return (YY_to_YYYY(substr(\$t,6,2)).substr(\$t,3,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YY\"][0])); return (YY_to_YYYY(substr(\$t,6,2)).substr(\$t,3,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DDYYMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMM\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).substr(\$t,4,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMM\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).substr(\$t,4,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.YY.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MM\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).substr(\$t,6,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MM\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).substr(\$t,6,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["MMDDYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYY\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).substr(\$t,0,2).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYY\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).substr(\$t,0,2).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["MM.DD.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YY\"][0])); return (YY_to_YYYY(substr(\$t,6,2)).substr(\$t,0,2).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YY\"][0])); return (YY_to_YYYY(substr(\$t,6,2)).substr(\$t,0,2).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYDD\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).substr(\$t,0,2).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYDD\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).substr(\$t,0,2).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["MM.YY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YY.DD\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).substr(\$t,0,2).substr(\$t,6,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YY.DD\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).substr(\$t,0,2).substr(\$t,6,2)); }");
                     } elseif (isset($this->tokens["YYDDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,4,2).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,4,2).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["YY.DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,6,2).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,6,2).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["YYMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMDD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,2,2).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMDD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,2,2).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["YY.MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MM.DD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,3,2).substr(\$t,6,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MM.DD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).substr(\$t,3,2).substr(\$t,6,2)); }");
                     } elseif (isset($this->tokens["DDMMMYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYY\"][0])); return (YY_to_YYYY(substr(\$t,5,2)).MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYY\"][0])); return (YY_to_YYYY(substr(\$t,5,2)).MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MMM.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YY\"][0])); return (YY_to_YYYY(substr(\$t,7,2)).MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YY\"][0])); return (YY_to_YYYY(substr(\$t,7,2)).MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DDYYMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMMM\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).MMM_to_MM(substr(\$t,4,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMMM\"][0])); return (YY_to_YYYY(substr(\$t,2,2)).MMM_to_MM(substr(\$t,4,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.YY.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MMM\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MMM\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["MMMDDYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYY\"][0])); return (YY_to_YYYY(substr(\$t,5,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYY\"][0])); return (YY_to_YYYY(substr(\$t,5,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMM.DD.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YY\"][0])); return (YY_to_YYYY(substr(\$t,7,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YY\"][0])); return (YY_to_YYYY(substr(\$t,7,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["MMMYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYDD\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,5,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYDD\"][0])); return (YY_to_YYYY(substr(\$t,3,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,5,2)); }");
                     } elseif (isset($this->tokens["MMM.YY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YY.DD\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YY.DD\"][0])); return (YY_to_YYYY(substr(\$t,4,2)).MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }");
                     } elseif (isset($this->tokens["YYDDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,4,3)).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,4,3)).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["YY.DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,6,3)).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MMM\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,6,3)).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["YYMMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMMDD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,2,3)).substr(\$t,5,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMMDD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,2,3)).substr(\$t,5,2)); }");
                     } elseif (isset($this->tokens["YY.MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MMM.DD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,3,3)).substr(\$t,7,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MMM.DD\"][0])); return (YY_to_YYYY(substr(\$t,0,2)).MMM_to_MM(substr(\$t,3,3)).substr(\$t,7,2)); }");
                     } elseif (isset($this->tokens["DDMMYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,2,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,2,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MM.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,3,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,3,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DDYYYYMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMM\"][0])); return (substr(\$t,2,4).substr(\$t,6,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMM\"][0])); return (substr(\$t,2,4).substr(\$t,6,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.YYYY.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MM\"][0])); return (substr(\$t,3,4).substr(\$t,8,2).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MM\"][0])); return (substr(\$t,3,4).substr(\$t,8,2).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["MMDDYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,0,2).substr(\$t,2,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,0,2).substr(\$t,2,2)); }");
                     } elseif (isset($this->tokens["MM.DD.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,0,2).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,0,2).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMYYYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYYYDD\"][0])); return (substr(\$t,2,4).substr(\$t,0,2).substr(\$t,6,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYYYDD\"][0])); return (substr(\$t,2,4).substr(\$t,0,2).substr(\$t,6,2)); }");
                     } elseif (isset($this->tokens["MM.YYYY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YYYY.DD\"][0])); return (substr(\$t,3,4).substr(\$t,0,2).substr(\$t,8,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YYYY.DD\"][0])); return (substr(\$t,3,4).substr(\$t,0,2).substr(\$t,8,2)); }");
                     } elseif (isset($this->tokens["YYYYDDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMM\"][0])); return (substr(\$t,0,4).substr(\$t,6,2).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMM\"][0])); return (substr(\$t,0,4).substr(\$t,6,2).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["YYYY.DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MM\"][0])); return (substr(\$t,0,4).substr(\$t,8,2).substr(\$t,5,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MM\"][0])); return (substr(\$t,0,4).substr(\$t,8,2).substr(\$t,5,2)); }");
                     } elseif (isset($this->tokens["YYYYMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMDD\"][0])); return (substr(\$t,0,4).substr(\$t,4,2).substr(\$t,6,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMDD\"][0])); return (substr(\$t,0,4).substr(\$t,4,2).substr(\$t,6,2)); }");
                     } elseif (isset($this->tokens["YYYY.MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MM.DD\"][0])); return (substr(\$t,0,4).substr(\$t,5,2).substr(\$t,8,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MM.DD\"][0])); return (substr(\$t,0,4).substr(\$t,5,2).substr(\$t,8,2)); }");
                     } elseif (isset($this->tokens["DDMMMYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYYYY\"][0])); return (substr(\$t,5,4).MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYYYY\"][0])); return (substr(\$t,5,4).MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.MMM.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YYYY\"][0])); return (substr(\$t,7,4).MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YYYY\"][0])); return (substr(\$t,7,4).MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DDYYYYMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMMM\"][0])); return (substr(\$t,2,4).MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMMM\"][0])); return (substr(\$t,2,4).MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["DD.YYYY.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MMM\"][0])); return (substr(\$t,3,4).MMM_to_MM(substr(\$t,8,3)).substr(\$t,0,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MMM\"][0])); return (substr(\$t,3,4).MMM_to_MM(substr(\$t,8,3)).substr(\$t,0,2)); }");
                     } elseif (isset($this->tokens["MMMDDYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYYYY\"][0])); return (substr(\$t,5,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYYYY\"][0])); return (substr(\$t,5,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
                     } elseif (isset($this->tokens["MMM.DD.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YYYY\"][0])); return (substr(\$t,7,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YYYY\"][0])); return (substr(\$t,7,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["MMMYYYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYYYDD\"][0])); return (substr(\$t,3,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYYYDD\"][0])); return (substr(\$t,3,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }");
                     } elseif (isset($this->tokens["MMM.YYYY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YYYY.DD\"][0])); return (substr(\$t,4,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,9,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YYYY.DD\"][0])); return (substr(\$t,4,4).MMM_to_MM(substr(\$t,0,3)).substr(\$t,9,2)); }");
                     } elseif (isset($this->tokens["YYYYDDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMMM\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,6,3)).substr(\$t,4,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMMM\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,6,3)).substr(\$t,4,2)); }");
                     } elseif (isset($this->tokens["YYYY.DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MMM\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,8,3)).substr(\$t,5,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MMM\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,8,3)).substr(\$t,5,2)); }");
                     } elseif (isset($this->tokens["YYYYMMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMMDD\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,4,3)).substr(\$t,7,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMMDD\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,4,3)).substr(\$t,7,2)); }");
                     } elseif (isset($this->tokens["YYYY.MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MMM.DD\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,5,3)).substr(\$t,9,2)); }" );
+                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MMM.DD\"][0])); return (substr(\$t,0,4).MMM_to_MM(substr(\$t,5,3)).substr(\$t,9,2)); }");
                     }
 
                     for ($i=0; $i<count($lines); $i++) {
@@ -563,8 +563,7 @@ class LogUploader
                             $YYYY =     substr($YYYYMMDD, 0, 4);
                             $MM =       substr($YYYYMMDD, 4, 2);
                             $DD =       substr($YYYYMMDD, 6, 2);
-                        } elseif (
-                            isset($this->tokens["D"]) ||
+                        } elseif (isset($this->tokens["D"]) ||
                             isset($this->tokens["DD"]) ||
                             isset($this->tokens["M"]) ||
                             isset($this->tokens["MM"]) ||
@@ -722,8 +721,7 @@ class LogUploader
                                     // Format used by Jim Smith to indicate sb not present
                                     $sb="";
                                 }
-                                if (
-                                    $sb=="DAID" ||
+                                if ($sb=="DAID" ||
                                     $sb=="DA2ID" ||
                                     $sb=="DA3ID" ||
                                     $sb=="DBID" ||
@@ -731,8 +729,7 @@ class LogUploader
                                     $sb=="DB3ID") {
                                     $fmt = $sb;
                                 }
-                                if (
-                                    (substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                if ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
                                     (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
                                 ) {
                                     $USB = abs($sb);
@@ -784,8 +781,7 @@ class LogUploader
                             $sb_arr =    explode(" ", $sb);
                             for ($j=0; $j<count($sb_arr); $j++) {
                                 $sb =    trim($sb_arr[$j]);
-                                if (
-                                    $sb=="DAID" ||
+                                if ($sb=="DAID" ||
                                     $sb=="DA2ID" ||
                                     $sb=="DA3ID" ||
                                     $sb=="DBID" ||
@@ -793,8 +789,7 @@ class LogUploader
                                     $sb=="DB3ID"
                                 ) {
                                     $fmt = $sb;
-                                } elseif (
-                                    (substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                } elseif ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
                                     (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
                                 ) {
                                     $USB_approx =    "~";
@@ -1089,8 +1084,7 @@ class LogUploader
                                     $this->html.=
                                          "</td>\n"
                                         ."  <td align='center'><input type='hidden' name='hhmm[]' value='$hhmm'>";
-                                    if (
-                                        (strlen($hhmm)!=0 && strlen($hhmm)!=4) ||
+                                    if ((strlen($hhmm)!=0 && strlen($hhmm)!=4) ||
                                         substr($hhmm, 0, 2)>23 || substr($hhmm, 2, 2)>59
                                     ) {
                                         $date_fail = true;

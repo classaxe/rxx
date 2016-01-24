@@ -8,16 +8,17 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Donate
  * @package Rxx\Tools
  */
-class Donate {
+class Donate
+{
     /**
      * @return string
      */
-    public static function donate(){
+    public static function donate()
+    {
         return
             "<h2>About our server costs</h2>\n"
             ."<p>This service is offered <b>guilt-free</b> and without any form of advertising"

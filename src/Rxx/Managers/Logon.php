@@ -1,14 +1,21 @@
 <?php
 
-namespace Managers;
+namespace Rxx\Managers;
 
+/**
+ * Class Logon
+ * @package Rxx\Managers
+ */
 class Logon
 {
+    /**
+     * @return string
+     */
     public function draw()
     {
         global $mode, $user;
 
-        if (isAdmin()) {
+        if (\Rxx\Rxx::isAdmin()) {
             return
                  "<h2>Logon</h2><p>You are now logged on as an Administrator and may perform administrative functions."
                 ."<br><br>\nTo log off, select <b>Log Off</b> from the main menu.</p>";

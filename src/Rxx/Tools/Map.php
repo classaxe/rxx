@@ -8,27 +8,35 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Map
  * @package Rxx\Tools
  */
-class Map {
+class Map
+{
     /**
      * @return mixed
      */
-    function maps() {
+    public static function maps()
+    {
         switch (system) {
-            case "RNA" :	return maps_rna();	break;
-            case "REU" :	return maps_reu();	break;
-            case "RWW" :	return maps_rww();	break;
+            case "RNA":
+                return self::maps_rna();
+            break;
+            case "REU":
+                return self::maps_reu();
+            break;
+            case "RWW":
+                return self::maps_rww();
+            break;
         }
     }
 
     /**
      * @return string
      */
-    function map_af() {
+    public static function map_af()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -53,7 +61,8 @@ class Map {
     /**
      * @return string
      */
-    function map_alaska() {
+    public static function map_alaska()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -79,7 +88,8 @@ class Map {
     /**
      * @return string
      */
-    function map_as() {
+    public static function map_as()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -104,7 +114,8 @@ class Map {
     /**
      * @return string
      */
-    function map_au() {
+    public static function map_au()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -130,7 +141,8 @@ class Map {
     /**
      * @return string
      */
-    function map_eu() {
+    public static function map_eu()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -156,7 +168,8 @@ class Map {
     /**
      * @return string
      */
-    function map_japan() {
+    public static function map_japan()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -181,7 +194,8 @@ class Map {
     /**
      * @return string
      */
-    function map_na() {
+    public static function map_na()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -208,7 +222,8 @@ class Map {
     /**
      * @return string
      */
-    function map_pacific() {
+    public static function map_pacific()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -236,7 +251,8 @@ class Map {
     /**
      * @return string
      */
-    function map_place_finder() {
+    public static function map_place_finder()
+    {
         global $mode,$submode,$place;
         if (!isset($place)) {
             $place='';
@@ -262,10 +278,10 @@ class Map {
             ."  </tr>";
 
         if ($submode<>'' && $place<>'') {
-            $sql =	"SELECT * FROM `places` WHERE `name` LIKE \"%".addslashes($place)."%\" ORDER BY `itu`,`sp`,`population` DESC";
-            $result =	@mysql_query($sql);
+            $sql =  "SELECT * FROM `places` WHERE `name` LIKE \"%".addslashes($place)."%\" ORDER BY `itu`,`sp`,`population` DESC";
+            $result =   @mysql_query($sql);
             if (mysql_num_rows($result)) {
-                $out[] =	 "  <tr>\n"
+                $out[] =     "  <tr>\n"
                     ."    <td class='downloadTableContent'><b>Matches</b><br>\n"
                     ."    <table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border-collapse: collapse;'>\n"
                     ."      <tr class='downloadTableHeadings_nosort'>\n"
@@ -279,34 +295,34 @@ class Map {
                     ."      </tr>\n";
 
                 while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                    $out[] =	 "      <tr>\n"
+                    $out[] =     "      <tr>\n"
                         ."        <td>".$row['name']."</td>\n"
                         ."        <td>".$row['sp']."</td>\n"
                         ."        <td>".$row['itu']."</td>\n"
                         ."        <td align='right'>".($row['population'] ? $row['population'] : "&nbsp;")."</td>\n"
                         ."        <td>".$row['lat']."</td>\n"
                         ."        <td>".$row['lon']."</td>\n"
-                        ."        <td><a onmouseover='window.status=\"View map for ".$row['name']." (".$row['sp'].")\";return true' onmouseout='window.status=\"\";return true;' href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show map'><span class='fixed'>".deg_GSQ($row['lat'],$row['lon'])."</span></td>\n"
+                        ."        <td><a onmouseover='window.status=\"View map for ".$row['name']." (".$row['sp'].")\";return true' onmouseout='window.status=\"\";return true;' href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show map'><span class='fixed'>".\Rxx\Rxx::deg_GSQ($row['lat'], $row['lon'])."</span></td>\n"
                         ."      </tr>\n";
                 }
-                $out[] =	 "    </table></td>\n"
+                $out[] =     "    </table></td>\n"
                     ."  </tr>\n";
-            }
-            else {
-                $out[] =	 "  <tr>\n"
+            } else {
+                $out[] =     "  <tr>\n"
                     ."    <td class='downloadTableContent'><b>No Matches found</b></td>\n"
                     ."  </tr>\n";
             }
         }
-        $out[] =	"</table>\n"
+        $out[] =    "</table>\n"
             ."</form>\n";
-        return implode($out,"");
+        return implode($out, "");
     }
 
     /**
      * @return string
      */
-    function map_polynesia() {
+    public static function map_polynesia()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -333,7 +349,8 @@ class Map {
     /**
      * @return string
      */
-    function map_sa() {
+    public static function map_sa()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -358,7 +375,8 @@ class Map {
     /**
      * @return string
      */
-    function map_state_popup() {
+    public static function map_state_popup()
+    {
         global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -378,22 +396,24 @@ class Map {
     /**
      * @return string
      */
-    function maps_reu() {
+    public static function maps_reu()
+    {
         return "<h2>Maps for European Listeners</h2>\n"
         ."<p align='center'><small>Quick Links [\n"
         ."<nobr><a href='#eu'><b>Europe</b></a></nobr> |\n"
         ."<nobr><a href='#as'><b>Asia</b></a></nobr> |\n"
         ."<nobr><a href='#af'><b>Africa</b></a></nobr>\n"
         ."]</small></p><br><br>\n"
-        .map_eu()."<br><br><br>\n"
-        .map_as()."<br><br><br>\n"
-        .map_af()."<br><br><br>\n";
+        .\Rxx\Tools\Map::map_eu()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_as()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_af()."<br><br><br>\n";
     }
 
     /**
      * @return string
      */
-    function maps_rna() {
+    public static function maps_rna()
+    {
 //http://earth-info.nga.mil/gns/html/index.html
         $out = array();
         return "<h2>Maps for North American Listeners</h2>\n"
@@ -407,20 +427,21 @@ class Map {
         ."<nobr><a href='#japan'><b>Japan</b></a></nobr> |\n"
         ."<nobr><a href='#frpoly'><b>French Polynesia</b></a></nobr>\n"
         ."]</small></p><br><br>\n"
-        .map_place_finder()."<br><br><br>\n"
-        .map_state_popup()."<br><br><br>\n"
-        .map_na()."<br><br><br>\n"
-        .map_alaska()."<br><br><br>\n"
-        .map_sa()."<br><br><br>\n"
-        .map_pacific()."<br><br><br>\n"
-        .map_japan()."<br><br><br>\n"
-        .map_polynesia();
+        .\Rxx\Tools\Map::map_place_finder()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_state_popup()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_na()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_alaska()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_sa()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_pacific()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_japan()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_polynesia();
     }
 
     /**
      * @return string
      */
-    function maps_rww() {
+    public static function maps_rww()
+    {
         return "<h2>Maps for All Listeners</h2>\n"
         ."<p align='center'><small>Quick Links [\n"
         ."<nobr><a href='#na'><b>North + Central America</b></a></nobr> |\n"
@@ -430,61 +451,68 @@ class Map {
         ."<nobr><a href='#af'><b>Africa</b></a></nobr> |\n"
         ."<nobr><a href='#au'><b>Australia</b></a></nobr> \n"
         ."]</small></p><br><br>\n"
-        .map_na()."<br><br><br>\n"
-        .map_eu()."<br><br><br>\n"
-        .map_as()."<br><br><br>\n"
-        .map_af()."<br><br><br>\n"
-        .map_au()."\n";
+        .\Rxx\Tools\Map::map_na()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_eu()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_as()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_af()."<br><br><br>\n"
+        .\Rxx\Tools\Map::map_au()."\n";
     }
 
     /**
      * @return string
      */
-    function state_map() {
-        global	$mode;
-        global	$SP, $ITU, $listenerID, $simple, $test, $lat, $lon, $filter_active, $hide_labels, $hide_placenames;
-        global	$type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER, $places, $ID;
+    public static function state_map()
+    {
+        global  $mode;
+        global  $SP, $ITU, $listenerID, $simple, $test, $lat, $lon, $filter_active, $hide_labels, $hide_placenames;
+        global  $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER, $places, $ID;
 
         switch (system) {
-            case "RNA":	$filter_listener_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";	break;
-            case "REU":	$filter_listener_SQL = "(`region` = 'eu')";	break;
-            case "RWW":	$filter_listener_SQL = "1";	break;
+            case "RNA":     $filter_listener_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
+                break;
+            case "REU":     $filter_listener_SQL = "(`region` = 'eu')";
+                break;
+            case "RWW":     $filter_listener_SQL = "1";
+                break;
         }
 
-        $filter_type =	array();
+        $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
             switch (system) {
-                case "RNA":	$type_NDB =	1;	break;
-                case "REU":	$type_NDB =	1;	break;
-                case "RWW":	$type_NDB =	1;	break;
+                case "RNA":     $type_NDB =     1;
+                    break;
+                case "REU":     $type_NDB =     1;
+                    break;
+                case "RWW":     $type_NDB =     1;
+                    break;
             }
         }
         if ($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER) {
             if ($type_NDB) {
-                $filter_type[] =	 "`type` = ".NDB;
+                $filter_type[] =     "`type` = ".NDB;
             }
             if ($type_DGPS) {
-                $filter_type[] =	 "`type` = ".DGPS;
+                $filter_type[] =     "`type` = ".DGPS;
             }
             if ($type_TIME) {
-                $filter_type[] =	 "`type` = ".TIME;
+                $filter_type[] =     "`type` = ".TIME;
             }
             if ($type_HAMBCN) {
-                $filter_type[] =	 "`type` = ".HAMBCN;
+                $filter_type[] =     "`type` = ".HAMBCN;
             }
             if ($type_NAVTEX) {
-                $filter_type[] =	 "`type` = ".NAVTEX;
+                $filter_type[] =     "`type` = ".NAVTEX;
             }
             if ($type_OTHER) {
-                $filter_type[] =	 "`type` = ".OTHER;
+                $filter_type[] =     "`type` = ".OTHER;
             }
         }
-        $filter_type =	"(".implode($filter_type," OR ").")";
+        $filter_type =  "(".implode($filter_type, " OR ").")";
 
 
-        $out =	array();
+        $out =  array();
 
-        $out[] =	 "<script language='javascript' type='text/javascript'>\n"
+        $out[] =     "<script language='javascript' type='text/javascript'>\n"
             ."function get_type(form){\n"
             ."  if (form.type_DGPS.checked)   return ".DGPS.";\n"
             ."  if (form.type_HAMBCN.checked) return ".HAMBCN.";\n"
@@ -540,7 +568,7 @@ class Map {
             ."<option value='' style='color: #0000ff;'>Select a state</option>\n";
 
 
-        $sql =	 "SELECT\n"
+        $sql =   "SELECT\n"
             ."  `maps`.`SP`,\n"
             ."  `maps`.`ITU`,\n"
             ."  `sp`.`name`\n"
@@ -551,15 +579,15 @@ class Map {
             ."ORDER BY\n"
             ."  `maps`.`itu`,\n"
             ."  `maps`.`SP";
-        $result =	@mysql_query($sql);
+        $result =   @mysql_query($sql);
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $thisITU =	$row['ITU'];
-            $thisSP =	$row['SP'];
-            $thisName =	$row['name'];
-            $out[] =	"<option value='$thisSP'".($thisSP == $SP ? " selected" : "").">$thisITU $thisSP $thisName</option>\n";
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            $thisITU =  $row['ITU'];
+            $thisSP =   $row['SP'];
+            $thisName =     $row['name'];
+            $out[] =    "<option value='$thisSP'".($thisSP == $SP ? " selected" : "").">$thisITU $thisSP $thisName</option>\n";
         }
-        $out[] =	 "            </select></td>\n"
+        $out[] =     "            </select></td>\n"
             ."          </tr>\n"
             ."          <tr class='rowForm'>\n"
             ."            <th align='left' width='70'>Signal</th>\n"
@@ -567,22 +595,22 @@ class Map {
             ."<option value='' style='color: #0000ff;'>Select a station to highlight it</option>\n";
 
 
-        $sql =	"SELECT `ID`,`khz`,`call`,`QTH`,`type` FROM `signals` WHERE `sp` = '$SP' ORDER BY `khz`,`call`";
-        $result =	mysql_query($sql);
+        $sql =  "SELECT `ID`,`khz`,`call`,`QTH`,`type` FROM `signals` WHERE `sp` = '$SP' ORDER BY `khz`,`call`";
+        $result =   mysql_query($sql);
         for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-            $thisID =	$row['ID'];
-            $thisKhz =	(float)$row['khz'];
-            $thisCall =	$row['call'];
-            $thisQTH =	$row['QTH'];
-            $out[] =	"<option value='$thisID'".($thisID == $ID ? " selected" : "").">$thisKhz $thisCall $thisQTH</option>\n";
+            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            $thisID =   $row['ID'];
+            $thisKhz =  (float)$row['khz'];
+            $thisCall =     $row['call'];
+            $thisQTH =  $row['QTH'];
+            $out[] =    "<option value='$thisID'".($thisID == $ID ? " selected" : "").">$thisKhz $thisCall $thisQTH</option>\n";
         }
-        $out[] =	 "            </select></td>\n"
+        $out[] =     "            </select></td>\n"
             ."          </tr>\n"
             ."          <tr class='rowForm'>\n"
             ."            <th align='left' nowrap>Logged by</th>\n"
             ."            <td><select name='listenerID' class='formfield' style='font-family: monospace;' style='width: 100%'>\n"
-            .get_listener_options_list($filter_listener_SQL,$listenerID,"Anyone")
+            .get_listener_options_list($filter_listener_SQL, $listenerID, "Anyone")
             ."            </select></td>\n"
             ."          </tr>\n"
             ."          <tr class='rowForm'>\n"
@@ -755,24 +783,24 @@ class Map {
             ."  </tr>\n"
             ."</table><br>\n";
 
-        $sql =	"SELECT * FROM `maps` WHERE `SP` = '$SP'";
-        $result =	mysql_query($sql);
+        $sql =  "SELECT * FROM `maps` WHERE `SP` = '$SP'";
+        $result =   mysql_query($sql);
         if (mysql_num_rows($result)) {
-            $coords =	mysql_fetch_array($result,MYSQL_ASSOC);
+            $coords =   mysql_fetch_array($result, MYSQL_ASSOC);
             global $ID;
             if (!$test) {
-                $out[] =	 "<img usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
+                $out[] =     "<img usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
                     ."type_DGPS=$type_DGPS&type_HAMBCN=$type_HAMBCN&type_NAVTEX=$type_NAVTEX&type_NDB=$type_NDB&type_TIME=$type_TIME&type_OTHER=$type_OTHER&"
                     ."hide_labels=$hide_labels&places=$places&hide_placenames=$hide_placenames&ID=$ID\" border=\"1\" bordercolor=\"#000000\">\n"
                     ."<map name=\"map\">\n";
 
                 if ($places) {
-                    $sql =		"SELECT * FROM `places` WHERE `sp` = '$SP' AND (`population`>=$places OR `capital` = '1')";
-                    $result =	@mysql_query($sql);
-                    for ($i=0; $i<mysql_num_rows($result); $i++){
-                        $row =	mysql_fetch_array($result, MYSQL_ASSOC);
-                        $xpos =	(int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
-                        $ypos =	(int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
+                    $sql =      "SELECT * FROM `places` WHERE `sp` = '$SP' AND (`population`>=$places OR `capital` = '1')";
+                    $result =   @mysql_query($sql);
+                    for ($i=0; $i<mysql_num_rows($result); $i++) {
+                        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+                        $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
+                        $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                         $out[] =
                             "<area shape=\"circle\" alt=\"".$row['name'].($row['capital']=='1' ? " (State Capital)" : "")." - Population: ".$row['population']." (lat:".$row['lat'].", lon:".$row['lon'].")\" "
                             ."onmouseover=\"show_map_place('".$row['name']."','".$row['population']."','".$row['lat']."','".$row['lon']."','".$row['capital']."'); return true;\" "
@@ -780,7 +808,7 @@ class Map {
                             ."coords=\"".($xpos).",".($ypos).",3"."\">\n";
                     }
                 }
-                $sql =	 "SELECT DISTINCT\n"
+                $sql =   "SELECT DISTINCT\n"
                     ."  `signals`.`ID`,\n"
                     ."  `signals`.`active`,\n"
                     ."  `signals`.`call`,\n"
@@ -799,30 +827,30 @@ class Map {
                     .($ITU        ? "AND\n  `signals`.`ITU` = '$ITU'\n" : "")
                     .($listenerID ? "AND\n  `logs`.`listenerID` = '$listenerID'\n" : "")
                     .($filter_type ? " AND\n $filter_type" : "");
-                $result =	 @mysql_query($sql);
+                $result =    @mysql_query($sql);
                 for ($i=0; $i<mysql_num_rows($result); $i++) {
-                    $row =	mysql_fetch_array($result,MYSQL_ASSOC);
-                    $xpos =	(int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
-                    $ypos =	(int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
-                    $out[] =	 "<area shape=\"poly\" alt=\"".(float)$row['khz']."-".$row['call'].' '.$row['QTH']."\n(lat:".$row['lat'].", lon:".$row['lon'].")\" "
-                        ."onmouseover='show_map_info(\"".(float)$row['khz']."\",\"".$row['call']."\",\"".$row['type']."\",\"".str_replace("'","&#39;",$row['QTH'])."\",\"".$row['lat']."\",\"".$row['lon']."\",\"".$row['active']."\"); return true;' "
+                    $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+                    $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
+                    $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
+                    $out[] =     "<area shape=\"poly\" alt=\"".(float)$row['khz']."-".$row['call'].' '.$row['QTH']."\n(lat:".$row['lat'].", lon:".$row['lon'].")\" "
+                        ."onmouseover='show_map_info(\"".(float)$row['khz']."\",\"".$row['call']."\",\"".$row['type']."\",\"".str_replace("'", "&#39;", $row['QTH'])."\",\"".$row['lat']."\",\"".$row['lon']."\",\"".$row['active']."\"); return true;' "
                         ."onmouseout=\"show_map_info('','','','','',''); return true;\" "
                         ."onclick=\"signal_info(".$row['ID'].")\" coords=\"".($xpos-3).",".($ypos-2).",".($xpos).",".($ypos+4).",".($xpos+3).",".($ypos-2)."\">\n";
                 }
-                $out[] =	"</map>\n";
-            }
-            else {
-                $out[] =	"<img galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&ITU=$ITU&simple=$simple&listenerID=$listenerID&test=1\" border=\"1\" bordercolor=\"#000000\">\n";
+                $out[] =    "</map>\n";
+            } else {
+                $out[] =    "<img galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&ITU=$ITU&simple=$simple&listenerID=$listenerID&test=1\" border=\"1\" bordercolor=\"#000000\">\n";
             }
         }
-        $out[] =	"</form>\n";
-        return implode($out,"");
+        $out[] =    "</form>\n";
+        return implode($out, "");
     }
 
     /**
      * @return string
      */
-    function map_locator() {
+    public static function map_locator()
+    {
         global $system, $map_x, $map_y, $name, $QTH, $lat, $lon;
         $map_x=($map_x=="" ? 1 : $map_x);
         $map_y=($map_y=="" ? 1 : $map_y);

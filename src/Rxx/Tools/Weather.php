@@ -8,72 +8,74 @@
 
 namespace Rxx\Tools;
 
-
 /**
  * Class Weather
  * @package Rxx\Tools
  */
-class Weather {
+class Weather
+{
     /**
      * @param $ICAO
      * @param $hours
      * @param $list
      * @return bool|string
      */
-    function METAR($ICAO,$hours,$list){
-        $out =	array();
-        if ($my_file = @implode(file("http://www.aviationweather.gov/adds/metars/index.php?station_ids=$ICAO&std_trans=standard&chk_metars=on&hoursStr=past+$hours+hours")," ")) {
-            $my_file =   explode("<",$my_file);
+    public static function METAR($ICAO, $hours, $list)
+    {
+        $out =  array();
+        if ($my_file = @implode(file("http://www.aviationweather.gov/adds/metars/index.php?station_ids=$ICAO&std_trans=standard&chk_metars=on&hoursStr=past+$hours+hours"), " ")) {
+            $my_file =   explode("<", $my_file);
             for ($i=0; $i<count($my_file); $i++) {
-                preg_match("/FONT FACE=\"Monospace,Courier\">([0-9a-zA-Z \r\n\t\f\/\-]+)/",$my_file[$i],$result);
+                preg_match("/FONT FACE=\"Monospace,Courier\">([0-9a-zA-Z \r\n\t\f\/\-]+)/", $my_file[$i], $result);
                 if ($result) {
-                    $alt =	"";
-                    $slp =	"";
-                    $j =	1;
+                    $alt =  "";
+                    $slp =  "";
+                    $j =    1;
                     $row = $result[1];
-                    $fields =	explode(" ",$row);
-                    $date =		substr($fields[$j],0,2);
-                    $time =		substr($fields[$j],2,4);
-                    $j++;								// Skip over station ID
+                    $fields =   explode(" ", $row);
+                    $date =         substr($fields[$j], 0, 2);
+                    $time =         substr($fields[$j], 2, 4);
+                    $j++;                               // Skip over station ID
 
-                    while($j<count($fields)){
-                        if (preg_match("/(SLP[0-9]+)/i",$fields[$j],$tmp)) {
-                            $slp = substr($tmp[1],3);
+                    while ($j<count($fields)) {
+                        if (preg_match("/(SLP[0-9]+)/i", $fields[$j], $tmp)) {
+                            $slp = substr($tmp[1], 3);
                         }
-                        if (preg_match("/(Q[0-9]+)/i",$fields[$j],$tmp)) {
-                            $alt = (float) substr($tmp[1],1);
+                        if (preg_match("/(Q[0-9]+)/i", $fields[$j], $tmp)) {
+                            $alt = (float) substr($tmp[1], 1);
                         }
-                        if (preg_match("/(A[0-9]+)/i",$fields[$j],$tmp)) {
-                            $alt = floor(substr($tmp[1],1) * 3.38674)/10;
+                        if (preg_match("/(A[0-9]+)/i", $fields[$j], $tmp)) {
+                            $alt = floor(substr($tmp[1], 1) * 3.38674)/10;
                         }
                         $j++;
                     }
-                    if ($alt){
-                        $out[] =	$date." ".$time." ".pad($alt,6).($slp ? " ".($alt>=1000 ? substr($alt,0,2) : substr($alt,0,1)).substr($slp,0,2).".".substr($slp,2,1) : "");
-                        $alt =	0;
-                        $slp =	0;
+                    if ($alt) {
+                        $out[] =    $date." ".$time." ".\Rxx\Rxx::pad($alt, 6).($slp ? " ".($alt>=1000 ? substr($alt, 0, 2) : substr($alt, 0, 1)).substr($slp, 0, 2).".".substr($slp, 2, 1) : "");
+                        $alt =  0;
+                        $slp =  0;
                     }
-                    $result =	false;
+                    $result =   false;
                 }
             }
         }
-        if(!count($out)) {
+        if (!count($out)) {
             return false;
         }
         if (!$list) {
-            return implode($out,"\n");
+            return implode($out, "\n");
         }
         if ($list=='1') {
-            return ("document.write(\"<li>".implode($out,"</li>\");\ndocument.write(\"<li>")."</li>\");\n");
+            return ("document.write(\"<li>".implode($out, "</li>\");\ndocument.write(\"<li>")."</li>\");\n");
         }
     }
 
     /**
      * @return string
      */
-    function weather() {
+    public static function weather()
+    {
         global $script, $mode, $submode, $ICAO, $hours, $GSQ;
-        ini_set("default_socket_timeout",10);
+        ini_set("default_socket_timeout", 10);
         return "<form name='form' action='$script' method='POST'>\n"
         ."<input type='hidden' name='mode' value='$mode'>\n"
         ."<input type='hidden' name='submode' value=''>\n"
@@ -93,22 +95,23 @@ class Weather {
         ."<nobr><a href='#pressure'><b>Pressure History</b></a></nobr>\n"
         ."]</small></p><br><br>\n"
         ."<p>See Also <a href='http://www.qsl.net/ve6wz/geomag.html' target='_blank'>http://www.qsl.net/ve6wz/geomag.html</a>.</p>\n"
-        .weather_solar_map()."<br><br><br>\n"
+        .Weather::weather_solar_map()."<br><br><br>\n"
         .(system=="RNA" || system=="RWW" ?
-            weather_lightning_na()."<br><br><br>\n".weather_lightning_canada()."<br><br><br>\n".weather_pressure_na()."<br><br><br>\n"
+            Weather::weather_lightning_na()."<br><br><br>\n".Weather::weather_lightning_canada()."<br><br><br>\n".Weather::weather_pressure_na()."<br><br><br>\n"
             : "")
         .(system=="REU" || system=="RWW" ?
-            weather_lightning_europe()."<br><br><br>\n".weather_pressure_europe()."<br><br><br>\n"
+            Weather::weather_lightning_europe()."<br><br><br>\n".Weather::weather_pressure_europe()."<br><br><br>\n"
             : "")
         .(system=="RWW" ?
-            weather_pressure_au()."<br><br><br>\n" : "")
-        .weather_metar();
+            Weather::weather_pressure_au()."<br><br><br>\n" : "")
+        .Weather::weather_metar();
     }
 
     /**
      * @return string
      */
-    function weather_lightning_canada(){
+    public static function weather_lightning_canada()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -136,7 +139,8 @@ class Weather {
     /**
      * @return string
      */
-    function weather_lightning_europe() {
+    public static function weather_lightning_europe()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -160,11 +164,12 @@ class Weather {
     /**
      * @return string
      */
-    function weather_lightning_na(){
+    public static function weather_lightning_na()
+    {
         global $mode,$script;
         $vaisala = @file("http://www.classaxe.com/dx/ndb/vaisala.php");
-        $out =	array();
-        $out[] =	 "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
+        $out =  array();
+        $out[] =     "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
             ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
@@ -178,7 +183,7 @@ class Weather {
             ."  <tr>\n"
             ."    <td class='downloadTableContent'>\n";
         if (@$vaisala) {
-            $out[] =	 "This 30 minute-delayed USA lightning map is available at<br>\n"
+            $out[] =     "This 30 minute-delayed USA lightning map is available at<br>\n"
                 ."<a target='_blank' href='https://thunderstorm.vaisala.com/tux/jsp/explorer/explorer.jsp'><b>https://thunderstorm.vaisala.com/tux/jsp/explorer/explorer.jsp</b></a>.<br><br>\n"
                 ."The background has been modified to show state names and bordering countries."
                 ."    <table bgcolor='#424242'>\n"
@@ -202,32 +207,31 @@ class Weather {
                 ."        </table></td>\n"
                 ."      </tr>\n"
                 ."    </table>\n";
+        } else {
+            $out[] =     "<h3><font color='#ff0000'>This service is temporarily unavailable<br>Please contact <script language='javascript' type='text/javascript'>document.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com?subject=".system."%20Problem'>Martin Francis\"+\"</a>\")</script> if this symptom persists</font></h3>";
         }
-        else {
-            $out[] =	 "<h3><font color='#ff0000'>This service is temporarily unavailable<br>Please contact <script language='javascript' type='text/javascript'>document.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com?subject=".system."%20Problem'>Martin Francis\"+\"</a>\")</script> if this symptom persists</font></h3>";
-        }
-        $out[] =	 "    </td>\n"
+        $out[] =     "    </td>\n"
             ."  </tr>\n"
             ."</table>\n";
-        return implode($out,"");
+        return implode($out, "");
     }
 
     /**
      * @return string
      */
-    function weather_metar() {
+    public static function weather_metar()
+    {
         global $mode,$script,$hours,$ICAO;
-        $ICAO =	strtoUpper($ICAO);
+        $ICAO =     strtoUpper($ICAO);
         if ($hours=="") {
             $hours = "24";
         }
-        $pressure =	array();
+        $pressure =     array();
         if ($ICAO && $hours) {
-            $pressure[] =	"QNH at $ICAO:\n---------------------\nDD UTC  MB     SLP\n---------------------";
-            $pressure[] =	METAR($ICAO,$hours,0);
-            $pressure[] =	"---------------------\n(From ".system.")\n";
-        }
-        else {
+            $pressure[] =   "QNH at $ICAO:\n---------------------\nDD UTC  MB     SLP\n---------------------";
+            $pressure[] =   \Rxx\Tools\Weather::METAR($ICAO, $hours, 0);
+            $pressure[] =   "---------------------\n(From ".system.")\n";
+        } else {
             $pressure[] = "HELP\nEnter the ICAO code for any METAR compatible weather station.\n\nClick 'ICAO ID' to find your local station\n\nYour preferences will be saved.";
         }
         return "<form name='pressure' action='$script' method='GET' onsubmit='set_ICAO_cookies(document.pressure)'>\n"
@@ -250,7 +254,7 @@ class Weather {
         ."<input type='submit' value='QNH' class='formButton'>\n"
         ."<input type='button' value='METAR' class='formButton' onclick='popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\"+document.pressure.ICAO.value+\"&std_trans=&chk_metars=on&hoursStr=past+\"+document.pressure.hours.value+\"+hours\",\"popMETAR\",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'>\n"
         ."<input type='button' value='Decoded' class='formButton' onclick='popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\"+document.pressure.ICAO.value+\"&std_trans=translated&chk_metars=on&hoursStr=past+\"+document.pressure.hours.value+\"+hours\",\"popDecoded\",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'><br>\n"
-        ."<textarea rows='10' cols='50' class='formFixed'>".implode($pressure,"\n")."</textarea><br><br>\n"
+        ."<textarea rows='10' cols='50' class='formFixed'>".implode($pressure, "\n")."</textarea><br><br>\n"
         .($mode=='weather' ?
             "<b>Add live QNH data to your web page</b><br>\n"
             ."<a href='javascript:toggleDivDisplaySimple(\"how_to\")'><b>Read how</b></a><br><br>\n"
@@ -267,7 +271,8 @@ class Weather {
     /**
      * @return string
      */
-    function weather_pressure_au() {
+    public static function weather_pressure_au()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -291,7 +296,8 @@ class Weather {
     /**
      * @return string
      */
-    function weather_pressure_europe() {
+    public static function weather_pressure_europe()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
@@ -315,11 +321,12 @@ class Weather {
     /**
      * @return string
      */
-    function weather_pressure_na() {
+    public static function weather_pressure_na()
+    {
         global $mode,$script;
         if ($my_file = @file("http://www.atmos.uiuc.edu/weather/tree/viewer.pl?current/sfcslp/N")) {
-            $my_file =	implode($my_file,"\n");
-            preg_match("/<IMG src=\"([^\"]+)/i",$my_file,$result);
+            $my_file =  implode($my_file, "\n");
+            preg_match("/<IMG src=\"([^\"]+)/i", $my_file, $result);
 
 
         }
@@ -336,7 +343,7 @@ class Weather {
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent'>\n"
-        .(@$result ?	 "Latest barometric Pressure map from the <a href='http://ww2010.atmos.uiuc.edu/(Gh)/wx/surface.rxml' target='_blank'>"
+        .(@$result ?     "Latest barometric Pressure map from the <a href='http://ww2010.atmos.uiuc.edu/(Gh)/wx/surface.rxml' target='_blank'>"
             ."University of Illinois WW2010 Project</a></h2><a href='http://ww2010.atmos.uiuc.edu/(Gh)/wx/surface.rxml' target='_blank'><br><br>"
             ."<img src=\"".$result[1]."\"></a></td>\n":
             "<h3><font color='#ff0000'>http://www.atmos.uiuc.edu -<br>\n"
@@ -351,7 +358,8 @@ class Weather {
     /**
      * @return string
      */
-    function weather_solar_map() {
+    public static function weather_solar_map()
+    {
         global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"

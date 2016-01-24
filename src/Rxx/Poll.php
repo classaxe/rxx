@@ -23,8 +23,7 @@ class Poll
                  "<p><b>Sorry!</b><br>The poll function is offline.</p>\n"
                 . "<p>Click <a href='../../classes?mode=poll_list'><b>here</b></a> for previous.</p>";
         }
-        if (
-            Rxx::get_var('submode')=="vote" && $my_answer && $questionID
+        if (Rxx::get_var('submode')=="vote" && $my_answer && $questionID
         ) {
             $sql =    "UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
             @mysql_query($sql);

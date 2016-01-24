@@ -865,8 +865,7 @@ class Awards
     protected function drawTranspacific()
     {
         $transpacific_awards = array(1,2,3,4);
-        if (
-            $this->_listener_region!="na" &&
+        if ($this->_listener_region!="na" &&
             $this->_listener_region!="ca" &&
             $this->_listener_region!="sa" &&
             $this->_listener_region!="as" &&
@@ -1125,8 +1124,9 @@ class Awards
         $mail->FromName =       $awards_name;
         $mail->AddAddress(awardsAdminEmail, awardsAdminName);
         $mail->AddAddress(awardsBCCEmail, awardsBCCName);
-        y($mail);
+        \Rxx\Rxx::y($mail);
         die;
+        // @TODO: Determine if this code is still needed.
         $mail->Subject =        "RXX Awards";
         $mail->Body =           nl2br($awards_requested);
         $mail->AltBody =        $awards_requested;
