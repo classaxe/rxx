@@ -62,13 +62,13 @@ class Backup
         $tables =        array();
         if (!$tableNames) {
             $sql =    "SHOW TABLE STATUS ";
-            if (!$result = mysql_query($sql)) {
-                return mysql_error();
+            if (!$result = \Rxx\Database::query($sql)) {
+                return \Rxx\Database::getError();
             }
-            if (!mysql_num_rows($result)) {
+            if (!\Rxx\Database::numRows($result)) {
                 return false;
             }
-            while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                 $table =        array();
                 $table['Name'] =    $row['Name'];
                 $tables[] =    $table;
@@ -83,14 +83,14 @@ class Backup
         }
         for ($i=0; $i<count($tables); $i++) {
             $sql =    "SHOW COLUMNS FROM `".$tables[$i]['Name']."`";
-            if (!$result = mysql_query($sql)) {
-                return    mysql_error();
+            if (!$result = \Rxx\Database::query($sql)) {
+                return    \Rxx\Database::getError();
             }
-            if (!mysql_num_rows($result)) {
+            if (!\Rxx\Database::numRows($result)) {
                 return false;
             }
             $columns =            array();
-            while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                 $column =            array();        // Hold results for this one field
                 $column['Field'] =    $row['Field'];
                 ereg("([^/(]+)", $row['Type'], $type);
@@ -111,12 +111,12 @@ class Backup
             $sql =
                 "SELECT * FROM `".$tables[$i]['Name']."`\n"
                 .($orderBy ? "ORDER BY $orderBy" : '');
-            if (!$result = @mysql_query($sql)) {
-                return mysql_error();
+            if (!$result = @\Rxx\Database::query($sql)) {
+                return \Rxx\Database::getError();
             }
-            if (mysql_num_rows($result)) {
+            if (\Rxx\Database::numRows($result)) {
                 $data =        array();
-                while ($row = mysql_fetch_row($result)) {
+                while ($row = \Rxx\Database::fetchRow($result)) {
                     $line =        array();
                     for ($j=0; $j<count($row); $j++) {
                         switch($tables[$i]['columns'][$j]['Type']) {    // Numbers require no quotes, all others do.
@@ -160,15 +160,15 @@ class Backup
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
         $sql =    "SHOW TABLE STATUS ";
-        if (!$result = mysql_query($sql)) {
-            return mysql_error();
+        if (!$result = \Rxx\Database::query($sql)) {
+            return \Rxx\Database::getError();
         }
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return false;
         }
 
         $tables =        array();
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
             $temp =        array();
             $temp['Name'] =    $row['Name'];
             $temp['Type'] =    (isset($row['Type']) ? $row['Type'] : $row['Engine']);
@@ -176,14 +176,14 @@ class Backup
         }
         for ($i=0; $i<count($tables); $i++) {
             $sql =    "SHOW COLUMNS FROM `".$tables[$i]['Name']."`";
-            if (!$result = mysql_query($sql)) {
-                return mysql_error();
+            if (!$result = \Rxx\Database::query($sql)) {
+                return \Rxx\Database::getError();
             }
-            if (!mysql_num_rows($result)) {
+            if (!\Rxx\Database::numRows($result)) {
                 return false;
             }
             $columns =            array();
-            while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                 $column =            array();        // Hold results for this one field
                 $column['Default'] =    '';
                 if ($row['Extra'] != 'auto_increment') {
@@ -203,13 +203,13 @@ class Backup
             $tables[$i]['Columns'] = $columns;
 
             $sql =    "SHOW INDEX FROM `".$tables[$i]['Name']."`";
-            if (!$result = mysql_query($sql)) {
-                return mysql_error();
+            if (!$result = \Rxx\Database::query($sql)) {
+                return \Rxx\Database::getError();
             }
 
             $indexes =    array();
-            if (mysql_num_rows($result)) {
-                while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            if (\Rxx\Database::numRows($result)) {
+                while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                     $indexes[] =    $row;
                 }
                 if (count($indexes)) {

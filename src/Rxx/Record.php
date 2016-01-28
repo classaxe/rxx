@@ -49,7 +49,7 @@ class Record
      */
     public static function doSqlQuery($sql)
     {
-        return mysql_query($sql);
+        return \Rxx\Database::query($sql);
     }
 
 
@@ -77,7 +77,7 @@ class Record
             ."WHERE\n"
             ."  `ID` = \"".$this->getID()."\"";
         $result = $this->doSqlQuery($sql);
-        return mysql_fetch_array($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
     }
 
     /**
@@ -85,7 +85,7 @@ class Record
      */
     public static function getAffectedRows()
     {
-        return mysql_affected_rows();
+        return \Rxx\Database::affectedRows();
     }
 
     /**
@@ -97,10 +97,10 @@ class Record
         if (!$result = static::doSqlQuery($sql)) {
             return false;
         }
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        $record = mysql_fetch_array($result, MYSQL_NUM);
+        $record = \Rxx\Database::fetchArray($result, MYSQL_NUM);
         return $record[0];
     }
 
@@ -113,10 +113,10 @@ class Record
         if (!$result = static::doSqlQuery($sql)) {
             return false;
         }
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        return mysql_fetch_array($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
     }
 
     /**
@@ -128,11 +128,11 @@ class Record
         $out = array();
         if (!$result = static::doSqlQuery($sql)) {
             \Rxx\Rxx::z($sql);
-            print mysql_error();
+            print \Rxx\Database::getError();
             return false;
         }
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $out[] = mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $out[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         }
         return $out;
     }

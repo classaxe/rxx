@@ -53,7 +53,7 @@ class Listener
                     break;
             }
         }
-        $Obj = new Listener($ID);
+        $Obj = new \Rxx\Listener($ID);
         $error_msg =    "";
         $out = "";
         if (\Rxx\Rxx::isAdmin()) {
@@ -92,7 +92,7 @@ class Listener
                         ."  `region` =		\"$region\",\n"
                         ."  `timezone` =	\"".htmlentities(trim($timezone))."\",\n"
                         ."  `website` =		\"".htmlentities(trim($website))."\"\n";
-                        mysql_query($sql);
+                        \Rxx\Database::query($sql);
                         $ID =    mysql_insert_id();
                         $out.="<script language='javascript' type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
                         break;
@@ -116,7 +116,7 @@ class Listener
                         ."  `timezone` =	\"".htmlentities(trim($timezone))."\",\n"
                         ."  `website` =		\"".htmlentities(trim($website))."\"\n"
                         ."WHERE `ID` =		\"".addslashes($ID)."\"";
-                        mysql_query($sql);
+                        \Rxx\Database::query($sql);
                         $out.=    "<script language='javascript' type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
                         break;
                 }
@@ -134,8 +134,8 @@ class Listener
             $lon = 0;
         } else {
             $sql =        "SELECT * FROM `listeners` WHERE `ID` = '$ID'";
-            $result =         mysql_query($sql);
-            $row =            mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =         \Rxx\Database::query($sql);
+            $row =            \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $signals =        $row['count_signals'];
             $callsign =        $row['callsign'];
             $email =        $row['email'];
@@ -327,8 +327,8 @@ class Listener
               ."WHERE\n"
               ."  $region_SQL\n";
         }
-        $result =     @mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =     @\Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row["count"];
     }
 
@@ -344,11 +344,11 @@ class Listener
             switch ($submode) {
                 case "delete":
                     $sql =    "SELECT COUNT(*) AS `logs` FROM `logs` WHERE `listenerID` = \"".addslashes($targetID)."\"";
-                    $result =    mysql_query($sql);
-                    $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                    $result =    \Rxx\Database::query($sql);
+                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                     if ($row["logs"] == "0") {
                         $sql =    "DELETE FROM `listeners` WHERE `ID` = \"".addslashes($targetID)."\"";
-                        mysql_query($sql);
+                        \Rxx\Database::query($sql);
                     } else {
                         $error_msg =    "This listener has submitted ".$row["logs"]." logs and so cannot be deleted.";
                     }
@@ -507,8 +507,8 @@ class Listener
               ."WHERE\n"
               .($region_SQL !="" ? "  $region_SQL AND\n" : "")
               ."  `primary_QTH` = '1'";
-            $result = @mysql_query($sql);
-            $row = mysql_fetch_array($result, MYSQL_ASSOC);
+            $result = @\Rxx\Database::query($sql);
+            $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $log_latest = $row['log_latest'];
             $sql =
               "SELECT\n"
@@ -519,10 +519,10 @@ class Listener
               .($region_SQL !="" ? "  $region_SQL AND\n" : "")
               ."  `primary_QTH` = '1' AND\n"
               ."  `log_latest` = \"".$row['log_latest']."\"";
-            $result = mysql_query($sql);
+            $result = \Rxx\Database::query($sql);
             $latest_arr = array();
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $latest_arr[] = $row['name'];
             }
             $out.=
@@ -550,11 +550,11 @@ class Listener
               ."LIMIT 0,$listener_list_limit";
             //    z($sql);
 
-            $result =     mysql_query($sql);
+            $result =     \Rxx\Database::query($sql);
             $listener_arr = array();
 
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $listener_arr[] =    mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $listener_arr[] =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             }
             usort($listener_arr, "listener_name_sort");
 
@@ -597,7 +597,7 @@ class Listener
         }
         //$out.=	"<pre>$sql</pre>";
 
-        $result =     @mysql_query($sql);
+        $result =     @\Rxx\Database::query($sql);
 
         $out.=
         "<input type='hidden' name='mode' value='$mode'>\n"
@@ -617,7 +617,7 @@ class Listener
         ."      <tr class='rowForm'>\n"
         ."        <th align='left'>Search for &nbsp;</th>\n"
         ."        <td nowrap><input type='text' name='filter' size='30' value='".stripslashes($filter)."' class='formfield'> "
-        .(mysql_num_rows($result)==$total ? "(Showing all $total listeners)" : "(Showing ".mysql_num_rows($result)." of $total listeners)")
+        .(\Rxx\Database::numRows($result)==$total ? "(Showing all $total listeners)" : "(Showing ".\Rxx\Database::numRows($result)." of $total listeners)")
         ."&nbsp;</td>\n"
         ."      </tr>\n"
         ."      <tr class='rowForm'>\n"
@@ -655,7 +655,7 @@ class Listener
         ."    </table></td>"
         ."  </tr>"
         ."</table>";
-        if (mysql_num_rows($result)) {
+        if (\Rxx\Database::numRows($result)) {
             $out.=
               "<table cellpadding='2' cellspacing='1' border='1' bgcolor='#ffffff' class='downloadtable'>\n"
               ."  <thead>\n"
@@ -699,8 +699,8 @@ class Listener
             )
             ."  </tr>\n"
             ."  </thead>\n";
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $notes =    stripslashes($row["notes"]);
                 $out.=
                 "<tr class='rownormal'>"
@@ -980,7 +980,7 @@ class Listener
                 $bgcolor =    " bgcolor='#d0d0d0'";
                 $title =      " title='(Reportedly off air or decommissioned)'";
             } else {
-                $bgcolor = " bgcolor='".Signal::$colors[$row["type"]]."'";
+                $bgcolor = " bgcolor='".\Rxx\Signal::$colors[$row["type"]]."'";
                 switch ($row["type"]) {
                     case DGPS:        $title = " title='DGPS Station'";
                         break;
@@ -1057,7 +1057,7 @@ class Listener
                 $ID = array_pop($path_arr);
             }
         }
-        $Obj =    new Listener($ID);
+        $Obj =    new \Rxx\Listener($ID);
         $row =    $Obj->getRecord();
         $name =    $row["name"];
         $signals =    $row["count_signals"];
@@ -1167,9 +1167,9 @@ class Listener
         ."<img ID='listenerMap' usemap=\"#map\" galleryimg=\"no\" src=\"".system_URL."/generate_listener_map/".$system_ID."\" border=\"0\" ".($system_ID==1 ? "width=\"653\" height=\"620\"" : "width=\"688\" height=\"665\"").">\n"
         ."<map name=\"map\">\n";
 
-        $result =    @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $out.=
                 "<area shape=\"circle\" href=\"javascript:listener_edit(".$row['listenerID'].")\""
@@ -1208,9 +1208,9 @@ class Listener
         ."if (!isNS4)\n"
         ."  document.write(\"<div class='scrollbox_230' style='height: 505; border: solid 1px #808080; background-color: #ffffff;'>\")\n"
         ."</script>\n";
-        $result =    @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $out.=
                 "<li><a ID='text_".$row['listenerID']."' title='Location: ".$row['QTH'].($row['sp'] ? ", ".$row['sp']:"").", ".$row['itu']."\nClick for details.' href=\"javascript:listener_edit(".$row['listenerID'].")\""
@@ -1248,8 +1248,8 @@ class Listener
             }
         }
         $sql =    "select * from `listeners` where `ID` = $ID";
-        $result =    mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
 
         $signals =    $row["count_signals"];
         $logs =    $row["count_logs"];
@@ -1267,8 +1267,8 @@ class Listener
         if ($ICAO_listener && $hours_listener) {
             if ($METAR = \Rxx\Tools\Weather::METAR($ICAO_listener, $hours_listener, 0)) {
                 $sql =        "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_listener\"";
-                $result =        @mysql_query($sql);
-                $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =        @\Rxx\Database::query($sql);
+                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $dx =        \Rxx\Rxx::get_dx($lat, $lon, $row["lat"], $row["lon"]);
                 $pressure[] =    "QNH at $ICAO_listener -\n".$row["name"].($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n(".$dx[0]." from QTH)\n";
                 $pressure[] =    "----------------------\nDD UTC  MB     SLP \n----------------------";
@@ -1521,15 +1521,15 @@ class Listener
               ."  `signalID`\n"
               .($sortBy_SQL ? "ORDER BY\n  $sortBy_SQL" : "");
             //  print("<pre>$sql</pre>");
-            $result =    mysql_query($sql);
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =    \Rxx\Database::query($sql);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $bgcolor =    "";
                 if (!$row["active"]) {
                     $bgcolor =    " bgcolor='#d0d0d0'";
                     $title =      " title='(Reportedly off air or decommissioned)'";
                 } else {
-                    $bgcolor = " bgcolor='".Signal::$colors[$row["type"]]."'";
+                    $bgcolor = " bgcolor='".\Rxx\Signal::$colors[$row["type"]]."'";
                     switch ($row["type"]) {
                         case DGPS:        $title = " title='DGPS Station'";
                             break;

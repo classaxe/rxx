@@ -63,10 +63,10 @@ class Image
             ."  `count_logs` !=0 AND\n"
             ."  $region";
 //  z($sql);
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $reporters_in =     array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $reporters_in[] =   ($row['sp'] ? $row['sp'] : $row['itu']);
         }
         $reporters_in = (implode($reporters_in, ","));
@@ -83,8 +83,8 @@ class Image
             ."WHERE\n"
             ."  `ID` = ".$ID;
 //  z($sql);
-        $result =   mysql_query($sql);
-        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $heard_in =     str_replace(" ", ",", $row['heard_in']);
         $text =     (float)$row['khz']."-".$row['call'];
         $based_in =     ($row['sp'] ? $row['sp'] : $row['itu']);
@@ -99,10 +99,10 @@ class Image
             ."WHERE\n"
             ."  ".$region;
 //  z($sql);
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
         $reporters =    array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $reporters[] =  $row['map_x'].",".$row['map_y'].",".$row['primary_QTH'];
             }
@@ -133,16 +133,16 @@ class Image
             ."  `name`";
 //  z($sql);
 
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $reporter_rxed =    array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $name = str_replace(array('&aelig;','&ouml;','&auml;'), array('ae','o','a'), $row['name']);
                 if (strlen($name) > 20) {
                     $name = substr($name, 0, 17)."...";
                 }
-                $reporter_rxed[] =  $row['map_x'].",".$row['map_y'].",".$row['daytime'].",".$row['primary_QTH'].",".Rxx::pad($row['heard_in'], 3)." ".Rxx::pad($name, 20).lead($row['dx_miles'], 4);
+                $reporter_rxed[] =  $row['map_x'].",".$row['map_y'].",".$row['daytime'].",".$row['primary_QTH'].",".\Rxx\Rxx::pad($row['heard_in'], 3)." ".\Rxx\Rxx::pad($name, 20).\Rxx\Rxx::lead($row['dx_miles'], 4);
             }
         }
         $reporter_rxed =    implode($reporter_rxed, "|");
@@ -190,10 +190,10 @@ class Image
             ."  ".$region."\n"
             ."ORDER BY\n"
             ."  `itu`";
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
         $reporters_in =     array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $reporters_in[] =   ($row['sp'] ? $row['sp'] : $row['itu']);
         }
         $reporters_in = (implode($reporters_in, ","));
@@ -207,10 +207,10 @@ class Image
             ."  `listeners`\n"
             ."WHERE\n"
             ."  ".$region;
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
         $reporters =    array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $reporters[] =  $row['map_x'].",".$row['map_y'].",".$row['primary_QTH'];
             }
@@ -238,10 +238,10 @@ class Image
             ."  `heard_in`,\n"
             ."  `name`";
 //  z($sql);die;
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $reporter_rxed =    array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 $name = str_replace(array('&aelig;','&ouml;'), array('ae','o'), $row['name']);
                 if (strlen($name) > 20) {
@@ -1253,11 +1253,11 @@ class Image
         $SP =       strToLower($SP);
 
         $sql =  "SELECT * FROM `maps` WHERE `SP` = '$SP'";
-        $result =   mysql_query($sql);
-        if (! mysql_num_rows($result)) {
+        $result =   \Rxx\Database::query($sql);
+        if (! \Rxx\Database::numRows($result)) {
             return;
         }
-        $coords =   mysql_fetch_array($result, MYSQL_ASSOC);
+        $coords =   \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
 
         $filter_type =  array();
 
@@ -1318,9 +1318,9 @@ class Image
 
             if ($places) {
                 $sql =  "SELECT * FROM `places` WHERE `sp` = '$SP' AND (`population`>=$places OR `capital` = '1')";
-                $result =   @mysql_query($sql);
-                for ($i=0; $i<mysql_num_rows($result); $i++) {
-                    $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =   @\Rxx\Database::query($sql);
+                for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                    $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                     $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                     $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                     if ($row['capital']=='1') {
@@ -1354,11 +1354,11 @@ class Image
                 .($filter_type ? " AND\n $filter_type" : "");
 
 
-            $result =    @mysql_query($sql);
+            $result =    @\Rxx\Database::query($sql);
 
 
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                 $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                 if ($row['ID']==$ID) {

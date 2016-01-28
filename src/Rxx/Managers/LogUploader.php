@@ -189,8 +189,8 @@ class LogUploader
                             ."  `signals`\n"
                             ."WHERE\n"
                             ."  `ID` = \"".$ID[$i]."\"";
-                        $result =    mysql_query($sql);
-                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                        $result =    \Rxx\Database::query($sql);
+                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                         if ($row["last_heard"] >= $YYYYMMDD[$i]) {
                             $update_signal = false;
                         }
@@ -204,8 +204,8 @@ class LogUploader
                         ."WHERE\n"
                         ."  `signalID` = ".$ID[$i]." AND\n"
                         ."  `listenerID` != ''";
-                    $result =    mysql_query($sql);
-                    $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+                    $result =    \Rxx\Database::query($sql);
+                    $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                     $logs =        $row["logs"];
 
                     if ($update_signal) {
@@ -235,7 +235,7 @@ class LogUploader
                             ."  `heard_in_".$this->listener->record["region"]."`=1\n"
                             ."WHERE\n"
                             ."  `ID` = ".$ID[$i];
-                        mysql_query($sql);
+                        \Rxx\Database::query($sql);
                         if ($this->debug) {
                             $this->html.=    "<pre>$sql</pre>";
                         }
@@ -922,15 +922,15 @@ class LogUploader
                                     ." `call` = \"$ID\"";
                                 //              print("<pre>$sql</pre>");
 
-                                $result = @mysql_query($sql);
-                                if (mysql_error()) {
+                                $result = @\Rxx\Database::query($sql);
+                                if (\Rxx\Database::getError()) {
                                     $this->html.= "Problem looking up station - frequency was $KHZ";
                                 }
-                                if ($result && mysql_num_rows($result)) {
+                                if ($result && \Rxx\Database::numRows($result)) {
                                     $total_loggings++;
-                                    if (mysql_num_rows($result) == 1) {
+                                    if (\Rxx\Database::numRows($result) == 1) {
                                         $this->html.=    "<tr class='rownormal'>\n";
-                                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                                         $bgcolor =    "";
                                         if (!$row["active"]) {
                                             $bgcolor =
@@ -1009,8 +1009,8 @@ class LogUploader
                                             ."<select name='ID[]' class='formfixed' style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
                                         $defaultChosen =    false;
                                         $selected =         false;
-                                        for ($j=0; $j<mysql_num_rows($result); $j++) {
-                                            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                                        for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
+                                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                                             $dx = get_dx($this->listener->record['lat'], $this->listener->record['lat'], $row["lat"], $row["lon"]);
                                             if (!$defaultChosen && $row["active"]=="1") {
                                                 $selected = true;

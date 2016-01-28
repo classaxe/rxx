@@ -93,11 +93,11 @@ class Admin
             ."  `logs`.`signalID` = `signals`.`ID` AND\n"
             ."  `logs`.`listenerID` = `listeners`.`ID`";
         //  print("<pre>$sql</pre>"); die;
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
         $updated =    0;
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row["qth_lat"] && $row["dx_lat"]) {
                 $a =    \Rxx\Rxx::get_dx($row["qth_lat"], $row["qth_lon"], $row["dx_lat"], $row["dx_lon"]);
                 $sql =
@@ -108,8 +108,8 @@ class Admin
                     ."  `dx_km` = ".$a[1]."\n"
                     ."WHERE\n"
                     ."  `ID` = ".$row["ID"];
-                mysql_query($sql);
-                if (mysql_affected_rows()) {
+                \Rxx\Database::query($sql);
+                if (\Rxx\Database::affectedRows()) {
                     $updated++;
                 }
             }
@@ -137,7 +137,7 @@ class Admin
             ."  `heard_in_xx` =	0,\n"
             ."  `heard_in` =	'',\n"
             ."  `heard_in_html` =	''\n";
-        mysql_query($sql);
+        \Rxx\Database::query($sql);
 
         $sql =
              "SELECT DISTINCT\n"
@@ -145,12 +145,12 @@ class Admin
             ."  `signalID`\n"
             ."FROM\n"
             ."  `logs`\n";
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
 
-        $affected =    mysql_num_rows($result);
+        $affected =    \Rxx\Database::numRows($result);
         $signal = new \Rxx\Signal;
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $ID =    $row['signalID'];
             $region =    $row['region'];
             $signal->setID($ID);
@@ -162,7 +162,7 @@ class Admin
                 ."  `heard_in_".$region."` = 1\n"
                 ."WHERE\n"
                 ."  `ID` = \"$ID\"";
-            mysql_query($sql);
+            \Rxx\Database::query($sql);
         }
         return $affected;
     }
@@ -172,7 +172,7 @@ class Admin
     {
         $sql =
             "UPDATE `logs` SET `daytime` = 0";
-        mysql_query($sql);
+        \Rxx\Database::query($sql);
 
         $sql =
              "SELECT\n"
@@ -183,11 +183,11 @@ class Admin
             ."  `logs`.`listenerID` = `listeners`.`ID` AND\n"
             ."  (`logs`.`time`+2400 >=3400+(`listeners`.`timezone`*100) AND\n"
             ."   `logs`.`time`+2400 < 3800+(`listeners`.`timezone`*100))\n";
-        $result = @mysql_query($sql);
-        $affected = mysql_num_rows($result);
+        $result = @\Rxx\Database::query($sql);
+        $affected = \Rxx\Database::numRows($result);
         for ($i=0; $i<$affected; $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
-            mysql_query($row['query']);
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            \Rxx\Database::query($row['query']);
         }
         return "Updated ".$affected." logs";
     }
@@ -224,7 +224,7 @@ class Admin
             } else {
                 $num =    count($data)-7;
                 $sql =    "DELETE FROM `icao`";
-                mysql_query($sql);
+                \Rxx\Database::query($sql);
                 for ($i=5; $i<$num+5; $i++) {
                     $icao_name =    trim(substr($data[$i], 0, 16));
                     $icao_cnt =    trim(substr($data[$i], 20, 2));
@@ -249,7 +249,7 @@ class Admin
                         ."  `lat` = $lat,\n"
                         ."  `lon` = $lon,\n"
                         ."  `SP` = \"$icao_sp\"";
-                    mysql_query($sql);
+                    \Rxx\Database::query($sql);
                     if (mysql_errno()) {
                         $out.= "<pre>$data[$i]<br>$sql</pre>";
                     }
@@ -316,10 +316,10 @@ class Admin
             ."  `ID`"
             ."FROM\n"
             ."  `signals`";
-        $result =    mysql_query($sql);
+        $result =    \Rxx\Database::query($sql);
         $signal = new \Rxx\Signal;
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $ID =    $row["ID"];
             $sql =
                  "SELECT\n"
@@ -329,8 +329,8 @@ class Admin
                 ."WHERE\n"
                 ."  `signalID` = ".$ID." AND\n"
                 ."  `listenerID` != ''";
-            $result2 =    @mysql_query($sql);
-            $row =    mysql_fetch_array($result2, MYSQL_ASSOC);
+            $result2 =    @\Rxx\Database::query($sql);
+            $row =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
             $logs =    $row["logs"];
             $signal->setID($ID);
             $signal->updateHeardInList();
@@ -342,8 +342,8 @@ class Admin
                 ."  `logs` = $logs\n"
                 ."WHERE\n"
                 ."  `ID` = \"$ID\"";
-            mysql_query($sql);
-            if (mysql_affected_rows()) {
+            \Rxx\Database::query($sql);
+            if (\Rxx\Database::affectedRows()) {
                 $updated++;
             }
         }
@@ -360,10 +360,10 @@ class Admin
             ."  `GSQ`"
             ."FROM\n"
             ."  `signals`";
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $ID =    $row["ID"];
             $GSQ =    $row["GSQ"];
             if ($GSQ) {
@@ -378,8 +378,8 @@ class Admin
                     ."  `lon` = $lon\n"
                     ."WHERE\n"
                     ."  `ID` = $ID";
-                mysql_query($sql);
-                if (mysql_affected_rows()) {
+                \Rxx\Database::query($sql);
+                if (\Rxx\Database::affectedRows()) {
                     $updated++;
                 }
             }
@@ -395,9 +395,9 @@ class Admin
         $updated =    0;
 
         $sql =        "SELECT `ID` FROM `listeners`";
-        $result2=          mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result2); $i++) {
-            $row2 =        mysql_fetch_array($result2);
+        $result2=          \Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result2); $i++) {
+            $row2 =        \Rxx\Database::fetchArray($result2);
             $listenerID =    $row2["ID"];
             if (\Rxx\Rxx::update_listener_log_count($listenerID)) {
                 $updated++;

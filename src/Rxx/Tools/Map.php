@@ -53,7 +53,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='../../images/af_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/af_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -80,7 +80,7 @@ class Map
         ."    <td class='downloadTableContent'>OR... try the <a href='./?mode=state_map&simple=1&SP=AK' target='_blank'><b>interactive map of Alaska</b></a></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='../../images/map_alaska_beacons.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/map_alaska_beacons.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -106,7 +106,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='../../images/as_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/as_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -133,7 +133,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='../../images/au_map.gif' alt='Australian map'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/au_map.gif' alt='Australian map'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -186,7 +186,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='../../images/japan_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/japan_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -240,7 +240,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='../../images/pacific_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/pacific_map.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
@@ -279,8 +279,8 @@ class Map
 
         if ($submode<>'' && $place<>'') {
             $sql =  "SELECT * FROM `places` WHERE `name` LIKE \"%".addslashes($place)."%\" ORDER BY `itu`,`sp`,`population` DESC";
-            $result =   @mysql_query($sql);
-            if (mysql_num_rows($result)) {
+            $result =   @\Rxx\Database::query($sql);
+            if (\Rxx\Database::numRows($result)) {
                 $out[] =     "  <tr>\n"
                     ."    <td class='downloadTableContent'><b>Matches</b><br>\n"
                     ."    <table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border-collapse: collapse;'>\n"
@@ -294,7 +294,7 @@ class Map
                     ."        <td width='25' valign='top'><b>GSQ</b></td>"
                     ."      </tr>\n";
 
-                while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+                while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                     $out[] =     "      <tr>\n"
                         ."        <td>".$row['name']."</td>\n"
                         ."        <td>".$row['sp']."</td>\n"
@@ -338,7 +338,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='../../images/map_french_polynesia.gif'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/map_french_polynesia.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
@@ -367,7 +367,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='../../images/sa_map.gif'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/sa_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -468,22 +468,28 @@ class Map
         global  $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER, $places, $ID;
 
         switch (system) {
-            case "RNA":     $filter_listener_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
+            case "RNA":
+                $filter_listener_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
                 break;
-            case "REU":     $filter_listener_SQL = "(`region` = 'eu')";
+            case "REU":
+                $filter_listener_SQL = "(`region` = 'eu')";
                 break;
-            case "RWW":     $filter_listener_SQL = "1";
+            case "RWW":
+                $filter_listener_SQL = "1";
                 break;
         }
 
         $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
             switch (system) {
-                case "RNA":     $type_NDB =     1;
+                case "RNA":
+                    $type_NDB = 1;
                     break;
-                case "REU":     $type_NDB =     1;
+                case "REU":
+                    $type_NDB = 1;
                     break;
-                case "RWW":     $type_NDB =     1;
+                case "RWW":
+                    $type_NDB = 1;
                     break;
             }
         }
@@ -579,9 +585,9 @@ class Map
             ."ORDER BY\n"
             ."  `maps`.`itu`,\n"
             ."  `maps`.`SP";
-        $result =   @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $thisITU =  $row['ITU'];
             $thisSP =   $row['SP'];
             $thisName =     $row['name'];
@@ -596,9 +602,9 @@ class Map
 
 
         $sql =  "SELECT `ID`,`khz`,`call`,`QTH`,`type` FROM `signals` WHERE `sp` = '$SP' ORDER BY `khz`,`call`";
-        $result =   mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $thisID =   $row['ID'];
             $thisKhz =  (float)$row['khz'];
             $thisCall =     $row['call'];
@@ -610,7 +616,7 @@ class Map
             ."          <tr class='rowForm'>\n"
             ."            <th align='left' nowrap>Logged by</th>\n"
             ."            <td><select name='listenerID' class='formfield' style='font-family: monospace;' style='width: 100%'>\n"
-            .get_listener_options_list($filter_listener_SQL, $listenerID, "Anyone")
+            .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $listenerID, "Anyone")
             ."            </select></td>\n"
             ."          </tr>\n"
             ."          <tr class='rowForm'>\n"
@@ -784,9 +790,9 @@ class Map
             ."</table><br>\n";
 
         $sql =  "SELECT * FROM `maps` WHERE `SP` = '$SP'";
-        $result =   mysql_query($sql);
-        if (mysql_num_rows($result)) {
-            $coords =   mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        if (\Rxx\Database::numRows($result)) {
+            $coords =   \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             global $ID;
             if (!$test) {
                 $out[] =     "<img usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
@@ -796,9 +802,9 @@ class Map
 
                 if ($places) {
                     $sql =      "SELECT * FROM `places` WHERE `sp` = '$SP' AND (`population`>=$places OR `capital` = '1')";
-                    $result =   @mysql_query($sql);
-                    for ($i=0; $i<mysql_num_rows($result); $i++) {
-                        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+                    $result =   @\Rxx\Database::query($sql);
+                    for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                         $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                         $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                         $out[] =
@@ -827,9 +833,9 @@ class Map
                     .($ITU        ? "AND\n  `signals`.`ITU` = '$ITU'\n" : "")
                     .($listenerID ? "AND\n  `logs`.`listenerID` = '$listenerID'\n" : "")
                     .($filter_type ? " AND\n $filter_type" : "");
-                $result =    @mysql_query($sql);
-                for ($i=0; $i<mysql_num_rows($result); $i++) {
-                    $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =    @\Rxx\Database::query($sql);
+                for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                    $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                     $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                     $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                     $out[] =     "<area shape=\"poly\" alt=\"".(float)$row['khz']."-".$row['call'].' '.$row['QTH']."\n(lat:".$row['lat'].", lon:".$row['lon'].")\" "

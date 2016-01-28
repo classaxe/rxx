@@ -211,7 +211,7 @@ class Signal
                             ."  `type` = \"".addslashes(trim($type))."\",\n"
                             .($USB!="" ? "  `USB` = \"".addslashes(trim($USB))."\",\n" : "")
                             ."  `USB_approx` = \"$USB_approx\"\n";
-                        mysql_query($sql);
+                        \Rxx\Database::query($sql);
                         return    "<script language='javascript' type='text/javascript'>window.setTimeout('window.opener.location.reload(1);',1000)</script>";
                     } else {
                         $out[] =    "<p><font color='red'><b>Error -</b> you must specify at least ID and Frequency</font></p>";
@@ -238,7 +238,7 @@ class Signal
                         .($USB==="" ? "  `USB` = \N,\n" : "  `USB` = \"".addslashes(trim($USB))."\",\n")
                         ."  `USB_approx` = \"$USB_approx\"\n"
                         ."WHERE `ID` = \"".addslashes(trim($ID))."\"";
-                    mysql_query($sql);
+                    \Rxx\Database::query($sql);
                     //        $out[] = "<pre>$sql</pre>";
                     return    "<script language='javascript' type='text/javascript'>window.close()</script>";
                     //      return	"<script language='javascript' type='text/javascript'>window.setTimeout('window.opener.location.reload(1);window.close()',500)</script>";
@@ -549,7 +549,7 @@ class Signal
             ."ORDER BY\n"
             ."  ".$sortBy_SQL."\n";
 
-        $result =    mysql_query($sql);
+        $result =    \Rxx\Database::query($sql);
         $out=
             "<table border='0' cellpadding='0' cellspacing='0'>\n"
             ."  <tr>\n"
@@ -575,7 +575,7 @@ class Signal
                 ."            <input type='hidden' name='mode' value='$mode'>\n"
                 ."            <input type='hidden' name='submode' value=''>\n";
         }
-        if (mysql_num_rows($result)) {
+        if (\Rxx\Database::numRows($result)) {
             $out.=
                 "            <table width='100%'  border='0' cellpadding='2' cellspacing='1' class='downloadTable'>\n"
                 ."              <tr>\n"
@@ -611,8 +611,8 @@ class Signal
                 ."                    <th class='scroll_list'><small>Miles</small></th>\n"
                 ."                  </tr>\n"
                 ."                  </thead>\n";
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $out.=
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='140'><a href=\"javascript:listener_signals('".$row["listenerID"]."')\"><b>".$row["name"]."</b></a></td>"
@@ -684,7 +684,7 @@ class Signal
             ."  `listeners`.`ID`\n"
             ."ORDER BY\n"
             ."  `heard_in`,`name`";
-        $result =    mysql_query($sql);
+        $result =    \Rxx\Database::query($sql);
         $name_idx =    0;
         $out[] =
             "<img usemap=\"#map\" galleryimg=\"no\""
@@ -693,8 +693,8 @@ class Signal
             ."<map name=\"map\">\n";
 
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 if ($row['heard_in']!='') {
                     $out[] =
@@ -759,8 +759,8 @@ class Signal
             ."  (`listeners`.`region`='na' OR `listeners`.`region`='ca' OR `listeners`.`itu` = 'HWA')";
 //print("<pre>$sql</pre>");
 
-        $result =    mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $total_rx =    $row['listeners'];
 
 
@@ -788,10 +788,10 @@ class Signal
             ."ORDER BY\n"
             ."  `heard_in`,`name`";
 
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
         $name_idx =    0;
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ($row['map_x']) {
                 if ($row['heard_in']!='') {
                     $out[] = "<area shape=\"circle\""
@@ -845,25 +845,25 @@ class Signal
         switch($submode) {
             case "merge":
                 $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
-                $result =   mysql_query($sql);
-                $merged =   mysql_affected_rows();
+                $result =   \Rxx\Database::query($sql);
+                $merged =   \Rxx\Database::affectedRows();
                 $signal =   new \Rxx\Signal($ID);
                 $signal->updateHeardInList();
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $ID";
-                $result =    mysql_query($sql);
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =    \Rxx\Database::query($sql);
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $ID";
-                $result =    mysql_query($sql);
+                $result =    \Rxx\Database::query($sql);
 
                 $signal =   new \Rxx\Signal($destinationID);
                 $signal->updateHeardInList();
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $destinationID";
-                $result =    mysql_query($sql);
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =    \Rxx\Database::query($sql);
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $destinationID";
-                $result =    mysql_query($sql);
+                $result =    \Rxx\Database::query($sql);
 
                 break;
         }
@@ -871,8 +871,8 @@ class Signal
         $out[] =    "<h1>Signal Merge</h1><br>\n";
         $out[] =    "<p>This function moves <b>all</b> logs for the selected signal to another signal record. It should be used only to combine logs entered against duplicate records for the same signal. This operation is NOT reversible.</p>";
         $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($ID)."'";
-        $result =    mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $out[] =    "<form action='".system_URL."/".$mode."/".$ID."?submode=merge' method='POST'>\n";
         $out[] =    "<h2>Source Signal:</h2><br>\n";
         $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
@@ -881,17 +881,17 @@ class Signal
         if ($submode!="merge") {
             $out[] =    "<select name='destinationID' style='font-family: monospace;' class='formField'>\n";
             $sql =    "SELECT `ID`,`khz`,`call`,`SP`,`ITU` FROM `signals` ORDER BY `khz`,`call`,`ITU`,`SP`";
-            $result =    @mysql_query($sql);
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =    @\Rxx\Database::query($sql);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $out[] =    "<option value='".$row['ID']."'".($ID==$row['ID'] ? " selected" : "").">".pad_nbsp((float)$row['khz'], 10).pad_nbsp($row['call'], 12)." ".pad_nbsp($row['SP'], 3).$row['ITU']."</option>\n";
             }
             $out[] =    "</select>\n";
             $out[] =    "<input type='submit' value='Go' class='formButton'>\n";
         } else {
             $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($destinationID)."'";
-            $result =    mysql_query($sql);
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =    \Rxx\Database::query($sql);
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
             $out[] =    "<h2>Result</h2><p>$merged log(s) were moved to the signal record given.";
             $out[] =    "<p align='center'><input type='button' value='Close' onClick='window.close();'></p>";
@@ -931,8 +931,8 @@ class Signal
         if ($ICAO_signal && $hours_signal) {
             if ($METAR = METAR($ICAO_signal, $hours_signal, 0)) {
                 $sql =        "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_signal\"";
-                $result =        mysql_query($sql);
-                $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+                $result =        \Rxx\Database::query($sql);
+                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $dx =        get_dx($lat, $lon, $row["lat"], $row["lon"]);
                 $pressure =
                     "QNH at $ICAO_signal - ".$row["name"].($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n"
@@ -1077,8 +1077,8 @@ class Signal
             ."  $filter_log_SQL";
 
 //  print("<pre>$sql</pre>");
-        $result =     @mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =     @\Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $last =    $row["last"];
 
 
@@ -1272,8 +1272,8 @@ class Signal
             ."  `signals`.`khz`,\n"
             ."  `signals`.`call`";
 //    z($sql);die;
-        $result =     @mysql_query($sql);
-        $total =    mysql_num_rows($result);
+        $result =     @\Rxx\Database::query($sql);
+        $total =    \Rxx\Database::numRows($result);
         $heard =    0;
 
         //print("<pre>$sql</pre>");
@@ -1282,7 +1282,7 @@ class Signal
         $signals =    array();
         $itu_sp =    array();
         for ($i=0; $i<$total; $i++) {
-            $row = mysql_fetch_array($result, MYSQL_ASSOC);
+            $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $signals[$row['ID']] = array('active'=>$row['active'],'khz'=>(float)$row['khz'],'call'=>$row['call'],'type'=>$row['type'],'SP'=>$row['SP'],'ITU'=>$row['ITU'],'heard'=>0);
             $itu_sp_index = $row['ITU']."_".$row['SP'];
             if (!isset($itu_sp[$itu_sp_index])) {
@@ -1291,13 +1291,13 @@ class Signal
                 $itu_sp[$itu_sp_index]['total']++;
             }
         }
-        mysql_free_result($result);
+        \Rxx\Database::freeResult($result);
 
         if ($createFor) {
             $sql =    "select DISTINCT `signals`.`ID` FROM `signals`,`logs` WHERE `signals`.`ID` = `logs`.`signalID` AND `listenerID` = $createFor";
-            $result =     mysql_query($sql);
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =     \Rxx\Database::query($sql);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $ID = $row['ID'];
                 if (isset($signals[$ID])) {
                     $signals[$ID]['heard'] = 1;
@@ -1305,7 +1305,7 @@ class Signal
                     $heard++;
                 }
             }
-            mysql_free_result($result);
+            \Rxx\Database::freeResult($result);
         }
         $out =
             "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
@@ -1658,7 +1658,7 @@ class Signal
             ."  `logs` = $logs,\n"
             ."  `last_heard` = \"$last_heard\"\n"
             ."WHERE `ID` = '$ID'";
-        mysql_query($sql);
+        \Rxx\Database::query($sql);
         //print "<pre>$sql</pre>";
     }
 
@@ -1779,7 +1779,7 @@ class Signal
             ."  `logs`.`ID`\n"
             ."ORDER BY\n"
             ."  $sortBy_SQL";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
 //  print("<pre>$sql</pre>");
 
         $out=
@@ -1808,7 +1808,7 @@ class Signal
                 ."            <input type='hidden' name='submode' value=''>\n";
         }
 
-        if (mysql_num_rows($result)) {
+        if (\Rxx\Database::numRows($result)) {
             $out.=
                 "            <table width='100%'  border='0' cellpadding='2' cellspacing='1' class='downloadTable'>\n"
                 ."              <tr>\n"
@@ -1868,8 +1868,8 @@ class Signal
                 )
                 ."                  </tr>\n"
                 ."                  </thead>\n";
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $out.=
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='75'>".($row["date"] ? $row["date"] : "&nbsp;")."</td>\n"
