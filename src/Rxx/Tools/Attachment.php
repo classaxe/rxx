@@ -59,14 +59,14 @@ class Attachment
                 ."  ".$sort
                 : "")
         ;
-        if (!$result = mysql_query($sql)) {
+        if (!$result = \Rxx\Database::query($sql)) {
             \Rxx\Rxx::z($sql);
         }
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return $out;
         }
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $out[] = mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $out[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         }
         return $out;
     }
@@ -92,8 +92,8 @@ class Attachment
             . "  `destinationTable` = \"" . addslashes($table) . "\" AND\n"
             . "  `destinationID` = " . addslashes($ID) . "\n";
 
-        $result = mysql_query($sql);
-        $row = mysql_fetch_array($result, MYSQL_ASSOC);
+        $result = \Rxx\Database::query($sql);
+        $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row['count'];
     }
 }

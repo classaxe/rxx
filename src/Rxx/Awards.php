@@ -44,8 +44,8 @@ class Awards
         if ($this->_listenerID) {
             $sql =
                 "SELECT * FROM `listeners` WHERE `ID` = ".$this->_listenerID;
-            $result =    mysql_query($sql);
-            $this->_listener_record = mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =    \Rxx\Database::query($sql);
+            $this->_listener_record = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $this->_listener_ITU =    $this->_listener_record['ITU'];
             $this->_listener_name =    $this->_listener_record['name'];
             $this->_listener_region =    Rxx::get_listener_region($this->_listenerID);
@@ -153,7 +153,7 @@ class Awards
             ."  (`signals`.`SP` = 'PE' OR `signals`.`SP` = 'NL' OR `signals`.`SP` = 'NB') AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result_atl =    mysql_query($sql);
+        $result_atl =    \Rxx\Database::query($sql);
         $sql =
              "SELECT DISTINCT\n"
             ."  `signals`.`call`,\n"
@@ -172,13 +172,13 @@ class Awards
             ."  (`signals`.`SP` = 'BC') AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result_pac =    mysql_query($sql);
+        $result_pac =    \Rxx\Database::query($sql);
 
-        if (!(mysql_num_rows($result_atl) && mysql_num_rows($result_pac))) {
+        if (!(\Rxx\Database::numRows($result_atl) && \Rxx\Database::numRows($result_pac))) {
             return "";
         }
         $out =
-             "<b>Canadian Transcontinental NDB DX Award</b> (".(mysql_num_rows($result_atl)>=mysql_num_rows($result_pac) ? mysql_num_rows($result_pac) : mysql_num_rows($result_atl))." qualifying pairs of stations)<br>"
+             "<b>Canadian Transcontinental NDB DX Award</b> (".(\Rxx\Database::numRows($result_atl)>=\Rxx\Database::numRows($result_pac) ? \Rxx\Database::numRows($result_pac) : \Rxx\Database::numRows($result_atl))." qualifying pairs of stations)<br>"
             ."This cerificate recognises reception of NDBs on Pacific and Atlantic coasts of Canada (i.e. British Columbia and any of the Maritime Provinces). "
             ."Qualifying beacons must be in these provinces but do not have to literally be on the shoreline."
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
@@ -194,15 +194,15 @@ class Awards
             $out.=
                  "          <tr>\n"
                 ."            <td bgcolor='#f0f0f0' valign='top' nowrap>".$level." on each coast</td>\n";
-            if (mysql_num_rows($result_atl)>$old_level && mysql_num_rows($result_pac)>$old_level) {
-                $Eligible_atl = (mysql_num_rows($result_atl) >= $level);
-                $Eligible_pac = (mysql_num_rows($result_pac) >= $level);
+            if (\Rxx\Database::numRows($result_atl)>$old_level && \Rxx\Database::numRows($result_pac)>$old_level) {
+                $Eligible_atl = (\Rxx\Database::numRows($result_atl) >= $level);
+                $Eligible_pac = (\Rxx\Database::numRows($result_pac) >= $level);
                 $out.=
                      "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                     .($Eligible_atl ? "" : "<font color='#808080'>")."Atlantic Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result_atl)) {
-                        $row_atl =    mysql_fetch_array($result_atl, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result_atl)) {
+                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQL_ASSOC);
                         $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
@@ -212,8 +212,8 @@ class Awards
                     .($Eligible_pac ? "" : "<font color='#808080'>")
                     ."Pacific Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result_pac)) {
-                        $row_pac =    mysql_fetch_array($result_pac, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result_pac)) {
+                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQL_ASSOC);
                         $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }
@@ -278,11 +278,11 @@ class Awards
                 ."  `logs`.`listenerID` = ".$this->_listenerID." AND\n"
                 ."  `itu`.`region` = '".$this_continent[0]."'\n"
                 ."ORDER BY `SP`,`ITU`";
-            $result =    mysql_query($sql);
+            $result =    \Rxx\Database::query($sql);
 
-            if (mysql_num_rows($result)) {
+            if (\Rxx\Database::numRows($result)) {
                 $out.=
-                     "<li><b>".$this_continent[1]."</b> (".mysql_num_rows($result)." qualifying countries)</li>\n"
+                     "<li><b>".$this_continent[1]."</b> (".\Rxx\Database::numRows($result)." qualifying countries)</li>\n"
                     .$this_continent[2]
                     ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
                     ."  <tr class='downloadTableHeadings_nosort'>\n"
@@ -297,12 +297,12 @@ class Awards
                     $out.=
                          "  <tr>\n"
                         ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
-                    if (mysql_num_rows($result)>$old_level) {
-                        $Eligible = (mysql_num_rows($result) >= $level);
+                    if (\Rxx\Database::numRows($result)>$old_level) {
+                        $Eligible = (\Rxx\Database::numRows($result) >= $level);
                         $out.= "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>".($Eligible ? "" : "<font color='#808080'>");
                         $this_level =    0;
                         for ($j = $old_level; $j < $level; $j++) {
-                            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                             $out.=    ($row['SP'] && $row['SP']!="AK" && $row['SP']!="PR"  ? $row['SP'] : $row['ITU']) ." ";
                             $this_level++;
                         }
@@ -365,10 +365,10 @@ class Awards
                 ."  (".$this_country[0].")\n"
                 ."GROUP BY\n"
                 ."  `signals`.`ITU`";
-                $result =    @mysql_query($sql);
+                $result =    @\Rxx\Database::query($sql);
                 $first =    array();
-                for ($i=0; $i<mysql_num_rows($result); $i++) {
-                    $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                     $first[] =    $row['ID'];
                 }
                 $sql =
@@ -403,10 +403,10 @@ class Awards
                 ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
                 ."ORDER BY `khz`,`call`";
             }
-            $result =        mysql_query($sql);
-            if (mysql_num_rows($result)) {
+            $result =        \Rxx\Database::query($sql);
+            if (\Rxx\Database::numRows($result)) {
                 $out.=
-                 "<b>".$this_country[3]."</b> (".mysql_num_rows($result)." qualifying stations)<br>\n"
+                 "<b>".$this_country[3]."</b> (".\Rxx\Database::numRows($result)." qualifying stations)<br>\n"
                 .$this_country[4]
                 ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
                 ."  <tr class='downloadTableHeadings_nosort'>\n"
@@ -421,14 +421,14 @@ class Awards
                     $out.=
                      "  <tr>\n"
                     ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
-                    if (mysql_num_rows($result)>$old_level) {
-                        $Eligible = (mysql_num_rows($result) >= $level);
+                    if (\Rxx\Database::numRows($result)>$old_level) {
+                        $Eligible = (\Rxx\Database::numRows($result) >= $level);
                         $out.=
                          "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                         .($Eligible ? "" : "<font color='#808080'>");
                         $this_level =    0;
                         for ($j = $old_level; $j < $level; $j++) {
-                            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                             if ($row['call']) {
                                 $out.=    "<nobr>".Rxx::pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? Rxx::pad_dot($row['call'], 4)."(".$row['ITU'].")" : Rxx::pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
                             }
@@ -632,12 +632,12 @@ class Awards
             ."WHERE\n"
             ."  `logs`.`signalID` = 2737 AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n";
-        $result =        mysql_query($sql);
+        $result =        \Rxx\Database::query($sql);
 
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $out =
              "<b>LT Alert Awards</b><br>"
             ."This cerificate recognises reception of a single NDBs: LT on 305 KHz, at Alert, Nunavut, in Canada. "
@@ -696,12 +696,12 @@ class Awards
             ."  `signals`.`lat` >= 60 AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result =        mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =        \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
               return "";
         }
         $out =
-             "<b>North of 60 Awards</b> (".mysql_num_rows($result)." qualifying stations)<br>"
+             "<b>North of 60 Awards</b> (".\Rxx\Database::numRows($result)." qualifying stations)<br>"
             ."This cerificate recognises reception of NDBs located at least 60 Degrees of latitude north of the Equator. "
             ."This area includes Iceland, Greenland and Alaska as well as most of Scandanavia and parts of Russia and Canada."
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
@@ -717,14 +717,14 @@ class Awards
             $out.=
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
-            if (mysql_num_rows($result)>$old_level) {
-                $Eligible = (mysql_num_rows($result) >= $level);
+            if (\Rxx\Database::numRows($result)>$old_level) {
+                $Eligible = (\Rxx\Database::numRows($result) >= $level);
                 $out.=
                      "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result)) {
-                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result)) {
+                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                         $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -794,12 +794,12 @@ class Awards
             )
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
         $out =
-             "<b>Transatlantic DX Awards</b> (".mysql_num_rows($result)." qualifying stations)<br>"
+             "<b>Transatlantic DX Awards</b> (".\Rxx\Database::numRows($result)." qualifying stations)<br>"
             ."This is probably the most challenging award of the program, even at its first level. However, there is a lot of interest on "
             ."both sides of the Atlantic in transoceanic NDB DX. To qualify, listeners must hear NDBs on the other side. "
             ."North American listeners may count NDBs in the Azores, the Canary Islands and Cape Verde as well as those on the "
@@ -820,14 +820,14 @@ class Awards
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
 
-            if (mysql_num_rows($result)>$old_level) {
-                $Eligible = (mysql_num_rows($result) >= $level);
+            if (\Rxx\Database::numRows($result)>$old_level) {
+                $Eligible = (\Rxx\Database::numRows($result) >= $level);
                 $out.=
                      "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result)) {
-                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result)) {
+                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                         $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -900,12 +900,12 @@ class Awards
             )
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
         $out =
-             "<b>Transpacific DX Awards</b> (".mysql_num_rows($result)." qualifying stations)<br>"
+             "<b>Transpacific DX Awards</b> (".\Rxx\Database::numRows($result)." qualifying stations)<br>"
             ."Yes, we must also be fair to those interested in the \"Really Big Pond\". This certificate recognises "
             ." reception of NDBs accross the pacific in either direction.<br>"
             ."<ol><li>For listeners in North, central or South America qualifying beacons must be in Asian countries or on "
@@ -926,14 +926,14 @@ class Awards
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level."</td>\n";
 
-            if (mysql_num_rows($result)>$old_level) {
-                $Eligible = (mysql_num_rows($result) >= $level);
+            if (\Rxx\Database::numRows($result)>$old_level) {
+                $Eligible = (\Rxx\Database::numRows($result) >= $level);
                 $out.=
                      "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result)) {
-                        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result)) {
+                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                         $out.=  (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -989,7 +989,7 @@ class Awards
             ."  (`signals`.`SP` = 'FL' OR `signals`.`SP` = 'GA' OR `signals`.`SP` = 'SC' OR `signals`.`SP` = 'NC' OR `signals`.`SP` = 'VA' OR `signals`.`SP` = 'MD' OR `signals`.`SP` = 'DE' OR `signals`.`SP` = 'NJ' OR `signals`.`SP` = 'NY' OR `signals`.`SP` = 'CT' OR `signals`.`SP` = 'RI' OR `signals`.`SP` = 'MA' OR `signals`.`SP` = 'NH' OR `signals`.`SP` = 'ME') AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result_atl =    mysql_query($sql);
+        $result_atl =    \Rxx\Database::query($sql);
         $sql =
              "SELECT DISTINCT\n"
             ."  `signals`.`call`,\n"
@@ -1008,13 +1008,13 @@ class Awards
             ."  (`signals`.`SP` = 'CA' OR `signals`.`SP` = 'OR' OR `signals`.`SP` = 'WA' OR `signals`.`SP` = 'AK') AND\n"
             ."  `logs`.`listenerID` = '".$this->_listenerID."'\n"
             ."ORDER BY `khz`,`call`";
-        $result_pac =    mysql_query($sql);
+        $result_pac =    \Rxx\Database::query($sql);
 
-        if (!(mysql_num_rows($result_atl) && mysql_num_rows($result_pac))) {
+        if (!(\Rxx\Database::numRows($result_atl) && \Rxx\Database::numRows($result_pac))) {
             return "";
         }
         $out =
-             "<b>US Transcontinental NDB DX Award</b> (".(mysql_num_rows($result_atl)>=mysql_num_rows($result_pac) ? mysql_num_rows($result_pac) : mysql_num_rows($result_atl))." qualifying pairs of stations)<br>"
+             "<b>US Transcontinental NDB DX Award</b> (".(\Rxx\Database::numRows($result_atl)>=\Rxx\Database::numRows($result_pac) ? \Rxx\Database::numRows($result_pac) : \Rxx\Database::numRows($result_atl))." qualifying pairs of stations)<br>"
             ."This cerificate recognises reception of NDBs on Pacific and Atlantic coasts of continental United States. "
             ."Qualifying beacons must be in states with oceanic shorelibes (excluding the Gulf of Mexico)."
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
@@ -1030,16 +1030,16 @@ class Awards
             $out.=
                  "  <tr>\n"
                 ."    <td bgcolor='#f0f0f0' valign='top' nowrap>".$level." on each coast</td>\n";
-            if (mysql_num_rows($result_atl)>$old_level && mysql_num_rows($result_pac)>$old_level) {
-                $Eligible_atl = (mysql_num_rows($result_atl) >= $level);
-                $Eligible_pac = (mysql_num_rows($result_pac) >= $level);
+            if (\Rxx\Database::numRows($result_atl)>$old_level && \Rxx\Database::numRows($result_pac)>$old_level) {
+                $Eligible_atl = (\Rxx\Database::numRows($result_atl) >= $level);
+                $Eligible_pac = (\Rxx\Database::numRows($result_pac) >= $level);
                 $out.=
                      "    <td bgcolor='#f0f0f0' valign='top' style='font-family: courier;'>"
                     .($Eligible_atl ? "" : "<font color='#808080'>")
                     ."Atlantic Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result_atl)) {
-                        $row_atl =    mysql_fetch_array($result_atl, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result_atl)) {
+                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQL_ASSOC);
                         $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
@@ -1049,8 +1049,8 @@ class Awards
                     .($Eligible_pac ? "" : "<font color='#808080'>")
                     ."Pacific Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
-                    if ($j<mysql_num_rows($result_pac)) {
-                        $row_pac =    mysql_fetch_array($result_pac, MYSQL_ASSOC);
+                    if ($j<\Rxx\Database::numRows($result_pac)) {
+                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQL_ASSOC);
                         $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }

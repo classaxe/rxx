@@ -102,11 +102,11 @@ class Cle
                 ."  `europe_range_2_sp` = '".Cle::set('europe_range_2_sp')."',\n"
                 ."  `europe_range_2_filter_other` = '".Cle::set('europe_range_2_filter_other')."',\n"
                 ."  `europe_range_2_text_extra` = '".Cle::set('europe_range_2_text_extra')."'\n";
-            mysql_query($sql);
+            \Rxx\Database::query($sql);
         }
         $sql =        "SELECT * FROM `cle`";
-        $result =     mysql_query($sql);
-        $record =     mysql_fetch_array($result);
+        $result =     \Rxx\Database::query($sql);
+        $record =     \Rxx\Database::fetchArray($result);
         $cle =                $record['cle'];
         $date_start =         $record['date_start'];
         $date_end =           $record['date_end'];

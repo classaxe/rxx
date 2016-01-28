@@ -16,8 +16,8 @@ class Poll
         $my_answer =    (int)Rxx::get_var('my_answer');
         $questionID =   (int)Rxx::get_var('questionID');
         $sql =      "SELECT `ID` FROM `poll_question` WHERE `active` = 1";
-        $result =   mysql_query($sql);
-        $row =      mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         if (!$row) {
             return
                  "<p><b>Sorry!</b><br>The poll function is offline.</p>\n"
@@ -26,7 +26,7 @@ class Poll
         if (Rxx::get_var('submode')=="vote" && $my_answer && $questionID
         ) {
             $sql =    "UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
-            @mysql_query($sql);
+            @\Rxx\Database::query($sql);
             setcookie('cookie_rxx_poll', $questionID, time()+31536000, "/");    // One year expiry
             header("Location: ".system_URL."/".$mode);
         }
@@ -44,12 +44,12 @@ class Poll
         global $poll, $mode;
 
         $sql =    "SELECT * FROM `poll_question` WHERE `active` = '1'";
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
 
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return'';
         }
-        $row =      mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $ID =       $row['ID'];
         $MM =       substr($row['date'], 5, 2);
         $YYYY =     substr($row['date'], 0, 4);
@@ -58,11 +58,11 @@ class Poll
         $date =     Rxx::MM_to_MMM($MM)." ".$YYYY;
 
         $sql =      "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
         $answers =  array();
         $total_votes = 0;
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =          mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =          \Rxx\Database::fetchArray($result);
             $answers[$i] =  array($row['ID'], $row['text'], $row['votes']);
             $total_votes+=  (int)trim($row['votes']);
         }
@@ -121,9 +121,9 @@ class Poll
         switch ($submode) {
             case "activate":
                 $sql =    "UPDATE `poll_question` SET `active` = 0";
-                @mysql_query($sql);
+                @\Rxx\Database::query($sql);
                 $sql =    "UPDATE `poll_question` SET `active` = 1 WHERE `ID` = ".(int)$ID;
-                @mysql_query($sql);
+                @\Rxx\Database::query($sql);
                 break;
         }
         $sortBy_SQL =        "";
@@ -175,7 +175,7 @@ class Poll
             .(Rxx::isAdmin() ? "" : " AND `active` = '0'\n")
             ."GROUP BY `poll_question`.`ID`\n"
             .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
-        $result =     @mysql_query($sql);
+        $result =     @\Rxx\Database::query($sql);
 
         $html =
              "<form name='form' action=\"".system_URL."/".$mode."\" method='POST'>\n"
@@ -244,8 +244,8 @@ class Poll
         $html.=
              "  </tr>\n"
             ."  </thead>\n";
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $date =    Rxx::MM_to_MMM(substr($row['date'], 5, 2))." ".substr($row['date'], 2, 2);
             $html.=
                  "  <tr class='rownormal'>"
@@ -262,9 +262,9 @@ class Poll
                 ."<table cellpadding='2' cellspacing='0' border='0' bgcolor='#ffffff'>";
 
             $sql =    "SELECT * FROM `poll_answer` WHERE `questionID` = '".$row['ID']."'";
-            $result2 =     @mysql_query($sql);
-            for ($j=0; $j<mysql_num_rows($result2); $j++) {
-                $row2 =    mysql_fetch_array($result2, MYSQL_ASSOC);
+            $result2 =     @\Rxx\Database::query($sql);
+            for ($j=0; $j<\Rxx\Database::numRows($result2); $j++) {
+                $row2 =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
                 $html.=
                      "  <tr class='rownormal'>"
                     ."    <td valign='top' width='200' style='border-bottom: solid 1px;'>".$row2['text']."</td>"
@@ -307,12 +307,12 @@ class Poll
     {
         global $doThis, $vote, $poll_number, $title, $date, $question, $answers, $my_answer;
         $sql =    "SELECT * FROM `poll_question` WHERE `active` = '1'";
-        $result =    @mysql_query($sql);
+        $result =    @\Rxx\Database::query($sql);
 
-        if (!mysql_num_rows($result)) {
+        if (!\Rxx\Database::numRows($result)) {
             return'';
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $ID =        $row['ID'];
         $MM =        substr($row['date'], 5, 2);
         $YYYY =        substr($row['date'], 0, 4);
@@ -344,11 +344,11 @@ class Poll
             ."WHERE\n"
             ."  `poll_question`.`ID` = `poll_answer`.`questionID` AND\n"
             ."  `poll_question`.`active`=1";
-        $result = @mysql_query($sql);
+        $result = @\Rxx\Database::query($sql);
         $rows =   array();
         $total_votes =  0;
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =          mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =          \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $rows[] =       $row;
             $total_votes+=  $row['votes'];
         }
@@ -392,9 +392,9 @@ class Poll
         }
 
         $sql =    "SELECT * FROM `poll_question` where `ID` = '$ID'";
-        $result =     @mysql_query($sql);
+        $result =     @\Rxx\Database::query($sql);
         if ($result) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $ID =    $row['ID'];
             $MMM =    substr($row['date'], 5, 2);
             $YYYY =    substr($row['date'], 0, 4);
@@ -453,9 +453,9 @@ class Poll
             ."    <td valign='top' colspan='2' align='center'>"
             ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#ffffff' class='downloadtable'>";
         $sql =    "SELECT * FROM `poll_answer` WHERE `questionID` = '$ID'";
-        $result2 =     @mysql_query($sql);
-        for ($j=0; $j<mysql_num_rows($result2); $j++) {
-            $row2 =    mysql_fetch_array($result2, MYSQL_ASSOC);
+        $result2 =     @\Rxx\Database::query($sql);
+        for ($j=0; $j<\Rxx\Database::numRows($result2); $j++) {
+            $row2 =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
             $html.=
                  "  <tr class='rownormal'>"
                 ."    <td valign='top' width='200'>".$row2['text']."</td>"

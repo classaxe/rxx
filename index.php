@@ -18,12 +18,15 @@ define("system_URL", BASE_PATH.$request_arr[0]);
 if (isset($request_arr[1])) {
     $_REQUEST['mode'] = $request_arr[1];
 }
-require_once('config.php');
+
+require_once 'config.php';
 
 if (!defined('system_ID')) {
     header('location: '.BASE_PATH.'rna', 302);
     die();
 }
+
+\Rxx\Database::connect();
 
 $stat = stat(dirname(__FILE__).'/.git/HEAD');
 define("system_date", date("d M Y H:i T", $stat['mtime']));
@@ -73,7 +76,8 @@ $REQUEST_ICAO =     @$_GET['ICAO'];
 $REQUEST_hours =    @$_GET['hours'];
 $REQUEST_list =     @$_GET['list'];
 
-extract($_REQUEST);         // Extracts all request variables (GET and POST) into global scope.
+// Extracts all request variables (GET and POST) into global scope.
+extract($_REQUEST);
 
 $debug=0;
 
@@ -179,7 +183,7 @@ switch ($mode) {
         \Rxx\Rxx::mini_popup();
         break;
     case "lastlog":
-        $Obj = new SystemStats();
+        $Obj = new \Rxx\SystemStats();
         die($Obj->getLastLogDate());
         break;
     case "metar":
@@ -287,7 +291,7 @@ switch ($mode) {
     // Admin functions
     case "admin_manage":
     case "sys_info":
-        if (!isAdmin()) {
+        if (!\Rxx\Rxx::isAdmin()) {
             header("Location: ".system_URL."/logon");
         } else {
             \Rxx\Rxx::main();
@@ -296,15 +300,15 @@ switch ($mode) {
 
     case "log_upload":
     case "poll_edit":
-        if (!isAdmin()) {
+        if (!\Rxx\Rxx::isAdmin()) {
             header("Location: ".system_URL."/logon");
         } else {
-            popup();
+            \Rxx\Rxx::popup();
         }
         break;
 
     case "db_export":
-        if (!isAdmin()) {
+        if (!\Rxx\Rxx::isAdmin()) {
             header("Location: ".system_URL."/logon");
         } else {
             \Rxx\Tools\Backup::dbBackup(0);

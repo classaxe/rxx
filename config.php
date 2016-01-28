@@ -1,10 +1,10 @@
 <?php
 
-$li = mysql_connect("localhost", "rxx", "k24l3459");
-if (!mysql_selectdb("rxx", $li)) {
-    print("Cannot connect to database!");
-    die;
-}
+define("DB_HOST", "localhost");
+define("DB_USER", "rxx");
+define("DB_PASS", "k24l3459");
+define("DB_DATABASE", "rxx");
+
 
 switch(system){
     case 'RNA':

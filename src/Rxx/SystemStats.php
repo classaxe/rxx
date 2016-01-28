@@ -25,8 +25,8 @@ class SystemStats
             ."  ".$filter_log_SQL." AND\n"
             ."  `date` !=\"\" AND\n"
             ."  `date` !=\"0000-00-0000\"";
-        $result =   mysql_query($sql);
-        $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row["last"];
     }
 }

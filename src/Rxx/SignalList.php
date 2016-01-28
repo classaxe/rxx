@@ -1733,9 +1733,9 @@ class SignalList
             .($this->sql_sort_by ?              "\nORDER BY\n  ".$this->sql_sort_by : "")
             .($this->limit!=-1 ?                "\nLIMIT\n  ".$this->offset.", ".$this->limit : "");
 //        z($sql);
-        $result =   mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $this->rows[] = mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $this->rows[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         }
     }
 
@@ -1847,9 +1847,9 @@ class SignalList
         switch ($this->submode){
             case "delete":
                 $sql =      "DELETE FROM `logs` WHERE `signalID` = ".$this->targetID;
-                mysql_query($sql);
+                \Rxx\Database::query($sql);
                 $sql =  "   DELETE FROM `signals` WHERE `ID` = ".$this->targetID;
-                mysql_query($sql);
+                \Rxx\Database::query($sql);
                 break;
         }
     }

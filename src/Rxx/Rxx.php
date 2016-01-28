@@ -24,11 +24,11 @@ class Rxx
         $error_msg =    "";
         if ($SP) {
             $sql =    "SELECT `ITU` FROM `sp` WHERE `SP` = '$SP'";
-            $result =    mysql_query($sql);
-            if (!mysql_num_rows($result)) {
+            $result =    \Rxx\Database::query($sql);
+            if (!\Rxx\Database::numRows($result)) {
                 $error_msg .=    "The S/P code $SP is not valid.\\\\n";
             } else {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
+                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 if ($row['ITU']!=$ITU) {
                     $error_msg .=    "$SP belongs in ".$row['ITU'].($ITU ? ", not $ITU" : "").".\\\\n";
                 }
@@ -36,8 +36,8 @@ class Rxx
         }
         if ($ITU) {
             $sql =    "SELECT `ITU` FROM `itu` WHERE `ITU` = '$ITU'";
-            $result =    mysql_query($sql);
-            if (!mysql_num_rows($result)) {
+            $result =    \Rxx\Database::query($sql);
+            if (!\Rxx\Database::numRows($result)) {
                 $error_msg .=    "The ITU code $ITU is not valid.\\\\n";
             }
         }
@@ -81,11 +81,11 @@ class Rxx
             ."LIMIT\n"
             ."  1";
 //  z($sql);
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        return mysql_fetch_array($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
     }
 
     /**
@@ -129,8 +129,8 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `region` FROM `itu` WHERE `itu` = \"$itu\"";
-        $result =    mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row["region"];
     }
 
@@ -162,8 +162,8 @@ class Rxx
     public static function get_ITU($ITU)
     {
         $sql =    "SELECT `name` FROM `itu` WHERE `ITU` = \"$ITU\"";
-        $result =    mysql_query($sql);
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row["name"];
     }
 
@@ -177,11 +177,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `name` FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['name'];
     }
 
@@ -195,11 +195,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `email` FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['email'];
     }
 
@@ -213,11 +213,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `region` FROM `listeners` WHERE `listeners`.`ID` = $listenerID";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['region'];
     }
 
@@ -231,11 +231,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT * FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    mysql_query($sql);
-        if (!mysql_num_rows($result)) {
+        $result =    \Rxx\Database::query($sql);
+        if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return    $row["name"].", ".$row["QTH"].($row['SP'] ? " ".$row["SP"]:"")." ".$row["ITU"];
     }
 
@@ -266,10 +266,10 @@ class Rxx
             ."WHERE\n"
             ."  $filter\n"
             ." ORDER BY `name`,`primary_QTH` DESC,`qth`";
-        $result =     @mysql_query($sql);
+        $result =     @\Rxx\Database::query($sql);
 //  print("<pre>$sql</pre>");
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =    "<option value=\"".$row["ID"]."\"";
             if ($selectedID && is_array($selectedID)) {
                 for ($j=0; $j<count($selectedID); $j++) {
@@ -292,7 +292,7 @@ class Rxx
                 .($row['SP'] ? " ".$row["SP"]:"...")." "
                 .$row["ITU"]."</option>\n";
         }
-        mysql_free_result($result);
+        \Rxx\Database::freeResult($result);
         return implode($out, "");
     }
 
@@ -308,9 +308,9 @@ class Rxx
         $deg =        Rxx::GSQ_deg($GSQ);
         $icao_arr =   array();
         $sql =        "SELECT * FROM `icao`";
-        $result =     @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =     @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $dx =     Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
             $icao_arr[] =    array("miles" => $dx[0],"km" => $dx[1],"ICAO" => $row["ICAO"], );
         }
@@ -350,9 +350,9 @@ class Rxx
             .($selectedID == '' ? " selected='selected'" : "")
             ." style='color: #0000ff;'>".$chooseText."</option>\n";
         $sql =    "SELECT * FROM `region` ORDER BY `name`";
-        $result =     @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =     @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out.=
                 "<option value=\"".$row["region"]."\""
                 .($selectedID == $row["region"] ? " selected='selected'" : "")
@@ -368,8 +368,8 @@ class Rxx
     public static function get_SP($SP)
     {
         $sql =      "SELECT `name` FROM `sp` WHERE `SP` = \"$SP\"";
-        $result =   mysql_query($sql);
-        $row =      mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return      $row["name"];
     }
 
@@ -995,7 +995,7 @@ class Rxx
                 $out .= \Rxx\Rxx::show_sp();
                 break;
             case "signal_attachments":
-                // @TODO: Missing function?
+                // @TODO: Missing or unused function?
                 //$out .= \Rxx\Signal::signal_attachments();
             case "signal_dgps_messages":
                 $out .= \Rxx\Tools\Signal::signal_dgps_messages();
@@ -1316,9 +1316,9 @@ class Rxx
             .($region!="" ? "WHERE `region` IN ('".implode("','", explode("|", $region))."')" : "")
             ."ORDER BY `ID`";
 
-        $result =        @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =        @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $regions[] =    array("name"=>$row["name"], "region"=>$row["region"]);
         }
 
@@ -1357,10 +1357,10 @@ class Rxx
             $out[] =        "          <tr class='rownormal'>\n";
             $out[] =        "            <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
             $sql =        "SELECT `ITU`,`name` FROM `itu` WHERE `region` = '".$regions[$h]["region"]."' ORDER BY `name`";
-            $result =        mysql_query($sql);
+            $result =        \Rxx\Database::query($sql);
             $itu_arr =        array();
-            for ($i=0; $i<mysql_num_rows($result); $i++) {
-                $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $itu_arr[] =    array("ITU"=>$row['ITU'],"name"=>$row['name']);
             }
             $cells_col =        ceil(count($itu_arr)/$cols);
@@ -1452,10 +1452,10 @@ class Rxx
             ."          <tr class='rownormal'>\n"
             ."            <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' border='0'>\n";
         $sql =        "SELECT * FROM `sp` WHERE `ITU` = 'CAN'";
-        $result =        mysql_query($sql);
+        $result =        \Rxx\Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1501,10 +1501,10 @@ class Rxx
             ."            <td class='downloadTableContent'>\n"
             ."            <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
         $sql =        "SELECT * FROM `sp`";
-        $result =        @mysql_query($sql);
+        $result =        @\Rxx\Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1553,10 +1553,10 @@ class Rxx
             ."            <td class='downloadTableContent'>\n"
             ."            <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
         $sql =        "SELECT * FROM `sp` WHERE `ITU` = 'AUS'";
-        $result =        mysql_query($sql);
+        $result =        \Rxx\Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =        mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1611,8 +1611,8 @@ class Rxx
         while ($notDone) {
             $ID =     uniqid('');
             $sql =    "SELECT COUNT(*) FROM `$table` WHERE ID = '$ID'";
-            $result =    mysql_query($sql);
-            $row =     mysql_fetch_row($result);
+            $result =    \Rxx\Database::query($sql);
+            $row =     \Rxx\Database::fetchRow($result);
             $notDone =    $row[0]>0;
         }
         return $ID;
@@ -1676,9 +1676,9 @@ class Rxx
         $out[] =    '<?xml version="1.0" encoding="UTF-8"?>';
         $out[] =    "<signallist>\n";
         $sql =    "SELECT * FROM `signals`";
-        $result =    mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    \Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =    "  <signal"
                 ." ID=\"".$row['ID']."\""
                 ." active=\"".$row['active']."\""
@@ -1699,9 +1699,9 @@ class Rxx
                 ." USB_approx=\"".$row['USB_approx']."\""
                 .">\n";
             $sql =    "SELECT * FROM `logs` WHERE `signalID` = ".$row['ID']." AND `listenerID` !=''";
-            $result2 =    mysql_query($sql);
-            for ($j=0; $j<mysql_num_rows($result2); $j++) {
-                $row2 =    mysql_fetch_array($result2, MYSQL_ASSOC);
+            $result2 =    \Rxx\Database::query($sql);
+            for ($j=0; $j<\Rxx\Database::numRows($result2); $j++) {
+                $row2 =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
                 $out[] =    "    <log"
                     ." ID=\"".$row2['ID']."\""
                     ." date=\"".$row2['date']."\""
@@ -1805,9 +1805,9 @@ class Rxx
             .($listenerID ? "WHERE `ID` = ".addslashes($listenerID)."\n" : "")
             ."ORDER BY `name`,`SP`,`ITU`";
 
-        $result =    @mysql_query($sql);
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =    @\Rxx\Database::query($sql);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $listeners[$row["ID"]] =
                 array(
                     "count_signals" =>    $row["count_signals"],
@@ -1853,9 +1853,9 @@ class Rxx
                 ."GROUP BY\n"
                 ."  `listeners`.`ID`";
             //  print("<pre>$sql</pre>");
-            $result =    @mysql_query($sql);
-            for ($j=0; $j<mysql_num_rows($result); $j++) {
-                $row =    mysql_fetch_array($result, MYSQL_ASSOC);
+            $result =    @\Rxx\Database::query($sql);
+            for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $listeners[$row["ID"]]["log_dx"]["dx".$i] = $row["logs"];
             }
         }

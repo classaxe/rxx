@@ -59,12 +59,12 @@ class Export
             ."  `signals`.`ITU` = `itu`.`ITU`";
 //  $out[] =	"<pre>$sql</pre>";
 
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
 
         $out[] =    "dgps =	new Array();\r\n";
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if (preg_match("/Ref ID: ([0-9]+)\/*([0-9]+)*; *([0-9]+) *bps/i", $row['notes'], $ID_arr)) {
                 $out[] =    "DGPS (\""
                     .(count($ID_arr)>1 ? $ID_arr[1] : "")."\",\""
@@ -105,13 +105,13 @@ class Export
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `khz`,`call`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $out =
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\r\n"
             ."<Document>\r\n"
             ."  <name>Signals Received</name>\r\n";
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             if ((float)$row['lon'] || (float)$row['lat']) {
                 $out.=
                     "  <Placemark>\r\n"
@@ -180,10 +180,10 @@ class Export
         $out =  array();
 
         $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
-        if (!$result =  mysql_query($sql)) {
+        if (!$result =  \Rxx\Database::query($sql)) {
             return "Invalid User ID";
         }
-        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
 
         $out[] =    "// ***********************************************************************\r\n";
         $out[] =    "// * FILE HEADER:                                                        *\r\n";
@@ -267,11 +267,11 @@ class Export
             ."ORDER BY\n"
             ."  `date`,\n"
             ."  `time`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $records = array();
         $unique = array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $r =    mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $r =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $records[] = array(
                 'ID' =>       $r['ID'],
                 'khz' =>      (float)$r['khz'],
@@ -371,10 +371,10 @@ class Export
             ."  `signals`.`ID` \n"
             ."ORDER BY\n"
             ."  `khz`,`call`,`ID`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $records = array();
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $r = mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $r = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $r['khz'] = (float)$r['khz'];
             $records[] = $r;
         }
@@ -531,7 +531,7 @@ class Export
             ."  `call` ASC"
 //    ."LIMIT 0,10"
         ;
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
         print
             "<html><head><title>".system."</title></head>\n"
             ."<table border=\"1\" bordercolor=\"#000000\" cellpadding=\"0\" cellspacing=\"0\">\n"
@@ -554,8 +554,8 @@ class Export
             ."    <th>Last Heard</th>\n"
             ."  </tr>\n";
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $bgcolor =  "";
             if (!$row["active"]) {
                 $bgcolor =  " bgcolor=\"#D0D0D0\" title=\"(Reportedly off air or decommissioned)\"";
@@ -690,7 +690,7 @@ class Export
             ."ORDER BY `active` DESC,`khz` ASC, `call` ASC\n"
 //    ."LIMIT 0,10"
         ;
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         include('php_pdf/class.ezpdf.php');
         $pdf =new Cezpdf('LETTER', 'landscape');
         $pdf->selectFont('./php_pdf/fonts/Helvetica.afm');
@@ -728,8 +728,8 @@ class Export
                 'heard_in' => array('width' =>            '150')
             )
         );
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $data[] = array(
                 'khz' =>            $row['khz'],
                 'call' =>           $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
@@ -772,10 +772,10 @@ class Export
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `khz`,`call`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $out = "<pre>KHz\tCall\tQTH\tSP\tITU\tSec\tFmt\tLSB\tUSB\tPwr\tLat\tLon\r\n";
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out.=
                 (float)$row['khz']."\t"
                 .htmlentities(Rxx::translate_chars($row['call']))."\t"
@@ -825,8 +825,8 @@ class Export
             ."  `date`,\n"
             ."  `time`";
 
-        $result =   mysql_query($sql);
-        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $result =   \Rxx\Database::query($sql);
+        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $call_len =     $row['call_len'];
         $QTH_len =  $row['QTH_len'];
         $time_len =     $row['time_len'];
@@ -834,10 +834,10 @@ class Export
         $USB_len =  $row['USB_len'];
 
         $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
-        if (!$result =  mysql_query($sql)) {
+        if (!$result =  \Rxx\Database::query($sql)) {
             return "Invalid User ID";
         }
-        $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
 
         print
             "<pre>".system." Log for ".$row['name']." on ".date("Y-m-d")."\r\n"
@@ -868,11 +868,11 @@ class Export
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `logs`.`date`,`logs`.`time`, `signals`.`khz`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
 
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             print
                 $row['date']." "
                 .($time_len ? Rxx::pad($row['time'], 5) : "")
@@ -888,7 +888,7 @@ class Export
         }
         print
             "----------------------------------------------------------------------\r\n"
-            .mysql_num_rows($result)." logs listed\r\n\r\n"
+            .\Rxx\Database::numRows($result)." logs listed\r\n\r\n"
             ."Output generated by ".system." 'Listener Log Export' feature.\r\n"
             .system_URL."/?mode=$mode&ID=$ID\r\n</pre>";
     }
@@ -929,13 +929,13 @@ class Export
             ."  `khz`,\n"
             ."  `call`";
 
-        $result =   @mysql_query($sql);
+        $result =   @\Rxx\Database::query($sql);
 
         $arr_search = array(  "DGPS; Ref ID: ");
         $arr_replace= array(  "");
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result, MYSQL_ASSOC);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =     lead($row['khz'], 7)
                 .Rxx::pad($row['call'], 22)
                 ."0000-2400"

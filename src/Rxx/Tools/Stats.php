@@ -211,7 +211,7 @@ class Stats
             ."ORDER BY\n"
             ."`dx_km` is NULL, `dx_km` DESC";
 
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
         $out.=
             "<textarea name='results' rows='20' cols='85' nowrap>"
             ."DX Table for ".($listenerID ? $listener : "all listeners")."\n"
@@ -221,8 +221,8 @@ class Stats
 
 
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $out.=
                 $row["date"]." "
                 .\Rxx\Rxx::pad($row["KM"], 6)
@@ -237,7 +237,7 @@ class Stats
         $out.=
             "-------------------------------------------------------".(!$listenerID ? "-------------------------" : "")."\n"
             ."(Produced by ".system.")\n"
-            ."</textarea><br>Total loggings shown: ".mysql_num_rows($result)."</td></tr></table>"
+            ."</textarea><br>Total loggings shown: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -278,7 +278,7 @@ class Stats
             ."  `dx`\n"
             ."ORDER BY\n"
             ."  `dx` ASC";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
 
 //  print("<pre>$sql</pre>");
 
@@ -291,8 +291,8 @@ class Stats
 
 
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $out.=   \Rxx\Rxx::pad(substr("      ".$row["dx"], strlen($row["dx"]))."-".(99+(int)$row["dx"]), 14)
                 .\Rxx\Rxx::pad($row["count"], 6)
                 ."\n";
@@ -300,7 +300,7 @@ class Stats
         $out.=
             "---------------------\n"
             ."(Produced by ".system.")\n"
-            ."</textarea><br>Total loggings shown: ".mysql_num_rows($result)."</td></tr></table>"
+            ."</textarea><br>Total loggings shown: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -333,7 +333,7 @@ class Stats
             ."ORDER BY\n"
             ."  `signals`.`ITU`,\n"
             ."  `signals`.`SP`";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
 //   print("<pre>$sql</pre>");
 
         $out.=
@@ -343,14 +343,14 @@ class Stats
             ."ITU SP  Stations\n"
             ."-----------------\n";
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $out.=  \Rxx\Rxx::pad($row["ITU"], 4).\Rxx\Rxx::pad($row["SP"], 4).\Rxx\Rxx::pad($row["signals"], 5)."\n";
         }
         $out.=
             "-----------------\n"
             ."(Produced by ".system.")\n"
-            ."</textarea><br>Total Countries, States and Provinces: ".mysql_num_rows($result)."</td></tr></table>"
+            ."</textarea><br>Total Countries, States and Provinces: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -398,7 +398,7 @@ class Stats
             ."  `signals`.`call`,"
             ."  `listeners`.`name`,\n"
             ."  `listeners`.`SP`\n";
-        $result =   mysql_query($sql);
+        $result =   \Rxx\Database::query($sql);
 
         //print("<pre>$sql</pre>");
         $out.=
@@ -408,8 +408,8 @@ class Stats
             ."KHZ      ID     SP ITU GSQ    Lat     Lon       ".(!$listenerID ? "Heard By" : "")."\n"
             ."----------------------------------------------".(!$listenerID ? "---------------------------" : "")."\n";
 
-        for ($i=0; $i<mysql_num_rows($result); $i++) {
-            $row =  mysql_fetch_array($result);
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result);
             $out.=
                 \Rxx\Rxx::pad((float)$row["khz"], 9)
                 .\Rxx\Rxx::pad($row["call"], 7)
@@ -423,7 +423,7 @@ class Stats
         $out.=
             "----------------------------------------------".(!$listenerID ? "---------------------------" : "")."\n"
             ."(Produced by ".system.")\n"
-            ."</textarea><br>Total entries listed: ".mysql_num_rows($result)."</td></tr></table>";
+            ."</textarea><br>Total entries listed: ".\Rxx\Database::numRows($result)."</td></tr></table>";
         return $out;
     }
 }
