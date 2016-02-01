@@ -453,7 +453,7 @@ function state_map() {
 		."  return \"\";\n"
 		." }\n"
 		."</script>"
-		."<form name='form' action='".system_URL."' method='GET'>\n"
+		."<form name='form' action='".system_URL."/".$mode."' method='GET'>\n"
 		."<input type='hidden' name='mode' value='$mode'>\n"
 		."<table cellpadding='0' cellspacing='0' border='0'>\n"
 		."  <tr>\n"
@@ -720,7 +720,7 @@ function state_map() {
     if (!$test) {
       $out[] =	 "<img usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
 		."type_DGPS=$type_DGPS&type_HAMBCN=$type_HAMBCN&type_NAVTEX=$type_NAVTEX&type_NDB=$type_NDB&type_TIME=$type_TIME&type_OTHER=$type_OTHER&"
-		."hide_labels=$hide_labels&places=$places&hide_placenames=$hide_placenames&ID=$ID\" border=\"1\" bordercolor=\"#000000\">\n"
+		."hide_labels=$hide_labels&places=$places&hide_placenames=$hide_placenames&ID=$ID\" border=\"1\" bordercolor=\"#000000\" style=\"float:none\">\n"
 		."<map name=\"map\">\n";
 
       if ($places) {
@@ -769,7 +769,7 @@ function state_map() {
         $out[] =	"</map>\n";
       }
       else {
-        $out[] =	"<img galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&ITU=$ITU&simple=$simple&listenerID=$listenerID&test=1\" border=\"1\" bordercolor=\"#000000\">\n";
+        $out[] =	"<img galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&ITU=$ITU&simple=$simple&listenerID=$listenerID&test=1\" border=\"1\" bordercolor=\"#000000\" style=\"float:none\">\n";
       }
     }
   $out[] =	"</form>\n";
