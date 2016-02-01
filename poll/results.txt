@@ -1,1 +1,0 @@
-Never=5,Occasionally=3,Often=2,Always=4
