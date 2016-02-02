@@ -1072,7 +1072,7 @@ class Awards
         $mail->PluginDir =      "../";
         $mail->IsHtml(true);
         $mail->Mailer =         "smtp";
-        $mail->Host =           "mail.classaxe.com";
+        $mail->Host =           SMTP_HOST;
         $mail->SMTPAuth = "";
         $mail->From =           $awards_email;
         $mail->FromName =       $awards_name;
