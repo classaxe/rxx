@@ -1,19 +1,450 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: module17
- * Date: 16-01-23
- * Time: 9:41 PM
+ * The main Rxx application class
+ *
+ * @category Rxx
+ * @package  Rxx
+ * @author   Martin Francis <martin@classaxe.com>
+ * @license  http://some-license.com Some License
+ * PHP version 5.3
+ *
  */
 
 namespace Rxx;
 
-/**
- * Class Rxx
- * @package Rxx
- */
 class Rxx
 {
+    protected $request;
+    protected $request_arr;
+    public static $system;
+    public static $system_id;
+    public static $system_url;
+    public static $system_title;
+    public static $system_editor;
+    public static $system_date;
+    public static $system_version;
+    public static $system_revision;
+    public static $base_path;
+    public static $root_path;
+    public static $system_mode;
+    public static $system_submode;
+    public static $debug_mode;
+    public static $system_script;
+    public static $server_name;
+    public static $document_root;
+    public static $metar_icao;
+    public static $metar_hours;
+    public static $metar_list;
+
+    /**
+     * Initialize the Rxx application
+     *
+     * @param string $root_path Root filesystem path
+     */
+    public function __construct($root_path)
+    {
+        self::$root_path = $root_path;
+        $this->request = explode("?", urldecode($_SERVER["REQUEST_URI"]));
+        $this->request = trim($this->request[0], '/');
+        if (strlen($_SERVER['SCRIPT_NAME']) - (strlen('index.php')) - 1) {
+            Rxx::$base_path = substr(
+                $_SERVER['SCRIPT_NAME'],
+                0,
+                strlen($_SERVER['SCRIPT_NAME']) - (strlen('index.php'))
+            );
+        } else {
+            Rxx::$base_path = '/';
+        }
+        $this->request =  substr($this->request, strlen(Rxx::$base_path) - 1);
+        $this->request_arr = explode("/", $this->request);
+        Rxx::$system = strtoupper($this->request_arr[0]);
+        Rxx::$system_url = Rxx::$base_path . $this->request_arr[0];
+        if (isset($this->request_arr[1])) {
+            Rxx::$system_mode = $this->request_arr[1];
+        }
+        if (isset($_POST['submode'])) {
+            Rxx::$system_submode = $_POST['submode'];
+        }
+        $this->_determineSystem();
+        $this->_getSystemVersion();
+        if (!self::$system_id) {
+            header('Location: ' . Rxx::$base_path . 'rna', 302);
+            exit();
+        }
+
+        $this->_initApplication();
+        $this->_routeToSystem();
+        $this->_routeRequest();
+    }
+
+    /**
+     *
+     */
+    private function _initApplication()
+    {
+        Database::connect();
+
+        session_name("RXX");
+        session_cache_limiter('must-revalidate');
+        session_start();
+
+        Rxx::$debug_mode = 0;
+
+        Rxx::$metar_icao = isset($_GET['ICAO']) ? $_GET['ICAO'] : '';
+        Rxx::$metar_hours = isset($_GET['hours']) ? $_GET['hours'] : '';
+        Rxx::$metar_list = isset($_GET['list']) ? $_GET['list'] : '';
+
+        if (!isset(Rxx::$system_mode)) {
+            Rxx::$system_mode = "signal_list";
+        }
+
+        if (!isset(Rxx::$system_submode)) {
+            Rxx::$system_submode = "";
+        }
+
+        if (!isset(self::$system)) {
+            Rxx::$system = "";
+        }
+
+        Rxx::$system_script = getenv("SCRIPT_NAME");
+        Rxx::$server_name = getenv("SERVER_NAME");
+        Rxx::$document_root = getenv('DOCUMENT_ROOT');
+    }
+
+    private function _routeRequest()
+    {
+        switch (Rxx::$system_mode) {
+        // Public functions
+        case "admin_help":  // made public for Brian
+        case "awards":
+        case "cle":
+        case "donate":
+        case "help":
+        case "listener_list":
+        case "maps":
+        case "poll_list":
+        case "signal_list":
+        case "signal_seeklist":
+        case "stats":
+        case "tools":
+        case "weather":
+            Rxx::main();
+            break;
+
+        case "logon":
+            if (isset(Rxx::$system_submode)
+                && Rxx::$system_submode == "logon"
+                && strtolower($_POST['user']) == ADMIN_USER
+                && strtolower($_POST['password']) == ADMIN_PASS
+            ) {
+                $_SESSION['admin'] = true;
+                header("Location: " . Rxx::$system_url . "/" . Rxx::$system_mode);
+            }
+            Rxx::main();
+            break;
+
+        case "find_ICAO":
+        case "listener_signals":
+        case "listener_edit":
+        case "listener_log":
+        case "listener_log_export":
+        case "listener_map":
+        case "listener_QNH":
+        case "listener_stats":
+        case "show_itu":
+        case "show_sp":
+        case "signal_attachments":
+        case "signal_dgps_messages":
+        case "signal_merge":
+        case "signal_info":
+        case "signal_listeners":
+        case "signal_log":
+        case "signal_map_eu":
+        case "signal_map_na":
+        case "signal_QNH":
+        case "state_map":
+            Rxx::popup();
+            break;
+
+        case "map_af":
+        case "map_alaska":
+        case "map_as":
+        case "map_au":
+        case "map_eu":
+        case "map_japan":
+        case "map_na":
+        case "map_pacific":
+        case "map_polynesia":
+        case "map_sa":
+        case "map_locator":
+        case "tools_coordinates_conversion":
+        case "tools_DGPS_popup":
+        case "tools_links":
+        case "tools_navtex_fixer":
+        case "tools_sunrise_calculator":
+        case "weather_lightning_canada":
+        case "weather_lightning_europe":
+        case "weather_lightning_na":
+        case "weather_metar":
+        case "weather_pressure_au":
+        case "weather_pressure_europe":
+        case "weather_pressure_na":
+        case "weather_solar_map":
+            Rxx::mini_popup();
+            break;
+        case "lastlog":
+            $Obj = new SystemStats();
+            die($Obj->getLastLogDate());
+            break;
+        case "metar":
+            print(Tools\Weather::METAR(Rxx::$metar_icao, Rxx::$metar_hours, Rxx::$metar_list));
+            break;
+        case "ILGRadio_signallist":
+            header('Content-Type: application/download');
+            header('Content-Disposition: attachment;filename=' . Rxx::$system . '.txt');
+            Tools\Export::ILGRadio_signallist();
+            break;
+        case "get_local_icao":
+            Rxx::get_local_icao();
+            break;
+        case "export_javascript_DGPS":
+            header('Content-type: text/javascript');
+            print(Tools\Export::export_javascript_DGPS());
+            break;
+        case "export_ndbweblog":
+            Tools\Export::export_ndbweblog();
+            break;
+        case "export_ndbweblog_config":
+            global $save;
+            if ($save == 1) {
+                header('Content-Disposition: attachment;filename=config.js');
+            } else {
+                header('Content-type: text/javascript');
+            }
+            print(Tools\Export::export_ndbweblog_config());
+            break;
+        case "ndbweblog.css":
+            header('Content-type: text/css');
+            readfile('log/ndbweblog.css');
+            break;
+        case "help.html":
+            header('Content-type: text/html');
+            readfile('log/help.html');
+            break;
+        case "export_ndbweblog_index":
+            header('Content-type: text/html');
+            print(Tools\Export::export_ndbweblog_index());
+            break;
+        case "export_ndbweblog_log":
+            global $save;
+            if ($save==1) {
+                header('Content-Disposition: attachment;filename=log.js');
+            } else {
+                header('Content-type: text/javascript');
+            }
+            print(Tools\Export::export_ndbweblog_log());
+            break;
+        case "export_ndbweblog_stations":
+            global $save;
+            if ($save == 1) {
+                header('Content-Disposition: attachment;filename=stations.js');
+            } else {
+                header('Content-type: text/javascript');
+            }
+            print(Tools\Export::export_ndbweblog_stations());
+            break;
+        case "export_station_map_na":
+            // TODO: Find missing method: export_station_map_na
+            //\Rxx\Tools\Export::export_station_map_na();
+            break;
+        case "export_kml_signals":
+            Tools\Export::export_kml_signals();
+            break;
+        case "export_signallist_excel":
+            Tools\Export::export_signallist_excel();
+            break;
+        case "export_signallist_pdf":
+            Tools\Export::export_signallist_pdf();
+            break;
+        case "export_text_signals":
+            Tools\Export::export_text_signals();
+            break;
+        case "export_text":         // old function may still be called from URLs
+        case "export_text_log":
+            Tools\Export::export_text_log();
+            break;
+        case "generate_map_eu":
+            Tools\Image::generate_map_eu();
+            break;
+        case "generate_listener_map":
+            Tools\Image::generate_listener_map();
+            break;
+        case "generate_map_na":
+            Tools\Image::generate_map_na();
+            break;
+        case "generate_station_map":
+            Tools\Image::generate_station_map();
+            break;
+        case "state_map_gif":
+            Tools\Image::state_map_gif();
+            break;
+        case "xml_signallist":
+            Rxx::xml_signallist();
+            break;
+        case "xml_listener_stats":
+            Rxx::xml_listener_stats(Rxx::$system_submode, @$listenerID);
+            break;
+
+
+
+
+        // Admin functions
+        case "admin_manage":
+        case "sys_info":
+            if (!Rxx::isAdmin()) {
+                header("Location: ".Rxx::$system_url."/logon");
+            } else {
+                Rxx::main();
+            }
+            break;
+
+        case "log_upload":
+        case "poll_edit":
+            if (!Rxx::isAdmin()) {
+                header("Location: ".Rxx::$system_url."/logon");
+            } else {
+                Rxx::popup();
+            }
+            break;
+
+        case "db_export":
+            if (!Rxx::isAdmin()) {
+                header("Location: ".Rxx::$system_url."/logon");
+            } else {
+                Tools\Backup::dbBackup(0);
+            }
+            break;
+
+
+        case "logoff":
+            unset($_SESSION['admin']);
+            header("Location: ".Rxx::$system_url);
+            break;
+
+        default:
+            header("Location: ".Rxx::$system_url);
+            break;
+        }
+
+    }
+    /**
+     *
+     */
+    private function _routeToSystem()
+    {
+        switch (self::$system) {
+        case "system_RNA":
+            header("Location: " . Rxx::$base_path . "rna/" . Rxx::$system_mode);
+            die;
+            break;
+        case "system_REU":
+            header("Location: " . Rxx::$base_path . "reu/" . Rxx::$system_mode);
+            die;
+            break;
+        case "system_RWW":
+            header("Location: " . Rxx::$base_path . "rww/" . Rxx::$system_mode);
+            die;
+            break;
+        }
+    }
+    /**
+     * Get the version and revision from last git commit data
+     *
+     * @return null
+     */
+    private function _getSystemVersion()
+    {
+        // @TODO: Do I even have git? Ensure project src root in check
+        $stat = stat(self::$root_path . '/.git/HEAD');
+        self::$system_date = date("d M Y H:i T", $stat['mtime']);
+        $gitlog = explode(":", `git log master -n 1 --format="%s"`);
+        self::$system_version = array_shift($gitlog);
+        self::$system_revision = implode(":", $gitlog);
+    }
+
+    /**
+     * Determine which system is selected
+     *
+     * @return null
+     */
+    private function _determineSystem()
+    {
+        switch(self::$system){
+        case 'RNA':
+            self::$system_id = "1";
+            self::$system_title = "Signals Received in N &amp; C America + Hawaii";
+            self::$system_editor
+                = "<script type='text/javascript'>//<!--\n"
+                ."document.write(\""
+                ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
+                ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Peter Conway\"+\"</a> (for DSC signals)<br />"
+                ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
+                ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
+                ."?subject=" . self::$system . "%20System'>S M O'Kelley\"+\"</a> (for NDBs and Ham Beacons)<br />"
+                ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
+                ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Roelof Bakker\"+\"</a> (for DGPS and Navtex signals)<br />"
+                ."\");\n"
+                ."//--></script>";
+            break;
+        case 'REU':
+            self::$system_id = "2";
+            self::$system_title = "Signals Received in Europe";
+            self::$system_editor
+                = "<script type='text/javascript'>//<!--\n"
+                ."document.write(\""
+                ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
+                ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Peter Conway\"+\"</a> (for DSC signals)<br />"
+                ."<a title='Contact the NDB Editor' href='mail\"+\"to\"+\":"
+                ."aunumero73\"+\"@\"+\"gmail\"+\".\"+\"com"
+                ."?subject=" . self::$system . "%20System'>Pat Vignoud\"+\"</a> (for NDBs)<br />"
+                ."<a title='Contact the Ham Beacon Editor' href='mail\"+\"to\"+\":"
+                ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
+                ."?subject=" . self::$system . "%20System'>S M O'Kelley\"+\"</a> (for Ham Beacons)<br />"
+                ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
+                ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Roelof Bakker\"+\"</a> (for DGPS and Navtex signals)<br />"
+                ."\");\n"
+                ."//--></script>";
+            break;
+        case 'RWW':
+            self::$system_id = "3";
+            self::$system_title = "Signals Received Worldwide";
+            self::$system_editor
+                = "<script type='text/javascript'>//<!--\n"
+                ."document.write(\""
+                ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
+                ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Peter Conway\"+\"</a> (for DSC signals)<br />"
+                ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
+                ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
+                ."?subject=" . self::$system . "%20System'>S M O'Kelley\"+\"</a> (for NDBs and Ham Beacons)<br />"
+                ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
+                ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
+                ."?subject=" . self::$system . "%20System'>"
+                ."Roelof Bakker\"+\"</a> (for DGPS and Navtex signals)<br />"
+                ."\");\n"
+                ."//--></script>";
+            break;
+        }
+    }
     /**
      * @param $SP
      * @param $ITU
@@ -21,23 +452,23 @@ class Rxx
      */
     public static function check_sp_itu($SP, $ITU)
     {
-        $error_msg =    "";
+        $error_msg = "";
         if ($SP) {
-            $sql =    "SELECT `ITU` FROM `sp` WHERE `SP` = '$SP'";
-            $result =    \Rxx\Database::query($sql);
-            if (!\Rxx\Database::numRows($result)) {
+            $sql = "SELECT `ITU` FROM `sp` WHERE `SP` = '$SP'";
+            $result = Database::query($sql);
+            if (!Database::numRows($result)) {
                 $error_msg .=    "The S/P code $SP is not valid.\\\\n";
             } else {
-                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row = Database::fetchArray($result, MYSQL_ASSOC);
                 if ($row['ITU']!=$ITU) {
                     $error_msg .=    "$SP belongs in ".$row['ITU'].($ITU ? ", not $ITU" : "").".\\\\n";
                 }
             }
         }
         if ($ITU) {
-            $sql =    "SELECT `ITU` FROM `itu` WHERE `ITU` = '$ITU'";
-            $result =    \Rxx\Database::query($sql);
-            if (!\Rxx\Database::numRows($result)) {
+            $sql = "SELECT `ITU` FROM `itu` WHERE `ITU` = '$ITU'";
+            $result = Database::query($sql);
+            if (!Database::numRows($result)) {
                 $error_msg .=    "The ITU code $ITU is not valid.\\\\n";
             }
         }
@@ -80,12 +511,12 @@ class Rxx
             ."  `logs`.`dx_miles` DESC\n"
             ."LIMIT\n"
             ."  1";
-//  z($sql);
-        $result =    \Rxx\Database::query($sql);
-        if (!\Rxx\Database::numRows($result)) {
+
+        $result =    Database::query($sql);
+        if (!Database::numRows($result)) {
             return false;
         }
-        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        return Database::fetchArray($result, MYSQL_ASSOC);
     }
 
     /**
@@ -129,8 +560,8 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `region` FROM `itu` WHERE `itu` = \"$itu\"";
-        $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =    Database::query($sql);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return $row["region"];
     }
 
@@ -148,7 +579,7 @@ class Rxx
             $SP
         )) {
             return
-                "<a href='".system_URL."/state_map?type_DGPS=1&amp;type_HAMBCN=1&amp;type_NAVTEX=1&amp;type_NDB=1"
+                "<a href='".self::$system_url."/state_map?type_DGPS=1&amp;type_HAMBCN=1&amp;type_NAVTEX=1&amp;type_NDB=1"
                 ."&amp;type_TIME=1&amp;type_OTHER=1&amp;simple=1&amp;SP=$SP&amp;ID=".$ID."'"
                 ." title='Show signal map for ".$SP."' target='blank'><b>".$text."</b></a>";
         }
@@ -162,8 +593,8 @@ class Rxx
     public static function get_ITU($ITU)
     {
         $sql =    "SELECT `name` FROM `itu` WHERE `ITU` = \"$ITU\"";
-        $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =    Database::query($sql);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return $row["name"];
     }
 
@@ -177,11 +608,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `name` FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    \Rxx\Database::query($sql);
-        if (!\Rxx\Database::numRows($result)) {
+        $result =    Database::query($sql);
+        if (!Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['name'];
     }
 
@@ -195,11 +626,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `email` FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    \Rxx\Database::query($sql);
-        if (!\Rxx\Database::numRows($result)) {
+        $result =    Database::query($sql);
+        if (!Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['email'];
     }
 
@@ -213,11 +644,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT `region` FROM `listeners` WHERE `listeners`.`ID` = $listenerID";
-        $result =    \Rxx\Database::query($sql);
-        if (!\Rxx\Database::numRows($result)) {
+        $result =    Database::query($sql);
+        if (!Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return    $row['region'];
     }
 
@@ -231,11 +662,11 @@ class Rxx
             return "";
         }
         $sql =    "SELECT * FROM `listeners` WHERE `ID` = $listenerID";
-        $result =    \Rxx\Database::query($sql);
-        if (!\Rxx\Database::numRows($result)) {
+        $result =    Database::query($sql);
+        if (!Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    Database::fetchArray($result, MYSQL_ASSOC);
         return    $row["name"].", ".$row["QTH"].($row['SP'] ? " ".$row["SP"]:"")." ".$row["ITU"];
     }
 
@@ -266,10 +697,10 @@ class Rxx
             ."WHERE\n"
             ."  $filter\n"
             ." ORDER BY `name`,`primary_QTH` DESC,`qth`";
-        $result =     @\Rxx\Database::query($sql);
+        $result =     @Database::query($sql);
 //  print("<pre>$sql</pre>");
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =    "<option value=\"".$row["ID"]."\"";
             if ($selectedID && is_array($selectedID)) {
                 for ($j=0; $j<count($selectedID); $j++) {
@@ -292,7 +723,7 @@ class Rxx
                 .($row['SP'] ? " ".$row["SP"]:"...")." "
                 .$row["ITU"]."</option>\n";
         }
-        \Rxx\Database::freeResult($result);
+        Database::freeResult($result);
         return implode($out, "");
     }
 
@@ -308,9 +739,9 @@ class Rxx
         $deg =        Rxx::GSQ_deg($GSQ);
         $icao_arr =   array();
         $sql =        "SELECT * FROM `icao`";
-        $result =     @\Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =     @Database::query($sql);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $dx =     Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
             $icao_arr[] =    array("miles" => $dx[0],"km" => $dx[1],"ICAO" => $row["ICAO"], );
         }
@@ -350,9 +781,9 @@ class Rxx
             .($selectedID == '' ? " selected='selected'" : "")
             ." style='color: #0000ff;'>".$chooseText."</option>\n";
         $sql =    "SELECT * FROM `region` ORDER BY `name`";
-        $result =     @\Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =     @Database::query($sql);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $out.=
                 "<option value=\"".$row["region"]."\""
                 .($selectedID == $row["region"] ? " selected='selected'" : "")
@@ -368,8 +799,8 @@ class Rxx
     public static function get_SP($SP)
     {
         $sql =      "SELECT `name` FROM `sp` WHERE `SP` = \"$SP\"";
-        $result =   \Rxx\Database::query($sql);
-        $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =   Database::query($sql);
+        $row =      Database::fetchArray($result, MYSQL_ASSOC);
         return      $row["name"];
     }
 
@@ -493,29 +924,25 @@ class Rxx
      */
     public static function main()
     {
-        global $mode, $submode, $script;
-        global $system;
-
-
-        switch ($mode) {
+        switch (Rxx::$system_mode) {
             case 'admin_manage':
-                $Obj = new Managers\Admin;
+                $Obj = new Managers\Admin();
                 break;
             case 'logon':
-                $Obj = new Managers\Logon;
+                $Obj = new Managers\Logon();
                 break;
             case 'sys_info':
-                $Obj = new Managers\SysInfo;
+                $Obj = new Managers\SysInfo();
                 break;
             case 'awards':
-                $Obj = new Awards;
+                $Obj = new Awards();
                 break;
             case 'signal_list':
-                $Obj = new SignalList;
+                $Obj = new SignalList();
                 $Obj->draw();
                 break;
             case 'poll_list':
-                $Obj = new Poll;
+                $Obj = new Poll();
                 break;
             default:
                 $Obj = false;
@@ -528,8 +955,8 @@ class Rxx
             "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
             ."<html><head>\n"
             ."<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n"
-            ."<title>".system." > ";
-        switch ($mode) {
+            ."<title>".Rxx::$system." > ";
+        switch (Rxx::$system_mode) {
             case "admin_help":
                 $out.=    "Administrator Help";
                 break;
@@ -543,10 +970,10 @@ class Rxx
                 $out.=    "CLE";
                 break;
             case "help":
-                $out."Help";
+                $out .= "Help";
                 break;
             case "listener_list":
-                $out.=    "Listeners";
+                $out .=    "Listeners";
                 break;
             case "logon":
                 $out.=    "Administrator Logon";
@@ -580,33 +1007,33 @@ class Rxx
             (Rxx::isAdmin() ? " (ADMIN)" : "")
             ."</title>\n"
             ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
-            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+            ."<link href='".self::$base_path."assets/style.css' rel='stylesheet' type='text/css'>\n"
+            ."<link href='".self::$base_path."assets/".strtoLower(self::$system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
             .($Obj && isset($Obj->head) ? $Obj->head : "")
             ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
             ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
             ."<script type='text/javascript'>\n"
             ."//<!--\n"
             .Rxx::piwik_tracking()
-            ."var system =     '".system."';\n"
-            ."var system_URL = '".system_URL."';\n"
+            ."var system =     '".self::$system."';\n"
+            ."var system_url = '".self::$system_url."';\n"
             ."//-->\n"
             ."</script>\n"
-            ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+            ."<script type='text/javascript' src='".self::$base_path."assets/functions.js'></script>\n"
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
             ."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
             ."  <tr>\n"
             ."    <td align='center'>"
-            ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
-            .system_title."</h1></td>\n"
+            ."<h1 title='Version ".self::$system_version." (".self::$system_date.")' style='cursor:pointer; cursor:hand;'>"
+            .self::$system_title."</h1></td>\n"
             ."  </tr>\n"
             ."</table>\n"
             ."<table cellpadding='0' cellspacing='0' border='0' class='noprint'>\n"
             ."  <tr>\n"
             ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
             ."      <tr>\n";
-        switch (system) {
+        switch (self::$system) {
             case "RNA":
                 $out.=
                     Rxx::menuItem_selected("<b>North America</b>", 200)
@@ -656,7 +1083,7 @@ class Rxx
 
         if (Rxx::isAdmin()) {
             $out.=
-                "  <tr><td><img src='".BASE_PATH."assets/spacer.gif' height='3' width='1' alt=' '></td></tr>\n"
+                "  <tr><td><img src='".self::$base_path."assets/spacer.gif' height='3' width='1' alt=' '></td></tr>\n"
                 ."  <tr>\n"
                 ."    <td><table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class='navTable' bgcolor='#ffffff'>\n"
                 ."      <tr>\n"
@@ -678,7 +1105,7 @@ class Rxx
             ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."  <tr>\n"
             ."    <td width='100%' valign='top'>";
-        switch ($mode) {
+        switch (Rxx::$system_mode) {
             case 'admin_manage':
                 $out.= $Obj->draw();
                 break;
@@ -698,43 +1125,43 @@ class Rxx
                 $out.= $Obj->drawList();
                 break;
             case 'signal_seeklist':
-                $out.= \Rxx\Tools\Signal::signal_seeklist();
+                $out.= Tools\Signal::signal_seeklist();
                 break;
             case 'listener_list':
-                $out.= \Rxx\Tools\Listener::listener_list();
+                $out.= Tools\Listener::listener_list();
                 break;
             case 'cle':
-                $out.= \Rxx\Tools\Cle::cle();
+                $out.=Tools\Cle::cle();
                 break;
             case 'maps':
-                $out.= \Rxx\Tools\Map::maps();
+                $out.= Tools\Map::maps();
                 break;
             case 'tools':
-                $out.= \Rxx\Tools\Tools::tools();
+                $out.= Tools\Tools::tools();
                 break;
             case 'weather':
-                $out .= \Rxx\Tools\Weather::weather();
+                $out .= Tools\Weather::weather();
                 break;
             case 'stats':
-                $out .= \Rxx\Tools\Stats::stats();
+                $out .= Tools\Stats::stats();
                 break;
             case 'help':
-                $out .= \Rxx\Rxx::help();
+                $out .= Rxx::help();
                 break;
             case 'donate':
-                $out .= \Rxx\Tools\Donate::donate();
+                $out .= Tools\Donate::donate();
                 break;
             case 'signal_info':
-                $out .= \Rxx\Tools\Signal::signal_info();
+                $out .=Tools\Signal::signal_info();
                 break;
             case 'signal_map_na':
-                $out .= \Rxx\Tools\Signal::signal_map_na();
+                $out .=Tools\Signal::signal_map_na();
                 break;
             case 'signal_map_eu':
-                $out .= \Rxx\Tools\Signal::signal_map_eu();
+                $out .= Tools\Signal::signal_map_eu();
                 break;
             default:
-                $out.= 'Fatal error: Class is not defined. ' . $mode;
+                $out.= 'Fatal error: Class is not defined. ' . Rxx::$system_mode;
                 break;
         }
         $out.=
@@ -743,14 +1170,14 @@ class Rxx
             ."</table>\n"
             ."<br><br><hr noshade>\n"
             ."<div class='footer'>"
-            ."<p><b>Your ".system." Editors are:</b><br>\n"
-            .system_editor."<br><b>".awardsAdminName."</b> (Awards Coordinator)</p>"
+            ."<p><b>Your ".self::$system." Editors are:</b><br>\n"
+            .self::$system_editor."<br><b>".awardsAdminName."</b> (Awards Coordinator)</p>"
             ."<p>Software by <b><script type='text/javascript'>//<!--\n"
             ."document.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com"
-            ."?subject=".system."%20System'>Martin Francis\"+\"<\/a>\");\n"
+            ."?subject=".self::$system."%20System'>Martin Francis\"+\"</a>\");\n"
             ."//--></script></b>"
             ." &copy;".date('Y', time())."<br>"
-            ."Original concept".(system=='RNA' ? " &amp; data" : "")." <b>Andy Robins</b></p>\n"
+            ."Original concept".(self::$system=='RNA' ? " &amp; data" : "")." <b>Andy Robins</b></p>\n"
             ."</div>\n"
             ."</body>\n"
             ."</html>\n";
@@ -767,18 +1194,17 @@ class Rxx
      */
     public static function menuItem($test, $text, $type, $new, $width)
     {
-        global $mode;
         if ($type=="sys") {
-            if (system!=$test) {
+            if (self::$system!=$test) {
                 return
-                    "<td width='$width' class='navOff' onmouseover='return navOver(this,1);' onMouseOut='return navOver(this,0);' title='Click here to go to this page'><a href='".system_URL."/".$mode."?sys=$test'".($new ? " target='_blank'" : "").">$text</a></td>\n";
+                    "<td width='$width' class='navOff' onmouseover='return navOver(this,1);' onMouseOut='return navOver(this,0);' title='Click here to go to this page'><a href='".self::$system_url."/".Rxx::$system_mode."?sys=$test'".($new ? " target='_blank'" : "").">$text</a></td>\n";
             }
-            return    "<td width='$width' class='navSelected' title='Reload this page'><a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
+            return    "<td width='$width' class='navSelected' title='Reload this page'><a href='".self::$system_url."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
         } else {
-            if ($mode!=$test) {
-                return     "<td width='$width' class='navOff' onMouseOver='return navOver(this,1);' onMouseOut='return navOver(this,0);' title='Click here to go to this page'><a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "").">$text</a></td>\n";
+            if (Rxx::$system_mode != $test) {
+                return     "<td width='$width' class='navOff' onMouseOver='return navOver(this,1);' onMouseOut='return navOver(this,0);' title='Click here to go to this page'><a href='".self::$system_url."/".$test."'".($new ? " target='_blank'" : "").">$text</a></td>\n";
             }
-            return    "<td width='$width' class='navSelected' title='Reload this page'><a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
+            return    "<td width='$width' class='navSelected' title='Reload this page'><a href='".self::$system_url."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
         }
     }
 
@@ -792,27 +1218,26 @@ class Rxx
      */
     public static function menuItem_box($test, $text, $type, $new, $width)
     {
-        global $mode;
         if ($type=="sys") {
-            if (system!=$test) {
+            if (self::$system != $test) {
                 return
                     "<td width='$width' class='navOff_box' title='Click here to go to this page'"
                     ." onmouseover='return navOver_box(this,1);' onmouseout='return navOver_box(this,0);'>"
-                    ."<a href='".system_URL."/".$mode."?sys=$test'".($new ? " target='_blank'" : "").">"
+                    ."<a href='".self::$system_url."/".Rxx::$system_mode."?sys=$test'".($new ? " target='_blank'" : "").">"
                     ."$text</a></td>\n";
             }
             return
                 "<td width='$width' class='navSelected_box' title='Reload this page'>"
-                ."<a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "").">"
+                ."<a href='" . self::$system_url . "/".$test."'".($new ? " target='_blank'" : "").">"
                 ."<font color='white'>$text</font></a></td>\n";
         } elseif ($type=="mode") {
-            if ($mode!=$test) {
+            if (Rxx::$system_mode!=$test) {
                 return
                     "<td width='$width' title='Click here to go to this page'"
-                    ." class='navOff_box' onmouseover='return navOver_box(this,1);' onmouseout='return navOver_box(this,0);'><a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "").">$text</a></td>\n";
+                    ." class='navOff_box' onmouseover='return navOver_box(this,1);' onmouseout='return navOver_box(this,0);'><a href='" . self::$system_url . "/".$test."'".($new ? " target='_blank'" : "").">$text</a></td>\n";
             }
             return
-                "<td width='$width' class='navSelected_box' title='Reload this page'><a href='".system_URL."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
+                "<td width='$width' class='navSelected_box' title='Reload this page'><a href='".self::$system_url."/".$test."'".($new ? " target='_blank'" : "")."><font color='white'>$text</font></a></td>\n";
         } else {
             return
                 "<td width='$width' class='navOff_box' title='Click here to go to this page'"
@@ -836,13 +1261,13 @@ class Rxx
      */
     public static function popup()
     {
-        global $mode, $submode, $SP;
+        global $SP;
         $out =
             "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
             ."<html><head>\n"
             ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
-            ."<title>".system." > ";
-        switch ($mode) {
+            ."<title>".self::$system." > ";
+        switch (Rxx::$system_mode) {
             case "find_ICAO":
                 $out.= "Find ICAO Weather Station";
                 break;
@@ -868,7 +1293,7 @@ class Rxx
                 $out.= "Listener Stats";
                 break;
             case "log_upload":
-                switch ($submode) {
+                switch (Rxx::$system_submode) {
                     case "":
                         $out.= "Log Upload (Step 1)";
                         break;
@@ -928,31 +1353,31 @@ class Rxx
         }
         $out.=
             "</title>\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
-            ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
-            ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+            ."<link href='".self::$base_path."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
+            ."<link href='".self::$base_path."assets/".strtoLower(self::$system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+            ."<link href='".self::$base_path."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
+            ."<script type='text/javascript' src='".self::$base_path."assets/functions.js'></script>\n"
             ."<script type='text/javascript'>\n"
             ."//<![CDATA[\n"
-            ."system_URL = '".system_URL."';\n"
+            ."system_URL = '".self::$system_url."';\n"
             ."function map_locator(system,map_x,map_y,name,QTH,lat,lon){\n"
             ."  switch(system) {\n"
             ."    case 'eu':\n"
-            ."      popWin('".system_URL."/map_locator?system=eu&map_x='+map_x+'&map_y='+map_y+'&name='+name+'&QTH='+QTH+'&lat='+lat+'&lon='+lon,'popMapLocatorEu','scrollbars=0,resizable=1',688,695,'centre');\n"
+            ."      popWin('".self::$system_url."/map_locator?system=eu&map_x='+map_x+'&map_y='+map_y+'&name='+name+'&QTH='+QTH+'&lat='+lat+'&lon='+lon,'popMapLocatorEu','scrollbars=0,resizable=1',688,695,'centre');\n"
             ."    break;\n"
             ."    case 'na':\n"
-            ."      popWin('".system_URL."/map_locator?system=na&map_x='+map_x+'&map_y='+map_y+'&name='+name+'&QTH='+QTH+'&lat='+lat+'&lon='+lon,'popMapLocatorNa','scrollbars=0,resizable=1',653,680,'centre');\n"
+            ."      popWin('".self::$system_url."/map_locator?system=na&map_x='+map_x+'&map_y='+map_y+'&name='+name+'&QTH='+QTH+'&lat='+lat+'&lon='+lon,'popMapLocatorNa','scrollbars=0,resizable=1',653,680,'centre');\n"
             ."    break;\n"
             ."  }\n"
             ."}\n"
             ."function signal_listeners(ID){\n"
-            ."  popWin('".system_URL."/signal_listeners/'+ID,'popsignal','scrollbars=0,resizable=1',640,380,'centre');\n"
+            ."  popWin('".self::$system_url."/signal_listeners/'+ID,'popsignal','scrollbars=0,resizable=1',640,380,'centre');\n"
             ."}\n"
             ."//]]>\n"
             ."</script>\n"
             ."</head>\n"
             ."<body>\n";
-        switch ($mode) {
+        switch (Rxx::$system_mode) {
             case "poll_edit":
                 $Obj = new Poll;
                 $out.= $Obj->edit();
@@ -968,61 +1393,61 @@ class Rxx
                 $out .= Rxx::find_ICAO();
                 break;
             case "listener_signals":
-                $out .= \Rxx\Tools\Listener::listener_signals();
+                $out .= Tools\Listener::listener_signals();
                 break;
             case "listener_edit":
-                $out .= \Rxx\Tools\Listener::listener_edit();
+                $out .= Tools\Listener::listener_edit();
                 break;
             case "listener_log":
-                $out .= \Rxx\Tools\Listener::listener_log();
+                $out .= Tools\Listener::listener_log();
                 break;
             case "listener_log_export":
-                $out .= \Rxx\Tools\Listener::listener_log_export();
+                $out .= Tools\Listener::listener_log_export();
                 break;
             case "listener_map":
-                $out .= \Rxx\Tools\Listener::listener_map();
+                $out .= Tools\Listener::listener_map();
                 break;
             case "listener_QNH":
-                $out .= \Rxx\Tools\Listener::listener_QNH();
+                $out .= Tools\Listener::listener_QNH();
                 break;
             case "listener_stats":
-                $out .= \Rxx\Tools\Listener::listener_stats();
+                $out .= Tools\Listener::listener_stats();
                 break;
             case "show_itu":
-                $out .= \Rxx\Rxx::show_itu();
+                $out .= Rxx::show_itu();
                 break;
             case "show_sp":
-                $out .= \Rxx\Rxx::show_sp();
+                $out .= Rxx::show_sp();
                 break;
             case "signal_attachments":
                 // @TODO: Missing or unused function?
                 //$out .= \Rxx\Signal::signal_attachments();
             case "signal_dgps_messages":
-                $out .= \Rxx\Tools\Signal::signal_dgps_messages();
+                $out .= Tools\Signal::signal_dgps_messages();
                 break;
             case "signal_info":
-                $out .= \Rxx\Tools\Signal::signal_info();
+                $out .= Tools\Signal::signal_info();
                 break;
             case "signal_listeners":
-                $out .= \Rxx\Tools\Signal::signal_listeners();
+                $out .= Tools\Signal::signal_listeners();
                 break;
             case "signal_log":
-                $out .= \Rxx\Tools\Signal::signal_log();
+                $out .= Tools\Signal::signal_log();
                 break;
             case "signal_map_eu":
-                $out .= \Rxx\Tools\Signal::signal_map_eu();
+                $out .= Tools\Signal::signal_map_eu();
                 break;
             case "signal_map_na":
-                $out .= \Rxx\Tools\Signal::signal_map_na();
+                $out .= Tools\Signal::signal_map_na();
                 break;
             case "signal_merge":
-                $out .= \Rxx\Tools\Signal::signal_merge();
+                $out .= Tools\Signal::signal_merge();
                 break;
             case "signal_QNH":
-                $out .= \Rxx\Tools\Signal::signal_QNH();
+                $out .= Tools\Signal::signal_QNH();
                 break;
             case "state_map":
-                $out .= \Rxx\Tools\Map::state_map();
+                $out .= Tools\Map::state_map();
                 break;
         }
         $out.=
@@ -1036,13 +1461,12 @@ class Rxx
      */
     public static function mini_popup()
     {
-        global $mode;
         $out =    array();
         $out[] =    "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
             ."<html><head>\n"
             ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
-            ."<title>".system." > ";
-        switch ($mode) {
+            ."<title>".self::$system." > ";
+        switch (Rxx::$system_mode) {
             case "map_af":                $out[] = "Africa";
                 break;
             case "map_alaska":                $out[] = "Alaska";
@@ -1092,17 +1516,17 @@ class Rxx
         }
 
         $out[] =     "</title>\n"
-            ."<script language='javascript' type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+            ."<script language='javascript' type='text/javascript' src='".self::$base_path."assets/functions.js'></script>\n"
             ."<script language='javascript' type='text/javascript'>\n"
-            ."system_URL = '".system_URL."';\n"
+            ."system_url = '".self::$system_url."';\n"
             ."</script>\n"
             ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
-            ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
+            ."<link href='".self::$base_path."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
+            ."<link href='".self::$base_path."assets/".strtoLower(self::$system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
+            ."<link href='".self::$base_path."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
             ."</head>\n"
             ."<body leftmargin='0' topmargin='0' marginheight='0' marginwidth='0'>\n";
-        switch ($mode) {
+        switch (Rxx::$system_mode) {
             case "map_af":                $out[] = Tools\Map::map_af();
                 break;
             case "map_alaska":                $out[] = Tools\Map::map_alaska();
@@ -1303,7 +1727,7 @@ class Rxx
         $out[] =        "  <tr>\n";
         $out[] =        "    <td><table border='0' align='center' cellpadding='0' cellspacing='0'>\n";
         $out[] =        "      <tr>\n";
-        $out[] =        "        <td class='downloadTableContent' colspan='2' width='100%'><h1>".system." Country Code Locator</h1>\n";
+        $out[] =        "        <td class='downloadTableContent' colspan='2' width='100%'><h1>".self::$system." Country Code Locator</h1>\n";
         $out[] =        "        <p class='help'>Countries</b> in this system are given by NDB List approved <a href='http://www.beaconworld.org.uk/files/countrylist.pdf' target='_blank' title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n";
         $out[] =        "<script language=javascript' type='text/javascript'>if (window.opener && window.opener.form && (window.opener.form.ITU || window.opener.form.filter_itu)) { document.write(\"<b>Click</b> on any entry to copy it automatically to the form.</b>\"); }</script></p>\n";
 
@@ -1316,9 +1740,9 @@ class Rxx
             .($region!="" ? "WHERE `region` IN ('".implode("','", explode("|", $region))."')" : "")
             ."ORDER BY `ID`";
 
-        $result =        @\Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =        @\Database::query($sql);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =        Database::fetchArray($result, MYSQL_ASSOC);
             $regions[] =    array("name"=>$row["name"], "region"=>$row["region"]);
         }
 
@@ -1341,11 +1765,11 @@ class Rxx
                     break;
                 case "au":    $out[] = "<a href='/dx/images/au_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "ca":    $out[] = "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "ca":    $out[] = "<a href='".self::$system_url."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "eu":    $out[] = "<a href='".system_URL."/generate_map_eu' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "eu":    $out[] = "<a href='".self::$system_url."/generate_map_eu' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "na":    $out[] = "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "na":    $out[] = "<a href='".self::$system_url."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
                 case "sa":    $out[] = "<a href='/dx/images/sa_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
@@ -1357,10 +1781,10 @@ class Rxx
             $out[] =        "          <tr class='rownormal'>\n";
             $out[] =        "            <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
             $sql =        "SELECT `ITU`,`name` FROM `itu` WHERE `region` = '".$regions[$h]["region"]."' ORDER BY `name`";
-            $result =        \Rxx\Database::query($sql);
+            $result =        Database::query($sql);
             $itu_arr =        array();
-            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            for ($i=0; $i<Database::numRows($result); $i++) {
+                $row =        Database::fetchArray($result, MYSQL_ASSOC);
                 $itu_arr[] =    array("ITU"=>$row['ITU'],"name"=>$row['name']);
             }
             $cells_col =        ceil(count($itu_arr)/$cols);
@@ -1419,8 +1843,8 @@ class Rxx
             ."';document.form.submit()\""
             ." title=\"".$hint."\">"
             .($lblImage ? "" : $label.' ')
-            .($sortBy==$test ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : '')
-            .($sortBy==$test."_d" ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : '')
+            .($sortBy==$test ? "<img src='".self::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : '')
+            .($sortBy==$test."_d" ? "<img src='".self::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : '')
             .($lblImage ? ($sortBy==$test || $sortBy==$test."_d" ? "<br><br>" : "").$label.' ': '')
             ."</th>\n";
     }
@@ -1437,7 +1861,7 @@ class Rxx
             ."  <tr>\n"
             ."    <td><table border='0' align='center' cellpadding='0' cellspacing='0'>\n"
             ."      <tr>\n"
-            ."        <td class='downloadTableContent' colspan='2' width='100%'><h1>".system." State and Province Locator</h1>\n"
+            ."        <td class='downloadTableContent' colspan='2' width='100%'><h1>".self::$system." State and Province Locator</h1>\n"
             ."        <p class='help'>States and provinces</b> in this system are given by NDB List approved <a href='http://www.beaconworld.org.uk/files/countrylist.pdf' target='_blank' title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n"
             ."<script language=javascript' type='text/javascript'>if (window.opener && window.opener.form && (window.opener.form.SP || window.opener.form.filter_sp)) { document.write(\"<b>Click</b> on any entry to copy it automatically to the form.</b>\"); }</script></p>\n"
             ."        <table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -1445,17 +1869,17 @@ class Rxx
             ."            <th class='downloadTableHeadings' align='center'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."              <tr>\n"
             ."                <th class='downloadTableHeadings_nosort' align='left'>Canadian Provinces</th>\n"
-            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".system_URL."/map_na' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
+            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".self::$system_url."/map_na' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
             ."              </tr>\n"
             ."            </table></th>\n"
             ."          </tr>\n"
             ."          <tr class='rownormal'>\n"
             ."            <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' border='0'>\n";
         $sql =        "SELECT * FROM `sp` WHERE `ITU` = 'CAN'";
-        $result =        \Rxx\Database::query($sql);
+        $result =        Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =        Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1493,7 +1917,7 @@ class Rxx
             ."            <th class='downloadTableHeadings' align='center'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."              <tr>\n"
             ."                <th class='downloadTableHeadings_nosort' align='left'>USA States</th>\n"
-            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".system_URL."/map_na' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
+            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".self::$system_url."/map_na' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
             ."              </tr>\n"
             ."            </table></th>\n"
             ."          </tr>\n"
@@ -1501,10 +1925,10 @@ class Rxx
             ."            <td class='downloadTableContent'>\n"
             ."            <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
         $sql =        "SELECT * FROM `sp`";
-        $result =        @\Rxx\Database::query($sql);
+        $result =        @Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =        Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1545,7 +1969,7 @@ class Rxx
             ."            <th class='downloadTableHeadings' align='center'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."              <tr>\n"
             ."                <th class='downloadTableHeadings_nosort' align='left'>Australian Territories</th>\n"
-            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".system_URL."/map_au' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
+            ."                <th class='downloadTableHeadings_nosort' align='right'>[<a href='".self::$system_url."/map_au' target='_blank' class='yellow'><b>Map</b></a>]</td>\n"
             ."              </tr>\n"
             ."            </table></th>\n"
             ."          </tr>\n"
@@ -1553,10 +1977,10 @@ class Rxx
             ."            <td class='downloadTableContent'>\n"
             ."            <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
         $sql =        "SELECT * FROM `sp` WHERE `ITU` = 'AUS'";
-        $result =        \Rxx\Database::query($sql);
+        $result =        Database::query($sql);
         $sp_arr =        array();
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =        Database::fetchArray($result, MYSQL_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1611,8 +2035,8 @@ class Rxx
         while ($notDone) {
             $ID =     uniqid('');
             $sql =    "SELECT COUNT(*) FROM `$table` WHERE ID = '$ID'";
-            $result =    \Rxx\Database::query($sql);
-            $row =     \Rxx\Database::fetchRow($result);
+            $result =    Database::query($sql);
+            $row =     Database::fetchRow($result);
             $notDone =    $row[0]>0;
         }
         return $ID;
@@ -1633,10 +2057,10 @@ class Rxx
      */
     public static function find_ICAO()
     {
-        global $mode,$submode,$GSQ_icao;
+        global $GSQ_icao;
         $out =
-            "<form action='".system_URL."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            "<form action='".self::$system_url."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".Rxx::$system_mode."'>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable' width='100%'>\n"
             ."  <tr>\n"
             ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -1676,9 +2100,9 @@ class Rxx
         $out[] =    '<?xml version="1.0" encoding="UTF-8"?>';
         $out[] =    "<signallist>\n";
         $sql =    "SELECT * FROM `signals`";
-        $result =    \Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =    Database::query($sql);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $out[] =    "  <signal"
                 ." ID=\"".$row['ID']."\""
                 ." active=\"".$row['active']."\""
@@ -1699,9 +2123,9 @@ class Rxx
                 ." USB_approx=\"".$row['USB_approx']."\""
                 .">\n";
             $sql =    "SELECT * FROM `logs` WHERE `signalID` = ".$row['ID']." AND `listenerID` !=''";
-            $result2 =    \Rxx\Database::query($sql);
-            for ($j=0; $j<\Rxx\Database::numRows($result2); $j++) {
-                $row2 =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
+            $result2 =    Database::query($sql);
+            for ($j=0; $j<Database::numRows($result2); $j++) {
+                $row2 =    Database::fetchArray($result2, MYSQL_ASSOC);
                 $out[] =    "    <log"
                     ." ID=\"".$row2['ID']."\""
                     ." date=\"".$row2['date']."\""
@@ -1805,9 +2229,9 @@ class Rxx
             .($listenerID ? "WHERE `ID` = ".addslashes($listenerID)."\n" : "")
             ."ORDER BY `name`,`SP`,`ITU`";
 
-        $result =    @\Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $result =    @Database::query($sql);
+        for ($i=0; $i<Database::numRows($result); $i++) {
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $listeners[$row["ID"]] =
                 array(
                     "count_signals" =>    $row["count_signals"],
@@ -1853,9 +2277,9 @@ class Rxx
                 ."GROUP BY\n"
                 ."  `listeners`.`ID`";
             //  print("<pre>$sql</pre>");
-            $result =    @\Rxx\Database::query($sql);
-            for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $result =    @Database::query($sql);
+            for ($j=0; $j<Database::numRows($result); $j++) {
+                $row =    Database::fetchArray($result, MYSQL_ASSOC);
                 $listeners[$row["ID"]]["log_dx"]["dx".$i] = $row["logs"];
             }
         }
@@ -1989,13 +2413,13 @@ class Rxx
      */
     public static function tabItem($text, $test, $width)
     {
-        global $mode, $ID;
+        global $ID;
         return
-            "<td class='".($test==$mode ? 'tabSelected' : 'tabOff')."'"
-            ." title='".($test==$mode ? 'Reload this page' : 'Change mode')."'"
-            ." onclick='document.location=\"".system_URL."/".$test."/".$ID."\"'"
-            .($test!=$mode ? " onmouseover='return tabOver(this,1);'" : "")
-            .($test!=$mode ? " onmouseout='return tabOver(this,0);'" : "")
+            "<td class='".($test == Rxx::$system_mode ? 'tabSelected' : 'tabOff')."'"
+            ." title='".($test == Rxx::$system_mode ? 'Reload this page' : 'Change mode')."'"
+            ." onclick='document.location=\"".self::$system_url."/".$test."/".$ID."\"'"
+            .($test != Rxx::$system_mode ? " onmouseover='return tabOver(this,1);'" : "")
+            .($test != Rxx::$system_mode ? " onmouseout='return tabOver(this,0);'" : "")
             ." width='$width'>$text</td>\n";
     }
 

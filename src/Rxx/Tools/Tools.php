@@ -19,10 +19,9 @@ class Tools
      */
     public static function tools()
     {
-        global $script, $mode, $submode;
         return
-            "<form name='form' action='".system_URL."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            "<form name='form' action='".\Rxx\Rxx::$system_url."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."</form>\n"
             ."<h2>Tools</h2>\n"
@@ -46,7 +45,7 @@ class Tools
      */
     public static function tools_coordinates_conversion()
     {
-        global $mode,$script,$GSQ;
+        global $GSQ;
         return
             "<form name='coords' onsubmit='return false;'>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -54,10 +53,10 @@ class Tools
             ."    <th class='downloadTableHeadings_nosort' colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='coords'></a>Coordinates Converter</th>\n"
-            .($mode=="tools" ?
+            .(\Rxx\Rxx::$system_mode=="tools" ?
                 "        <th align='right' class='downloadTableHeadings_nosort'>"
-                ."<a href=\"javascript:popWin('$script?mode=tools_coordinates_conversion','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre')\">"
-                ."<img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+                ."<a href=\"javascript:popWin('Rxx::$system_script?mode=tools_coordinates_conversion','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre')\">"
+                ."<img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></th>\n" : "")
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n"
@@ -100,12 +99,11 @@ class Tools
      */
     public static function tools_DGPS_lookup()
     {
-        global $script, $mode;
         return
-            "<script language='JavaScript' type='text/javascript' src='".system_URL."/export_javascript_DGPS'></script>\n"
+            "<script language='JavaScript' type='text/javascript' src='".\Rxx\Rxx::$system_url."/export_javascript_DGPS'></script>\n"
             ."<script language='javascript' type='text/javascript'>\n"
             ."function signal_info(ID){\n"
-            ."  popWin('".system_URL."/signal_info/'+ID,'popsignal','scrollbars=0,resizable=1',640,380,'centre');\n"
+            ."  popWin('".\Rxx\Rxx::$system_url."/signal_info/'+ID,'popsignal','scrollbars=0,resizable=1',640,380,'centre');\n"
             ."}\n"
             ."</script>\n"
             ."<form name='dgps' onsubmit='document.dgps.details.value=dgps_lookup(document.dgps.ref.value);return false;'>\n"
@@ -114,21 +112,21 @@ class Tools
             ."    <th class='downloadTableHeadings_nosort' colspan='2'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='dgps'></a>DGPS Station ID Lookup</th>\n"
-            .($mode=="tools" ?
+            .(\Rxx\Rxx::$system_mode=="tools" ?
                 "        <th align='right' class='downloadTableHeadings_nosort'>"
-                ."<a href=\"#\" onclick=\"popWin('".system_URL."/tools_DGPS_popup','tools_DGPS_popup','scrollbars=0,resizable=0',347,227,'centre')\">"
-                ."<img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'>"
-                ."<img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+                ."<a href=\"#\" onclick=\"popWin('".\Rxx\Rxx::$system_url."/tools_DGPS_popup','tools_DGPS_popup','scrollbars=0,resizable=0',347,227,'centre')\">"
+                ."<img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'>"
+                ."<img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></th>\n" : "")
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n"
             ."  <tr>\n"
             ."    <td class='downloadTableContent' colspan='2'>Enter Decoded Reference Station ID and click 'Lookup' to</br>"
             ."    view Station ID and other details.<br><br>\n"
-            .(system=="RNA" || system=="RWW" ?
+            .(\Rxx\Rxx::$system=="RNA" || \Rxx\Rxx::$system=="RWW" ?
                 "    E.g.: Ref Stations <a href=\"javascript:document.dgps.ref.value='52';document.dgps.go.click();\"><b>52</b></a> and\n"
                 ."<a href=\"javascript:document.dgps.ref.value='53';document.dgps.go.click();\"><b>53</b></a> both belong to station <a href=\"javascript:signal_info('1104')\"><b>#823</b></a>" : "")
-            .(system=="REU" ?
+            .(\Rxx\Rxx::$system=="REU" ?
                 "    E.g.: Ref Stations <a href=\"javascript:document.dgps.ref.value='822';document.dgps.go.click();\"><b>822</b></a> and\n"
                 ."<a href=\"javascript:document.dgps.ref.value='823';document.dgps.go.click();\"><b>823</b></a> are for station <a href=\"javascript:signal_info('2777')\"><b>#492</b></a> in Helgoland, Germany" : "")
             ."</td>\n"
@@ -152,7 +150,6 @@ class Tools
      */
     public static function tools_navtex_fixer()
     {
-        global $mode,$script;
         return
             "<script language='javascript' type='text/javascript'>\n"
             ."<!--\n"
@@ -194,9 +191,9 @@ class Tools
             ."    <th class='downloadTableHeadings_nosort' colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='coords'></a>NAVTEX Missed Shift Translator (Version 1.3)</th>\n"
-            .($mode=="tools" ?
+            .(\Rxx\Rxx::$system_mode=="tools" ?
                 "        <th align='right' class='downloadTableHeadings_nosort'>"
-                ."<a href=\"javascript:popWin('$script?mode=tools_navtex_fixer','tools_navtex_fixer','scrollbars=0,resizable=0',420,390,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+                ."<a href=\"javascript:popWin('".\Rxx\Rxx::$system_script."?mode=tools_navtex_fixer','tools_navtex_fixer','scrollbars=0,resizable=0',420,390,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></th>\n" : "")
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n"
@@ -243,15 +240,14 @@ class Tools
      */
     public static function tools_links()
     {
-        global $mode,$script;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort' colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='links'></a>Other Databases on the Web</th>\n"
-        .($mode=="tools" ?
+        .(\Rxx\Rxx::$system_mode=="tools" ?
             "        <th align='right' class='downloadTableHeadings_nosort'>"
-            ."<a href=\"javascript:popWin('$script?mode=tools_links','tools_links','scrollbars=0,resizable=0',520,112,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+            ."<a href=\"javascript:popWin('".Rxx::$system_script."?mode=tools_links','tools_links','scrollbars=0,resizable=0',520,112,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></th>\n" : "")
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
@@ -273,17 +269,16 @@ class Tools
      */
     public static function tools_sunrise_calculator()
     {
-        global $mode,$script;
-        return "<script language='JavaScript' type='text/javascript' src='".BASE_PATH."assets/sunrise.js'></script>\n"
+        return "<script language='JavaScript' type='text/javascript' src='".\Rxx\Rxx::$base_path."assets/sunrise.js'></script>\n"
         ."<form NAME='sunForm' onSubmit='formValues(this, 0); set_sunrise_cookies(this); return false;'>\n"
         ."<table cellpadding='0' border='0' cellspacing='0' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort' colspan='3'><table cellpadding='2' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='sunrise'></a>Sunrise / Sunset Calculator</th>\n"
-        .($mode=="tools" ?
+        .(\Rxx\Rxx::$system_mode=="tools" ?
             "        <th align='right' class='downloadTableHeadings_nosort'>"
-            ."<a href=\"javascript:popWin('$script?mode=tools_sunrise_calculator','tools_sunrise_calculator','scrollbars=0,resizable=0',455,312,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+            ."<a href=\"javascript:popWin('".Rxx::$system_script."?mode=tools_sunrise_calculator','tools_sunrise_calculator','scrollbars=0,resizable=0',455,312,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></th>\n" : "")
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
@@ -331,7 +326,7 @@ class Tools
         ."        </table></td>\n"
         ."      </tr>\n"
         ."      <tr ALIGN=\"CENTER\">\n"
-        ."        <td class='downloadTableContent' COLSPAN=\"2\">Sunrise Calculator code kindly provided by <a href='http://www.csgnetwork.com' target='_blank'><b>CSG Network</b><br><img src='".BASE_PATH."assets/csglogo2.jpg' alt='CSG Network Group' width='185' height='74' border='1'></a><br>(Ver. 14.7.2, used with permission)\n"
+        ."        <td class='downloadTableContent' COLSPAN=\"2\">Sunrise Calculator code kindly provided by <a href='http://www.csgnetwork.com' target='_blank'><b>CSG Network</b><br><img src='".\Rxx\Rxx::$base_path."assets/csglogo2.jpg' alt='CSG Network Group' width='185' height='74' border='1'></a><br>(Ver. 14.7.2, used with permission)\n"
         ."        </td>\n"
         ."      </tr>\n"
         ."      <tr ALIGN=\"CENTER\">\n"

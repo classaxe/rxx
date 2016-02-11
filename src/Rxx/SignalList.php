@@ -320,11 +320,11 @@ class SignalList
             :
                 ""
             )
-            ."<input type='button' value='All ".system." > Excel'"
+            ."<input type='button' value='All ".\Rxx\Rxx::$system." > Excel'"
             ." title='Get the whole database as Excel' onclick='export_signallist_excel();' /> "
-            ."<input type='button' value='All ".system." > PDF'"
+            ."<input type='button' value='All ".\Rxx\Rxx::$system." > PDF'"
             ." title='get the whole database as PDF' onclick='export_signallist_pdf();' /> "
-            ."<input type='button' value='All ".system." > ILG'"
+            ."<input type='button' value='All ".\Rxx\Rxx::$system." > ILG'"
             ." title='get the whole database as ILGRadio format for Ham Radio Deluxe'"
             ." onclick='export_signallist_ilg()' /> "
             ."</p>\n";
@@ -404,7 +404,7 @@ class SignalList
     {
         return
              "<label title='List of Countries' style='display:inline-block; width:70px; margin:0.25em 0;'>"
-            ."<a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>"
+            ."<a href='".\Rxx\Rxx::$system_url."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>"
             ."<b>Countries</b></a></label> "
             ."<input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only"
             ." signals physically located there' type='text' name='filter_itu' id='filter_itu' size='20' value='"
@@ -566,7 +566,7 @@ class SignalList
     {
         return
              "<label title='List of States or Provinces' style='display:inline-block; width:70px; margin:0.25em 0;'>"
-            ."<a href='".system_URL."/show_sp' onclick='show_sp();return false'"
+            ."<a href='".\Rxx\Rxx::$system_url."/show_sp' onclick='show_sp();return false'"
             ." title='NDBList State and Province codes'><b>States</b></a></label> "
             ."<input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically"
             ." located there' type='text' name='filter_sp' id='filter_sp' size='20' value='"
@@ -608,13 +608,13 @@ class SignalList
     protected function drawForm()
     {
         $html =
-             "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
+             "<form name='form' action='".\Rxx\Rxx::$system_url."/".$this->mode."' method='POST'>\n"
             ."<input type='hidden' name='mode' value='".$this->mode."' />\n"
             ."<input type='hidden' name='submode' value='' />\n"
             ."<input type='hidden' name='targetID' value='' />\n"
             ."<input type='hidden' name='sort_by' id = 'sort_by' value='".$this->sort_by."' />\n"
             ."<div class='form_box shadow'>\n"
-            ."  <div class='header'>Customise ".system." Report</div>\n"
+            ."  <div class='header'>Customise ".\Rxx\Rxx::$system." Report</div>\n"
             ."  <div class='body rowForm'>\n"
             ."    <table cellpadding='2' cellspacing='0' border='10' class='tableForm' style='width:536px'>\n"
             ."      <tr class='rowForm'>\n"
@@ -682,7 +682,7 @@ class SignalList
             ."         </tr>\n"
             ."	     </table></td>"
             ."     </tr>\n";
-        if (system=="RWW") {
+        if (\Rxx\Rxx::$system=="RWW") {
             $html.=
                  "    <tr class='rowForm'>\n"
                 ."       <th align='left'>Heard in</th>\n"
@@ -801,7 +801,7 @@ class SignalList
             ."    minDate:minDate,\n"
             ."    maxDate:maxDate,\n"
             ."    showOn:'button',\n"
-            ."    buttonImage:'".BASE_PATH."assets/datepicker_".strToLower(system).".gif',\n"
+            ."    buttonImage:'".\Rxx\Rxx::$base_path."assets/datepicker_".strToLower(\Rxx\Rxx::$system).".gif',\n"
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
@@ -908,7 +908,7 @@ class SignalList
     {
         $this->head.=
              "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js\"></script>\n"
-            ."<script type=\"text/javascript\" src=\"".BASE_PATH."assets/markerclusterer.js\"></script>\n"
+            ."<script type=\"text/javascript\" src=\"".\Rxx\Rxx::$base_path."assets/markerclusterer.js\"></script>\n"
             ."<script type=\"text/javascript\">"
             ."google.maps.event.addDomListener(window, 'load', signal.init);"
             ."</script>\n"
@@ -1107,10 +1107,10 @@ class SignalList
             );
             $html.=
                  "<tr class='rownormal ".$class."' title='".$title."'>"
-                ."<td><a href='".system_URL."/signal_list?filter_khz_1="
+                ."<td><a href='".\Rxx\Rxx::$system_url."/signal_list?filter_khz_1="
                 .(float)$row["khz"]."&amp;filter_khz_2="
                 .(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
-                ."<td><a href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\">"
+                ."<td><a href=\"".\Rxx\Rxx::$system_url."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\">"
                 ."<b>$call</b></a></td>\n";
             if ($this->type_NDB) {
                 $html.=
@@ -1151,7 +1151,7 @@ class SignalList
                 ."</td>\n"
                 ."<td>"
                 .($SP ?
-                     "<a href='".system_URL."/signal_list?filter_sp=".$row["SP"]."'"
+                     "<a href='".\Rxx\Rxx::$system_url."/signal_list?filter_sp=".$row["SP"]."'"
                     ." title='Filter on this value'>".$SP."</a>"
                   :
                     "&nbsp;"
@@ -1159,7 +1159,7 @@ class SignalList
                 ."</td>\n"
                 ."<td>"
                 .($ITU ?
-                     "<a href='".system_URL."/signal_list?filter_itu=".$row["ITU"]."'"
+                     "<a href='".\Rxx\Rxx::$system_url."/signal_list?filter_itu=".$row["ITU"]."'"
                     ." title='Filter on this value'>".$ITU."</a>"
                  :
                     "&nbsp;"
@@ -1186,7 +1186,7 @@ class SignalList
                 ."</td>\n"
                 ."<td align='right'>"
                 .($row["logs"] ?
-                     "<a href=\"".system_URL."/signal_log/".$row["ID"]."\""
+                     "<a href=\"".\Rxx\Rxx::$system_url."/signal_log/".$row["ID"]."\""
                     ." onclick='signal_log(\"".$row["ID"]."\");return false;'><b>".$row["logs"]."</b></a>"
                   :
                     "&nbsp;"
@@ -1266,12 +1266,12 @@ class SignalList
                     ." title=\"".$col[2]."\">"
                     .$col[3]." "
                     .($this->sort_by==$col[0] ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by==$col[0].'_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1295,12 +1295,12 @@ class SignalList
                     ." title=\"Sort by 'KM' column\"  nowrap>"
                     ."KM "
                     .($this->sort_by=='dx' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by=='dx_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1309,12 +1309,12 @@ class SignalList
                     ." title=\"Sort by 'Miles' column\" nowrap>"
                     ."Miles "
                     .($this->sort_by=='dx' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by=='dx_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1327,12 +1327,12 @@ class SignalList
                     ." title=\"Sort by 'Range KM' column\">"
                     ."KM "
                     .($this->sort_by=='range_dx_km' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by=='range_dx_km_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1341,12 +1341,12 @@ class SignalList
                     ." title=\"Sort by 'Range Miles' column\">"
                     ."Miles "
                     .($this->sort_by=='range_dx_km' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by=='range_dx_km_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1355,12 +1355,12 @@ class SignalList
                     ." title=\"Sort by 'Degrees' column\">"
                     ."Deg "
                     .($this->sort_by=='range_dx_deg' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>"
                      :
                         ""
                     )
                     .($this->sort_by=='range_dx_deg_d' ?
-                        "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>"
+                        "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>"
                      :
                         ""
                     )
@@ -1412,7 +1412,7 @@ class SignalList
     {
         return
              "<div class='form_box shadow'>\n"
-            ."  <div class='header'>".system." Listeners</div>\n"
+            ."  <div class='header'>".\Rxx\Rxx::$system." Listeners</div>\n"
             ."  <div class='body rowForm'>\n"
             ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm' style='width:180px'>\n"
             ."      <tr class='rowForm'>\n"
@@ -2415,8 +2415,8 @@ class SignalList
      */
     protected function setupLoadVars()
     {
-        global $mode, $sort_by;
-        $this->mode =                   $mode;
+        global $sort_by;
+        $this->mode =                   Rxx::$system_mode;
         $this->submode =                Rxx::get_var('submode');
         $this->show =                   Rxx::get_var('show');
         $this->targetID =               (int)Rxx::get_var('targetID');
@@ -2532,7 +2532,7 @@ class SignalList
             $this->filter_listener =    false;
         }
         if ($this->region=="") {
-            switch (system) {
+            switch (\Rxx\Rxx::$system) {
                 case "REU":
                     $this->region = "eu";
                     break;
@@ -2542,7 +2542,7 @@ class SignalList
             }
         }
         if ($this->filter_system=="") {
-            switch(system) {
+            switch(\Rxx\Rxx::$system) {
                 case "RNA":    $this->filter_system = 1;
                     break;
                 case "REU":    $this->filter_system = 2;

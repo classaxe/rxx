@@ -19,7 +19,7 @@ class Map
      */
     public static function maps()
     {
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":
                 return self::maps_rna();
             break;
@@ -37,23 +37,22 @@ class Map
      */
     public static function map_af()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='af'></a>Africa Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>\n"
-        ."<a href='javascript:show_itu(\"af\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_af','map_af','scrollbars=0,resizable=0',646,652,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"af\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_af','map_af','scrollbars=0,resizable=0',646,652,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/af_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$base_path."assets/images/af_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -63,16 +62,15 @@ class Map
      */
     public static function map_alaska()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='alaska'></a>Beacons in Alaska</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_alaska','map_alaska','scrollbars=0,resizable=0',466,411,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_alaska','map_alaska','scrollbars=0,resizable=0',466,411,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
@@ -80,7 +78,7 @@ class Map
         ."    <td class='downloadTableContent'>OR... try the <a href='./?mode=state_map&simple=1&SP=AK' target='_blank'><b>interactive map of Alaska</b></a></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/map_alaska_beacons.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$base_path."assets/images/map_alaska_beacons.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -90,23 +88,22 @@ class Map
      */
     public static function map_as()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='as'></a>Asia Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        ."<a href='javascript:show_itu(\"as\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_as','map_as','scrollbars=0,resizable=0',856,575,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"as\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_as','map_as','scrollbars=0,resizable=0',856,575,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/as_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$base_path."assets/images/as_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -116,24 +113,23 @@ class Map
      */
     public static function map_au()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='au'></a>Australian NDB List approved Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        ."<a href='javascript:show_itu(\"oc\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        ."<a href='javascript:show_sp()' title='NDBList Territory codes'><img src='".BASE_PATH."assets/icon-territory-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_au','map_au','scrollbars=0,resizable=0',511,469,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"oc\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        ."<a href='javascript:show_sp()' title='NDBList Territory codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-territory-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_au','map_au','scrollbars=0,resizable=0',511,469,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/au_map.gif' alt='Australian map'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".\Rxx\Rxx::$base_path."assets/images/au_map.gif' alt='Australian map'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -143,7 +139,6 @@ class Map
      */
     public static function map_eu()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -151,16 +146,16 @@ class Map
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='eu'></a>Europe Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
         ."<a href='javascript:show_itu(\"eu\")' title='NDBList Country codes'>"
-        ."<img src='".BASE_PATH."assets/icon-country-codes.gif' border='0' alt=''></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_eu','map_eu','scrollbars=0,resizable=0',704,696,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0' alt=''></a>\n":"")
+        ."<img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0' alt=''></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_eu','map_eu','scrollbars=0,resizable=0',704,696,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0' alt=''></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".system_URL."/generate_map_eu' alt='European map'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$system_url."/generate_map_eu' alt='European map'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -170,23 +165,22 @@ class Map
      */
     public static function map_japan()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='japan'></a>Japan Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>\n"
-        ."<a href='javascript:show_itu(\"as\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_japan','map_japan','scrollbars=0,resizable=0',517,690,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"as\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_japan','map_japan','scrollbars=0,resizable=0',517,690,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/japan_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$base_path."assets/images/japan_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -196,7 +190,6 @@ class Map
      */
     public static function map_na()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
@@ -204,17 +197,17 @@ class Map
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='na'></a>North + Central American NDB List approved Country Codes</th>\n"
 
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        ."<a href='javascript:show_itu(\"na\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        ."<a href='javascript:show_sp()' title='NDBList State and Province codes'><img src='".BASE_PATH."assets/icon-state-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_na','map_na','scrollbars=0,resizable=0',669,651,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"na\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        ."<a href='javascript:show_sp()' title='NDBList State and Province codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-state-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_na','map_na','scrollbars=0,resizable=0',669,651,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".system_URL."/generate_map_na' alt='North American map'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".\Rxx\Rxx::$system_url."/generate_map_na' alt='North American map'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -224,23 +217,22 @@ class Map
      */
     public static function map_pacific()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='pacific'></a>Pacific Beacons Map</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        ."<a href='javascript:show_itu(\"oc\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_pacific','map_pacific','scrollbars=0,resizable=0',366,429,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"oc\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_pacific','map_pacific','scrollbars=0,resizable=0',366,429,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/pacific_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".\Rxx\Rxx::$base_path."assets/images/pacific_map.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
@@ -253,21 +245,21 @@ class Map
      */
     public static function map_place_finder()
     {
-        global $mode,$submode,$place;
+        global $place;
         if (!isset($place)) {
             $place='';
         }
         $out = array();
 
-        $out[]="<form name='form' action='".system_URL."' method='post'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+        $out[]="<form name='form' action='".\Rxx\Rxx::$system_url."' method='post'>\n"
+            ."<input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value='lookup'>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
             ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='places'></a>USA / Canada Place Finder</th>\n"
-            ."        <th align='right' class='downloadTableHeadings_nosort'><a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a></th>\n"
+            ."        <th align='right' class='downloadTableHeadings_nosort'><a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a></th>\n"
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n"
@@ -277,7 +269,7 @@ class Map
             ."<input type='submit' class='formButton' value='Find'></td>\n"
             ."  </tr>";
 
-        if ($submode<>'' && $place<>'') {
+        if (\Rxx\Rxx::$system_submode<>'' && $place<>'') {
             $sql =  "SELECT * FROM `places` WHERE `name` LIKE \"%".addslashes($place)."%\" ORDER BY `itu`,`sp`,`population` DESC";
             $result =   @\Rxx\Database::query($sql);
             if (\Rxx\Database::numRows($result)) {
@@ -323,22 +315,21 @@ class Map
      */
     public static function map_polynesia()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='frpoly'></a>French Polynesian Map</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_polynesia','map_polynesia','scrollbars=0,resizable=0',458,440,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_polynesia','map_polynesia','scrollbars=0,resizable=0',458,440,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/map_french_polynesia.gif'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".\Rxx\Rxx::$base_path."assets/images/map_french_polynesia.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
@@ -351,23 +342,22 @@ class Map
      */
     public static function map_sa()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='sa'></a>South American NDB List approved Country Codes</th>\n"
         ."        <th align='right' class='downloadTableHeadings_nosort'>"
-        ."<a href='javascript:show_itu(\"sa\")' title='NDBList Country codes'><img src='".BASE_PATH."assets/icon-country-codes.gif' border='0'></a>\n"
-        .($mode=="maps" ?
-            "<a href=\"javascript:popWin('".system_URL."/map_sa','map_sa','scrollbars=0,resizable=0',499,696,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a>\n"
-            ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a>\n":"")
+        ."<a href='javascript:show_itu(\"sa\")' title='NDBList Country codes'><img src='".\Rxx\Rxx::$base_path."assets/icon-country-codes.gif' border='0'></a>\n"
+        .(\Rxx\Rxx::$system_mode=="maps" ?
+            "<a href=\"javascript:popWin('".\Rxx\Rxx::$system_url."/map_sa','map_sa','scrollbars=0,resizable=0',499,696,'centre')\"><img src='".\Rxx\Rxx::$base_path."assets/icon-popup.gif' border='0'></a>\n"
+            ."<a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a>\n":"")
         ."</th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/sa_map.gif'></td>\n"
+        ."    <td class='downloadTableContent' align='center'><img src='".\Rxx\Rxx::$base_path."assets/images/sa_map.gif'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -377,18 +367,17 @@ class Map
      */
     public static function map_state_popup()
     {
-        global $mode;
         return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
         ."  <tr>\n"
         ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
         ."      <tr>\n"
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='state'></a>Detailed State Maps</th>\n"
-        ."        <th align='right' class='downloadTableHeadings_nosort'><a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></a></th>\n"
+        ."        <th align='right' class='downloadTableHeadings_nosort'><a href='#top' class='yellow'><img src='".\Rxx\Rxx::$base_path."assets/icon-top.gif' border='0'></a></th>\n"
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'>Click <a href='".system_URL."/state_map?simple=1&SP=AK' target='_blank'><b>here</b></a> to see detailed customisable maps for each US state.</td>\n"
+        ."    <td class='downloadTableContent'>Click <a href='".\Rxx\Rxx::$system_url."/state_map?simple=1&SP=AK' target='_blank'><b>here</b></a> to see detailed customisable maps for each US state.</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -463,11 +452,10 @@ class Map
      */
     public static function state_map()
     {
-        global  $mode;
         global  $SP, $ITU, $listenerID, $simple, $test, $lat, $lon, $filter_active, $hide_labels, $hide_placenames;
         global  $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER, $places, $ID;
 
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":
                 $filter_listener_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
                 break;
@@ -481,7 +469,7 @@ class Map
 
         $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
-            switch (system) {
+            switch (\Rxx\Rxx::$system) {
                 case "RNA":
                     $type_NDB = 1;
                     break;
@@ -530,8 +518,8 @@ class Map
             ."  return \"\";\n"
             ." }\n"
             ."</script>"
-            ."<form name='form' action='".system_URL."' method='GET'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<form name='form' action='".\Rxx\Rxx::$system_url."' method='GET'>\n"
+            ."<input type='hidden' name='mode' value='\Rxx\Rxx::$system_mode'>\n"
             ."<table cellpadding='0' cellspacing='0' border='0'>\n"
             ."  <tr>\n"
             ."    <td><h1>Detailed State maps</h1></td>\n"
@@ -547,9 +535,9 @@ class Map
             ."      <tr>\n"
             ."        <td align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18' class='noprint'></td>\n"
             ."            <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Map</td>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18' class='noprint'></td>\n"
             ."          </tr>\n"
             ."        </table></td>\n"
             ."      </tr>\n"
@@ -663,9 +651,9 @@ class Map
             ."      <tr>\n"
             ."        <td class='noprint' align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18'></td>\n"
             ."            <td width='100%' class='downloadTableHeadings_nosort' align='center' nowrap>Signal Details</td>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18'></td>\n"
             ."          </tr>\n"
             ."        </table></td>\n"
             ."      </tr>\n"
@@ -703,9 +691,9 @@ class Map
             ."      <tr>\n"
             ."        <td class='noprint' align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18'></td>\n"
             ."            <td width='100%' class='downloadTableHeadings_nosort' align='center' nowrap>Place Details</td>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18'></td>\n"
             ."          </tr>\n"
             ."        </table></td>\n"
             ."      </tr>\n"
@@ -739,48 +727,48 @@ class Map
             ."      <tr>\n"
             ."        <td align='center' valign='top'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18' class='noprint'></td>\n"
             ."            <td width='100%' class='downloadTableHeadings_nosort' align='center' nowrap>Map Key</td>\n"
-            ."            <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint'></td>\n"
+            ."            <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18' class='noprint'></td>\n"
             ."          </tr>\n"
             ."        </table></td>\n"
             ."      </tr>\n"
             ."      <tr>\n"
             ."        <td><table cellpadding='0' cellspacing='0' class='tableForm' border='1' bordercolor='#c0c0c0' width='100%'>"
             ."          <tr>\n"
-            ."            <td align='right' width='20'><img src='".BASE_PATH."assets/map_point_DGPS.gif' alt='Represents a DGPS station'></td>\n"
+            ."            <td align='right' width='20'><img src='".\Rxx\Rxx::$base_path."assets/map_point_DGPS.gif' alt='Represents a DGPS station'></td>\n"
             ."            <th align='left' nowrap>DGPS Station</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_HAMBCN.gif' alt='Represents an amateur radio beacon'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_HAMBCN.gif' alt='Represents an amateur radio beacon'></td>\n"
             ."            <th align='left' nowrap>Ham Beacon</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_NAVTEX.gif' alt='Represents a NAVTEX station'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_NAVTEX.gif' alt='Represents a NAVTEX station'></td>\n"
             ."            <th align='left' nowrap>NAVTEX Station</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_NDB.gif' alt='Represents an NDB'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_NDB.gif' alt='Represents an NDB'></td>\n"
             ."            <th align='left' nowrap>NDB</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_TIME.gif' alt='Represents a Time Signal station'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_TIME.gif' alt='Represents a Time Signal station'></td>\n"
             ."            <th align='left' nowrap>Time Station</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_OTHER.gif' alt='Represents a form of transmitter not otherwise classified'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_OTHER.gif' alt='Represents a form of transmitter not otherwise classified'></td>\n"
             ."            <th align='left' nowrap>Other</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_inactive.gif' alt='Represents an inactive or decommissioned transmitter'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_inactive.gif' alt='Represents an inactive or decommissioned transmitter'></td>\n"
             ."            <th align='left' nowrap>Inactive</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_capital.gif' alt='Represents a state capital'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_capital.gif' alt='Represents a state capital'></td>\n"
             ."            <th align='left' nowrap>State Capital</th>\n"
             ."          </tr>\n"
             ."          <tr>\n"
-            ."            <td align='right'><img src='".BASE_PATH."assets/map_point_place.gif' alt='Represents other populated place'></td>\n"
+            ."            <td align='right'><img src='".\Rxx\Rxx::$base_path."assets/map_point_place.gif' alt='Represents other populated place'></td>\n"
             ."            <th align='left' nowrap>Town / City</th>\n"
             ."          </tr>\n"
             ."        </table></td>\n"
@@ -866,10 +854,10 @@ class Map
             ."current_xpos = $map_x;\n"
             ."current_ypos = $map_y;\n"
             ."if (isNS4) {\n"
-            ."  document.write(\"<layer name='point_here'><img src='".BASE_PATH."assets/cursor_map.gif' onmousedown='(!isNS6 ? xy(window.event.x,window.event.y) : xy(event.pageX,event.pageY));'></layer>\");\n"
+            ."  document.write(\"<layer name='point_here'><img src='".\Rxx\Rxx::$base_path."assets/cursor_map.gif' onmousedown='(!isNS6 ? xy(window.event.x,window.event.y) : xy(event.pageX,event.pageY));'></layer>\");\n"
             ."}\n"
             ."else {\n"
-            ."  document.write(\"<div ID='point_here' style='position: absolute; display: none;'><img src='".BASE_PATH."assets/cursor_map.gif' onmousedown='(!isNS6 ? xy(window.event.x,window.event.y) : xy(event.pageX,event.pageY));'></div>\");\n"
+            ."  document.write(\"<div ID='point_here' style='position: absolute; display: none;'><img src='".\Rxx\Rxx::$base_path."assets/cursor_map.gif' onmousedown='(!isNS6 ? xy(window.event.x,window.event.y) : xy(event.pageX,event.pageY));'></div>\");\n"
             ."}\n"
             ."function xy(xpos,ypos) {\n"
             ."  xpos = xpos + document.body.scrollLeft;\n"

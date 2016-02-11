@@ -12,7 +12,6 @@ class Poll
      */
     public function draw()
     {
-        global $mode;
         $my_answer =    (int)Rxx::get_var('my_answer');
         $questionID =   (int)Rxx::get_var('questionID');
         $sql =      "SELECT `ID` FROM `poll_question` WHERE `active` = 1";
@@ -28,7 +27,7 @@ class Poll
             $sql =    "UPDATE `poll_answer` SET `votes` = `votes` + 1 WHERE `ID` = ".$my_answer;
             @\Rxx\Database::query($sql);
             setcookie('cookie_rxx_poll', $questionID, time()+31536000, "/");    // One year expiry
-            header("Location: ".system_URL."/".$mode);
+            header("Location: ".Rxx::$system_url."/".Rxx::$system_mode);
         }
         if (isset($_COOKIE['cookie_rxx_poll']) && $_COOKIE['cookie_rxx_poll'] = $row['ID']) {
             return $this->drawResults();
@@ -41,7 +40,7 @@ class Poll
      */
     protected function drawForm()
     {
-        global $poll, $mode;
+        global $poll;
 
         $sql =    "SELECT * FROM `poll_question` WHERE `active` = '1'";
         $result =    @\Rxx\Database::query($sql);
@@ -68,7 +67,7 @@ class Poll
         }
 
         $html =
-             "<form name=\"poll\" action=\"".system_URL."/".$mode."\" method=\"POST\">\n"
+             "<form name=\"poll\" action=\"".Rxx::$system_url."/".Rxx::$system_mode."\" method=\"POST\">\n"
             ."<input type='hidden' name='questionID' value='".$ID."'>\n"
             ."<input type='hidden' name='poll' value='".$poll."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
@@ -117,8 +116,8 @@ class Poll
      */
     public function drawList()
     {
-        global $mode, $submode, $ID, $sortBy, $script, $mode;
-        switch ($submode) {
+        global $ID, $sortBy;
+        switch (\Rxx\Rxx::$system_submode) {
             case "activate":
                 $sql =    "UPDATE `poll_question` SET `active` = 0";
                 @\Rxx\Database::query($sql);
@@ -178,8 +177,8 @@ class Poll
         $result =     @\Rxx\Database::query($sql);
 
         $html =
-             "<form name='form' action=\"".system_URL."/".$mode."\" method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+             "<form name='form' action=\"".Rxx::$system_url."/".Rxx::$system_mode."\" method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='ID' value=''>\n"
             ."<input type='hidden' name='sortBy' value='$sortBy'>\n"
@@ -194,8 +193,8 @@ class Poll
             .($sortBy=="date" ? "_d" : "")
             ."';document.form.submit()\">"
             ."Date "
-            .($sortBy=='date' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
-            .($sortBy=='date_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
+            .($sortBy=='date' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
+            .($sortBy=='date_d' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings' title='Sort by Title' align='left'"
             ." onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\""
@@ -204,8 +203,8 @@ class Poll
             .($sortBy=="title" ? "_d" : "")
             ."';document.form.submit()\">"
             ."Title "
-            .($sortBy=='title' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
-            .($sortBy=='title_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
+            .($sortBy=='title' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
+            .($sortBy=='title_d' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings' title='Sort by Question' align='left'"
             ." onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\""
@@ -214,8 +213,8 @@ class Poll
             .($sortBy=="text" ? "_d" : "")
             ."';document.form.submit()\">"
             ."Question "
-            .($sortBy=='text' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
-            .($sortBy=='text_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
+            .($sortBy=='text' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
+            .($sortBy=='text_d' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings' title='Sort by Votes' align='left'"
             ." onmouseover=\"column_over(this,1);\" onmouseout=\"column_over(this,0);\""
@@ -224,8 +223,8 @@ class Poll
             .($sortBy=="votes" ? "_d" : "")
             ."';document.form.submit()\">"
             ."Total Votes "
-            .($sortBy=='votes' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
-            .($sortBy=='votes_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
+            .($sortBy=='votes' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
+            .($sortBy=='votes_d' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
             ."</th>\n"
             ."    <th valign='bottom' class='downloadTableHeadings_nosort'>Answers</th>\n";
         if (Rxx::isAdmin()) {
@@ -237,8 +236,8 @@ class Poll
                 .($sortBy=="active" ? "_d" : "")
                 ."';document.form.submit()\">"
                 ."Active "
-                .($sortBy=='active' ? "<img src='".BASE_PATH."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
-                .($sortBy=='active_d' ? "<img src='".BASE_PATH."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
+                .($sortBy=='active' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_asc.gif' alt='A-Z'>" : "")
+                .($sortBy=='active_d' ? "<img src='".\Rxx\Rxx::$base_path."assets/icon_sort_desc.gif' alt='Z-A'>" : "")
                 ."</th>\n";
         }
         $html.=
@@ -278,7 +277,7 @@ class Poll
                      "    <td valign='top'>"
                     ."<a href='javascript:document.form.submode.value=\"activate\";"
                     ."document.form.ID.value=\"".$row['ID']."\";document.form.submit();'>"
-                    ."<img src='".BASE_PATH."assets/checkbox_".$row['active'].".gif' border='0'></a></td>";
+                    ."<img src='".\Rxx\Rxx::$base_path."assets/checkbox_".$row['active'].".gif' border='0'></a></td>";
             }
             $html.=
                 "  </tr>\n";
@@ -360,7 +359,7 @@ class Poll
                 ."    <td>&nbsp;</td>\n"
                 ."    <td>"
                 .($rows[$i]['percent'] ?
-                     "<img align='middle' border='1' bordercolor='#808080' src='".BASE_PATH."assets/ff0000.gif'"
+                     "<img align='middle' border='1' bordercolor='#808080' src='".\Rxx\Rxx::$base_path."assets/ff0000.gif'"
                     ." height='".poll_column_height."'"
                     ." width='".((int)$rows[$i]['percent'] * poll_column_width/100)."'"
                     ." title='(".$rows[$i]['votes']." votes)'>"
@@ -385,38 +384,34 @@ class Poll
      */
     public function edit()
     {
-        global $script, $mode, $submode, $ID, $question, $YYYY, $MMM, $title;
-
-        switch ($submode) {
-
-        }
+        global $ID, $question, $YYYY, $MMM, $title;
 
         $sql =    "SELECT * FROM `poll_question` where `ID` = '$ID'";
-        $result =     @\Rxx\Database::query($sql);
+        $result =     @Database::query($sql);
         if ($result) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    Database::fetchArray($result, MYSQL_ASSOC);
             $ID =    $row['ID'];
             $MMM =    substr($row['date'], 5, 2);
             $YYYY =    substr($row['date'], 0, 4);
             $title =    $row['title'];
             $text =    $row['text'];
-            $submode =    "update";
+            \Rxx\Rxx::$system_submode =    "update";
         } else {
-            $submode =    "add";
+            \Rxx\Rxx::$system_submode =    "add";
         }
 
         $html =
-             "<form name=\"form\" action=\"".system_URL."/".$mode."\" method=\"POST\">\n"
+             "<form name=\"form\" action=\"".Rxx::$system_url."/".Rxx::$system_mode."\" method=\"POST\">\n"
             ."<input type='hidden' name='ID' value='$ID'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<input type='hidden' name='mode' value='".Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='targetID' value=''>\n"
             ."<h1>Edit Poll</h1>\n"
             ."<table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."  <tr>\n"
-            ."    <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18'></td>\n"
+            ."    <td width='18'><img src='".Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18'></td>\n"
             ."    <td width='100%' class='downloadTableHeadings_nosort'>Poll Details</td>\n"
-            ."    <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18'></td>\n"
+            ."    <td width='18'><img src='".Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18'></td>\n"
             ."  </tr>\n"
             ."</table>\n"
             ."<table width='100%' cellpadding='0' cellspacing='0' border='1' bordercolor='#c0c0c0' class='tableForm'>\n"
@@ -475,7 +470,7 @@ class Poll
             ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
             ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
             ."<input type='submit' value='"
-            .($submode=="update" ? "Save" : "Add")
+            .(\Rxx\Rxx::$system_submode=="update" ? "Save" : "Add")
             ."' class='formbutton' style='width: 60px;'>"
             ."</td>\n"
             ."              </tr>\n"

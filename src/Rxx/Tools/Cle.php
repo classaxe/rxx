@@ -56,10 +56,9 @@ class Cle
      */
     public static function cle()
     {
-        global $ID, $mode, $submode, $script, $sortBy, $target;
         $special = false;
 
-        if (\Rxx\Rxx::isAdmin() && $submode=='save') {
+        if (\Rxx\Rxx::isAdmin() && Rxx::$system_submode=='save') {
             $sql =
                 "UPDATE\n"
                 ."  `cle`\n"
@@ -170,11 +169,11 @@ class Cle
             ."</h2>\n";
         if (\Rxx\Rxx::isAdmin()) {
             $out.=
-                "<script type=\"text/javascript\" src=\"".BASE_PATH."assets/calendar_db.js\"></script>\n"
-                ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\">\n"
+                "<script type=\"text/javascript\" src=\"".\Rxx\Rxx::$base_path."assets/calendar_db.js\"></script>\n"
+                ."<link rel=\"stylesheet\" href=\"".\Rxx\Rxx::$base_path."assets/calendar.css\">\n"
                 ."<div id='cle_editor' style='display:none;text-align:center;border:2px solid #888;background-color:#f0f0ff'>\n"
-                ."<form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
-                ."<input type='hidden' name='mode' value='$mode'>\n"
+                ."<form action='".\Rxx\Rxx::$system_url."/".Rxx::$system_mode."' name='form' method='POST'>\n"
+                ."<input type='hidden' name='mode' value='".Rxx::$system_mode."'>\n"
                 ."<input type='hidden' name='submode' value='save'>\n"
                 ."<h3>Event Overview</h3>\n"
                 ."<table cellpadding='2' cellspacing='0' border='1' style='border:1px solid #888;border-collapse:collapse;background-color:#f8f8f8' >\n"
@@ -431,20 +430,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."reu/signal_list?".$eu_a_url."'>".$eu_a_text."</a>"
-                .($eu_b_khz_l ? "<br /><a href='".BASE_PATH."reu/signal_list?".$eu_b_url."'>".$eu_b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."reu/signal_list?".$eu_a_url."'>".$eu_a_text."</a>"
+                .($eu_b_khz_l ? "<br /><a href='".\Rxx\Rxx::$base_path."reu/signal_list?".$eu_b_url."'>".$eu_b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."reu/signal_list?".$eu_a_url."&amp;show=map'>".$eu_a_text."</a>"
-                .($eu_b_khz_l ? "<br /><a href='".BASE_PATH."reu/signal_list?".$eu_b_url."&amp;show=map'>".$eu_b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."reu/signal_list?".$eu_a_url."&amp;show=map'>".$eu_a_text."</a>"
+                .($eu_b_khz_l ? "<br /><a href='".\Rxx\Rxx::$base_path."reu/signal_list?".$eu_b_url."&amp;show=map'>".$eu_b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."reu/signal_seeklist?".$eu_a_url."'>".$eu_a_text."</a>"
-                .($eu_b_khz_l ? "<br /><a href='".BASE_PATH."reu/signal_seeklist?".$eu_b_url."'>".$eu_b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."reu/signal_seeklist?".$eu_a_url."'>".$eu_a_text."</a>"
+                .($eu_b_khz_l ? "<br /><a href='".\Rxx\Rxx::$base_path."reu/signal_seeklist?".$eu_b_url."'>".$eu_b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"
@@ -453,20 +452,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."rna/signal_list?".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rna/signal_list?".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rna/signal_list?".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rna/signal_list?".$b_url."'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."rna/signal_list?".$a_url."&amp;show=map'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rna/signal_list?".$b_url."&amp;show=map'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rna/signal_list?".$a_url."&amp;show=map'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rna/signal_list?".$b_url."&amp;show=map'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."rna/signal_seeklist?".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rna/signal_seeklist?".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rna/signal_seeklist?".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rna/signal_seeklist?".$b_url."'>".$b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"
@@ -475,20 +474,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=sa&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=sa&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=sa&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=sa&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=sa&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=sa&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=sa&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=sa&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_seeklist?region=sa&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_seeklist?region=sa&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=sa&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=sa&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"
@@ -497,20 +496,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=oc&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=oc&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=oc&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=oc&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=oc&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=oc&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=oc&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=oc&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_seeklist?region=oc&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_seeklist?region=oc&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=oc&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=oc&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"
@@ -519,20 +518,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=as&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=as&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"
@@ -541,20 +540,20 @@ class Cle
                 ."<table cellpadding='0' cellspacing='0' border='0'>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Detailed Signal List</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=af&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=af&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=af&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=af&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td width='140' valign='top'>Signals Map</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_list?region=af&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_list?region=af&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=af&amp;".$a_url."&amp;show=map'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_list?region=af&amp;".$b_url."&amp;show=map'>".$b_text."</a>" : "")
                 ."<br>&nbsp;</td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
                 ."    <td valign='top'>Signal Seeklist</td>\n"
-                ."    <td><a href='".BASE_PATH."rww/signal_seeklist?region=af&amp;".$a_url."'>".$a_text."</a>"
-                .($b_khz_l ? "<br><a href='".BASE_PATH."rww/signal_seeklist?region=af&amp;".$b_url."'>".$b_text."</a>" : "")
+                ."    <td><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=af&amp;".$a_url."'>".$a_text."</a>"
+                .($b_khz_l ? "<br><a href='".\Rxx\Rxx::$base_path."rww/signal_seeklist?region=af&amp;".$b_url."'>".$b_text."</a>" : "")
                 ."</td>\n"
                 ."  </tr>\n"
                 ."</table>\n"

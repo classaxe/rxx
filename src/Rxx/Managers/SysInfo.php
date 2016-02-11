@@ -29,7 +29,7 @@ class SysInfo
             ."<tr class='h'><td colspan='2'><h1 class='p'>RNA / REU / RWW SYSTEM</h1></td></tr>\n"
             ."<tr><td class=\"e\">system</td><td class=\"v\">".system."</td></tr>\n"
             ."<tr><td class=\"e\">system_title</td><td class=\"v\">".system_title."</td></tr>\n"
-            ."<tr><td class=\"e\">system_URL</td><td class=\"v\">".system_URL."</td></tr>\n"
+            ."<tr><td class=\"e\">\Rxx\Rxx::$system_url</td><td class=\"v\">".\Rxx\Rxx::$system_url."</td></tr>\n"
             ."<tr><td class=\"e\">system_ID</td><td class=\"v\">".system_ID."</td></tr>\n"
             ."<tr><td class=\"e\">system_editor</td><td class=\"v\">".system_editor."</td></tr>\n"
             ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date."</td></tr>\n"

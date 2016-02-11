@@ -19,10 +19,10 @@ class Stats
      */
     public static function stats()
     {
-        global $script, $mode, $region, $listenerID, $dx, $dx_units;
+        global $region, $listenerID, $dx, $dx_units;
         global $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
 
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":
                 $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 break;
@@ -34,7 +34,7 @@ class Stats
                 break;
         }
 
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":
                 $filter_system_SQL =            "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 $filter_listener_SQL =          "(`listeners`.`region` = 'na' OR `listeners`.`region` = 'ca' OR `listeners`.`SP` = 'hi')";
@@ -60,7 +60,7 @@ class Stats
 
         $filter_type =  array();
         if (!($type_NDB || $type_DGPS || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
-            switch (system) {
+            switch (\Rxx\Rxx::$system) {
                 case "RNA":     $type_NDB =     1;
                     break;
                 case "REU":     $type_NDB =     1;
@@ -100,8 +100,8 @@ class Stats
             $dx_units="km";
         }
         $out =
-            "<form name='form' action='".system_URL."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            "<form name='form' action='".\Rxx\Rxx::$system_url."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
             ."<h2>Statistics</h2><br><br>\n"
             ."<p align='center'><small>Quick Links [\n"
             ."<nobr><a href='#dx'><b>DX Table</b></a></nobr> |\n"
@@ -113,9 +113,9 @@ class Stats
             ."  <tr>\n"
             ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."      <tr>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18'></td>\n"
+            ."        <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18'></td>\n"
             ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Report</td>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18'></td>\n"
+            ."        <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18'></td>\n"
             ."      </tr>\n"
             ."    </table>\n"
             ."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1' bordercolor='#c0c0c0'>\n"
@@ -236,7 +236,7 @@ class Stats
         }
         $out.=
             "-------------------------------------------------------".(!$listenerID ? "-------------------------" : "")."\n"
-            ."(Produced by ".system.")\n"
+            ."(Produced by ".\Rxx\Rxx::$system.")\n"
             ."</textarea><br>Total loggings shown: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -299,7 +299,7 @@ class Stats
         }
         $out.=
             "---------------------\n"
-            ."(Produced by ".system.")\n"
+            ."(Produced by ".\Rxx\Rxx::$system.")\n"
             ."</textarea><br>Total loggings shown: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -349,7 +349,7 @@ class Stats
         }
         $out.=
             "-----------------\n"
-            ."(Produced by ".system.")\n"
+            ."(Produced by ".\Rxx\Rxx::$system.")\n"
             ."</textarea><br>Total Countries, States and Provinces: ".\Rxx\Database::numRows($result)."</td></tr></table>"
             ."<br><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -422,7 +422,7 @@ class Stats
         }
         $out.=
             "----------------------------------------------".(!$listenerID ? "---------------------------" : "")."\n"
-            ."(Produced by ".system.")\n"
+            ."(Produced by ".\Rxx\Rxx::$system.")\n"
             ."</textarea><br>Total entries listed: ".\Rxx\Database::numRows($result)."</td></tr></table>";
         return $out;
     }

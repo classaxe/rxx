@@ -1,82 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+ini_set("mysql.trace_mode", 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid', false);
 
 define("DB_HOST", "localhost");
 define("DB_USER", "rxx");
 define("DB_PASS", "k24l3459");
 define("DB_DATABASE", "rxx");
 
-
-switch(system){
-    case 'RNA':
-        define("system_ID", "1");
-        define("system_title", "Signals Received in N &amp; C America + Hawaii");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
-        break;
-    case 'REU':
-        define("system_ID", "2");
-        define("system_title", "Signals Received in Europe");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB Editor' href='mail\"+\"to\"+\":"
-            ."aunumero73\"+\"@\"+\"gmail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>Pat Vignoud\"+\"<\/a> (for NDBs)<br />"
-            ."<a title='Contact the Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
-        break;
-    case 'RWW':
-        define("system_ID", "3");
-        define("system_title", "Signals Received Worldwide");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"ymail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
-        break;
-}
 define("NDB", 0);
 define("DGPS", 1);
 define("TIME", 2);
@@ -85,13 +17,18 @@ define("HAMBCN", 4);
 define("OTHER", 5);
 define("DSC", 6);
 
-define("admin_user", "admin");
-define("admin_password", "j35g8sc");
-define("swing_LF", 0.6);    // How much signals may be off frequency before being considered wrong
-define("swing_HF", 1.5);    // LF is enough to pull signals such as 414 RPB on to correct frequency
+define('ADMIN_USER', 'admin');
+define('ADMIN_PASS', 'j35g8sc');
 
-define("poll_column_width", 80);     // Width of a bar of 100% in pixels
-define("poll_column_height", 14);     // Height of a results bar in pixels
+// How much signals may be off frequency before being considered wrong
+define("swing_LF", 0.6);
+// LF is enough to pull signals such as 414 RPB on to correct frequency
+define("swing_HF", 1.5);
+
+// Width of a bar of 100% in pixels
+define("poll_column_width", 80);
+// Height of a results bar in pixels
+define("poll_column_height", 14);
 
 define("g_highlight", "#20b020");
 
@@ -104,3 +41,5 @@ define("awardsBCCName", "Martin Francis (Awards copy)");
 define("SMTP_HOST",             "mail.classaxe.com");
 
 define("ENABLE_PIWIK", false);
+
+define("READONLY", 0);

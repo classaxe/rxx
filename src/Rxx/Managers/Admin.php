@@ -5,11 +5,10 @@ class Admin
 {
     public function draw()
     {
-        global $mode, $submode;
-        $url = system_URL."/".$mode;
+        $url = \Rxx\Rxx::$system_url."/".Rxx::$system_mode;
         $out =
-             "<form name='form' method='post' enctype='multipart/form-data' action='".system_URL."'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+             "<form name='form' method='post' enctype='multipart/form-data' action='".\Rxx\Rxx::$system_url."'>\n"
+            ."<input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='MAX_FILE_SIZE' value='800000'>\n"
             ."<h2>Administrator Management Tools</h2><br>\n<ol class='p'>\n"
@@ -38,7 +37,7 @@ class Admin
             .$url."?submode=admin_importICAO\"'>"
             ." <b>ICAO: Get latest data</b> (run once a month)<br><br></li>\n"
             ."<li><input type='button' value='Go' onclick='document.location=\""
-            .system_URL."/db_export\"'>"
+            .\Rxx\Rxx::$system_url."/db_export\"'>"
             ." <b>System: Export Database</b> (run periodically)</li>\n"
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_systemSendTestEmail&amp;"
@@ -46,31 +45,31 @@ class Admin
             ." <b>System: Send Test Email to </b>"
             ."<input type='text' class='formField' id='sendToEmail' name='sendToEmail' value=''><br><br></li>\n"
             ."</ol><br></form>\n";
-        switch ($submode) {
-            case "admin_logsUpdateDX":
-                $out.= $this->logsUpdateDX();
-                break;
-            case "admin_importICAO":
-                $out.= $this->importICAO();
-                break;
-            case "admin_setDaytimeLogs":
-                $out.= $this->setDaytimeLogs();
-                break;
-            case "admin_signalUpdateRegionsHeard":
-                $out.= $this->signalUpdateRegionsHeard()." stations updated";
-                break;
-            case "admin_signalUpdateLogCount":
-                $out.= $this->signalUpdateLogCount();
-                break;
-            case "admin_signalUpdateFromGSQ":
-                $out.= $this->signalUpdateFromGSQ();
-                break;
-            case "admin_listenersUpdateLogCount":
-                $out.= $this->listenersUpdateLogCount();
-                break;
-            case "admin_systemSendTestEmail":
-                $out.= $this->systemSendTestEmail();
-                break;
+        switch (\Rxx\Rxx::$system_submode) {
+        case "admin_logsUpdateDX":
+            $out.= $this->logsUpdateDX();
+            break;
+        case "admin_importICAO":
+            $out.= $this->importICAO();
+            break;
+        case "admin_setDaytimeLogs":
+            $out.= $this->setDaytimeLogs();
+            break;
+        case "admin_signalUpdateRegionsHeard":
+            $out.= $this->signalUpdateRegionsHeard()." stations updated";
+            break;
+        case "admin_signalUpdateLogCount":
+            $out.= $this->signalUpdateLogCount();
+            break;
+        case "admin_signalUpdateFromGSQ":
+            $out.= $this->signalUpdateFromGSQ();
+            break;
+        case "admin_listenersUpdateLogCount":
+            $out.= $this->listenersUpdateLogCount();
+            break;
+        case "admin_systemSendTestEmail":
+            $out.= $this->systemSendTestEmail();
+            break;
         }
         return $out;
     }
@@ -195,12 +194,12 @@ class Admin
 
     protected function importICAO()
     {
-        global $mode, $submode, $subsubmode, $data;
+        global $subsubmode, $data;
         $url =    "http://www.rap.ucar.edu/weather/surface/stations.txt";
         $out =
-             "<form name='form' action='".system_URL."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
-            ."<input type='hidden' name='submode' value='$submode'>\n"
+             "<form name='form' action='".\Rxx\Rxx::$system_url."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".Rxx::$system_mode."'>\n"
+            ."<input type='hidden' name='submode' value='".Rxx::$system_submode."'>\n"
             ."<input type='hidden' name='subsubmode' value=''>\n"
             ."<h2>Import ICAO</h2><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -217,7 +216,7 @@ class Admin
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n";
-        if ($subsubmode=="Update") {
+        if (Rxx::$system_submode=="Update") {
             $data =    explode(chr(13).chr(10), stripslashes($data));
             if ($data[3] == "\n---CONNECTION ERROR---") {
                 $num =    0;

@@ -3,9 +3,12 @@ namespace Rxx;
 
 class SystemStats
 {
+    /**
+     * @return mixed
+     */
     public static function getLastLogDate()
     {
-        switch(system) {
+        switch(Rxx::$system) {
             case "RNA":
                 $filter_log_SQL = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `heard_in` = 'hi'))";
                 break;

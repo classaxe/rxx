@@ -57,7 +57,7 @@ class LogUploader
 
     public function draw()
     {
-        global $mode, $submode, $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy;
+        global $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy;
         global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
 
         $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
@@ -66,12 +66,12 @@ class LogUploader
         }
 
         $this->html.=
-             "<form name='form' action='".system_URL."/".$mode."' method='POST'>"
+             "<form name='form' action='".\Rxx\Rxx::$system_url."/".Rxx::$system_mode."' method='POST'>"
             ."<input type='hidden' name='submode' value=''>";
-        switch ($submode) {
+        switch (Rxx::$system_submode) {
             case "save_format":
                 $this->updateLogFormat();
-                $submode = '';
+                Rxx::$system_submode = '';
                 break;
             case "submit_log":
                 set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -245,14 +245,14 @@ class LogUploader
                 break;
         }
 
-        switch ($submode) {
+        switch (\Rxx\Rxx::$system_submode) {
             case "":
                 if ($this->listener->getID()) {
                     $log_format =    $this->listener->record["log_format"];
                 }
                 $this->html.=
                      "<h1>Add Log > Parse Data</h1><br>"
-                    ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+                    ."<img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' height='4' width='1' alt=''>"
                     ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                     ."  <tr>\n"
                     ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
@@ -274,7 +274,7 @@ class LogUploader
                 $this->listener->load();
                 $this->html.=
                      "<h1>Add Log > Confirm Data</h1><br>"
-                    ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+                    ."<img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' height='4' width='1' alt=''>"
                     ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                     ."  <tr>\n"
                     ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
@@ -347,7 +347,7 @@ class LogUploader
             }
             $start = $start+$len;
         }
-        if (($submode=="" || $submode=="parse_log") && $log_format_errors!="") {
+        if ((\Rxx\Rxx::$system_submode=="" || \Rxx\Rxx::$system_submode=="parse_log") && $log_format_errors!="") {
             $this->html.=
                  "<br><span class='p'><b>Log Format Errors</b></span>\n"
                 ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0' width='100%'>\n"
@@ -362,13 +362,13 @@ class LogUploader
                 ."</table>\n\n"
                 ."<ul>\n"
                 ."  <li>Click <a href='javascript:history.back()'><b><u>here</u></b></a> to check your log format and try again.</li>\n"
-                ."  <li>Click <a href='".system_URL."/admin_help' target='_blank'><b><u>here</u></b></a> for the full list of tokens that can be used.</li>\n"
+                ."  <li>Click <a href='".\Rxx\Rxx::$system_url."/admin_help' target='_blank'><b><u>here</u></b></a> for the full list of tokens that can be used.</li>\n"
                 ."</ul>\n";
         }
 
         $this->checkLogDateTokens();
 
-        switch ($submode) {
+        switch (\Rxx\Rxx::$system_submode) {
             case "parse_log":
                 if (!isset($this->tokens["ID"])) {
                     $this->html.=
@@ -1257,7 +1257,7 @@ class LogUploader
                 break;
         }
 
-        if ($this->listener->getID()!="" && $submode=="") {
+        if ($this->listener->getID()!="" && \Rxx\Rxx::$system_submode=="") {
             $this->html.=
                  "&nbsp;"
                 ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
@@ -1347,7 +1347,7 @@ class LogUploader
         global $ID;
         $this->html.=
              "<h1>Add Log > Results</h1><br>"
-            ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+            ."<img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' height='4' width='1' alt=''>"
             ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
             ."  <tr>\n"
             ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"

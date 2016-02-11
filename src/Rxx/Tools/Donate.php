@@ -29,7 +29,7 @@ class Donate
             ."<p>However, for the developer of this system there are additionals cost to bear"
             ." in terms of equipment and server-room rackspace costs.</p>"
             ."<p style='text-align:center'>\n"
-            ."<img src=\"".BASE_PATH."assets/img/server.png\" alt=\"DL38-G5 server hosting RXX system\" style='float:none'><br>\n"
+            ."<img src=\"".\Rxx\Rxx::$base_path."assets/img/server.png\" alt=\"DL38-G5 server hosting RXX system\" style='float:none'><br>\n"
             ."<i>HP / Compaq DL380-G5 used to host RXX system</i></p>"
             ."<h3>Donate Via Paypal:</h3>\n"
             ."<p>The Paypal button below is offered exclusively to those who specifically wish"

@@ -49,18 +49,18 @@ class Signal
      */
     public static function signal_dgps_messages()
     {
-        global $ID, $mode, $submode, $sortBy, $target;
+        global $ID, $sortBy, $target;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
         if ($sortBy=='') {
             $sortBy = "`attachment`.`type`,`attachment`.`title`";
         }
-        switch ($submode) {
+        switch (\Rxx\Rxx::$system_submode) {
             case "view":
                 break;
         }
@@ -88,9 +88,9 @@ class Signal
             $type =        $row["type"];
             $USB =        $row["USB"];
             $USB_approx =    $row["USB_approx"];
-            $submode =        "update";
+            \Rxx\Rxx::$system_submode =        "update";
         } else {
-            $submode =    "add";
+            \Rxx\Rxx::$system_submode =    "add";
             $active =    "1";
         }
         $out =
@@ -120,8 +120,8 @@ class Signal
                 ."          <td bgcolor='white'>\n"
                 ."          <table cellpadding='0' cellspacing='1' border='0' class='noprint'>\n"
                 ."            <tr>\n"
-                ."              <th class='scroll_list' width='90' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=".($sortBy=='type' ? 'type_d' : 'type')."'>".($sortBy=='type'||$sortBy=='type_d' ? '<font color="#ff0000">Type</font>':'Type')."</a></small></th>\n"
-                ."              <th class='scroll_list' width='220' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=".($sortBy=='description' ? 'description_d' : 'description')."'>".($sortBy=='description'||$sortBy=='description_d'?'<font color="#ff0000">Transmission Times</font>':'Transmission Times')."</a></small></th>\n"
+                ."              <th class='scroll_list' width='90' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=".($sortBy=='type' ? 'type_d' : 'type')."'>".($sortBy=='type'||$sortBy=='type_d' ? '<font color="#ff0000">Type</font>':'Type')."</a></small></th>\n"
+                ."              <th class='scroll_list' width='220' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=".($sortBy=='description' ? 'description_d' : 'description')."'>".($sortBy=='description'||$sortBy=='description_d'?'<font color="#ff0000">Transmission Times</font>':'Transmission Times')."</a></small></th>\n"
                 ."            </tr>\n"
                 ."          </table></td>\n"
                 ."        </tr>\n"
@@ -130,8 +130,8 @@ class Signal
                 ."          <div class='scrollbox_230'>\n"
                 ."          <table cellpadding='0' cellspacing='1' border='0' bgcolor='#ffffff'>\n"
                 ."            <tr class='noscreen'>\n"
-                ."              <th class='scroll_list' width='90' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=type".($sortBy=='type' ? '_d' : '')."'>".($sortBy=='type'||$sortBy=='type_d'?'<font color="#ff0000">Type</font>':'Type')."</a></small></th>\n"
-                ."              <th class='scroll_list' width='220' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=description".($sortBy=='description' ? '_d' : '')."'>".($sortBy=='description'||$sortBy=='description_d'?'<font color="#ff0000">Transmission Times</font>':'Transmission Times')."</a></small></th>\n"
+                ."              <th class='scroll_list' width='90' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=type".($sortBy=='type' ? '_d' : '')."'>".($sortBy=='type'||$sortBy=='type_d'?'<font color="#ff0000">Type</font>':'Type')."</a></small></th>\n"
+                ."              <th class='scroll_list' width='220' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=description".($sortBy=='description' ? '_d' : '')."'>".($sortBy=='description'||$sortBy=='description_d'?'<font color="#ff0000">Transmission Times</font>':'Transmission Times')."</a></small></th>\n"
                 ."            </tr>\n"
                 ."          </table>\n"
                 ."          <table cellpadding='0' cellspacing='1' border='0' bgcolor='#ffffff'>\n";
@@ -165,12 +165,12 @@ class Signal
      */
     public static function signal_info()
     {
-        global $ID, $mode, $submode;
+        global $ID;
         global $active, $call, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx, $notes, $pwr, $QTH, $SP, $type, $USB, $USB_approx;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -186,11 +186,11 @@ class Signal
             $lon =    $a["lon"];
         }
         $error_msg =    "";
-        if ($submode=="add" or $submode=="update") {
+        if (\Rxx\Rxx::$system_submode=="add" or \Rxx\Rxx::$system_submode=="update") {
             $error_msg = \Rxx\Rxx::check_sp_itu($SP, $ITU);
         }
         if ($error_msg=="") {
-            switch ($submode) {
+            switch (\Rxx\Rxx::$system_submode) {
                 case "add":
                     if ($call && $khz) {
                         $sql = "INSERT INTO `signals` SET\n"
@@ -269,9 +269,9 @@ class Signal
             $type =                $row["type"];
             $USB =                $row["USB"];
             $USB_approx =        $row["USB_approx"];
-            $submode =            "update";
+            \Rxx\Rxx::$system_submode =            "update";
         } else {
-            $submode =            "add";
+            \Rxx\Rxx::$system_submode =            "add";
             $active =            "1";
         }
         $out =
@@ -293,17 +293,17 @@ class Signal
             ."          <tr>\n"
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n"
             .(\Rxx\Rxx::isAdmin() ?
-                "            <form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
+                "            <form action='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."' name='form' method='POST'>\n"
                 ."            <input type='hidden' name='ID' value='".$ID."'>\n"
-                ."            <input type='hidden' name='mode' value='".$mode."'>\n"
-                ."            <input type='hidden' name='submode' value='".$submode."'>\n"
+                ."            <input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
+                ."            <input type='hidden' name='submode' value='".\Rxx\Rxx::$system_submode."'>\n"
                 : ""
             )
             ."            <table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."              <tr>\n"
-            ."                <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' alt=''></td>\n"
+            ."                <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18' alt=''></td>\n"
             ."                <td width='100%' class='downloadTableHeadings_nosort'>Profile</td>\n"
-            ."                <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' alt=''></td>\n"
+            ."                <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18' alt=''></td>\n"
             ."              </tr>\n"
             ."            </table>\n"
             ."            <table width='100%' cellpadding='0' cellspacing='0' border='1' class='tableForm'>\n"
@@ -356,15 +356,15 @@ class Signal
             ."                <td colspan='5'><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"QTH\" value=\"".$QTH."\" class=\"formfield\"></td>\n"
             ."              <tr class='rowForm'>\n"
             ."                <th align='left'>State/Province</th>\n"
-            ."                <td><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"SP\" value=\"".$SP."\" class=\"formfield\"><span title='State or Province'> <a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>(List)</b></a></span></td>\n"
+            ."                <td><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"SP\" value=\"".$SP."\" class=\"formfield\"><span title='State or Province'> <a href='".\Rxx\Rxx::$system_url."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>(List)</b></a></span></td>\n"
             ."                <th align='right'>Country</th>\n"
-            ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(\Rxx\Rxx::isAdmin() ? "" : " (".\Rxx\Rxx::get_ITU($ITU).")")." <span title='Country Codes'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
+            ."                <td><input type=\"text\" size=\"3\" maxlength=\"3\" name=\"ITU\" value=\"".$ITU."\" class=\"formfield\">".(\Rxx\Rxx::isAdmin() ? "" : " (".\Rxx\Rxx::get_ITU($ITU).")")." <span title='Country Codes'><a href='".\Rxx\Rxx::$system_url."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'><b>(List)</b></a></span></td>\n"
             ."              <tr class='rowForm'>\n"
             ."                <th align='left'>GSQ</th>\n"
             ."                <td colspan='3'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."                  <tr class='rowForm'>"
             ."                    <td><input type='text' size='6' maxlength='6' name='GSQ' value='".$GSQ."' class='formfield'> [ "
-            ."<a onmouseover='window.status=\"Use coordinate converter\";return true;' onmouseout='window.status=\"\";return true;' href=\"".system_URL."/tools_coordinates_conversion?GSQ=".$GSQ."\" onclick=\"popWin('".system_URL."/tools_coordinates_conversion?GSQ=".$GSQ."','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre');return false;\" title='Use coordinate converter'><b>Convert</b></a>"
+            ."<a onmouseover='window.status=\"Use coordinate converter\";return true;' onmouseout='window.status=\"\";return true;' href=\"".\Rxx\Rxx::$system_url."/tools_coordinates_conversion?GSQ=".$GSQ."\" onclick=\"popWin('".\Rxx\Rxx::$system_url."/tools_coordinates_conversion?GSQ=".$GSQ."','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre');return false;\" title='Use coordinate converter'><b>Convert</b></a>"
             .(isset($row) ?
                 " | <a href='javascript:popup_mapquestmap(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Mapquest map\\\n(accuracy limited to nearest Grid Square)'><b>Mapquest</b></a>"
                 ." | <a href='javascript:popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\")' title='Show Google map\\\n(accuracy limited to nearest Grid Square)'><b>Google</b></a>"
@@ -432,7 +432,7 @@ class Signal
             ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
             ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
             .(\Rxx\Rxx::isAdmin() ?
-                "<input type='submit' value='".($submode=="update" ? "Save" : "Add")."' class='formbutton' style='width: 60px;'>"
+                "<input type='submit' value='".(\Rxx\Rxx::$system_submode=="update" ? "Save" : "Add")."' class='formbutton' style='width: 60px;'>"
                 : ""
             )
             ."</td>\n"
@@ -461,12 +461,12 @@ class Signal
      */
     public static function signal_listeners()
     {
-        global $ID, $mode, $submode, $sortBy, $targetID;
+        global $ID, $sortBy, $targetID;
         global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -474,7 +474,7 @@ class Signal
         $ITU =    strToUpper($ITU);
         $SP =        strToUpper($SP);
         if (\Rxx\Rxx::isAdmin()) {
-            switch ($submode) {
+            switch (\Rxx\Rxx::$system_submode) {
                 case "delete":
                     $log = new \Rxx\Log($targetID);
                     $log->delete();
@@ -570,9 +570,9 @@ class Signal
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
         if (\Rxx\Rxx::isAdmin()) {
             $out.=
-                "            <form action='".system_URL.'/'.$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
+                "            <form action='".\Rxx\Rxx::$system_url.'/'.\Rxx\Rxx::$system_mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
                 ."            <input type='hidden' name='ID' value='$ID'>\n"
-                ."            <input type='hidden' name='mode' value='$mode'>\n"
+                ."            <input type='hidden' name='mode' value='\Rxx\Rxx::$system_mode'>\n"
                 ."            <input type='hidden' name='submode' value=''>\n";
         }
         if (\Rxx\Database::numRows($result)) {
@@ -585,13 +585,13 @@ class Signal
                 ."                <td bgcolor='white'><table cellpadding='0' cellspacing='1' border='0' class='noprint'>\n"
                 ."                  <thead>\n"
                 ."                  <tr>\n"
-                ."                    <th class='scroll_list' width='140' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=name".($sortBy=='name' ? '_d' : '')."'>".($sortBy=='name'||$sortBy=='name_d'?'<font color="#ff0000">Name</font>':'Name')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='140' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=QTH".($sortBy=='QTH' ? '_d' : '')."'>".($sortBy=='QTH'||$sortBy=='QTH_in_d'?'<font color="#ff0000">QTH</font>':'QTH')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=SP".($sortBy=='SP' ? '_d' : '')."'>".($sortBy=='SP'||$sortBy=='SP_d'?'<font color="#ff0000">SP</font>':'SP')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=ITU".($sortBy=='ITU' ? '_d' : '')."'>".($sortBy=='ITU'||$sortBy=='ITU_d'?'<font color="#ff0000">ITU</font>':'ITU')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=".($sortBy=='logs_d' ? 'logs' : 'logs_d')."'>".($sortBy=='logs'||$sortBy=='logs_d'?'<font color="#ff0000">Logs</font>':'Logs')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=".($sortBy=='dx_d' ? 'dx' : 'dx_d')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=".($sortBy=='dx_d' ? 'dx' : 'dx_d')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='140' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=name".($sortBy=='name' ? '_d' : '')."'>".($sortBy=='name'||$sortBy=='name_d'?'<font color="#ff0000">Name</font>':'Name')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='140' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=QTH".($sortBy=='QTH' ? '_d' : '')."'>".($sortBy=='QTH'||$sortBy=='QTH_in_d'?'<font color="#ff0000">QTH</font>':'QTH')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=SP".($sortBy=='SP' ? '_d' : '')."'>".($sortBy=='SP'||$sortBy=='SP_d'?'<font color="#ff0000">SP</font>':'SP')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=ITU".($sortBy=='ITU' ? '_d' : '')."'>".($sortBy=='ITU'||$sortBy=='ITU_d'?'<font color="#ff0000">ITU</font>':'ITU')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=".($sortBy=='logs_d' ? 'logs' : 'logs_d')."'>".($sortBy=='logs'||$sortBy=='logs_d'?'<font color="#ff0000">Logs</font>':'Logs')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=".($sortBy=='dx_d' ? 'dx' : 'dx_d')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=".($sortBy=='dx_d' ? 'dx' : 'dx_d')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
                 ."                  </tr>\n"
                 ."                  </thead>\n"
                 ."                </table></td>\n"
@@ -651,11 +651,11 @@ class Signal
      */
     public static function signal_map_eu()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -688,7 +688,7 @@ class Signal
         $name_idx =    0;
         $out[] =
             "<img usemap=\"#map\" galleryimg=\"no\""
-            ." src=\"".system_URL."/generate_station_map/2/".$ID."\"\n"
+            ." src=\"".\Rxx\Rxx::$system_url."/generate_station_map/2/".$ID."\"\n"
             ." border=\"0\" alt=\"\" />\n"
             ."<map name=\"map\">\n";
 
@@ -726,8 +726,8 @@ class Signal
         }
         $out[] =
             "</map>\n"
-            ."<div ID='point_here' style='position: absolute; display: none;'><img alt=\"\" src='".BASE_PATH."assets/map_point_here.gif' /></div>\n"
-            ."<div ID='name_here' style='position: absolute; display: none;'><img alt=\"\" src='".BASE_PATH."assets/map_name_here.gif' /></div>\n";
+            ."<div ID='point_here' style='position: absolute; display: none;'><img alt=\"\" src='".\Rxx\Rxx::$base_path."assets/map_point_here.gif' /></div>\n"
+            ."<div ID='name_here' style='position: absolute; display: none;'><img alt=\"\" src='".\Rxx\Rxx::$base_path."assets/map_name_here.gif' /></div>\n";
         return implode($out, "");
     }
 
@@ -736,16 +736,16 @@ class Signal
      */
     public static function signal_map_na()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
         $out =    array();
-        $out[] =    "<img usemap=\"#map\" galleryimg=\"no\" src=\"".system_URL."/generate_station_map/1/".$ID."\" border=\"0\">\n";
+        $out[] =    "<img usemap=\"#map\" galleryimg=\"no\" src=\"".\Rxx\Rxx::$system_url."/generate_station_map/1/".$ID."\" border=\"0\">\n";
         $out[] =    "<map name=\"map\">\n";
         $sql =     "SELECT\n"
             ."  COUNT(DISTINCT(`listeners`.`ID`)) AS `listeners`\n"
@@ -819,8 +819,8 @@ class Signal
         }
         $out[] =     "</map>\n"
             ."<script language='javascript' type='text/javascript'>\n"
-            ."document.write(\"<div ID='point_here' style='position: absolute; display: none;'><img src='".BASE_PATH."assets/map_point_here.gif'></div>\");\n"
-            ."document.write(\"<div ID='name_here' style='position: absolute; display: none;'><img src='".BASE_PATH."assets/map_name_here.gif'></div>\");\n"
+            ."document.write(\"<div ID='point_here' style='position: absolute; display: none;'><img src='".\Rxx\Rxx::$base_path."assets/map_point_here.gif'></div>\");\n"
+            ."document.write(\"<div ID='name_here' style='position: absolute; display: none;'><img src='".\Rxx\Rxx::$base_path."assets/map_name_here.gif'></div>\");\n"
             ."</script>\n";
 
         return implode($out, "");
@@ -831,18 +831,17 @@ class Signal
      */
     public static function signal_merge()
     {
-        global $mode, $submode;
         global $ID, $destinationID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
         $out =    array();
         $merged =    0;
-        switch($submode) {
+        switch(\Rxx\Rxx::$system_submode) {
             case "merge":
                 $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
                 $result =   \Rxx\Database::query($sql);
@@ -873,12 +872,12 @@ class Signal
         $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($ID)."'";
         $result =    \Rxx\Database::query($sql);
         $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-        $out[] =    "<form action='".system_URL."/".$mode."/".$ID."?submode=merge' method='POST'>\n";
+        $out[] =    "<form action='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?submode=merge' method='POST'>\n";
         $out[] =    "<h2>Source Signal:</h2><br>\n";
         $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
         $out[] =    "<h2>Destination Signal:</h2><br>\n";
 
-        if ($submode!="merge") {
+        if (\Rxx\Rxx::$system_submode!="merge") {
             $out[] =    "<select name='destinationID' style='font-family: monospace;' class='formField'>\n";
             $sql =    "SELECT `ID`,`khz`,`call`,`SP`,`ITU` FROM `signals` ORDER BY `khz`,`call`,`ITU`,`SP`";
             $result =    @\Rxx\Database::query($sql);
@@ -905,11 +904,11 @@ class Signal
      */
     public static function signal_QNH()
     {
-        global $ID, $mode, $submode, $ICAO_signal, $hours_signal;
+        global $ID, $ICAO_signal, $hours_signal;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -975,8 +974,8 @@ class Signal
             ."      </tr>\n"
             ."      <tr>\n"
             ."        <td class='downloadTableContent' width='100%'>\n"
-            ."          <form name='pressure' action='".system_URL."/".$mode."' method='GET'>\n"
-            ."            <input type='hidden' name='mode' value='$mode'>\n"
+            ."          <form name='pressure' action='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."' method='GET'>\n"
+            ."            <input type='hidden' name='mode' value='\Rxx\Rxx::$system_mode'>\n"
             ."            <input type='hidden' name='submode' value=''>\n"
             ."            <input type='hidden' name='ID' value='$ID'>\n"
             ."            <select class='formFixed' name='ICAO_signal'>\n"
@@ -1003,7 +1002,7 @@ class Signal
      */
     public static function signal_seeklist()
     {
-        global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_custom, $filter_date_1, $filter_date_2;
+        global $paper, $createFor, $region, $targetID, $filter_active, $filter_custom, $filter_date_1, $filter_date_2;
         global $filter_dx_gsq, $filter_dx_max, $filter_dx_min, $filter_dx_units;
         global $filter_heard_in, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
         global $filter_sp, $filter_itu, $filter_listener, $sortBy, $filter_heard_in_mod, $limit, $offset;
@@ -1024,13 +1023,16 @@ class Signal
 
 
         if ($filter_system=="") {
-            switch (system) {
-                case "RNA":    $filter_system=1;
-                    break;
-                case "REU":    $filter_system=2;
-                    break;
-                case "RWW":    $filter_system=3;
-                    break;
+            switch (\Rxx\Rxx::$system) {
+            case "RNA":
+                $filter_system = 1;
+                break;
+            case "REU":
+                $filter_system = 2;
+                break;
+            case "RWW":
+                $filter_system = 3;
+                break;
             }
         }
 
@@ -1119,7 +1121,7 @@ class Signal
 
         $filter_type =    array();
         if (!($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
-            switch (system) {
+            switch (\Rxx\Rxx::$system) {
                 case "RNA":    $type_NDB =    1;
                     break;
                 case "REU":    $type_NDB =    1;
@@ -1308,8 +1310,8 @@ class Signal
             \Rxx\Database::freeResult($result);
         }
         $out =
-            "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            "<form name='form' action='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='".\Rxx\Rxx::$system_mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='targetID' value=''>\n"
             ."<h2>Signal Seeklist</h2>\n"
@@ -1317,9 +1319,9 @@ class Signal
             ."  <tr>\n"
             ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."      <tr>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
+            ."        <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_left.gif' width='15' height='18' class='noprint' alt=''></td>\n"
             ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Report</td>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
+            ."        <td width='18'><img src='".\Rxx\Rxx::$base_path."assets/corner_top_right.gif' width='15' height='18' class='noprint' alt=''></td>\n"
             ."      </tr>\n"
             ."    </table>\n"
             ."    <table cellpadding='2' cellspacing='0' border='1' class='tableForm'>\n"
@@ -1376,8 +1378,8 @@ class Signal
             ."        <th align='left'>Locations&nbsp;</th>\n"
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
-            ."            <td nowrap>&nbsp;<span title='List of States or Provinces'><a href='".system_URL."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>States</b></a></span> <input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically located there' type='text' name='filter_sp' size='20' value='$filter_sp' class='formfield'></td>\n"
-            ."            <td nowrap align='right'><span title='List of Countries'><a href='".system_URL."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>&nbsp;<b>Countries</b></a></span> <input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only signals physically located there' type='text' name='filter_itu' size='20' value='$filter_itu' class='formfield'></td>"
+            ."            <td nowrap>&nbsp;<span title='List of States or Provinces'><a href='".\Rxx\Rxx::$system_url."/show_sp' onclick='show_sp();return false' title='NDBList State and Province codes'><b>States</b></a></span> <input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically located there' type='text' name='filter_sp' size='20' value='$filter_sp' class='formfield'></td>\n"
+            ."            <td nowrap align='right'><span title='List of Countries'><a href='".\Rxx\Rxx::$system_url."/show_itu' onclick='show_itu();return false' title='NDBList Country codes'>&nbsp;<b>Countries</b></a></span> <input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only signals physically located there' type='text' name='filter_itu' size='20' value='$filter_itu' class='formfield'></td>"
             ."          </tr>\n"
             ."	 </table></td>"
             ."      </tr>\n"
@@ -1399,7 +1401,7 @@ class Signal
             .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
             ."</select></td>\n"
             ."      </tr>\n";
-        if (system=="RWW") {
+        if (\Rxx\Rxx::$system=="RWW") {
             $out.=
                 "     <tr class='rowForm'>\n"
                 ."       <th align='left'>Heard in&nbsp;</th>\n"
@@ -1479,7 +1481,7 @@ class Signal
             ."  <tr>\n"
             ."    <th colspan='$page_cols' class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."      <tr>\n"
-            ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".system." Seeklist</b></th>\n"
+            ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".\Rxx\Rxx::$system." Seeklist</b></th>\n"
             ."        <th class='downloadTableHeadings_nosort' width='60%'>".($listener ? "$listener" : "")."</th>\n"
             ."        <th class='downloadTableHeadings_nosort' align='right' width='20%'>&nbsp; Page $page\n"
             ."<span class='noprint'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small>&nbsp;</span></th>\n"
@@ -1548,7 +1550,7 @@ class Signal
                 }
             }
             $out.=     "<span class='fixed'$bgcolor>".\Rxx\Rxx::pad_dot($value["khz"], 8).\Rxx\Rxx::pad_dot($value['call'], 8)
-                .($value['heard'] ? "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>" : "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>")."<br></span>\n";
+                .($value['heard'] ? "<img src='".\Rxx\Rxx::$base_path."assets/icon-tick-on.gif' alt='Y'>" : "<img src='".\Rxx\Rxx::$base_path."assets/icon-tick-off.gif' alt='N'>")."<br></span>\n";
             $xpos+=    $line_height;
             if ($xpos>$row) {
                 $xpos=0;
@@ -1565,7 +1567,7 @@ class Signal
                         ."  <tr>\n"
                         ."    <th colspan='$page_cols' class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
                         ."      <tr>\n"
-                        ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".system." Seeklist</b></th>\n"
+                        ."        <th align='left' class='downloadTableHeadings_nosort' width='20%'>&nbsp;<b>".\Rxx\Rxx::$system." Seeklist</b></th>\n"
                         ."        <th class='downloadTableHeadings_nosort' width='60%'>".($listener ? "$listener" : "")."</th>\n"
                         ."        <th class='downloadTableHeadings_nosort' align='right' width='20%'>&nbsp; Page $page\n"
                         ."<span class='noprint'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small>&nbsp;</span></th>\n"
@@ -1618,7 +1620,7 @@ class Signal
             ."    minDate:minDate,\n"
             ."    maxDate:maxDate,\n"
             ."    showOn:'button',\n"
-            ."    buttonImage:'".BASE_PATH."assets/datepicker_".strToLower(system).".gif',\n"
+            ."    buttonImage:'".\Rxx\Rxx::$base_path."assets/datepicker_".strToLower(\Rxx\Rxx::$system).".gif',\n"
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
@@ -1667,12 +1669,12 @@ class Signal
      */
     public static function signal_log()
     {
-        global $ID, $mode, $submode, $sortBy, $targetID;
+        global $ID, $sortBy, $targetID;
         global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2]==\Rxx\Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -1680,7 +1682,7 @@ class Signal
         $ITU =  strToUpper($ITU);
         $SP =       strToUpper($SP);
         if (\Rxx\Rxx::isAdmin()) {
-            switch ($submode) {
+            switch (\Rxx\Rxx::$system_submode) {
                 case "delete":
                     $log = new \Rxx\Log($targetID);
                     $log->delete();
@@ -1802,9 +1804,9 @@ class Signal
             ."            <td bgcolor='#F5F5F5' class='itemTextCell' valign='top'>\n";
         if (\Rxx\Rxx::isAdmin()) {
             $out.=
-                "            <form action='".system_URL."/".$mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
+                "            <form action='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."' name='form' method='POST' onsubmit='if (window.opener) { window.opener.location.reload(1)};return true;'>\n"
                 ."            <input type='hidden' name='ID' value='$ID'>\n"
-                ."            <input type='hidden' name='mode' value='$mode'>\n"
+                ."            <input type='hidden' name='mode' value='\Rxx\Rxx::$system_mode'>\n"
                 ."            <input type='hidden' name='submode' value=''>\n";
         }
 
@@ -1818,20 +1820,20 @@ class Signal
                 ."                <td bgcolor='white'><table cellpadding='0' cellspacing='1' border='0' class='noprint'>\n"
                 ."                  <thead>\n"
                 ."                  <tr>\n"
-                ."                    <th class='scroll_list' width='75' title='YYYY-MM-DD' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=date".($sortBy=='date' ? '_d' : '')."'>".($sortBy=='date'||$sortBy=='date_d'?'<font color="#ff0000">Date</font>':'Date')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='35' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=time".($sortBy=='time' ? '_d' : '')."'>".($sortBy=='time'||$sortBy=='time_d'?'<font color="#ff0000">UTC</font>':'UTC')."</a></small></th>\n";
-            if (system!="RWW") {
+                ."                    <th class='scroll_list' width='75' title='YYYY-MM-DD' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=date".($sortBy=='date' ? '_d' : '')."'>".($sortBy=='date'||$sortBy=='date_d'?'<font color="#ff0000">Date</font>':'Date')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='35' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=time".($sortBy=='time' ? '_d' : '')."'>".($sortBy=='time'||$sortBy=='time_d'?'<font color="#ff0000">UTC</font>':'UTC')."</a></small></th>\n";
+            if (\Rxx\Rxx::$system != "RWW") {
                 $out.=
-                    "                    <th class='scroll_list' width='40' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=LSB".($sortBy=='LSB' ? '_d' : '')."'>".($sortBy=='LSB'||$sortBy=='LSB_d'?'<font color="#ff0000">LSB</font>':'LSB')."</a></small></th>\n"
-                    ."                    <th class='scroll_list' width='40' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=USB".($sortBy=='USB' ? '_d' : '')."'>".($sortBy=='USB'||$sortBy=='USB_d'?'<font color="#ff0000">USB</font>':'USB')."</a></small></th>\n"
-                    ."                    <th class='scroll_list' width='40' align='left'><a href='".system_URL."/".$mode."/".$ID."?sortBy=sec".($sortBy=='sec' ? '_d' : '')."'>".($sortBy=='sec'||$sortBy=='sec_d'?'<font color="#ff0000">Sec</font>':'Sec')."</a></small></th>\n"
-                    ."                    <th class='scroll_list' width='65' align='left'><a href='".system_URL."/".$mode."/".$ID."?sortBy=format".($sortBy=='format' ? '_d' : '')."'>".($sortBy=='format'||$sortBy=='format_d'?'<font color="#ff0000">Format</font>':'Format')."</a></small></th>\n";
+                    "                    <th class='scroll_list' width='40' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=LSB".($sortBy=='LSB' ? '_d' : '')."'>".($sortBy=='LSB'||$sortBy=='LSB_d'?'<font color="#ff0000">LSB</font>':'LSB')."</a></small></th>\n"
+                    ."                    <th class='scroll_list' width='40' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=USB".($sortBy=='USB' ? '_d' : '')."'>".($sortBy=='USB'||$sortBy=='USB_d'?'<font color="#ff0000">USB</font>':'USB')."</a></small></th>\n"
+                    ."                    <th class='scroll_list' width='40' align='left'><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=sec".($sortBy=='sec' ? '_d' : '')."'>".($sortBy=='sec'||$sortBy=='sec_d'?'<font color="#ff0000">Sec</font>':'Sec')."</a></small></th>\n"
+                    ."                    <th class='scroll_list' width='65' align='left'><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=format".($sortBy=='format' ? '_d' : '')."'>".($sortBy=='format'||$sortBy=='format_d'?'<font color="#ff0000">Format</font>':'Format')."</a></small></th>\n";
             }
             $out.=
-                "                    <th class='scroll_list' width='140' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=listener".($sortBy=='listener' ? '_d' : '')."'>".($sortBy=='listener'||$sortBy=='listener_d'?'<font color="#ff0000">Listener</font>':'Listener')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='35' align='left'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=heard_in".($sortBy=='heard_in' ? '_d' : '')."'>".($sortBy=='heard_in'||$sortBy=='heard_in_d'?'<font color="#ff0000">In</font>':'In')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
-                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".system_URL."/".$mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
+                "                    <th class='scroll_list' width='140' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=listener".($sortBy=='listener' ? '_d' : '')."'>".($sortBy=='listener'||$sortBy=='listener_d'?'<font color="#ff0000">Listener</font>':'Listener')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='35' align='left'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=heard_in".($sortBy=='heard_in' ? '_d' : '')."'>".($sortBy=='heard_in'||$sortBy=='heard_in_d'?'<font color="#ff0000">In</font>':'In')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">KM</font>':'KM')."</a></small></th>\n"
+                ."                    <th class='scroll_list' width='40' align='right'><small><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."/".$ID."?sortBy=dx".($sortBy=='dx' ? '_d' : '')."'>".($sortBy=='dx'||$sortBy=='dx_d'?'<font color="#ff0000">Miles</font>':'Miles')."</a></small></th>\n"
                 .(\Rxx\Rxx::isAdmin() ?
                     "                    <th class='scroll_list' width='35' align='left'><small>Del</small></th>\n"
                     :
@@ -1849,7 +1851,7 @@ class Signal
                 ."                  <tr class='noscreen'>\n"
                 ."                    <th class='scroll_list'><small>Date</small></th>\n"
                 ."                    <th class='scroll_list'><small>UTC</small></th>\n";
-            if (system!="RWW") {
+            if (\Rxx\Rxx::$system != "RWW") {
                 $out.=
                     "                    <th class='scroll_list'><small>LSB</small></th>\n"
                     ."                    <th class='scroll_list'><small>USB</small></th>\n"
@@ -1874,7 +1876,7 @@ class Signal
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='75'>".($row["date"] ? $row["date"] : "&nbsp;")."</td>\n"
                     ."                    <td class='scroll_list' width='35'>".($row["time"] ? ($row['daytime'] ? "<b>".$row["time"]."</b>" : $row["time"]) : "&nbsp;")."</td>\n";
-                if (system!="RWW") {
+                if (\Rxx\Rxx::$system != "RWW") {
                     $out.=
                         "                    <td class='scroll_list' width='40'>".$row["LSB_approx"].($row["LSB"]<>""  ? $row["LSB"]  : "&nbsp;")."</td>\n"
                         ."                    <td class='scroll_list' width='40'>".$row["USB_approx"].($row["USB"]<>""  ? $row["USB"]  : "&nbsp;")."</td>\n"
@@ -1887,7 +1889,7 @@ class Signal
                     ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_km"]   ? $row["dx_km"]   : "&nbsp;")."</td>\n"
                     ."                    <td class='scroll_list' width='40' align='right'>".($row["dx_miles"]   ? $row["dx_miles"]   : "&nbsp;")."</td>\n"
                     .(\Rxx\Rxx::isAdmin() ?
-                        "                    <td class='scroll_list' width='35' align='right'><a href='".system_URL."/".$mode."?submode=delete&ID=$ID&targetID=".$row["ID"]."'>X</a></td>\n"
+                        "                    <td class='scroll_list' width='35' align='right'><a href='".\Rxx\Rxx::$system_url."/".\Rxx\Rxx::$system_mode."?submode=delete&ID=$ID&targetID=".$row["ID"]."'>X</a></td>\n"
                         :
                         ""
                     )
@@ -1912,7 +1914,6 @@ class Signal
                 ."</table>\n";
         }
         $out.=  "</form>\n";
-//  $out[] =	"<pre>$sql</pre>";
 
         return $out;
     }

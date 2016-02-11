@@ -86,11 +86,11 @@ class Export
      */
     public static function export_kml_signals()
     {
-        global $ID, $mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -133,11 +133,11 @@ class Export
      */
     public static function export_ndbweblog()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -146,7 +146,7 @@ class Export
         $out[] =
             "<html>\r\n"
             ."<head><title>NDB WebLog Export</title>\r\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\r\n"
+            ."<link href='".\Rxx\Rxx::$base_path."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\r\n"
             ."</head>\r\n"
             ."<body><form>\n"
             ."<h1>Download Personalised NDB WebLog Files</h1>\r\n"
@@ -155,11 +155,11 @@ class Export
             ."Click on each link in turn to download replacements for those included in your NDBWebLog Directory - "
             ."only use this for FRESH installations.</p>\r\n"
             ."<ul>\n"
-            ."  <li><b><big>Download <a href='".system_URL."/export_ndbweblog_config/".$ID."?save=1'>config.js</a></big></b></li>\r\n"
-            ."  <li><b><big>Download <a href='".system_URL."/export_ndbweblog_log/".$ID."?save=1'>log.js</a></big></b></li>\r\n"
-            ."  <li><b><big>Download <a href='".system_URL."/export_ndbweblog_stations/".$ID."?save=1'>stations.js</a></big></b></li>\r\n"
+            ."  <li><b><big>Download <a href='".\Rxx\Rxx::$system_url."/export_ndbweblog_config/".$ID."?save=1'>config.js</a></big></b></li>\r\n"
+            ."  <li><b><big>Download <a href='".\Rxx\Rxx::$system_url."/export_ndbweblog_log/".$ID."?save=1'>log.js</a></big></b></li>\r\n"
+            ."  <li><b><big>Download <a href='".\Rxx\Rxx::$system_url."/export_ndbweblog_stations/".$ID."?save=1'>stations.js</a></big></b></li>\r\n"
             ."</ul>\n"
-            ."<p><a target=\"_blank\" href=\"".system_URL."/export_ndbweblog_index/".$ID."\"><b>Click here</b></a> to use the hosted version of this NDBWeblog.</p>\r\n"
+            ."<p><a target=\"_blank\" href=\"".\Rxx\Rxx::$system_url."/export_ndbweblog_index/".$ID."\"><b>Click here</b></a> to use the hosted version of this NDBWeblog.</p>\r\n"
             ."</body></html>\r\n";
         print implode($out, "");
     }
@@ -169,11 +169,11 @@ class Export
      */
     public static function export_ndbweblog_config()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -209,11 +209,11 @@ class Export
      */
     public static function export_ndbweblog_index()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -226,11 +226,11 @@ class Export
             ."<meta http-equiv=\"PICS-Label\" content='(PICS-1.1 \"http://www.rsac.org/ratingsv01.html\" l gen true r (n 0 s 0 v 0 l 0)'>\r\n"
             ."<meta http-equiv=\"PICS-Label\" content='(PICS-1.1 \"http://www.classify.org/safesurf/\" l gen true r (SS~~000 1))'>\r\n"
             ."<meta name=\"Description\" content=\"NDB WebLog Site\">\r\n"
-            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".system_URL."/export_ndbweblog_config/".$ID."\"></script>\r\n"
-            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".BASE_PATH."log/functions.js\"></script>\r\n"
-            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".BASE_PATH."log/countries.js\"></script>\r\n"
-            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".system_URL."/export_ndbweblog_stations/".$ID."&amp;ver=1.1.25\"></script>\r\n"
-            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".system_URL."/export_ndbweblog_log/".$ID."\"></script>\r\n"
+            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".\Rxx\Rxx::$system_url."/export_ndbweblog_config/".$ID."\"></script>\r\n"
+            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".\Rxx\Rxx::$base_path."log/functions.js\"></script>\r\n"
+            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".\Rxx\Rxx::$base_path."log/countries.js\"></script>\r\n"
+            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".\Rxx\Rxx::$system_url."/export_ndbweblog_stations/".$ID."&amp;ver=1.1.25\"></script>\r\n"
+            ."<script language=\"javascript\" type=\"text/javascript\" src=\"".\Rxx\Rxx::$system_url."/export_ndbweblog_log/".$ID."\"></script>\r\n"
             ."</HEAD>\r\n"
             ."<FRAMESET ROWS=\"*\" ONLOAD=\"top.list()\">\r\n"
             ."<FRAME NAME=\"main\" src=\"javascript:''\">\r\n"
@@ -243,11 +243,11 @@ class Export
      */
     public static function export_ndbweblog_log()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -336,11 +336,11 @@ class Export
      */
     public static function export_ndbweblog_stations()
     {
-        global $ID,$mode,$ver,$noheader;
+        global $ID,$ver,$noheader;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -465,13 +465,13 @@ class Export
     public static function export_signallist_excel()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        global $ID, $mode;
+        global $ID;
         global $filter_active, $offsets;
         global $type_NDB, $type_TIME, $type_DGPS, $type_DSC, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -694,7 +694,7 @@ class Export
         include('php_pdf/class.ezpdf.php');
         $pdf =new Cezpdf('LETTER', 'landscape');
         $pdf->selectFont('./php_pdf/fonts/Helvetica.afm');
-        $pdf->ezText(system_URL.' - '.system.' PDF File', 8);
+        $pdf->ezText(\Rxx\Rxx::$system_url.' - '.system.' PDF File', 8);
         $pdf->ezSetDy(-10);
         $data = array();
         $cols = array(
@@ -732,7 +732,7 @@ class Export
             $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $data[] = array(
                 'khz' =>            $row['khz'],
-                'call' =>           $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
+                'call' =>           $row['call'], 'url'=>\Rxx\Rxx::$system_url.'/signal_info/'.$row["ID"], 'target'=>'_blank',
                 'active' =>     $row['active'],
                 'lsb' =>            $row["LSB_approx"].($row["LSB"]!="" ? ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)), 3, '.', '')) : ""),
                 'usb' =>            $row["USB_approx"].($row["USB"]!="" ? ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')) : ""),
@@ -753,11 +753,11 @@ class Export
      */
     public static function export_text_signals()
     {
-        global $ID,$mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -798,11 +798,11 @@ class Export
      */
     public static function export_text_log()
     {
-        global $ID, $mode;
+        global $ID;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $ID = array_pop($path_arr);
             }
         }
@@ -876,21 +876,21 @@ class Export
             print
                 $row['date']." "
                 .($time_len ? Rxx::pad($row['time'], 5) : "")
-                .Rxx::pad((float)$row['khz'], (system=='RWW' ? 9 : 6))
-                .Rxx::pad($row['call'], $call_len)." "
-                .($LSB_len || $USB_len ? Rxx::pad($row['LSB'], 6).Rxx::pad($row['USB'], 6) : "")
-                .Rxx::pad($row['dx_km'], 6)
-                .Rxx::pad($row['dx_miles'], 6)
-                .Rxx::pad(($row['pwr']?$row['pwr']:""), 5)
-                .Rxx::pad($row['GSQ'], 7)
-                .Rxx::pad($row['SP'], 3)
+                .\Rxx\Rxx::pad((float)$row['khz'], (\Rxx\Rxx::$system=='RWW' ? 9 : 6))
+                .\Rxx\Rxx::pad($row['call'], $call_len)." "
+                .($LSB_len || $USB_len ? \Rxx\Rxx::pad($row['LSB'], 6).\Rxx\Rxx::pad($row['USB'], 6) : "")
+                .\Rxx\Rxx::pad($row['dx_km'], 6)
+                .\Rxx\Rxx::pad($row['dx_miles'], 6)
+                .\Rxx\Rxx::pad(($row['pwr']?$row['pwr']:""), 5)
+                .\Rxx\Rxx::pad($row['GSQ'], 7)
+                .\Rxx\Rxx::pad($row['SP'], 3)
                 .$row['ITU']." ".$row['QTH']."\r\n";
         }
         print
             "----------------------------------------------------------------------\r\n"
             .\Rxx\Database::numRows($result)." logs listed\r\n\r\n"
-            ."Output generated by ".system." 'Listener Log Export' feature.\r\n"
-            .system_URL."/?mode=$mode&ID=$ID\r\n</pre>";
+            ."Output generated by ".\Rxx\Rxx::$system." 'Listener Log Export' feature.\r\n"
+            .\Rxx\Rxx::$system_url."/?mode=" . \Rxx\Rxx::$system_mode . "&ID=$ID\r\n</pre>";
     }
 
     /**
@@ -901,7 +901,7 @@ class Export
         set_time_limit(600);    // Extend maximum execution time to 10 mins
         $out =  array();
 
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":     $filter_system_SQL = "(`heard_in_na` = 1 OR `heard_in_ca` = 1)";
                 break;
             case "REU":     $filter_system_SQL = "(`heard_in_eu` = 1)";

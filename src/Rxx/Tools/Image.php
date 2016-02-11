@@ -41,7 +41,6 @@ class Image
      */
     public static function generate_station_map()
     {
-        global $mode;
         $path_arr =   (explode('?', $_SERVER["REQUEST_URI"]));
         $path_arr =   explode('/', $path_arr[0]);
         $ID =         array_pop($path_arr);
@@ -162,7 +161,6 @@ class Image
      */
     public static function generate_listener_map()
     {
-        global $mode;
         $path_arr =   (explode('?', $_SERVER["REQUEST_URI"]));
         $path_arr =   explode('/', $path_arr[0]);
         $system_ID =  array_pop($path_arr);

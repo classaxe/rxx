@@ -7,61 +7,64 @@ namespace Rxx;
  */
 class Awards
 {
+    public $_listenerID;
+
     /**
      * @return string
      */
     public function draw()
     {
-        global $mode, $submode, $listenerID, $region;
+        global $listenerID, $region;
         global $awards_requested, $awards_email, $awards_name;
         global $type_NDB, $type_TIME, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
         if (!$listenerID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
-            if ($path_arr[count($path_arr)-2]==$mode) {
+            if ($path_arr[count($path_arr)-2] == Rxx::$system_mode) {
                 $listenerID = array_pop($path_arr);
             }
         }
-        switch (system) {
+        switch (\Rxx\Rxx::$system) {
             case "RNA":
-                $filter_listener_SQL =      "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
+                $filter_listener_SQL
+                    = "(`region` = 'na' OR `region` = 'ca' OR (`region` = 'oc' AND `SP` = 'hi'))";
                 break;
             case "REU":
-                $filter_listener_SQL =      "(`region` = 'eu')";
+                $filter_listener_SQL = "(`region` = 'eu')";
                 break;
             case "RWW":
                 if ($region!="") {
-                    $filter_listener_SQL =  "(`region` = '$region')";
+                    $filter_listener_SQL = "(`region` = '$region')";
                 } else {
                     $filter_listener_SQL =  "1";
                 }
                 break;
         }
         $this->_listenerID = $listenerID;
-        if ($submode=="send") {
+        if (Rxx::$system_submode == "send") {
             return $this->send($awards_requested, $awards_email, $awards_name);
         }
         if ($this->_listenerID) {
             $sql =
                 "SELECT * FROM `listeners` WHERE `ID` = ".$this->_listenerID;
-            $result =    \Rxx\Database::query($sql);
-            $this->_listener_record = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $result =    Database::query($sql);
+            $this->_listener_record = Database::fetchArray($result, MYSQL_ASSOC);
             $this->_listener_ITU =    $this->_listener_record['ITU'];
             $this->_listener_name =    $this->_listener_record['name'];
             $this->_listener_region =    Rxx::get_listener_region($this->_listenerID);
             $this->_listener_details =    Rxx::get_listener_details($this->_listenerID);
         }
         $out =
-             "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
+             "<form name='form' action='".Rxx::$system_url."/".Rxx::$system_mode."' method='POST'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<h2>Awards</h2><p>This report shows awards for which <b>only</b> registered NDB List members may apply.</p>\n"
             ."<table cellpadding='2' border='0' cellspacing='1'>\n"
             ."  <tr>\n"
             ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
             ."      <tr>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_left.gif' alt='' width='15' height='18' class='noprint'></td>\n"
+            ."        <td width='18'><img src='".Rxx::$base_path."assets/corner_top_left.gif' alt='' width='15' height='18' class='noprint'></td>\n"
             ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Report</td>\n"
-            ."        <td width='18'><img src='".BASE_PATH."assets/corner_top_right.gif' alt='' width='15' height='18' class='noprint'></td>\n"
+            ."        <td width='18'><img src='".Rxx::$base_path."assets/corner_top_right.gif' alt='' width='15' height='18' class='noprint'></td>\n"
             ."      </tr>\n"
             ."    </table>\n"
             ."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1' bordercolor='#c0c0c0'>\n"
@@ -73,7 +76,7 @@ class Awards
             ."      </tr>\n"
             .(!$this->_listenerID ?
                  "      <tr class='rowForm'>\n"
-                ."        <td align='center' colspan='2' height='22'>Select your local system (<a href='".system_URL."/awards?sys=system_RNA'><b>RNA</b></a>, <a href='".system_URL."/awards?sys=system_REU'><b>REU</b></a> or <a href='".system_URL."/awards?sys=system_RWW'><b>RWW</b></a>), then find your name in the list.&nbsp;</td>\n"
+                ."        <td align='center' colspan='2' height='22'>Select your local system (<a href='".Rxx::$system_url."/awards?sys=system_RNA'><b>RNA</b></a>, <a href='".Rxx::$system_url."/awards?sys=system_REU'><b>REU</b></a> or <a href='".Rxx::$system_url."/awards?sys=system_RWW'><b>RWW</b></a>), then find your name in the list.&nbsp;</td>\n"
                 ."      </tr>\n"
              :
                 ""
@@ -184,7 +187,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132' valign='top'><b>Stations</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(Count($can_transcont_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(Count($can_transcont_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='591' valign='top'><b>Station</b></td>"
             ."    <td width='20' valign='top'><b>Order</b></td>"
             ."  </tr>\n";
@@ -225,8 +228,8 @@ class Awards
                     $out.=
                          " onclick=\"award(document.form,'Canadian Transcontinental ($level stations on each coast)')\">"
                         ."<input type='hidden' name='Award: Canadian Transcontinental ($level stations on each coast)' value='0'>"
-                        ."<span id='Canadian Transcontinental ($level stations on each coast)_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                        ."<span id='Canadian Transcontinental ($level stations on each coast)_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                        ."<span id='Canadian Transcontinental ($level stations on each coast)_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                        ."<span id='Canadian Transcontinental ($level stations on each coast)_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                 } else {
                     $out.=    ">&nbsp;";
                 }
@@ -287,7 +290,7 @@ class Awards
                     ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
                     ."  <tr class='downloadTableHeadings_nosort'>\n"
                     ."    <td width='132' valign='top' nowrap><b>Countries</b></td>\n"
-                    ."    <td width='25'  valign='top' rowspan='".(count($this_continent)-2)."' bgcolor='#ffffff' style='border: none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>\n"
+                    ."    <td width='25'  valign='top' rowspan='".(count($this_continent)-2)."' bgcolor='#ffffff' style='border: none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>\n"
                     ."    <td valign='top'><b>NDB List Country codes</b></td>\n"
                     ."    <td width='20'  valign='top'><b>Order</b></td>\n"
                     ."  </tr>\n";
@@ -315,8 +318,8 @@ class Awards
                             $out.=
                                   " onclick=\"award(document.form,'$thisAward')\">"
                                  ."<input type='hidden' name='Award: $thisAward' value='0'>"
-                                 ."<span id='".$thisAward."_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                                 ."<span id='".$thisAward."_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                                 ."<span id='".$thisAward."_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                                 ."<span id='".$thisAward."_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                         } else {
                             $out.=    ">&nbsp;";
                         }
@@ -411,7 +414,7 @@ class Awards
                 ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
                 ."  <tr class='downloadTableHeadings_nosort'>\n"
                 ."    <td width='132' valign='top' nowrap><b>NDBs</b></td>\n"
-                ."    <td width='25'  valign='top' rowspan='".(count($this_country)-3)."' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>\n"
+                ."    <td width='25'  valign='top' rowspan='".(count($this_country)-3)."' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>\n"
                 ."    <td width='480' valign='top'><b>NDB Details</b></td>\n"
                 ."    <td width='20'  valign='top'><b>Order</b></td>\n"
                 ."  </tr>\n";
@@ -443,8 +446,8 @@ class Awards
                             $out.=
                              " onclick=\"award(document.form,'$thisAward')\">"
                             ."<input type='hidden' name='Award: $thisAward' value='0'>"
-                            ."<span id='".$thisAward."_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                            ."<span id='".$thisAward."_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                            ."<span id='".$thisAward."_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                            ."<span id='".$thisAward."_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                         } else {
                             $out.=    ">&nbsp;";
                         }
@@ -490,7 +493,7 @@ class Awards
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='65' valign='top' nowrap><b>Miles</b></td>\n"
             ."    <td width='65' valign='top'><b>KM</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(count($daytime_dx)+1)."' bgcolor='#ffffff' style='border:none'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(count($daytime_dx)+1)."' bgcolor='#ffffff' style='border:none'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='25' valign='top'><b>KHz</b></td>"
             ."    <td width='25' valign='top'><b>ID</b></td>"
             ."    <td width='250' valign='top'><b>Location</b></td>"
@@ -526,8 +529,8 @@ class Awards
                     ."    <td bgcolor='#f0f0f0' valign='top' align='right' nowrap>".$result['date']."</td>"
                     ."    <td bgcolor='#f0f0f0' valign='top' align='center'>".$result['time']."</td>"
                     ."    <td bgcolor='#f0f0f0' valign='top' align='center' onclick=\"award(document.form,'Daytime DX ".$level[0]."')\">"
-                    ."<span id='Daytime DX ".$level[0]."_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                    ."<span id='Daytime DX ".$level[0]."_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>"
+                    ."<span id='Daytime DX ".$level[0]."_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                    ."<span id='Daytime DX ".$level[0]."_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>"
                     ."</td>";
             } else {
                 $out.=    "    <td colspan='10' style='border-style: none'>&nbsp;</td>";
@@ -566,7 +569,7 @@ class Awards
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='65' valign='top' nowrap><b>Miles</b></td>\n"
             ."    <td width='65' valign='top'><b>KM</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(count($longranger_dx)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(count($longranger_dx)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='25' valign='top'><b>KHz</b></td>"
             ."    <td width='25' valign='top'><b>ID</b></td>"
             ."    <td width='250' valign='top'><b>Location</b></td>"
@@ -602,8 +605,8 @@ class Awards
                     ."    <td bgcolor='#f0f0f0' valign='top' align='right' nowrap>".$result['date']."</td>\n"
                     ."    <td bgcolor='#f0f0f0' valign='top' align='center'>".($result['time'] ? $result['time'] : "&nbsp;")."</td>\n"
                     ."    <td bgcolor='#f0f0f0' valign='top' align='center' onclick=\"award(document.form,'Long Ranger DX ".$level[0]."')\">"
-                    ."<span id='Long Ranger DX ".$level[0]."_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                    ."<span id='Long Ranger DX ".$level[0]."_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>"
+                    ."<span id='Long Ranger DX ".$level[0]."_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                    ."<span id='Long Ranger DX ".$level[0]."_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>"
                     ."</td>\n";
             } else {
                 $out.= "    <td colspan='10' style='border-style: none'>&nbsp;</td>\n";
@@ -645,7 +648,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132'><b>Station</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='2' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='2' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='208'><b>Location</b></td>"
             ."    <td width='65'><b>Lon</b></td>"
             ."    <td width='65'><b>Lat</b></td>"
@@ -665,8 +668,8 @@ class Awards
             ."    <td bgcolor='#f0f0f0'>".$row['date']."</td>\n"
             ."    <td bgcolor='#f0f0f0'>".$row['time']."</td>\n"
             ."    <td bgcolor='#f0f0f0' valign='top' align='center' onclick=\"award(document.form,'LT Alert')\">"
-            ."<span id='LT Alert_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-            ."<span id='LT Alert_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>"
+            ."<span id='LT Alert_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+            ."<span id='LT Alert_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>"
             ."</td>"
             ."  </tr>\n"
             ."</table>\n"
@@ -707,7 +710,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132' valign='top'><b>Stations</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(Count($n60_awards)+1)."' bgcolor='#ffffff' style='border: none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(Count($n60_awards)+1)."' bgcolor='#ffffff' style='border: none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='591' valign='top'><b>Station</b></td>"
             ."    <td width='20' valign='top'><b>Order</b></td>"
             ."  </tr>\n";
@@ -736,8 +739,8 @@ class Awards
                     $out.=
                          " onclick=\"award(document.form,'North of Sixty ($level stations)')\">"
                         ."<input type='hidden' name='Award: North of Sixty ($level stations)' value='0'>"
-                        ."<span id='North of Sixty ($level stations)_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                        ."<span id='North of Sixty ($level stations)_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                        ."<span id='North of Sixty ($level stations)_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                        ."<span id='North of Sixty ($level stations)_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                 } else {
                     $out.=    ">&nbsp;";
                 }
@@ -808,7 +811,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='borde:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132' valign='top'><b>Stations</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(Count($transatlantic_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(Count($transatlantic_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='591' valign='top'><b>Station</b></td>"
             ."    <td width='20' valign='top'><b>Order</b></td>"
             ."  </tr>\n";
@@ -839,8 +842,8 @@ class Awards
                     $out.=
                          " onclick=\"award(document.form,'Transatlantic NDB DX ($level stations)')\">"
                         ."<input type='hidden' name='Award: Transatlantic NDB DX ($level stations)' value='0'>"
-                        ."<span id='Transatlantic NDB DX ($level stations)_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                        ."<span id='Transatlantic NDB DX ($level stations)_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                        ."<span id='Transatlantic NDB DX ($level stations)_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                        ."<span id='Transatlantic NDB DX ($level stations)_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                 } else {
                     $out.=    ">&nbsp;";
                 }
@@ -915,7 +918,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132' valign='top'><b>Stations</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(Count($transpacific_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(Count($transpacific_awards)+1)."' bgcolor='#ffffff' style='border:none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='591' valign='top'><b>Station</b></td>"
             ."    <td width='20' valign='top'><b>Order</b></td>"
             ."  </tr>\n";
@@ -945,8 +948,8 @@ class Awards
                     $out.=
                          " onclick=\"award(document.form,'Transpacific NDB DX ($level stations)')\">"
                         ."<input type='hidden' name='Award: Transpacific NDB DX ($level stations)' value='0'>"
-                        ."<span id='Transpacific NDB DX ($level stations)_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                        ."<span id='Transpacific NDB DX ($level stations)_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                        ."<span id='Transpacific NDB DX ($level stations)_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                        ."<span id='Transpacific NDB DX ($level stations)_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                 } else {
                     $out.=    ">&nbsp;";
                 }
@@ -1020,7 +1023,7 @@ class Awards
             ."<table cellpadding='1' cellspacing='0' border='1' bordercolor='#c0c0c0' style='border:none; border-collapse:collapse;'>\n"
             ."  <tr class='downloadTableHeadings_nosort'>\n"
             ."    <td width='132' valign='top'><b>Stations</b></td>\n"
-            ."    <td width='25' valign='top' rowspan='".(Count($usa_transcont_awards)+1)."' bgcolor='#ffffff' style='border: none;'><img src='".BASE_PATH."assets/spacer.gif' width='25' height='1' alt=''></td>"
+            ."    <td width='25' valign='top' rowspan='".(Count($usa_transcont_awards)+1)."' bgcolor='#ffffff' style='border: none;'><img src='".\Rxx\Rxx::$base_path."assets/spacer.gif' width='25' height='1' alt=''></td>"
             ."    <td width='591' valign='top'><b>Station</b></td>"
             ."    <td width='20' valign='top'><b>Order</b></td>"
             ."  </tr>\n";
@@ -1062,8 +1065,8 @@ class Awards
                     $out.=
                        " onclick=\"award(document.form,'US Transcontinental ($level stations on each coast)')\">"
                       ."<input type='hidden' name='Award: US Transcontinental ($level stations on each coast)' value='0'>"
-                      ."<span id='US Transcontinental ($level stations on each coast)_icon_show'><img src='".BASE_PATH."assets/icon_cart.gif'></span>"
-                      ."<span id='US Transcontinental ($level stations on each coast)_icon_hide' style='display: none;'><img src='".BASE_PATH."assets/icon_cart_added.gif'></span>";
+                      ."<span id='US Transcontinental ($level stations on each coast)_icon_show'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart.gif'></span>"
+                      ."<span id='US Transcontinental ($level stations on each coast)_icon_hide' style='display: none;'><img src='".\Rxx\Rxx::$base_path."assets/icon_cart_added.gif'></span>";
                 } else {
                     $out.= ">&nbsp;";
                 }
@@ -1088,13 +1091,12 @@ class Awards
      */
     protected function drawCheckout()
     {
-        global $mode;
         return
              "<hr><br><h1><a name='checkout'></a>Checkout</h1><br>\n"
             ."<b>Reply To:</b>"
             ." <input type='text' size='30' name='awards_email' value=\""
             .(Rxx::get_listener_email($this->_listenerID) ? Rxx::get_listener_email($this->_listenerID) : "(enter email address)")."\">\n"
-            ."<input type='hidden' name='awards_url' value=\"http://".$_SERVER["SERVER_NAME"].system_URL."/".$mode."/".$this->_listenerID."\">\n"
+            ."<input type='hidden' name='awards_url' value=\"http://".$_SERVER["SERVER_NAME"].Rxx::$system_url."/".Rxx::$system_mode."/".$this->_listenerID."\">\n"
             ."<input type='hidden' name='awards_coordinator_name' value=\"".awardsAdminName."\">\n"
             ."<input type='hidden' name='awards_requester' value=\"".$this->_listener_details."\">\n"
             ."<input type='hidden' name='awards_name' value=\"".$this->_listener_name."\">\n"
