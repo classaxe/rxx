@@ -498,7 +498,7 @@ class Listener
         ."  </tr>\n"
         ."</table>"
         ;
-        if (\Rxx\Rxx::isAdmin()  & !READONLY) {
+        if (\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY)) {
             $sql =
               "SELECT\n"
               ."  MAX(`log_latest`) as `log_latest`\n"
@@ -556,8 +556,7 @@ class Listener
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
                 $listener_arr[] =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             }
-            usort($listener_arr, "listener_name_sort");
-
+            usort($listener_arr, array('\Rxx\Tools\Listener', "listener_name_sort"));
             $listener_links = array();
             foreach ($listener_arr as $row) {
                 $listener_links[] =
@@ -571,7 +570,7 @@ class Listener
               ."</span> ] (last ".$listener_list_limit." contributors)</small>\n"
               ."</td></tr></table><br>";
         } else {
-            if (READONLY) {
+            if ((defined('READONLY') && READONLY)) {
                 $out.= "<br><h3 style='margin: 0;'>Admin Notice:</h3><br>This system is currently in 'Read Only' mode - please don't try to add any logs right now.<br><br>";
             }
         }
@@ -661,7 +660,7 @@ class Listener
               ."  <thead>\n"
               ."  <tr>\n"
               ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Name", "Name", $sortBy, "name", "A-Z", false)
-              .(\Rxx\Rxx::isAdmin() && !READONLY ?
+              .(\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY) ?
               "    <th class=\"downloadTableHeadings_nosort\" valign=\"bottom\" align=\"left\">Log</th>\n" :
               "")
               ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Callsign", "Callsign", $sortBy, "callsign", "A-Z", false)
@@ -712,7 +711,7 @@ class Listener
                     \Rxx\Rxx::highlight(stripslashes($row["name"]), $filter)
                 )
                 ."</a></td>"
-                .(\Rxx\Rxx::isAdmin() && !READONLY ?
+                .(\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY) ?
                 "<td nowrap><a href='javascript:log_upload(\"".$row["ID"]."\")'>Add...</a></td>\n"
                 :
                 ""

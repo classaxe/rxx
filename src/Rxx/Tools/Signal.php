@@ -318,13 +318,13 @@ class Signal
         if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "<select name='type' class='formField'>\n"
-                ."<option value='".DGPS."'".($type==DGPS ? " selected" : "")." style='background-color:".Signal::$colors[DGPS]."'>DGPS</option>\n"
-                ."<option value='".DSC."'".($type==DSC ? " selected" : "")." style='background-color:".Signal::$colors[DSC]."'>DSC</option>\n"
-                ."<option value='".HAMBCN."'".($type==HAMBCN ? " selected" : "")." style='background-color:".Signal::$colors[HAMBCN]."'>Amateur Beacon</option>\n"
-                ."<option value='".NAVTEX."'".($type==NAVTEX ? " selected" : "")." style='background-color:".Signal::$colors[NAVTEX]."'>NAVTEX</option>\n"
+                ."<option value='".DGPS."'".($type==DGPS ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[DGPS]."'>DGPS</option>\n"
+                ."<option value='".DSC."'".($type==DSC ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[DSC]."'>DSC</option>\n"
+                ."<option value='".HAMBCN."'".($type==HAMBCN ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[HAMBCN]."'>Amateur Beacon</option>\n"
+                ."<option value='".NAVTEX."'".($type==NAVTEX ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[NAVTEX]."'>NAVTEX</option>\n"
                 ."<option value='".NDB."'".($type==NDB ? " selected" : "").">NDB</option>\n"
-                ."<option value='".TIME."'".($type==TIME ? " selected" : "")." style='background-color:".Signal::$colors[TIME]."'>Time</option>\n"
-                ."<option value='".OTHER."'".($type==OTHER ? " selected" : "")." style='background-color:".Signal::$colors[OTHER]."'>Other</option>\n"
+                ."<option value='".TIME."'".($type==TIME ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[TIME]."'>Time</option>\n"
+                ."<option value='".OTHER."'".($type==OTHER ? " selected" : "")." style='background-color:".\Rxx\Signal::$colors[OTHER]."'>Other</option>\n"
                 ."</select>\n"
             ;
         } else {

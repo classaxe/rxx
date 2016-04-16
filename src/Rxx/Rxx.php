@@ -1,17 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: module17
- * Date: 16-01-23
- * Time: 9:41 PM
- */
-
 namespace Rxx;
-
-/**
- * Class Rxx
- * @package Rxx
- */
 class Rxx
 {
     /**
@@ -599,7 +587,13 @@ class Rxx
             ."  <tr>\n"
             ."    <td align='center'>"
             ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
-            .system_title."</h1></td>\n"
+            .system_title
+            .(\Rxx\Rxx::isAdmin() && defined('READONLY') && READONLY ?
+                "<br /><span style='background:red;color:white;padding:0 10px 4px 10px'>[READ ONLY]</span>"
+             :
+                ""
+             )
+            ."</h1></td>\n"
             ."  </tr>\n"
             ."</table>\n"
             ."<table cellpadding='0' cellspacing='0' border='0' class='noprint'>\n"
@@ -681,6 +675,12 @@ class Rxx
         switch ($mode) {
             case 'admin_manage':
                 $out.= $Obj->draw();
+                break;
+            case 'admin_help':
+                $out.= \Rxx\Rxx::admin_help();
+                break;
+            case 'help':
+                $out .= \Rxx\Rxx::help();
                 break;
             case 'logon':
                 $out.= $Obj->draw();

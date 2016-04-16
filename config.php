@@ -102,6 +102,4 @@ define("awardsBCCEmail", "Martin@classaxe.com");
 define("awardsBCCName", "Martin Francis (Awards copy)");
 
 define("SMTP_HOST", "mail.classaxe.com");
-
-define("SMTP_HOST",    "mail.classaxe.com");
 define("ENABLE_PIWIK", false);

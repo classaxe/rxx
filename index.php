@@ -1,4 +1,6 @@
 <?php
+define("READONLY", 1);
+
 require __DIR__ . '/vendor/autoload.php';
 
 //ob_start("ob_gzhandler");
@@ -64,7 +66,6 @@ ini_set("mysql.trace_mode", 1);
 // Need to display offset graphs
 // When using wildcard chracters, highlight fails to highlight
 
-define("READONLY", 0);
 
 session_name("RXX");
 session_cache_limiter('must-revalidate');
