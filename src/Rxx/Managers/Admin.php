@@ -416,17 +416,17 @@ class Admin
         $mail->IsHtml(true);
         $mail->Mailer =         "smtp";
 
-        $mail->From =        "martin@classaxe.com";
-        $mail->FromName =    "RNA / REU / RWW system";
-        $mail->Host =        smtp_host;
-        $mail->Mailer =    "smtp";
+        $mail->From =       "martin@classaxe.com";
+        $mail->FromName =   "RNA / REU / RWW system";
+        $mail->Host =       SMTP_HOST;
+        $mail->Mailer =     "smtp";
 
         $mail->AddAddress($sendToEmail, "Test Email");
         $mail->Subject = "RNA / REU / RWW System";
-        $mail->Body    = "Test Message to ".$sendToEmail." via ".smtp_host." from ".getenv("SERVER_NAME");
+        $mail->Body    = "Test Message to ".$sendToEmail." via ".SMTP_HOST." from ".getenv("SERVER_NAME");
         if ($mail->Send()) {
-            return "<h2>Sent test email to ".$sendToEmail." via ".smtp_host."</h2>";
+            return "<h2>Sent test email to ".$sendToEmail." via ".SMTP_HOST."</h2>";
         }
-        return "<h2>Test email to ".$sendToEmail." via ".smtp_host." failed.</h2>";
+        return "<h2>Test email to ".$sendToEmail." via ".SMTP_HOST." failed.</h2>";
     }
 }
