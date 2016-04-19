@@ -427,6 +427,9 @@ class Admin
         if ($mail->Send()) {
             return "<h2>Sent test email to ".$sendToEmail." via ".SMTP_HOST."</h2>";
         }
-        return "<h2>Test email to ".$sendToEmail." via ".SMTP_HOST." failed.</h2>";
+        return
+            "<h2>Test email to ".$sendToEmail." via ".SMTP_HOST." failed:</h2>"
+           ."<p>".$mail->ErrorInfo;
+        
     }
 }
