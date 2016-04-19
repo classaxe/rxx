@@ -1,5 +1,5 @@
 <?php
-define("READONLY", 1);
+define("READONLY", 0);
 
 require __DIR__ . '/vendor/autoload.php';
 
