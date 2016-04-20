@@ -1127,7 +1127,7 @@ class Awards
         $mail->Subject =        "RXX Awards";
         $mail->Body =           nl2br($awards_requested);
         $mail->AltBody =        $awards_requested;
-        $mail_result =          ($mail->Send() ? "Message-ID: ".$mail->get_last_message_id() : $mail->ErrorInfo);
+        $mail_result =          ($mail->Send() ? "Message-ID: ".$mail->MessageID : $mail->ErrorInfo);
         if (substr($mail_result, 0, 12)!="Message-ID: ") {
             return "An error has occured - ".$mail_result.".<br />";
         }
