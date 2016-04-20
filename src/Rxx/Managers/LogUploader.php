@@ -94,7 +94,6 @@ class LogUploader
                     $dx_km =    $dx[1];
                     $daytime =  ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
                     $heardIn =  ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
-
                     $data = array(
                         'signalID' =>   $ID[$i],
                         'date' =>       $YYYYMMDD[$i],
@@ -128,7 +127,6 @@ class LogUploader
                     if ($hhmm[$i]) {
                         $data['time'] =        $hhmm[$i];
                     }
-
                     if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
                         if ($this->debug) {
                             $this->html.=    "1 ";
@@ -145,7 +143,7 @@ class LogUploader
                             if ($this->debug) {
                                 $this->html.= "3 ";
                             }
-                            $row = \Rxx\Log::countTimesHeardByListener($this->listener->getID(), $ID[$i]);
+                            $row = \Rxx\Log::countTimesHeardByListener($ID[$i], $this->listener->getID());
                             if ($row["count"]) {
                                 $this->stats['repeat_for_listener']++;
                             } else {
@@ -204,9 +202,9 @@ class LogUploader
                         ."WHERE\n"
                         ."  `signalID` = ".$ID[$i]." AND\n"
                         ."  `listenerID` != ''";
-                    $result =    \Rxx\Database::query($sql);
-                    $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                    $logs =        $row["logs"];
+                    $result =   \Rxx\Database::query($sql);
+                    $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                    $logs =     $row["logs"];
 
                     if ($update_signal) {
                         $this_YYYY =  substr($YYYYMMDD[$i], 0, 4);
@@ -214,7 +212,7 @@ class LogUploader
                         $this_DD =    substr($YYYYMMDD[$i], 6, 2);
                         $this->stats['latest_for_signal']++;
                         $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
-                        \Rxx\Rxx::signal_update_full(
+                        \Rxx\Tools\Signal::signal_update_full(
                             $ID[$i],
                             $LSB[$i],
                             $LSB_approx[$i],
@@ -554,9 +552,9 @@ class LogUploader
 
                     for ($i=0; $i<count($lines); $i++) {
                         //          print "<pre>".$lines[$i]."</pre>";
-                        $YYYY =    YY_to_YYYY($log_yyyy);
-                        $MM =      M_to_MM($log_mm);
-                        $DD =      D_to_DD($log_dd);
+                        $YYYY =    \Rxx\Rxx::YY_to_YYYY($log_yyyy);
+                        $MM =      \Rxx\Rxx::M_to_MM($log_mm);
+                        $DD =      \Rxx\Rxx::D_to_DD($log_dd);
 
                         if (function_exists("parse")) {
                             $YYYYMMDD = parse($this->tokens, $lines[$i], $YYYY, $MM, $DD);
@@ -573,7 +571,7 @@ class LogUploader
                         ) {
                             if (isset($this->tokens["D"])) {
                                 $DD =
-                                    D_to_DD(trim(substr($lines[$i], $this->tokens["D"][0], 2)));
+                                    \Rxx\Rxx::D_to_DD(trim(substr($lines[$i], $this->tokens["D"][0], 2)));
                             }
                             if (isset($this->tokens["DD"])) {
                                 $DD =
@@ -582,7 +580,7 @@ class LogUploader
                             if (isset($this->tokens["M"])) {
                                 // DD shown in log
                                 $MM =
-                                    M_to_MM(trim(substr($lines[$i], $this->tokens["M"][0], $this->tokens["M"][1])));
+                                    \Rxx\Rxx::M_to_MM(trim(substr($lines[$i], $this->tokens["M"][0], $this->tokens["M"][1])));
                             }
                             if (isset($this->tokens["MM"])) {
                                 // DD shown in log
@@ -592,12 +590,12 @@ class LogUploader
                             if (isset($this->tokens["MMM"])) {
                                 // DD shown in log
                                 $MM =
-                                    MMM_to_MM(trim(substr($lines[$i], $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
+                                    \Rxx\Rxx::MMM_to_MM(trim(substr($lines[$i], $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
                             }
                             if (isset($this->tokens["YY"])) {
                                 // DD shown in log
                                 $YYYY =
-                                    YY_to_YYYY(trim(substr($lines[$i], $this->tokens["YY"][0], $this->tokens["YY"][1])));
+                                    \Rxx\Rxx::YY_to_YYYY(trim(substr($lines[$i], $this->tokens["YY"][0], $this->tokens["YY"][1])));
                                     print 'yes';
                             }
                             if (isset($this->tokens["YYYY"])) {
@@ -957,7 +955,7 @@ class LogUploader
                                                     break;
                                             }
                                         }
-                                        $dx = get_dx($this->listener->record['lat'], $this->listener->record['lon'], $row["lat"], $row["lon"]);
+                                        $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lon'], $row["lat"], $row["lon"]);
                                         $this->html.=
                                              "  <td class='KHz'>"
                                             ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
@@ -998,7 +996,7 @@ class LogUploader
                                             .(strpos($row['heard_in'], ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']))===false ?
                                                "<font color='#008000'><b>".$row['heard_in']."</b></font>"
                                               :
-                                                highlight($row['heard_in'], ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']))
+                                                \Rxx\Rxx::highlight($row['heard_in'], ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']))
                                             )
                                             ."</td>\n";
 

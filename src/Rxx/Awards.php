@@ -1124,9 +1124,6 @@ class Awards
         $mail->FromName =       $awards_name;
         $mail->AddAddress(awardsAdminEmail, awardsAdminName);
         $mail->AddAddress(awardsBCCEmail, awardsBCCName);
-        \Rxx\Rxx::y($mail);
-        die;
-        // @TODO: Determine if this code is still needed.
         $mail->Subject =        "RXX Awards";
         $mail->Body =           nl2br($awards_requested);
         $mail->AltBody =        $awards_requested;
