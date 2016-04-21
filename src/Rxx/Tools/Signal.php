@@ -1514,15 +1514,24 @@ class Signal
                     $out.=    "<br>";
                     $xpos+=    $heading_gap;
                 }
-                $out.=    "    <table cellpadding='0' cellspacing='0' border='0' width='100%'><tr><td><b>".$value['ITU']." ".$value['SP']."</b></td><td align='right'>(".($createFor!="" ? $itu_sp[$value['ITU']."_".$value['SP']]['heard']." of " : "").$itu_sp[$value['ITU']."_".$value['SP']]['total'].")</td></tr></table>\n";
+                $out.=
+                     "<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+                    ."  <tr>\n"
+                    ."    <td><b>".$value['ITU']." ".$value['SP']."</b></td>\n"
+                    ."    <td align='right'>("
+                    .($createFor!="" ? $itu_sp[$value['ITU']."_".$value['SP']]['heard']." of " : "")
+                    .$itu_sp[$value['ITU']."_".$value['SP']]['total']
+                    .")</td>\n"
+                    ."  </tr>\n"
+                    ."</table>\n";
                 $xpos+=    $heading_height;
                 $SP =    $value['SP'];
                 $ITU =    $value['ITU'];
             }
             if ($value["active"]!="1") {
-                $bgcolor =    " style='border: 1px dashed #000000; border-right: none; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
+                $bgcolor =    " style='border: 1px dashed #000000; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
             } else {
-                $style = " style='background-color: ".\Rxx\Signal::$colors[$value['type']]."'";
+                $style = " style='border:1px solid #fff; background-color: ".\Rxx\Signal::$colors[$value['type']]."'";
                 switch ($value['type']) {
                     case NDB:
                         $bgcolor = $style." title='NDB'";
@@ -1547,8 +1556,18 @@ class Signal
                         break;
                 }
             }
-            $out.=     "<span class='fixed'$bgcolor>".\Rxx\Rxx::pad_dot($value["khz"], 8).\Rxx\Rxx::pad_dot($value['call'], 8)
-                .($value['heard'] ? "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>" : "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>")."<br></span>\n";
+            $out.=
+                 "<table cellpadding='0' cellspacing='0' border='0'><tr><td>"
+                ."<span class='fixed'$bgcolor>"
+                .\Rxx\Rxx::pad_dot($value["khz"], 8)
+                .\Rxx\Rxx::pad_dot($value['call'], 8)
+                ."</td><td>"
+                .($value['heard'] ?
+                    "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>"
+                 :
+                    "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>"
+                )
+                ."</span></td></tr></table>\n";
             $xpos+=    $line_height;
             if ($xpos>$row) {
                 $xpos=0;
