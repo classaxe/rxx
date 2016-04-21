@@ -293,13 +293,13 @@ class Rxx
     public static function get_local_icao($GSQ, $num, $selected)
     {
         $out =        array();
-        $deg =        Rxx::GSQ_deg($GSQ);
+        $deg =        \Rxx\Rxx::GSQ_deg($GSQ);
         $icao_arr =   array();
         $sql =        "SELECT * FROM `icao`";
         $result =     @\Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-            $dx =     Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
+            $dx =     \Rxx\Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
             $icao_arr[] =    array("miles" => $dx[0],"km" => $dx[1],"ICAO" => $row["ICAO"], );
         }
         sort($icao_arr);

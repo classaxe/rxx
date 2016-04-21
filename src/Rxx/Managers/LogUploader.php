@@ -1009,7 +1009,7 @@ class LogUploader
                                         $selected =         false;
                                         for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
                                             $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                                            $dx = get_dx($this->listener->record['lat'], $this->listener->record['lat'], $row["lat"], $row["lon"]);
+                                            $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lat'], $row["lat"], $row["lon"]);
                                             if (!$defaultChosen && $row["active"]=="1") {
                                                 $selected = true;
                                                 $defaultChosen =  true;
@@ -1117,8 +1117,8 @@ class LogUploader
                                 } else {
                                     $dx = array('0','0');
                                     if ($GSQ) {
-                                        $ll = GSQ_deg($GSQ);
-                                        $dx = get_dx($this->listener->record['lat'], $this->listener->record['lat'], $ll["lat"], $ll["lon"]);
+                                        $ll = \Rxx\Rxx::GSQ_deg($GSQ);
+                                        $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lat'], $ll["lat"], $ll["lon"]);
                                     }
                                     $this->html.=
                                          "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"

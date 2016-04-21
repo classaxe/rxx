@@ -79,7 +79,7 @@ class Signal extends Record
         if (!$row["lat"]) {
             return array(false,false);
         }
-        return Rxx::get_dx($qth_lat, $qth_lon, $row["lat"], $row["lon"]);
+        return \Rxx\Rxx::get_dx($qth_lat, $qth_lon, $row["lat"], $row["lon"]);
     }
 
     /**

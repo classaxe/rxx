@@ -930,10 +930,10 @@ class Signal
 
         if ($ICAO_signal && $hours_signal) {
             if ($METAR = METAR($ICAO_signal, $hours_signal, 0)) {
-                $sql =        "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_signal\"";
-                $result =        \Rxx\Database::query($sql);
-                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                $dx =        get_dx($lat, $lon, $row["lat"], $row["lon"]);
+                $sql =      "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_signal\"";
+                $result =   \Rxx\Database::query($sql);
+                $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $dx =       \Rxx\Rxx::get_dx($lat, $lon, $row["lat"], $row["lon"]);
                 $pressure =
                     "QNH at $ICAO_signal - ".$row["name"].($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n"
                     ."(".$dx[0]." miles from $khz-".$call.")\n"
@@ -1220,7 +1220,7 @@ class Signal
         if ($filter_dx_gsq && ($filter_dx_min || $filter_dx_max)) {
             $filter_dx_gsq = strtoUpper(substr($filter_dx_gsq, 0, 4)).strtoLower(substr($filter_dx_gsq, 4, 2));
             $filter_by_range =    true;
-            $a =         GSQ_deg($filter_dx_gsq);
+            $a =         \Rxx\Rxx::GSQ_deg($filter_dx_gsq);
             $filter_dx_lat =    $a["lat"];
             $filter_dx_lon =    $a["lon"];
         }

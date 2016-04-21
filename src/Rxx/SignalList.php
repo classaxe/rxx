@@ -917,7 +917,7 @@ class SignalList
             ."var signals = [\n";
         foreach ($this->rows as $row) {
             if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+                $dx =        \Rxx\Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';
@@ -1048,7 +1048,7 @@ class SignalList
             "  <tbody>";
         foreach ($this->rows as $row) {
             if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+                $dx =        \Rxx\Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';
@@ -2474,7 +2474,7 @@ class SignalList
             .strtoLower(substr($this->filter_dx_gsq, 4, 2));
 
         if ($this->filter_dx_gsq) {
-            $a =    Rxx::GSQ_deg($this->filter_dx_gsq);
+            $a =    \Rxx\Rxx::GSQ_deg($this->filter_dx_gsq);
             $this->filter_dx_lat =    $a["lat"];
             $this->filter_dx_lon =    $a["lon"];
         }
