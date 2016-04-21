@@ -884,7 +884,13 @@ class Signal
             $result =    @\Rxx\Database::query($sql);
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
                 $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                $out[] =    "<option value='".$row['ID']."'".($ID==$row['ID'] ? " selected" : "").">".pad_nbsp((float)$row['khz'], 10).pad_nbsp($row['call'], 12)." ".pad_nbsp($row['SP'], 3).$row['ITU']."</option>\n";
+                $out[] =
+                     "<option value='".$row['ID']."'".($ID==$row['ID'] ? " selected" : "").">"
+                    .\Rxx\Rxx::pad_nbsp((float)$row['khz'], 10)
+                    .\Rxx\Rxx::pad_nbsp($row['call'], 12)." "
+                    .\Rxx\Rxx::pad_nbsp($row['SP'], 3)
+                    .$row['ITU']
+                    ."</option>\n";
             }
             $out[] =    "</select>\n";
             $out[] =    "<input type='submit' value='Go' class='formButton'>\n";
