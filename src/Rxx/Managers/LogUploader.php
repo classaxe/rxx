@@ -1026,16 +1026,16 @@ class LogUploader
                                                 .($dx[0]!=='' ? number_format($dx[0])."mi" : "  ")." | "
                                                 .$row["heard_in"];
                                             $label =
-                                                 pad_nbsp((float)$row["khz"], 5)."|"
-                                                .pad_nbsp($ID, 5)."|"
+                                                 \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
+                                                .\Rxx\Rxx::pad_nbsp($ID, 5)."|"
                                                 .$row["ITU"]." |"
                                                 .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
-                                                .pad_nbsp($row["GSQ"], 6)."|"
-                                                .(strlen($row["QTH"])<25 ? pad_nbsp($row["QTH"], 25) : pad_nbsp(substr($row["QTH"], 0, 22).'...', 25))."|"
+                                                .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
+                                                .(strlen($row["QTH"])<25 ? \Rxx\Rxx::pad_nbsp($row["QTH"], 25) : \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25))."|"
                                                 .($this->listener->isDaytime($hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
 
-                                                .lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
-                                                .lead_nbsp($dx[0]!=='' ? number_format($dx[0]) : "", 6)."|"
+                                                .\Rxx\Rxx::lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
+                                                .\Rxx\Rxx::lead_nbsp($dx[0]!=='' ? number_format($dx[0]) : "", 6)."|"
                                                 .$row["heard_in"];
 
                                             $this->html.=
