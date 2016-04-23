@@ -199,9 +199,9 @@ class Admin
         $url =    "http://www.rap.ucar.edu/weather/surface/stations.txt";
         $out =
              "<form name='form' action='".system_URL."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
-            ."<input type='hidden' name='submode' value='$submode'>\n"
-            ."<input type='hidden' name='subsubmode' value=''>\n"
+            ."<input type='hidden' name='mode' id='mode' value='$mode'>\n"
+            ."<input type='hidden' name='submode' id='submode' value='$submode'>\n"
+            ."<input type='hidden' name='subsubmode' id='subsubmode' value=''>\n"
             ."<h2>Import ICAO</h2><br><br>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -217,7 +217,7 @@ class Admin
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n";
-        if ($subsubmode=="Update") {
+        if (\Rxx\Rxx::get_var('subsubmode')==='Update') {
             $data =    explode(chr(13).chr(10), stripslashes($data));
             if ($data[3] == "\n---CONNECTION ERROR---") {
                 $num =    0;
@@ -290,7 +290,7 @@ class Admin
                     ."  <tr>\n"
                     ."    <td class='downloadTableContent' align='center'>"
                     ."<input type='submit' name='go' value='Update' class='formButton' onclick='"
-                    ."document.form.subsubmode.value=\"Update\";document.form.go.disabled=true;document.form.submit()'"
+                    ."document.getElementById(\"subsubmode\").value=\"Update\"'"
                     ."></td>"
                     ."  </tr>\n";
             } else {
