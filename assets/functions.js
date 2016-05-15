@@ -21,49 +21,51 @@ isIE5 =	(document.getElementById && document.all) ? true : false;
 isNS6 =	(document.getElementById && navigator.appName.indexOf("Netscape")>=0 ) ? true : false;
 isW3C =	(document.getElementById && 1) ? true : false;
 
-function award(form,id) {
-  form.awards_requested.value="";
-  form["Award: "+id].value = (document.form["Award: "+id].value==1 ? 0 : 1)
-  var status = form["Award: "+id].value;
+function award(id) {
+  $('#awards_requested').val('');
+  $('#Award_'+id).val($('#Award_'+id).val()==1 ? 0 : 1);
   toggleDivDisplay(id);
-  for(i in form) {
-    if (i.substr(0,7) =="Award: ") {
-      if (form[i].value=="1") {
-        form.awards_requested.value += "  * " + i.substr(7)+"\n";
+  $('input').each(
+    function(key, value){
+      if ($(this).attr('id') && $(this).attr('id').substr(0,6) == "Award_" && $(this).val()=='1'){
+        $('#awards_requested').val(
+          $('#awards_requested').val()+'  * ' + $(this).attr('id').substr(6).replace(/_/g,' ') + '\n'
+        )
       }
     }
-  }
-  if (form.awards_requested.value!="") {
-    form.awards_requested.value =
+  );
+  if ($('#awards_requested').val()) {
+    $('#awards_requested').val(
       "NDB LIST AWARD REQUEST:\n" +
-      "To:    " + document.form.awards_coordinator_name.value + "\n" +
-      "From:  " + document.form.awards_requester.value + "\n" +
-      "URL:   " + document.form.awards_url.value + "\n\n" +
+      "To:    " + $('#awards_coordinator_name').val() + "\n" +
+      "From:  " + $('#awards_requester').val() + "\n" +
+      "URL:   " + $('#awards_url').val() + "\n\n" +
       "I would like to request the following awards, based upon my "+
       "published logs in RNA / REU / RWW.\n" +
       "I confirm that have not previously applied for these awards.\n\n" +
-      document.form.awards_requested.value + "\n\n" +
-      "Sincerely,\n" + document.form.awards_name.value;
-    form.order.disabled = false;
+      $('#awards_requested').val() + "\n\n" +
+      "Sincerely,\n" + $('#awards_name').val()
+    );
+    $('#order').prop('disabled', false);
     return;
   }
-  form.awards_requested.value="(No certificates have been ordered)";
-  form.order.disabled = true;
+  $('#awards_requested').val('(No certificates have been ordered)');
+  $('#order').prop('disabled', true);
 }
 
-function award_place_order(form) {
-  if (form.awards_email.value=="(enter email address)" || form.awards_email.value=="") {
-    alert("Please enter your email address");
+function award_place_order() {
+  if ($('#awards_email').val()=='(enter email address)' || $('#awards_email').val()=='') {
+    alert('Please enter your email address');
     return;
   }
   if (confirm(
     "CONFIRM ORDER\nPlease confirm that you have verified the details in this form, including the\n" +
-	"Reply To email address to which the awards will be emailed.\n\n" +
-	"* Press 'OK' to send your request now.\n"+
-	"* Press 'Cancel' if you wish to go back and check again."
+    "Reply To email address to which the awards will be emailed.\n\n" +
+    "* Press 'OK' to send your request now.\n"+
+    "* Press 'Cancel' if you wish to go back and check again."
   )) {
-    form.submode.value='send';
-    form.submit();
+    $('#submode').val('send');
+    $('#form').submit();
   }
 }
 
@@ -189,10 +191,10 @@ function conv_dd_dddd(form) {
 }
 
 function conv_dd_mm_ss(form) {
-  var rexp =		/([0-9]+)[° \.]*([0-9]+)[' \.]*([0-9]+)*[" \.]*([NS])*/i;
+  var rexp =		/([0-9]+)[ï¿½ \.]*([0-9]+)[' \.]*([0-9]+)*[" \.]*([NS])*/i;
   var a =			form.lat_dd_mm_ss.value.match(rexp);
   if (a==null) {
-    alert("ERROR\n\nLatitude must be given in one of these formats:\n  DD°MM'SS\"H\n  DD.MM.SS.H\n  DD MM SS H\n  DD°MM.H\n  DD.MM.H\n  DD MM H\n\n(H is N or S, but defaults to N if not given)");
+    alert("ERROR\n\nLatitude must be given in one of these formats:\n  DDï¿½MM'SS\"H\n  DD.MM.SS.H\n  DD MM SS H\n  DDï¿½MM.H\n  DD.MM.H\n  DD MM H\n\n(H is N or S, but defaults to N if not given)");
     return false;
   }
   var deg =		parseFloat(a[1]);
@@ -201,7 +203,7 @@ function conv_dd_mm_ss(form) {
   var min_d =		min+sec/60;
   var hem =		(a[4]!="" ? (a[4]=="N"||a[4]=="n" ? 1 : -1) : 1);
   var dec_lat =	hem*(deg+(Math.round(((sec/3600)+(min/60))*10000))/10000);
-  var rexp =		/([0-9]+)[° \.]*([0-9]+)[' \.]*([0-9]+)*[" \.]*([EW])*/i;
+  var rexp =		/([0-9]+)[ï¿½ \.]*([0-9]+)[' \.]*([0-9]+)*[" \.]*([EW])*/i;
   var a =			form.lon_dd_mm_ss.value.match(rexp);
   if (a==null) {
     alert("ERROR\n\nLongitude must be given in one of these formats:\n  DD.MM.SS.H\n  DD MM SS H\n  DD.MM.H\n  DD MM H\n\n(H is E or W, but defaults to E if not given)");
