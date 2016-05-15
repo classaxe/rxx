@@ -1217,8 +1217,9 @@ class Awards
         $mail->Sender =   'rxx@classaxe.com';
         $mail->AddCustomHeader('Errors-To:rxx@classaxe.com');
         $mail->AddReplyTo($awards_email, $awards_name);
-        $mail->SetFrom($awards_email, $awards_name, false);
+        $mail->SetFrom('rxx@classaxe.com', 'RNA / REU / RWW Awards System', false);
         $mail->AddAddress(awardsAdminEmail, awardsAdminName);
+        $mail->AddAddress($awards_email, $awards_name);
         $mail->AddAddress(awardsBCCEmail, awardsBCCName);
 
         $mail->Subject =        "RXX Awards";
