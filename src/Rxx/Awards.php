@@ -1219,8 +1219,8 @@ class Awards
         $mail->AddReplyTo($awards_email, $awards_name);
         $mail->SetFrom('rxx@classaxe.com', 'RNA / REU / RWW Awards System', false);
         $mail->AddAddress(awardsAdminEmail, awardsAdminName);
-        $mail->AddAddress($awards_email, $awards_name);
-        $mail->AddAddress(awardsBCCEmail, awardsBCCName);
+        $mail->AddCC($awards_email, $awards_name);
+        $mail->AddBCC(awardsBCCEmail, awardsBCCName);
 
         $mail->Subject =        "RXX Awards";
         $mail->Body =           nl2br($awards_requested);
