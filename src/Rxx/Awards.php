@@ -1229,26 +1229,25 @@ class Awards
         if (substr($mail_result, 0, 12)!="Message-ID: ") {
             return "An error has occured - ".$mail_result.".<br />";
         }
-
         return
              "<h1>Awards</h1><p>Thank you. Your request has been submitted and a copy "
             ."will be sent to the email address you provided for your records.</p>\n"
             ."<table cellpadding='5' cellspacing='0' border='1' bordercolor='#000000' bgcolor='#ffffff'>\n"
             ."  <tr>\n"
             ."    <td>From:</td>\n"
-            ."    <td>".stripslashes($awards_email)."</td>\n"
+            ."    <td>RNA / REU / RWW Awards System &lt;rxx@classaxe.com&gt;</td>\n"
             ."  </tr>\n"
             ."  <tr>\n"
             ."    <td>Reply To:</td>\n"
-            ."    <td>".stripslashes($awards_email)."</td>\n"
+            ."    <td>".stripslashes($awards_name)." &lt;".stripslashes($awards_email)."&gt;</td>\n"
             ."  </tr>\n"
             ."  <tr>\n"
             ."    <td>TO:</td>\n"
-            ."    <td>".awardsAdminEmail."</td>\n"
+            ."    <td>".awardsAdminName." &lt;".awardsAdminEmail."&gt;</td>\n"
             ."  </tr>\n"
             ."  <tr>\n"
             ."    <td>CC:</td>\n"
-            ."    <td>".stripslashes($awards_email)."</td>\n"
+            ."    <td>".stripslashes($awards_name)." &lt;".stripslashes($awards_email)."&gt;</td>\n"
             ."  </tr>\n"
             ."  <tr>\n"
             ."    <td valign='top'>SUBJECT:</td>\n"
