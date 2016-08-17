@@ -181,7 +181,7 @@ class Listener
             :
             ""
         )
-        ."            <table width='100%'  border='0' cellpadding='2' cellspacing='1' class='downloadTable' height='100%'>\n"
+        ."            <table width='100%'  border='0' cellpadding='2' cellspacing='1' class='tableForm' height='100%'>\n"
         ."              <tr>\n"
         ."                <th colspan='5' class='downloadTableHeadings_nosort' align='left'>&nbsp;Contact Details</th>\n"
         ."              </tr>\n"
