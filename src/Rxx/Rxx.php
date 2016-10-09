@@ -385,7 +385,10 @@ class Rxx
             ."FROM\n"
             ."    `itu`\n"
             ."WHERE\n"
-            .($region ? "    region=\"".$region."\" AND\n" : "")
+            .($region ? "    region=\"".$region."\" AND\n" :
+                 (system=='REU' ? "(`region`='eu') AND\n" : "")
+                .(system=='RNA' ? "(`region` IN ('na', 'ca') OR (`region`='oc' AND `itu`='hi')) AND\n" : "")
+             )
             .($mode==='listener' ? "    `itu` IN (SELECT DISTINCT `itu` FROM `listeners`) AND\n" : '')
             ."    1\n"
             ." ORDER BY `name`";
