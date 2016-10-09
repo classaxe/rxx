@@ -2,6 +2,15 @@
 namespace Rxx;
 class Rxx
 {
+    public static $modes = array(
+        'DSC'=>     'DSC',
+        'HAMBCN' => 'Ham',
+        'NAVTEX' => 'NAVTEX',
+        'NDB' =>    'NDB',
+        'TIME' =>   'Time',
+        'OTHER' =>  'Other'
+    );
+
     /**
      * @param $SP
      * @param $ITU
@@ -331,36 +340,70 @@ class Rxx
      * @param $chooseText
      * @return string
      */
-    public static function get_region_options_list($selectedID, $chooseText)
+    public static function get_region_options_list($selectedID, $chooseText, $mode='')
     {
         $out =
             "<option value=''"
             .($selectedID == '' ? " selected='selected'" : "")
             ." style='color: #0000ff;'>".$chooseText."</option>\n";
-        $sql =    "SELECT * FROM `region` ORDER BY `name`";
-        $result =     @\Rxx\Database::query($sql);
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        switch ($mode) {
+            case 'listener':
+                $sql =
+                     "SELECT\n"
+                    ."    *\n"
+                    ."FROM\n"
+                    ."    `region`\n"
+                    ."WHERE\n"
+                    ."    `region` in(SELECT DISTINCT `region` FROM `listeners`)\n"
+                    ."ORDER BY\n"
+                    ."    `name`";
+                break;
+            default:
+                $sql =    "SELECT * FROM `region` ORDER BY `name`";
+                break;
+        }
+        $records = \Rxx\Record::getRecordsForSql($sql);
+        foreach ($records as $record) {
             $out.=
-                "<option value=\"".$row["region"]."\""
-                .($selectedID == $row["region"] ? " selected='selected'" : "")
-                .">".$row['name']."</option>\n";
+                "<option value=\"".$record["region"]."\""
+                .($selectedID == $record["region"] ? " selected='selected'" : "")
+                .">".$record['name']."</option>\n";
         }
         return $out;
     }
 
     /**
-     * @param $SP
-     * @return mixed
+     * @param $selectedID
+     * @param $chooseText
+     * @return string
      */
-    public static function get_SP($SP)
+    public static function get_country_options_list($selectedID, $chooseText, $region='', $mode)
     {
-        $sql =      "SELECT `name` FROM `sp` WHERE `SP` = \"$SP\"";
-        $result =   \Rxx\Database::query($sql);
-        $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-        return      $row["name"];
+        $sql =
+             "SELECT\n"
+            ."    *\n"
+            ."FROM\n"
+            ."    `itu`\n"
+            ."WHERE\n"
+            .($region ? "    region=\"".$region."\" AND\n" : "")
+            .($mode==='listener' ? "    `itu` IN (SELECT DISTINCT `itu` FROM `listeners`) AND\n" : '')
+            ."    1\n"
+            ." ORDER BY `name`";
+        $records = \Rxx\Record::getRecordsForSql($sql);
+        $out =
+             "<option value=''"
+            .($selectedID == '' ? " selected='selected'" : "")
+            ." style='color: #0000ff;'>".$chooseText."</option>\n";
+        foreach ($records as $record) {
+            $out.=
+                 "<option value=\"".$record["ITU"]."\""
+                .($selectedID == $record["ITU"] ? " selected='selected'" : "")
+                .">".$record['name']."</option>\n";
+        }
+        return $out;
     }
-
+    
+    
     /**
      * @param $GSQ
      * @return array
@@ -1415,7 +1458,7 @@ class Rxx
             ." onmousedown=\"column_over(this,2);\""
             ." onclick=\"document.form.sortBy.value='"
             .$test
-            .($order=='A-Z' ? ($sortBy==$test ? '_d' : '') : ('_d'.$sortBy==$test.'_d' ? '' : '_d'))
+            .($order=='A-Z' ? ($sortBy==$test ? '_d' : '') : ($sortBy==$test.'_d' ? '' : '_d'))
             ."';document.form.submit()\""
             ." title=\"".$hint."\">"
             .($lblImage ? "" : $label.' ')

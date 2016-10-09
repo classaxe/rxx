@@ -1,23 +1,4 @@
 <?php
-/*
-Version History:
-  1.0.6 (2016-01-23)
-    1) Updated link for callsign lookups - thanks Darek for showing me the bug
-  1.0.5 (2014-01-23)
-    1) Bug fix for listener_map() when changing sort order
-  1.0.4 (2013-12-21)
-    1) listener_signals() now includes ids for each displayed row for bookmarking
-  1.0.3 (2013-12-15)
-    1) Bug fix on listener log deletion
-  1.0.2 (2013-09-24)
-    1) Added support for display of DSC in listener_list()
-    2) Added support for display of DSC in listener_log()
-    3) Added support for display of DSC in listener_signals()
-  1.0.1 (2007-07-02)
-    1) Added Listener::get_log() and Listener::get_log_count()
-    2) Implemented paging for listener logs
-*/
-
 namespace Rxx\Tools;
 
 /**
@@ -27,14 +8,11 @@ namespace Rxx\Tools;
 
 class Listener
 {
-
-    /**
-     * @return string
-     */
     public static function listener_edit()
     {
         global $script, $mode, $submode;
-        global $ID, $callsign, $email, $equipment, $GSQ, $ITU, $name, $notes, $QTH, $primary_QTH, $region, $SP, $timezone, $website, $map_x, $map_y;
+        global $ID, $callsign, $email, $equipment, $GSQ, $ITU, $name, $notes, $QTH, $primary_QTH, $region, $SP;
+        global $timezone, $website, $map_x, $map_y;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
@@ -297,241 +275,281 @@ class Listener
      * @param $region
      * @return mixed
      */
-    public static function listener_get_count($region)
+    public static function listener_get_count($region, $itu = '')
     {
-
-        $region_SQL =    "";
+        $region_SQL =    "1";
         if ($region=="") {
             switch (system) {
-                case "REU":    $region_SQL = "(`listeners`.`region`='eu')";
+                case "REU":
+                    $region_SQL = "(`listeners`.`region`='eu')";
                     break;
-                case "RNA":    $region_SQL = "(`listeners`.`region`='na' OR `listeners`.`region`='ca' OR (`listeners`.`region`='oc' AND `listeners`.`itu` = 'hwa'))";
+                case "RNA":
+                    $region_SQL =
+                        "(`listeners`.`region`='na' OR `listeners`.`region`='ca' OR"
+                       ."(`listeners`.`region`='oc' AND `listeners`.`itu` = 'hwa'))";
                     break;
             }
         } else {
             $region_SQL = "(`listeners`.`region`='$region')";
         }
-
-
-        if ($region_SQL=="") {
-            $sql =     "SELECT\n"
-              ."  COUNT(*) AS `count`\n"
-              ."FROM\n"
-              ."  `listeners`\n";
-        } else {
-            $sql =     "SELECT\n"
-              ."  COUNT(*) AS `count`\n"
-              ."FROM\n"
-              ."  `listeners`\n"
-              ."WHERE\n"
-              ."  $region_SQL\n";
-        }
+        $itu_SQL = $itu ? "(`listeners`.`itu`='".$itu."')" : "1";
+        $sql =
+           "SELECT\n"
+          ."  COUNT(*) AS `count`\n"
+          ."FROM\n"
+          ."  `listeners`\n"
+          ."WHERE\n"
+          ."  $region_SQL AND\n"
+          ."  $itu_SQL";
         $result =     @\Rxx\Database::query($sql);
         $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         return $row["count"];
     }
 
-    /**
-     * @return string
-     */
     public static function listener_list()
     {
-        global $script, $mode, $submode, $targetID, $filter, $region, $sortBy;
+        global $script, $mode, $submode, $targetID, $filter, $region, $itu, $sortBy;
         global $type_DGPS, $type_DSC, $type_HAMBCN, $type_NAVTEX, $type_NDB, $type_TIME, $type_OTHER;
         $listener_list_limit = 25;
         if (\Rxx\Rxx::isAdmin()) {
             switch ($submode) {
                 case "delete":
-                    $sql =    "SELECT COUNT(*) AS `logs` FROM `logs` WHERE `listenerID` = \"".addslashes($targetID)."\"";
-                    $result =    \Rxx\Database::query($sql);
-                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                    if ($row["logs"] == "0") {
+                    $listener = new \Rxx\Listener($targetID);
+                    $logs = $listener->getLogCount();
+                    if ($logs) {
+                        $error_msg =    "This listener has submitted ".$logs." logs and so cannot be deleted.";
+                    } else {
                         $sql =    "DELETE FROM `listeners` WHERE `ID` = \"".addslashes($targetID)."\"";
                         \Rxx\Database::query($sql);
-                    } else {
-                        $error_msg =    "This listener has submitted ".$row["logs"]." logs and so cannot be deleted.";
                     }
                     break;
             }
         }
         if (!($type_NDB || $type_DGPS || $type_DSC || $type_TIME || $type_HAMBCN || $type_NAVTEX || $type_OTHER)) {
-            switch (system) {
-                case "RNA":    $type_NDB =    1;
-                    break;
-                case "REU":    $type_NDB =    1;
-                    break;
-                case "RWW":    $type_NDB =    1;
-                    break;
-            }
+            $type_NDB =    1;
         }
         $filter =     addslashes($filter);
-        $filter_SQL =    "`listeners`.`name` LIKE '%$filter%' OR `listeners`.`callsign` LIKE '%$filter%' OR `listeners`.`qth` LIKE '%$filter%'";
+        $filter_SQL =
+             "`listeners`.`name` LIKE '%$filter%' OR "
+            ."`listeners`.`callsign` LIKE '%$filter%' OR  "
+            ."`listeners`.`qth` LIKE '%$filter%'";
         if ($sortBy=="") {
             $sortBy = "name";
         }
-        $total =    \Rxx\Tools\Listener::listener_get_count($region);
+        $total =    \Rxx\Tools\Listener::listener_get_count($region, $itu);
         $region_SQL =    "";
         if ($region=="") {
             switch (system) {
-                case "REU":    $region_SQL = "(`listeners`.`region`='eu')";
+                case "REU":
+                    $region_SQL = "(`listeners`.`region`='eu')";
                     break;
-                case "RNA":    $region_SQL = "(`listeners`.`region`='na' OR `listeners`.`region`='ca' OR (`listeners`.`region`='oc' AND `listeners`.`itu` = 'hwa'))";
+                case "RNA":
+                    $region_SQL =
+                        "(`listeners`.`region`='na' OR `listeners`.`region`='ca' OR"
+                       ."(`listeners`.`region`='oc' AND `listeners`.`itu` = 'hwa'))";
                     break;
             }
         } else {
             $region_SQL = "(`listeners`.`region`='$region')";
         }
+        $itu_SQL = $itu ? "(`listeners`.`itu`='".$itu."')" : "1";
         $sortBy_SQL =        "";
         switch ($sortBy) {
-            case "callsign":        $sortBy_SQL =    "`callsign`='', `callsign` ASC,`name`,`primary_QTH` DESC, `SP` ASC";
+            case "callsign":
+                $sortBy_SQL =    "`callsign`='', `callsign` ASC,`name`,`primary_QTH` DESC, `SP` ASC";
                 break;
-            case "callsign_d":      $sortBy_SQL =    "`callsign`='', `callsign` DESC,`name`,`primary_QTH` DESC, `SP` ASC";
+            case "callsign_d":
+                $sortBy_SQL =    "`callsign`='', `callsign` DESC,`name`,`primary_QTH` DESC, `SP` ASC";
                 break;
-            case "GSQ":             $sortBy_SQL =    "`GSQ`='', `GSQ` ASC";
+            case "GSQ":
+                $sortBy_SQL =    "`GSQ`='', `GSQ` ASC";
                 break;
-            case "GSQ_d":           $sortBy_SQL =    "`GSQ`='', `GSQ` DESC";
+            case "GSQ_d":
+                $sortBy_SQL =    "`GSQ`='', `GSQ` DESC";
                 break;
-            case "ITU":             $sortBy_SQL =    "`ITU` ASC,`SP` ASC";
+            case "ITU":
+                $sortBy_SQL =    "`ITU` ASC,`SP` ASC";
                 break;
-            case "ITU_d":           $sortBy_SQL =    "`ITU` DESC,`SP` ASC";
+            case "ITU_d":
+                $sortBy_SQL =    "`ITU` DESC,`SP` ASC";
                 break;
-            case "log_latest":        $sortBy_SQL =    "`log_latest`=\"0000-00-00\", `log_latest` ASC";
+            case "log_latest":
+                $sortBy_SQL =    "`log_latest`=\"0000-00-00\", `log_latest` ASC";
                 break;
-            case "log_latest_d":    $sortBy_SQL =    "`log_latest`=\"0000-00-00\", `log_latest` DESC";
+            case "log_latest_d":
+                $sortBy_SQL =    "`log_latest`=\"0000-00-00\", `log_latest` DESC";
                 break;
-            case "count_DGPS":        $sortBy_SQL =    "`count_DGPS`=0, `count_DGPS` ASC";
+            case "count_DGPS":
+                $sortBy_SQL =    "`count_DGPS`=0, `count_DGPS` ASC";
                 break;
-            case "count_DGPS_d":    $sortBy_SQL =    "`count_DGPS`=0, `count_DGPS` DESC";
+            case "count_DGPS_d":
+                $sortBy_SQL =    "`count_DGPS`=0, `count_DGPS` DESC";
                 break;
-            case "count_DSC":        $sortBy_SQL =    "`count_DSC`=0, `count_DSC` ASC";
+            case "count_DSC":
+                $sortBy_SQL =    "`count_DSC`=0, `count_DSC` ASC";
                 break;
-            case "count_DSC_d":     $sortBy_SQL =    "`count_DSC`=0, `count_DSC` DESC";
+            case "count_DSC_d":
+                $sortBy_SQL =    "`count_DSC`=0, `count_DSC` DESC";
                 break;
-            case "count_HAMBCN":    $sortBy_SQL =    "`count_HAMBCN`=0, `count_HAMBCN` ASC";
+            case "count_HAMBCN":
+                $sortBy_SQL =    "`count_HAMBCN`=0, `count_HAMBCN` ASC";
                 break;
-            case "count_HAMBCN_d":    $sortBy_SQL =    "`count_HAMBCN`=0, `count_HAMBCN` DESC";
+            case "count_HAMBCN_d":
+                $sortBy_SQL =    "`count_HAMBCN`=0, `count_HAMBCN` DESC";
                 break;
-            case "count_logs":        $sortBy_SQL =    "`count_logs`=0, `count_logs` ASC";
+            case "count_logs":
+                $sortBy_SQL =    "`count_logs`=0, `count_logs` ASC";
                 break;
-            case "count_logs_d":    $sortBy_SQL =    "`count_logs`=0, `count_logs` DESC";
+            case "count_logs_d":
+                $sortBy_SQL =    "`count_logs`=0, `count_logs` DESC";
                 break;
-            case "count_NAVTEX":    $sortBy_SQL =    "`count_NAVTEX`=0, `count_NAVTEX` ASC";
+            case "count_NAVTEX":
+                $sortBy_SQL =    "`count_NAVTEX`=0, `count_NAVTEX` ASC";
                 break;
-            case "count_NAVTEX_d":    $sortBy_SQL =    "`count_NAVTEX`=0, `count_NAVTEX` DESC";
+            case "count_NAVTEX_d":
+                $sortBy_SQL =    "`count_NAVTEX`=0, `count_NAVTEX` DESC";
                 break;
-            case "count_NDB":        $sortBy_SQL =    "`count_NDB`=0, `count_NDB` ASC";
+            case "count_NDB":
+                $sortBy_SQL =    "`count_NDB`=0, `count_NDB` ASC";
                 break;
-            case "count_NDB_d":        $sortBy_SQL =    "`count_NDB`=0, `count_NDB` DESC";
+            case "count_NDB_d":
+                $sortBy_SQL =    "`count_NDB`=0, `count_NDB` DESC";
                 break;
-            case "count_OTHER":        $sortBy_SQL =    "`count_OTHER`=0, `count_OTHER` ASC";
+            case "count_OTHER":
+                $sortBy_SQL =    "`count_OTHER`=0, `count_OTHER` ASC";
                 break;
-            case "count_OTHER_d":    $sortBy_SQL =    "`count_OTHER`=0, `count_OTHER` DESC";
+            case "count_OTHER_d":
+                $sortBy_SQL =    "`count_OTHER`=0, `count_OTHER` DESC";
                 break;
-            case "count_TIME":        $sortBy_SQL =    "`count_TIME`=0, `count_TIME` ASC";
+            case "count_TIME":
+                $sortBy_SQL =    "`count_TIME`=0, `count_TIME` ASC";
                 break;
-            case "count_TIME_d":    $sortBy_SQL =    "`count_TIME`=0, `count_TIME` DESC";
+            case "count_TIME_d":
+                $sortBy_SQL =    "`count_TIME`=0, `count_TIME` DESC";
                 break;
-            case "count_signals":    $sortBy_SQL =    "`count_signals`=0, `count_signals` ASC";
+            case "count_signals":
+                $sortBy_SQL =    "`count_signals`=0, `count_signals` ASC";
                 break;
-            case "count_signals_d":    $sortBy_SQL =    "`count_signals`=0, `count_signals` DESC";
+            case "count_signals_d":
+                $sortBy_SQL =    "`count_signals`=0, `count_signals` DESC";
                 break;
-            case "name":            $sortBy_SQL =    "`name`, `primary_QTH` DESC, `ITU`,`SP`,`QTH`";
+            case "name":
+                $sortBy_SQL =    "`name`, `primary_QTH` DESC, `ITU`,`SP`,`QTH`";
                 break;
-            case "name_d":          $sortBy_SQL =    "`name` DESC, `primary_QTH` DESC, `ITU`,`SP`,`QTH`";
+            case "name_d":
+                $sortBy_SQL =    "`name` DESC, `primary_QTH` DESC, `ITU`,`SP`,`QTH`";
                 break;
-            case "map_x":           $sortBy_SQL =    "`map_x`, `map_y`";
+            case "map_x":
+                $sortBy_SQL =    "`map_x`, `map_y`";
                 break;
-            case "map_x_d":         $sortBy_SQL =    "`map_x` DESC, `map_y`";
+            case "map_x_d":
+                $sortBy_SQL =    "`map_x` DESC, `map_y`";
                 break;
-            case "NDBWebLog":       $sortBy_SQL =    "`count_signals`=0 ASC, `name`,`primary_QTH` DESC, `SP` ASC";
+            case "NDBWebLog":
+                $sortBy_SQL =    "`count_signals`=0 ASC, `name`,`primary_QTH` DESC, `SP` ASC";
                 break;
-            case "NDBWebLog_d":     $sortBy_SQL =    "`count_signals`=0 DESC, `name`, `primary_QTH` DESC, `SP` ASC";
+            case "NDBWebLog_d":
+                $sortBy_SQL =    "`count_signals`=0 DESC, `name`, `primary_QTH` DESC, `SP` ASC";
                 break;
-            case "notes":           $sortBy_SQL =    "`notes` IS NULL, `notes` ASC";
+            case "notes":
+                $sortBy_SQL =    "`notes` IS NULL, `notes` ASC";
                 break;
-            case "notes_d":         $sortBy_SQL =    "`notes` IS NULL, `notes` DESC";
+            case "notes_d":
+                $sortBy_SQL =    "`notes` IS NULL, `notes` DESC";
                 break;
-            case "region":          $sortBy_SQL =    "`region` ASC, `ITU` ASC,`SP` ASC,`QTH` ASC";
+            case "region":
+                $sortBy_SQL =    "`region` ASC, `ITU` ASC,`SP` ASC,`QTH` ASC";
                 break;
-            case "region_d":        $sortBy_SQL =    "`region` DESC,`ITU` ASC,`SP` ASC,`QTH` ASC";
+            case "region_d":
+                $sortBy_SQL =    "`region` DESC,`ITU` ASC,`SP` ASC,`QTH` ASC";
                 break;
-            case "QTH":             $sortBy_SQL =    "`QTH` ASC";
+            case "QTH":
+                $sortBy_SQL =    "`QTH` ASC";
                 break;
-            case "QTH_d":           $sortBy_SQL =    "`QTH` DESC";
+            case "QTH_d":
+                $sortBy_SQL =    "`QTH` DESC";
                 break;
-            case "SP":              $sortBy_SQL =    "`SP`='',`SP` ASC";
+            case "SP":
+                $sortBy_SQL =    "`SP`='',`SP` ASC";
                 break;
-            case "SP_d":            $sortBy_SQL =    "`SP`='',`SP` DESC";
+            case "SP_d":
+                $sortBy_SQL =    "`SP`='',`SP` DESC";
                 break;
-            case "timezone":        $sortBy_SQL =    "`timezone`='',`timezone` ASC, `SP` ASC";
+            case "timezone":
+                $sortBy_SQL =    "`timezone`='',`timezone` ASC, `SP` ASC";
                 break;
-            case "timezone_d":      $sortBy_SQL =    "`timezone`='',`timezone` DESC, `SP` ASC";
+            case "timezone_d":
+                $sortBy_SQL =    "`timezone`='',`timezone` DESC, `SP` ASC";
                 break;
-            case "WWW":             $sortBy_SQL =    "(`website` is NULL or `website`='') ASC, `name`,`primary_QTH` DESC";
+            case "WWW":
+                $sortBy_SQL =    "(`website` is NULL or `website`='') ASC, `name`,`primary_QTH` DESC";
                 break;
-            case "WWW_d":           $sortBy_SQL =    "(`website` is NULL or `website`='') DESC, `name`, `primary_QTH` DESC";
+            case "WWW_d":
+                $sortBy_SQL =    "(`website` is NULL or `website`='') DESC, `name`, `primary_QTH` DESC";
                 break;
         }
         $out =
-        "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
-        ."<h2>Listener List</h2>\n"
-        ."<ul><li>Log and station counts are updated each time new log data is added - figures are for logs in the system at this time.</li>\n"
-        ."<li>To see stats for different types of signals, check the boxes shown for 'Types' below.</li>\n"
-        ."<li>This report prints best in Landscape.</li></ul>\n"
-        ."<table cellpadding='2' border='1' cellspacing='0' class='downloadtable noprint'>\n"
-        ."  <tr>\n"
-        ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <th align='left' class='downloadTableHeadings_nosort'><a name='listeners'></a>Maps showing Listener Locations</th>\n"
-        ."        <th align='right' class='downloadTableHeadings_nosort'><small>[ <a href='#top' class='yellow'><b>Top</b></a> ]</small></th>\n"
-        ."      </tr>\n"
-        ."    </table></th>\n"
-        ."  </tr>\n"
-        ."  <tr>\n"
-        ."    <td class='downloadTableContent'>\n"
-        ."      <ul>\n"
-        ."        <li><a href='javascript:listener_map(1)'><b>RNA</b> (North &amp; Central America + Hawaii)</a></li>\n"
-        ."        <li><a href='javascript:listener_map(2)'><b>REU</b> (Europe)</a></li>\n"
-        ."      </ul>\n"
-        ."    </td>\n"
-        ."  </tr>\n"
-        ."</table>"
-        ;
+             "<form name='form' action='".system_URL."/".$mode."' method='POST'>\n"
+            ."<h2>Listener List</h2>\n"
+            ."<ul>"
+            ."<li>Log and station counts are updated each time new log data is added -"
+            ." figures are for logs in the system at this time.</li>\n"
+            ."<li>To see stats for different types of signals, check the boxes shown for 'Types' below.</li>\n"
+            ."<li>This report prints best in Landscape.</li></ul>\n"
+            ."<table cellpadding='2' border='1' cellspacing='0' class='downloadtable noprint'>\n"
+            ."  <tr>\n"
+            ."    <th class='downloadTableHeadings_nosort'>"
+            ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."      <tr>\n"
+            ."        <th align='left' class='downloadTableHeadings_nosort'><a name='listeners'></a>"
+            ."Maps showing Listener Locations"
+            ."</th>\n"
+            ."        <th align='right' class='downloadTableHeadings_nosort'><small>[ "
+            ."<a href='#top' class='yellow'><b>Top</b></a>"
+            ." ]</small></th>\n"
+            ."      </tr>\n"
+            ."    </table></th>\n"
+            ."  </tr>\n"
+            ."  <tr>\n"
+            ."    <td class='downloadTableContent'>\n"
+            ."      <ul>\n"
+            ."        <li><a href='#' onclick='listener_map(1);return false'>"
+            ."<b>RNA</b> (North &amp; Central America + Hawaii)</a></li>\n"
+            ."        <li><a href='#' onclick='listener_map(2);return false'>"
+            ."<b>REU</b> (Europe)</a></li>\n"
+            ."      </ul>\n"
+            ."    </td>\n"
+            ."  </tr>\n"
+            ."</table>";
         if (\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY)) {
             $sql =
-              "SELECT\n"
-              ."  MAX(`log_latest`) as `log_latest`\n"
-              ."FROM\n"
-              ."  `listeners`\n"
-              ."WHERE\n"
-              .($region_SQL !="" ? "  $region_SQL AND\n" : "")
-              ."  `primary_QTH` = '1'";
+                 "SELECT\n"
+                ."  MAX(`log_latest`) as `log_latest`\n"
+                ."FROM\n"
+                ."  `listeners`\n"
+                ."WHERE\n"
+                .($region_SQL !="" ? "  $region_SQL AND\n" : "")
+                .($itu_SQL !="" ? "  $itu_SQL AND\n" : "")
+                ."  `primary_QTH` = '1'";
             $result = @\Rxx\Database::query($sql);
             $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $log_latest = $row['log_latest'];
             $sql =
-              "SELECT\n"
-              ."  `name`\n"
-              ."FROM\n"
-              ."  `listeners`\n"
-              ."WHERE\n"
-              .($region_SQL !="" ? "  $region_SQL AND\n" : "")
-              ."  `primary_QTH` = '1' AND\n"
-              ."  `log_latest` = \"".$row['log_latest']."\"";
+                 "SELECT\n"
+                ."  `name`\n"
+                ."FROM\n"
+                ."  `listeners`\n"
+                ."WHERE\n"
+                .($region_SQL !="" ? "  $region_SQL AND\n" : "")
+                .($itu_SQL !="" ? "  $itu_SQL AND\n" : "")
+                ."  `primary_QTH` = '1' AND\n"
+                ."  `log_latest` = \"".$row['log_latest']."\"";
             $result = \Rxx\Database::query($sql);
             $latest_arr = array();
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
                 $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $latest_arr[] = $row['name'];
             }
-            $out.=
-              "<br><small><b>Latest Log".(count($latest_arr)==1 ? "" : "s").": $log_latest</b> for "
-              .implode(", ", $latest_arr)
-              ."</small><br><br>\n"
-              ."<table cellpadding='0' cellspacing='0' border='0'>\n"
-              ."  <tr>\n"
-              ."    <td nowrap valign='top'><small>\n"
-              ."<b>Add log for:</b> [&nbsp;</small></td><td><small>\n";
             $sql =
               "SELECT\n"
               ."  `listeners`.`ID`,\n"
@@ -543,7 +561,8 @@ class Listener
               ."  `listeners`\n"
               ."WHERE\n"
               .($region_SQL !="" ? "  $region_SQL AND\n" : "")
-              ."  `primary_QTH` = '1'\n"
+              .($itu_SQL !="" ? "  $itu_SQL AND\n" : "")
+               ."  `primary_QTH` = '1'\n"
               ."ORDER BY\n"
               ."  `log_latest` DESC\n"
               ."LIMIT 0,$listener_list_limit";
@@ -551,108 +570,124 @@ class Listener
 
             $result =     \Rxx\Database::query($sql);
             $listener_arr = array();
-
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
                 $listener_arr[] =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             }
-            usort($listener_arr, array('\Rxx\Tools\Listener', "listener_name_sort"));
-            $listener_links = array();
-            foreach ($listener_arr as $row) {
-                $listener_links[] =
-                "<a href='javascript:log_upload(\"".$row['ID']."\")'>"
-                ."<b><span title='(latest log: ".$row['log_latest'].")'>".$row['name']."</span></b></a>"
-                ." (".($row['SP']!='' ? $row['SP'] : $row['ITU']).")";
+            if (count($listener_arr)) {
+                usort($listener_arr, array('\Rxx\Tools\Listener', "listener_name_sort"));
+                $out.=
+                     "<br><small><b>Latest Log".(count($latest_arr)==1 ? "" : "s").": $log_latest</b> for "
+                    .implode(", ", $latest_arr)
+                    ."</small><br><br>\n"
+                    ."<table cellpadding='0' cellspacing='0' border='0'>\n"
+                    ."  <tr>\n"
+                    ."    <td nowrap valign='top'><small>\n"
+                    ."<b>Add log for:</b> [&nbsp;</small></td><td><small>\n";
+                
+                $listener_links = array();
+                foreach ($listener_arr as $row) {
+                    $listener_links[] =
+                    "<a href='javascript:log_upload(\"".$row['ID']."\")'>"
+                    ."<b><span title='(latest log: ".$row['log_latest'].")'>".$row['name']."</span></b></a>"
+                    ." (".($row['SP']!='' ? $row['SP'] : $row['ITU']).")";
+                }
+                $out.=
+                  "<span style='white-space:nowrap'>"
+                  .implode($listener_links, " | </span> <span style='white-space:nowrap'>\n")
+                  ."</span> ] (last ".count($listener_arr)." contributors)</small>\n"
+                  ."</td></tr></table><br>";
             }
-            $out.=
-              "<span style='white-space:nowrap'>"
-              .implode($listener_links, " | </span> <span style='white-space:nowrap'>\n")
-              ."</span> ] (last ".$listener_list_limit." contributors)</small>\n"
-              ."</td></tr></table><br>";
         } else {
             if ((defined('READONLY') && READONLY)) {
                 $out.= "<br><h3 style='margin: 0;'>Admin Notice:</h3><br>This system is currently in 'Read Only' mode - please don't try to add any logs right now.<br><br>";
             }
         }
 
-        if ($region_SQL=="") {
-            $sql =
-              "SELECT\n"
-              ."  `listeners`.*\n"
-              ."FROM\n"
-              ."  `listeners`\n"
-              .($filter ? "WHERE\n  ($filter_SQL)\n" : "")
-              .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
-        } else {
-            $sql =
-              "SELECT\n"
-              ."  `listeners`.*\n"
-              ."FROM\n"
-              ."  `listeners`\n"
-              ."WHERE\n"
-              ."  $region_SQL\n"
-              .($filter ? " AND ($filter_SQL)" : "")
-              .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
-        }
-        //$out.=	"<pre>$sql</pre>";
+        $sql =
+            "SELECT\n"
+            ."  `listeners`.*\n"
+            ."FROM\n"
+            ."  `listeners`\n"
+            ."WHERE\n"
+            .($region_SQL ? "  $region_SQL AND\n" : "")
+            .($itu_SQL ? "  $itu_SQL AND\n" : "")
+            .($filter ? " ($filter_SQL) AND" : "")
+            ."  1\n"
+            .($sortBy_SQL ? " ORDER BY $sortBy_SQL" : "");
+        // $out.= "<pre>$sql</pre>";
 
         $result =     @\Rxx\Database::query($sql);
 
         $out.=
-        "<input type='hidden' name='mode' value='$mode'>\n"
-        ."<input type='hidden' name='submode' value=''>\n"
-        ."<input type='hidden' name='targetID' value=''>\n"
-        ."<input type='hidden' name='sortBy' value='$sortBy'>\n"
-        ."<table cellpadding='2' border='0' cellspacing='1'>\n"
-        ."  <tr>\n"
-        ."    <td align='center' valign='top' colspan='2'><table cellpadding='0' border='0' cellspacing='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <td width='18'><img class='noprint' src='".BASE_PATH."assets/corner_top_left.gif' width='15' height='18' alt='' /></td>\n"
-        ."        <td width='100%' class='downloadTableHeadings_nosort' align='center'>Customise Report</td>\n"
-        ."        <td width='18'><img class='noprint' src='".BASE_PATH."assets/corner_top_right.gif' width='15' height='18' alt='' /></td>\n"
-        ."      </tr>\n"
-        ."    </table>\n"
-        ."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1'>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Search for &nbsp;</th>\n"
-        ."        <td nowrap><input type='text' name='filter' size='30' value='".stripslashes($filter)."' class='formfield'> "
-        .(\Rxx\Database::numRows($result)==$total ? "(Showing all $total listeners)" : "(Showing ".\Rxx\Database::numRows($result)." of $total listeners)")
-        ."&nbsp;</td>\n"
-        ."      </tr>\n"
-        ."      <tr class='rowForm'>\n"
-        ."        <th align='left'>Types&nbsp;</th>\n"
-        ."        <td nowrap style='padding: 0px;'><table cellpadding='2' cellspacing='1' border='0' width='100%' class='tableForm'>\n"
-        ."          <tr>\n"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[DGPS]."' width='14%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[DSC]."' width='14%' nowrap onclick='toggle(document.form.type_DSC)'><input type='checkbox' onclick='toggle(document.form.type_DSC);' name='type_DSC' value='1'".($type_DSC? " checked" : "").">DSC</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[HAMBCN]."' width='14%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[NAVTEX]."' width='15%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[NDB]."' width='14%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[TIME]."' width='14%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
-        ."            <td bgcolor='".\Rxx\Signal::$colors[OTHER]."' width='15%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
-        ."          </tr>\n"
-        ."        </table></td>"
-        ."      </tr>\n"
-        .(system=="RWW" ?
-            "      <tr class='rowForm'>\n"
-            ."        <th align='left'>Continent&nbsp;</th>\n"
-            ."        <th align='left'>\n"
-            ."<select name='region' onchange='document.form.go.disabled=1;document.form.submit()' class='formField' style='width: 100%;'>\n"
-            .\Rxx\Rxx::get_region_options_list($region, "(All Continents)")
+             "<br />"
+            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<input type='hidden' name='submode' value=''>\n"
+            ."<input type='hidden' name='targetID' value=''>\n"
+            ."<input type='hidden' name='sortBy' value='$sortBy'>\n"
+            ."<div class='form_box shadow'>\n"
+            ."  <div class='header'>Customise ".system." Listener Report</div>\n"
+            ."  <div class='body rowForm'>\n"
+            ."    <table cellpadding='0' cellspacing='0' class='tableForm' border='1'>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Search for &nbsp;</th>\n"
+            ."        <td nowrap>"
+            ."<input type='text' name='filter' size='30' value='".stripslashes($filter)."' class='formfield'> "
+            .(\Rxx\Database::numRows($result)==$total ?
+                "(Showing all $total listeners)"
+             :
+                "(Showing ".\Rxx\Database::numRows($result)." of $total listeners)"
+             )
+            ."</td>\n"
+            ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Types</th>\n"
+            ."        <td nowrap style='padding: 0px;'>"
+            ."<table cellpadding='2' cellspacing='1' border='0' width='100%' class='tableForm'>\n"
+            ."          <tr>\n";
+        foreach (\Rxx\Rxx::$modes as $key => $value) {
+            $out.=
+                 "            <td bgcolor='".\Rxx\Signal::$colors[constant($key)]
+                ."' width='14%' nowrap onclick='toggle(document.form.type_".$key.")'>"
+                ."<input type='checkbox' onclick='toggle(document.form.type_".$key.");' name='type_".$key."' value='1'"
+                .(${'type_'.$key} ? " checked" : "")
+                .">"
+                .$value
+                ."</td>";
+        }
+        $out.=
+             "          </tr>\n"
+            ."        </table></td>"
+            ."      </tr>\n"
+            .(system=="RWW" ?
+                "      <tr class='rowForm'>\n"
+                ."        <th align='left'>Continent</th>\n"
+                ."        <th align='left' style='padding: 0px;'>\n"
+                ."<select name='region' class='formField' style='width: 100%;'"
+                ." onchange='document.form.go.disabled=1;document.form.itu.selectedIndex=0;document.form.submit()'>\n"
+                .\Rxx\Rxx::get_region_options_list($region, "(All Continents)", 'listener')
+                ."</select>"
+                ."</th>"
+                ."      </tr>\n"
+             :
+                ""
+            )
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Country</th>\n"
+            ."        <th align='left' style='padding: 0px;'>\n"
+            ."<select name='itu' class='formField' style='width: 100%;margin:0'"
+            ." onchange='document.form.go.disabled=1;document.form.submit()'>\n"
+            .\Rxx\Rxx::get_country_options_list($itu, "(All Countries)", $region, 'listener')
             ."</select>"
             ."</th>"
             ."      </tr>\n"
-            :
-            ""
-        )
-        ."      <tr class='rowForm noprint'>\n"
-        ."        <th colspan='2' align='center'>\n"
-        ."<input type='submit' name='go' value='&nbsp;Go&nbsp;' onclick='document.form.go.disabled=1;document.form.submit()' class='formButton' title='Execute search'> "
-        ."<input type='submit' name='map' value='&nbsp;Map&nbsp;' onclick='listener_map()' class='formButton' title='Show map of listener locations'><br>\n"
-        ."</th>\n"
-        ."      </tr>\n"
-        ."    </table></td>"
-        ."  </tr>"
-        ."</table>";
+            ."      <tr class='rowForm noprint'>\n"
+            ."        <th colspan='2' align='center'>\n"
+            ."<input type='submit' name='go' value='&nbsp;Go&nbsp;' onclick='document.form.go.disabled=1;document.form.submit()' class='formButton' title='Execute search'> "
+            ."<input type='submit' name='map' value='&nbsp;Map&nbsp;' onclick='listener_map()' class='formButton' title='Show map of listener locations'><br>\n"
+            ."</th>\n"
+            ."      </tr>\n"
+            ."    </table>"
+            ."</div></div><br />";
         if (\Rxx\Database::numRows($result)) {
             $out.=
               "<table cellpadding='2' cellspacing='1' border='1' bgcolor='#ffffff' class='downloadtable'>\n"
@@ -673,8 +708,8 @@ class Listener
               )
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by GSQ Grid Locator Square", "GSQ", $sortBy, "GSQ", "A-Z", false)
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Time zone (relative to UTC)", "<img src='".BASE_PATH."assets/txt_timezone.gif' alt='Timezone'>", $sortBy, "timezone", "A-Z", true)
-            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Loggings", "Logs", $sortBy, "count_logs", "Z-A", false)
-            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Latest log", "Latest Log", $sortBy, "log_latest", "Z-A", false)
+            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Loggings", "Logs", $sortBy, "count_logs", "Z-A", true)
+            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Latest log", "Latest Log", $sortBy, "log_latest", "Z-A", true)
             .($type_DGPS ?   "    ".\Rxx\Rxx::show_sortable_column_head("Sort by DGPS count", "<img src='".BASE_PATH."assets/txt_DGPS.gif' alt='DGPS'>", $sortBy, "count_DGPS", "Z-A", true) : "")
             .($type_DSC ?   "    ".\Rxx\Rxx::show_sortable_column_head("Sort by DSC count", "<img src='".BASE_PATH."assets/txt_DSC.gif' alt='DSC'>", $sortBy, "count_DSC", "Z-A", true) : "")
             .($type_HAMBCN ? "    ".\Rxx\Rxx::show_sortable_column_head("Sort by Amateur Radio signal count", "<img src='".BASE_PATH."assets/txt_HAMBCN.gif' alt='HAM'>", $sortBy, "count_HAMBCN", "Z-A", true) : "")

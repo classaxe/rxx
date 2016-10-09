@@ -525,7 +525,7 @@ class SignalList
         return
              "<select name='region' id='region' onchange='document.form.go.disabled=1;document.form.submit()'"
             ." class='formField' style='width: 100%;'>\n"
-            .Rxx::get_region_options_list($this->region, "(All Continents)")
+            .Rxx::get_region_options_list($this->region, "(All Continents)", 'listener')
             ."</select>";
 
     }

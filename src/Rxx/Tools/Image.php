@@ -247,7 +247,9 @@ class Image
                 if (strlen($name) > 20) {
                     $name = substr($name, 0, 17)."...";
                 }
-                $reporter_rxed[] =  $row['map_x'].",".$row['map_y'].",,".$row['primary_QTH'].",".Rxx::pad($row['heard_in'], 3)." ".Rxx::pad($name, 20);
+                $reporter_rxed[] =
+                    $row['map_x'].",".$row['map_y'].",,".$row['primary_QTH'].","
+                    .\Rxx\Rxx::pad($row['heard_in'], 3)." ".\Rxx\Rxx::pad($name, 20);
             }
         }
 
