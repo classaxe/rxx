@@ -317,7 +317,8 @@ class Listener
                     $listener = new \Rxx\Listener($targetID);
                     $logs = $listener->getLogCount();
                     if ($logs) {
-                        $error_msg =    "This listener has submitted ".$logs." logs and so cannot be deleted.";
+                        $error_msg =
+                            "This listener has submitted ".$logs." logs and so cannot be deleted.";
                     } else {
                         $sql =    "DELETE FROM `listeners` WHERE `ID` = \"".addslashes($targetID)."\"";
                         \Rxx\Database::query($sql);
@@ -599,7 +600,9 @@ class Listener
             }
         } else {
             if ((defined('READONLY') && READONLY)) {
-                $out.= "<br><h3 style='margin: 0;'>Admin Notice:</h3><br>This system is currently in 'Read Only' mode - please don't try to add any logs right now.<br><br>";
+                $out.=
+                     "<br><h3 style='margin: 0;'>Admin Notice:</h3><br>"
+                    ."This system is currently in 'Read Only' mode - please don't try to add any logs right now.<br><br>";
             }
         }
 

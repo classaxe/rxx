@@ -366,7 +366,7 @@ class Rxx
         foreach ($records as $record) {
             $out.=
                 "<option value=\"".$record["region"]."\""
-                .($selectedID == $record["region"] ? " selected='selected'" : "")
+                .(strToUpper($selectedID) == strToUpper($record["region"]) ? " selected='selected'" : "")
                 .">".$record['name']."</option>\n";
         }
         return $out;
@@ -385,7 +385,7 @@ class Rxx
             ."FROM\n"
             ."    `itu`\n"
             ."WHERE\n"
-            .($region ? "    region=\"".$region."\" AND\n" :
+            .($region ? "    region=\"".addslashes($region)."\" AND\n" :
                  (system=='REU' ? "(`region`='eu') AND\n" : "")
                 .(system=='RNA' ? "(`region` IN ('na', 'ca') OR (`region`='oc' AND `itu`='hi')) AND\n" : "")
              )
@@ -400,7 +400,7 @@ class Rxx
         foreach ($records as $record) {
             $out.=
                  "<option value=\"".$record["ITU"]."\""
-                .($selectedID == $record["ITU"] ? " selected='selected'" : "")
+                .(strToUpper($selectedID) == strToUpper($record["ITU"]) ? " selected='selected'" : "")
                 .">".$record['name']."</option>\n";
         }
         return $out;
