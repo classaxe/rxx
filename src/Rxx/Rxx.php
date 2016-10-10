@@ -4,6 +4,7 @@ class Rxx
 {
     public static $modes = array(
         'DSC'=>     'DSC',
+        'DGPS' =>   'DGPS',
         'HAMBCN' => 'Ham',
         'NAVTEX' => 'NAVTEX',
         'NDB' =>    'NDB',
