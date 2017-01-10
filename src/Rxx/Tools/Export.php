@@ -738,7 +738,7 @@ class Export
 	            'active' =>   array('width' =>            '10',),
                 'lsb' =>      array('justification' =>    'right'),
                 'usb' =>      array('justification' =>    'right'),
-                'notes' =>    array('width' =>            '225'),
+                'notes' =>    array('width' =>            '205'),
                 'heard_in' => array('width' =>            '205')
             )
         );
