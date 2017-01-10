@@ -739,7 +739,7 @@ class Export
                 'lsb' =>      array('justification' =>    'right'),
                 'usb' =>      array('justification' =>    'right'),
                 'notes' =>    array('width' =>            '225'),
-                'heard_in' => array('width' =>            '225')
+                'heard_in' => array('width' =>            '205')
             )
         );
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
