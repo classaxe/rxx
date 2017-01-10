@@ -21,7 +21,7 @@
 * @package	Cpdf
 */
 class Cpdf {
-
+const default_font = './vendor/php_pdf/fonts/Courier.afm';
 /**
 * the current number of pdf objects in the document
 */
@@ -1611,7 +1611,7 @@ function selectFont($fontName,$encoding='',$set=1){
 function setCurrentFont(){
   if (strlen($this->currentBaseFont)==0){
     // then assume an initial font
-    $this->selectFont('./fonts/Helvetica.afm');
+    $this->selectFont(static::default_font);
   }
   $cf = substr($this->currentBaseFont,strrpos($this->currentBaseFont,'/')+1);
   if (strlen($this->currentTextState)
@@ -1928,7 +1928,7 @@ function stream($options=''){
 */
 function getFontHeight($size){
   if (!$this->numFonts){
-    $this->selectFont('./fonts/Helvetica');
+    $result = $this->selectFont(static::default_font);
   }
   // for the current font, and the given size, what is the height of the font in user units
   $h = $this->fonts[$this->currentFont]['FontBBox'][3]-$this->fonts[$this->currentFont]['FontBBox'][1];
@@ -1943,7 +1943,7 @@ function getFontHeight($size){
 function getFontDecender($size){
   // note that this will most likely return a negative value
   if (!$this->numFonts){
-    $this->selectFont('./fonts/Helvetica');
+    $this->selectFont(static::default_font);
   }
   $h = $this->fonts[$this->currentFont]['FontBBox'][1];
   return $size*$h/1000;
@@ -2154,7 +2154,7 @@ function PRVTcheckTextDirective1(&$text,$i,&$f,$final,&$x,&$y,$size=0,$angle=0,$
 * add text to the document, at a specified location, size and angle on the page
 */
 function addText($x,$y,$size,$text,$angle=0,$wordSpaceAdjust=0){
-  if (!$this->numFonts){$this->selectFont('./fonts/Helvetica');}
+  if (!$this->numFonts){$this->selectFont(static::default_font);}
 
   // if there are any open callbacks, then they should be called, to show the start of the line
   if ($this->nCallback>0){
@@ -2252,7 +2252,7 @@ function getTextWidth($size,$text){
   $store_currentTextState = $this->currentTextState;
 
   if (!$this->numFonts){
-    $this->selectFont('./fonts/Helvetica');
+    $this->selectFont(static::default_font);
   }
 
   // converts a number or a float to a string so it can get the width
@@ -2338,7 +2338,7 @@ function addTextWrap($x,$y,$width,$size,$text,$justification='left',$angle=0,$te
   // but will need to be re-set before printing, so that the chars work out right
   $store_currentTextState = $this->currentTextState;
 
-  if (!$this->numFonts){$this->selectFont('./fonts/Helvetica');}
+  if (!$this->numFonts){$this->selectFont(static::default_font);}
   if ($width<=0){
     // error, pretend it printed ok, otherwise risking a loop
     return '';

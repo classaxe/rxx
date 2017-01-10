@@ -701,19 +701,19 @@ class Export
             .($filter_type ? " AND\n  ".$filter_type : "")
             ."\n"
             ."ORDER BY `active` DESC,`khz` ASC, `call` ASC\n"
-//    ."LIMIT 0,10"
+//          ."LIMIT 0,10"
         ;
         $result =   \Rxx\Database::query($sql);
-        include('php_pdf/class.ezpdf.php');
-        $pdf =new Cezpdf('LETTER', 'landscape');
-        $pdf->selectFont('./php_pdf/fonts/Helvetica.afm');
+        set_include_path(get_include_path() . PATH_SEPARATOR . 'vendor/php_pdf');
+        require_once 'class.ezpdf.php';
+        $pdf =new \Cezpdf('LETTER', 'landscape');
+        $pdf->selectFont('./vendor/php_pdf/fonts/Courier.afm');
         $pdf->ezText(system_URL.' - '.system.' PDF File', 8);
-        $pdf->ezSetDy(-10);
         $data = array();
         $cols = array(
             'khz'=>         '<b>KHz</b>',
             'call'=>        '<b>ID</b>',
-            'active'=>      '<b>Active</b>',
+            'active'=>      '<b>Act</b>',
             'lsb'=>         '<b>LSB</b>',
             'usb'=>         '<b>USB</b>',
             'itu'=>         '<b>ITU</b>',
@@ -726,6 +726,7 @@ class Export
         $options = array(
             'shaded' =>         0,
             'showLines' =>      '2',
+            'titleFontSize' =>  10,
             'rowGap' =>         '0',
             'colGap' =>         '2',
             'lineCol' =>        '(0,0.5,0)',
@@ -734,11 +735,11 @@ class Export
             'cols' => array(
                 'khz' =>      array('justification' =>    'right'),
                 'call' =>     array('link' =>             'url'),
-//	  'active' =>   array('width' =>            '50'),
+	            'active' =>   array('width' =>            '10',),
                 'lsb' =>      array('justification' =>    'right'),
                 'usb' =>      array('justification' =>    'right'),
-                'notes' =>    array('width' =>            '150'),
-                'heard_in' => array('width' =>            '150')
+                'notes' =>    array('width' =>            '225'),
+                'heard_in' => array('width' =>            '225')
             )
         );
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
@@ -746,13 +747,13 @@ class Export
             $data[] = array(
                 'khz' =>            $row['khz'],
                 'call' =>           $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
-                'active' =>     $row['active'],
+                'active' =>         $row['active'],
                 'lsb' =>            $row["LSB_approx"].($row["LSB"]!="" ? ($offsets=="" ? $row["LSB"] : number_format((float)($row["khz"]-($row["LSB"]/1000)), 3, '.', '')) : ""),
                 'usb' =>            $row["USB_approx"].($row["USB"]!="" ? ($offsets=="" ? $row["USB"] : number_format((float) ($row["khz"]+($row["USB"]/1000)), 3, '.', '')) : ""),
                 'itu' =>            $row["ITU"],
                 'gsq' =>            ($row["GSQ"]?$row["GSQ"]:""),
-                'sp' =>         ($row["SP"]?$row["SP"]:""),
-                'notes' =>      ($row["notes"]?stripslashes($row["notes"]):""),
+                'sp' =>             ($row["SP"]?$row["SP"]:""),
+                'notes' =>          ($row["notes"]?stripslashes($row["notes"]):""),
                 'heard_in' =>       ($row["heard_in"]?$row["heard_in"]:""),
                 'last_heard' =>     ($row["last_heard"]?$row["last_heard"]:"")
             );

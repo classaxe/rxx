@@ -1,6 +1,6 @@
 <?php
 
-include_once('./php_pdf/class.pdf.php');
+include_once('class.pdf.php');
 
 class Cezpdf extends Cpdf {
 //==============================================================================
