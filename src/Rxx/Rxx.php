@@ -1,5 +1,10 @@
 <?php
 namespace Rxx;
+if (!defined('MYSQL_NUM')) {
+    define('MYSQL_NUM',2);
+    define('MYSQL_ASSOC',1);
+}
+
 class Rxx
 {
     public static $modes = array(

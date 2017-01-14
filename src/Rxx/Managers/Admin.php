@@ -249,8 +249,7 @@ class Admin
                         ."  `lat` = $lat,\n"
                         ."  `lon` = $lon,\n"
                         ."  `SP` = \"$icao_sp\"";
-                    \Rxx\Database::query($sql);
-                    if (mysql_errno()) {
+                    if (\Rxx\Database::getError()) {
                         $out.= "<pre>$data[$i]<br>$sql</pre>";
                     }
                 }

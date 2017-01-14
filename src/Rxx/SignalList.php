@@ -594,7 +594,7 @@ class SignalList
             $html.=
                  "<label style='width:".$type[3]."%;' class='".strToLower($type[1])."'>"
                 ."<input type='checkbox' name='".$type[1]."' value='1'"
-                .($this->$type[1] ? " checked='checked'" : "")
+                .($this->{$type[1]} ? " checked='checked'" : "")
                 .">"
                 .$type[2]
                 ."</label>";

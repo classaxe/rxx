@@ -25,7 +25,7 @@ class Backup
     public static function dbBackup($local = true, $orderBy = false, $structure = true, $tableNames = false)
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $date =     mktime();
+        $date =     time();
         $server =   getenv("SERVER_NAME");
         $filename = strftime('%Y%m%d_%H%M', $date).".sql";
 
@@ -44,9 +44,9 @@ class Backup
             ."# ***********************************************************************\n"
             ."\n";
         if ($structure) {
-            db_export_sql_structure($tableNames);
+            static::db_export_sql_structure($tableNames);
         }
-        db_export_sql_data($tableNames, $orderBy);
+        static::db_export_sql_data($tableNames, $orderBy);
         return $filename;
     }
 
@@ -92,9 +92,8 @@ class Backup
             $columns =            array();
             while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
                 $column =            array();        // Hold results for this one field
-                $column['Field'] =    $row['Field'];
-                ereg("([^/(]+)", $row['Type'], $type);
-                $column['Type'] =        $type[0];
+                $column['Field'] =  $row['Field'];
+                $column['Type'] =   $row['Type'];
                 $columns[] =        $column;
             }
             $tables[$i]['columns'] = $columns;
