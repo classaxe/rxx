@@ -311,7 +311,7 @@ class Rxx
         $deg =        \Rxx\Rxx::GSQ_deg($GSQ);
         $icao_arr =   array();
         $sql =        "SELECT * FROM `icao`";
-        $result =     @\Rxx\Database::query($sql);
+        $result =     \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $dx =     \Rxx\Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);

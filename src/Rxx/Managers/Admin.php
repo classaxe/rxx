@@ -227,14 +227,14 @@ class Admin
                 \Rxx\Database::query($sql);
                 for ($i=5; $i<$num+5; $i++) {
                     $icao_name =    trim(substr($data[$i], 0, 16));
-                    $icao_cnt =    trim(substr($data[$i], 20, 2));
-                    $icao_sp =    trim(substr($data[$i], 17, 2));
-                    $icao_ele =    trim(substr($data[$i], 45, 4));
-                    $lat =    (int) trim(substr($data[$i], 29, 2)) + (int) substr($data[$i], 32, 2) /60 ;
+                    $icao_cnt =     trim(substr($data[$i], 20, 2));
+                    $icao_sp =      trim(substr($data[$i], 17, 2));
+                    $icao_ele =     trim(substr($data[$i], 45, 4));
+                    $lat =          (int) trim(substr($data[$i], 29, 2)) + (int) substr($data[$i], 32, 2) /60 ;
                     if (substr($data[$i], 35, 1)=="S") {
                         $lat *=-1;
                     }
-                    $lon =    (int) trim(substr($data[$i], 37, 3)) + (int) substr($data[$i], 41, 2) /60 ;
+                    $lon =          (int) trim(substr($data[$i], 37, 3)) + (int) substr($data[$i], 41, 2) /60 ;
                     if (substr($data[$i], 43, 1)=="W") {
                         $lon *=-1;
                     }
@@ -249,6 +249,7 @@ class Admin
                         ."  `lat` = $lat,\n"
                         ."  `lon` = $lon,\n"
                         ."  `SP` = \"$icao_sp\"";
+                    \Rxx\Database::query($sql);
                     if (\Rxx\Database::getError()) {
                         $out.= "<pre>$data[$i]<br>$sql</pre>";
                     }

@@ -935,7 +935,7 @@ class Signal
 
 
         if ($ICAO_signal && $hours_signal) {
-            if ($METAR = METAR($ICAO_signal, $hours_signal, 0)) {
+            if ($METAR = \Rxx\Tools\Weather::METAR($ICAO_signal, $hours_signal, 0)) {
                 $sql =      "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_signal\"";
                 $result =   \Rxx\Database::query($sql);
                 $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);

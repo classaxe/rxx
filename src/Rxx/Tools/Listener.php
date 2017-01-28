@@ -1270,9 +1270,7 @@ class Listener
         return $out;
     }
 
-    /**
-     * @return string
-     */
+
     public static function listener_QNH()
     {
         global $ID, $mode, $script, $submode, $ICAO_listener, $hours_listener;
@@ -1283,22 +1281,17 @@ class Listener
                 $ID = array_pop($path_arr);
             }
         }
-        $sql =    "select * from `listeners` where `ID` = $ID";
-        $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-
-        $signals =    $row["count_signals"];
-        $logs =    $row["count_logs"];
-        $GSQ =    $row["GSQ"];
-        $name =    $row["name"];
-        $QTH =    $row["QTH"];
-        $SP =        $row["SP"];
-        $ITU =    $row["ITU"];
-        $lat =    $row["lat"];
-        $lon =    $row["lon"];
-
-        $pressure =    array();
-
+        $Obj = new \Rxx\Listener($ID);
+        $row =      $Obj->getRecord();
+        $signals =  $row["count_signals"];
+        $logs =     $row["count_logs"];
+        $GSQ =      $row["GSQ"];
+        $name =     $row["name"];
+        $QTH =      $row["QTH"];
+        $SP =       $row["SP"];
+        $ITU =      $row["ITU"];
+        $lat =      $row["lat"];
+        $lon =      $row["lon"];
 
         if ($ICAO_listener && $hours_listener) {
             if ($METAR = \Rxx\Tools\Weather::METAR($ICAO_listener, $hours_listener, 0)) {
@@ -1306,88 +1299,83 @@ class Listener
                 $result =        @\Rxx\Database::query($sql);
                 $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $dx =        \Rxx\Rxx::get_dx($lat, $lon, $row["lat"], $row["lon"]);
-                $pressure[] =    "QNH at $ICAO_listener -\n".$row["name"].($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n(".$dx[0]." from QTH)\n";
-                $pressure[] =    "----------------------\nDD UTC  MB     SLP \n----------------------";
-                $pressure[] =    $METAR;
-                $pressure[] =    "----------------------\n(From ".system.")\n";
+                $pressure =
+                    "QNH at $ICAO_listener -\n".$row["name"]
+                    .($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n(".$dx[0]." from QTH)\n\n"
+                    ."----------------------\n"
+                    ."DD UTC  MB     SLP \n"
+                    ."----------------------\n"
+                    .$METAR."\n"
+                    ."----------------------\n"
+                    ."(From ".system.")\n";
             } else {
-                $pressure[] =    "QNH data not available at $ICAO_listener for last $hours_listener hours";
+                $pressure =    "QNH data not available at $ICAO_listener for last $hours_listener hours";
             }
         } else {
-            $pressure[] = "HELP\nEnter hours to display, select first valid station in list and press 'QNH'";
+            $pressure = "HELP\nEnter hours to display, select first valid station in list and press 'QNH'";
         }
-
-        $out =    array();
-
-        $out[] =    "<table border='0' cellpadding='0' cellspacing='0'>\n";
-        $out[] =    "  <tr>\n";
-        $out[] =    "    <td><table border='0' align='center' cellpadding='0' cellspacing='0' width='620'>\n";
-        $out[] =    "      <tr>\n";
-        $out[] =    "        <td colspan='2' width='100%'><table border='0' cellpadding='0' cellspacing='0' width='100%' class='noprint'>\n";
-        $out[] =    "          <tr>\n";
-        $out[] =    "            <td><h1>Listener</h1></td>\n";
-        $out[] =    "            <td align='right' valign='bottom'><table border='0' cellpadding='2' cellspacing='0' class='tabTable'>\n";
-        $out[] =    "              <tr>\n";
-        $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_edit")." width='50'>Profile</td>\n";
-        if ($signals) {
-            $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_log")." width='105'>Signals ($signals)</td>\n";
-        }
-        if ($logs) {
-            $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_log")." width='85'>Logs ($logs)</td>\n";
-            $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_log_export")." width='45'>Export</td>\n";
-        }
-        $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_QNH")." width='35'>QNH</td>\n";
-        if ($logs) {
-            $out[] =    "                <td ".\Rxx\Rxx::tabItem("listener_stats")." width='45'>Stats</td>\n";
-        }
-        if (\Rxx\Rxx::isAdmin()) {
-            $out[] =    "                <td class='tabOff' onclick='log_upload(\"$ID\");' onMouseOver='return tabOver(this,1);' onMouseOut='return tabOver(this,0);' width='45'>Add...</td>\n";
-        }
-        $out[] =    "              </tr>\n";
-        $out[] =    "            </table></td>\n";
-        $out[] =    "          </tr>\n";
-        $out[] =    "        </table>\n";
-        $out[] =    "        <table border='0' align='center' cellpadding='0' cellspacing='0' class='tableContainer' width='100%'>\n";
-        $out[] =    "          <tr>\n";
-        $out[] =    "            <td bgcolor='#F5F5F5' class='itemTextCell' height='325' valign='top'>\n";
-
-        $out[] =    "<form name='pressure' action='".system_URL."' method='GET'>\n";
-        $out[] =    "<input type='hidden' name='ID' value='$ID'>\n";
-        $out[] =    "<input type='hidden' name='mode' value='$mode'>\n";
-        $out[] =    "<input type='hidden' name='submode' value=''>\n";
-        $out[] =    "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable' width='100%' height='100%'>\n";
-        $out[] =    "  <tr>\n";
-        $out[] =    "    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
-        $out[] =    "      <tr>\n";
-        $out[] =    "        <th align='left' class='downloadTableHeadings_nosort'>&nbsp;QNH History for $name".($QTH ? ", $QTH" : "").($SP ? ", $SP" : "").($ITU ? ", $ITU" : "")."</th>\n";
-        $out[] =    "      </tr>\n";
-        $out[] =    "    </table></th>\n";
-        $out[] =    "  </tr>\n";
-
-        $out[] =    "  <tr>\n";
-        $out[] =    "    <td class='downloadTableContent' height='100%'>";
-        $out[] =    "<select class='formFixed' name='ICAO_listener'>\n";
+        $out =
+             "<table border='0' cellpadding='0' cellspacing='0'>\n"
+            ."  <tr>\n"
+            ."    <td><table border='0' align='center' cellpadding='0' cellspacing='0' width='620'>\n"
+            ."      <tr>\n"
+            ."        <td colspan='2' width='100%'><table border='0' cellpadding='0' cellspacing='0' width='100%' class='noprint'>\n"
+            ."          <tr>\n"
+            ."            <td><h1>Listener</h1></td>\n"
+            ."            <td align='right' valign='bottom'><table border='0' cellpadding='2' cellspacing='0' class='tabTable'>\n"
+            ."              <tr>\n"
+            .$Obj->tabs()
+            ."              </tr>\n"
+            ."            </table></td>\n"
+            ."          </tr>\n"
+            ."        </table>\n"
+            ."        <table border='0' align='center' cellpadding='0' cellspacing='0' class='tableContainer' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td bgcolor='#F5F5F5' class='itemTextCell' height='325' valign='top'>\n"
+            ."<form name='pressure' action='".system_URL."' method='GET'>\n"
+            ."<input type='hidden' name='ID' value='$ID'>\n"
+            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<input type='hidden' name='submode' value=''>\n"
+            ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable' width='100%' height='100%'>\n"
+            ."  <tr>\n"
+            ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."      <tr>\n"
+            ."        <th align='left' class='downloadTableHeadings_nosort'>"
+            ."&nbsp;QNH History for $name".($QTH ? ", $QTH" : "").($SP ? ", $SP" : "").($ITU ? ", $ITU" : "")
+            ."</th>\n"
+            ."      </tr>\n"
+            ."    </table></th>\n"
+            ."  </tr>\n"
+            ."  <tr>\n"
+            ."    <td class='downloadTableContent' height='100%'>"
+            ."<select class='formFixed' name='ICAO_listener'>\n";
 
         $icao_arr =    \Rxx\Rxx::get_local_icao($GSQ, 10, $ICAO_listener);
         for ($i=0; $i<10; $i++) {
-            $out[] =    "<option value='".$icao_arr[$i]['ICAO']."'".($ICAO_listener==$icao_arr[$i]['ICAO'] ? " selected" : "").">".$icao_arr[$i]['ICAO']." (".$icao_arr[$i]['miles']." Miles, ".$icao_arr[$i]['km']." KM)</option>\n";
+            $out.=    "<option value='".$icao_arr[$i]['ICAO']."'".($ICAO_listener==$icao_arr[$i]['ICAO'] ? " selected" : "").">".$icao_arr[$i]['ICAO']." (".$icao_arr[$i]['miles']." Miles, ".$icao_arr[$i]['km']." KM)</option>\n";
         }
-        $out[] =    "</select>\n";
-        $out[] =    "<input type='text' size='2' maxlength='2' name='hours_listener' value='".($hours_listener ? $hours_listener : "12")."' class='formField'> Hours\n";
-        $out[] =    "<input type='submit' value='QNH' class='formButton'>\n";
-        $out[] =    "<input type='button' value='METAR' class='formButton' onclick='popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\"+document.pressure.ICAO_listener.value+\"&std_trans=&chk_metars=on&hoursStr=past+\"+document.pressure.hours_listener.value+\"+hours\",\"popMETAR\",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'>\n";
-        $out[] =    "<input type='button' value='Decoded' class='formButton' onclick='popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\"+document.pressure.ICAO_listener.value+\"&std_trans=translated&chk_metars=on&hoursStr=past+\"+document.pressure.hours_listener.value+\"+hours\",\"popDecoded\",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'><br>\n";
-
-        $out[] =    "<textarea rows='10' cols='60' style='width: 580px; height: 90%;' class='formFixed'>".implode($pressure, "\n")."</textarea><br><br></td>\n";
-        $out[] =    "  </tr>\n";
-        $out[] =    "</table></form></td>\n";
-        $out[] =    "          </tr>\n";
-        $out[] =    "        </table></form></td>\n";
-        $out[] =    "      </tr>\n";
-        $out[] =    "    </table></td>\n";
-        $out[] =    "  </tr>\n";
-        $out[] =    "</table>\n";
-        return implode($out, "");
+        $out.=
+            "</select>\n"
+            ."<input type='text' size='2' maxlength='2' name='hours_listener' value='"
+            .($hours_listener ? $hours_listener : "12")
+            ."' class='formField'> Hours\n"
+            ."<input type='submit' value='QNH' class='formButton'>\n"
+            ."<input type='button' value='METAR' class='formButton' onclick='"
+            ."popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\""
+            ."+document.pressure.ICAO_listener.value+\"&std_trans=&chk_metars=on&hoursStr=past+\""
+            ."+document.pressure.hours_listener.value+\"+hours\",\"popMETAR\""
+            .",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'>\n"
+            ."<input type='button' value='Decoded' class='formButton' onclick='popWin(\"http://adds.aviationweather.noaa.gov/metars/index.php?station_ids=\"+document.pressure.ICAO_listener.value+\"&std_trans=translated&chk_metars=on&hoursStr=past+\"+document.pressure.hours_listener.value+\"+hours\",\"popDecoded\",\"scrollbars=1,resizable=1,location=1\",640,380,\"\");'><br>\n"
+            ."<textarea rows='10' cols='60' style='width: 580px; height: 90%;' class='formFixed'>".$pressure."</textarea><br><br></td>\n"
+            ."  </tr>\n"
+            ."</table></form></td>\n"
+            ."          </tr>\n"
+            ."        </table></form></td>\n"
+            ."      </tr>\n"
+            ."    </table></td>\n"
+            ."  </tr>\n"
+            ."</table>\n";
+        return $out;
     }
 
     /**

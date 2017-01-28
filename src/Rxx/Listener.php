@@ -17,7 +17,7 @@ class Listener extends Record
                  Rxx::tabItem("Signals (".$record['count_signals'].")", "listener_signals", 105)
                 .Rxx::tabItem("Logs (".$record['count_logs'].")", "listener_log", 85)
                 .Rxx::tabItem("Export", "listener_log_export", 45)
-                .(isset($GSQ) ? Rxx::tabItem("QNH", "listener_QNH", 35) : "")
+                .($record['GSQ'] ? Rxx::tabItem("QNH", "listener_QNH", 35) : "")
                 .Rxx::tabItem("Stats", "listener_stats", 45)
                 .(Rxx::isAdmin() ?
                      "                <td class='tabOff' onclick='log_upload(\"".$this->ID."\");'"
