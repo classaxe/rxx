@@ -53,250 +53,37 @@ class LogUploader
         'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm',
         'D',   'DD',  'M',    'MM',   'MMM',   'YY',    'YYYY'
     );
-
-
+   
     public function draw()
     {
-        global $mode, $submode, $log_format, $log_entries, $log_dd, $log_mm, $log_yyyy;
+        global $mode, $submode, $log_format, $log_entries;
         global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
-
-        $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
-        if ($this->listener->getID()) {
-            $this->listener->load();
-        }
-
+        
+        $this->setup();
         $this->html.=
              "<form name='form' action='".system_URL."/".$mode."' method='POST'>"
             ."<input type='hidden' name='submode' value=''>";
         switch ($submode) {
-            case "save_format":
-                $this->updateLogFormat();
-                $submode = '';
-                break;
-            case "submit_log":
-                set_time_limit(600);    // Extend maximum execution time to 10 mins
-                if ($this->debug) {
-                    $this->html.=
-                         "1: Logged at least once from this state<br>"
-                        ."2: No listener yet listed in this state<br>"
-                        ."3: Listener listed, but this is not a duplicate logging so add a new one<br>"
-                        ."4: signal never logged in this state<br>";
-                }
-                for ($i=0; $i<count($ID); $i++) {
-                    if ($this->debug) {
-                        $this->html.=    "<li>ID=".$ID[$i]." ";
-                    }
-                    $update_signal =            false;
-                    $update_signal_heard_in =   true;
-                    $signal =   new \Rxx\Signal($ID[$i]);
-                    $dx =       $signal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
-                    $dx_miles = $dx[0];
-                    $dx_km =    $dx[1];
-                    $daytime =  ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
-                    $heardIn =  ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
-                    $data = array(
-                        'signalID' =>   $ID[$i],
-                        'date' =>       $YYYYMMDD[$i],
-                        'daytime' =>    $daytime,
-                        'heard_in' =>   $heardIn,
-                        'listenerID' => $this->listener->getID(),
-                        'region' =>     $this->listener->record["region"]
-                    );
-                    if ($dx_km) {
-                        $data['dx_km'] =      $dx_km;
-                        $data['dx_miles'] =   $dx_miles;
-                    }
-                    if (htmlentities($fmt[$i])) {
-                        $data['format'] =     htmlentities($fmt[$i]);
-                    }
-                    if ($LSB[$i] !== "") {
-                        $data['LSB'] =        $LSB[$i];
-                    }
-                    if ($LSB_approx[$i]) {
-                        $data['LSB_approx'] = "~";
-                    }
-                    if ($USB[$i] !== "") {
-                        $data['USB'] =        $USB[$i];
-                    }
-                    if ($USB_approx[$i]) {
-                        $data['USB_approx'] = "~";
-                    }
-                    if ($sec[$i]) {
-                        $data['sec'] =        $sec[$i];
-                    }
-                    if ($hhmm[$i]) {
-                        $data['time'] =        $hhmm[$i];
-                    }
-                    if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
-                        if ($this->debug) {
-                            $this->html.=    "1 ";
-                        }
-                        if ($row = \Rxx\Log::checkIfDuplicate(
-                            $ID[$i],
-                            $this->listener->getID(),
-                            $YYYYMMDD[$i],
-                            $hhmm[$i]
-                        )) {
-                            $this->stats['exact_duplicate']++;
-                        } else {
-                            $update_signal = true;
-                            if ($this->debug) {
-                                $this->html.= "3 ";
-                            }
-                            $row = \Rxx\Log::countTimesHeardByListener($ID[$i], $this->listener->getID());
-                            if ($row["count"]) {
-                                $this->stats['repeat_for_listener']++;
-                            } else {
-                                $this->stats['first_for_listener']++;
-                            }
-                            $log = new \Rxx\Log;
-                            $log->insert($data);
-                            $update_signal = true;          // Update signal record (IF this data is the most recent...)
-                        }
-                    } else {
-                        if ($this->debug) {
-                            $this->html.=    "4 ";
-                        }
-                        $log = new \Rxx\Log;
-                        $log->insert($data);
-
-                        $update_signal = true;              // Update signal record (IF this data is the most recent...)
-                        $update_signal_heard_in =    true;  // Update signal heard in record
-                        $this->stats['first_for_state_or_itu']++;
-                        $this->stats['first_for_listener']++;
-                    }
-                    if ($this->debug) {
-                        $this->html.=
-                             "<li>update_signal = "
-                            .($update_signal ? 'Y' : 'N')
-                            .", update_signal_heard_in = "
-                            .($update_signal_heard_in ? 'Y' : 'N')
-                            ."</li>\n";
-                    }
-
-                    if ($update_signal_heard_in) {
-                        $signal->updateHeardInList();
-                    }
-
-                    if ($update_signal) {
-                    // See if the data is more recent than MLR:
-                        $sql =
-                             "SELECT\n"
-                            ."  DATE_FORMAT(`last_heard`,'%Y%m%d') AS `last_heard`\n"
-                            ."FROM\n"
-                            ."  `signals`\n"
-                            ."WHERE\n"
-                            ."  `ID` = \"".$ID[$i]."\"";
-                        $result =    \Rxx\Database::query($sql);
-                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                        if ($row["last_heard"] >= $YYYYMMDD[$i]) {
-                            $update_signal = false;
-                        }
-                    }
-
-                    $sql =
-                         "SELECT\n"
-                        ."  COUNT(*) as `logs`\n"
-                        ."FROM\n"
-                        ."  `logs`\n"
-                        ."WHERE\n"
-                        ."  `signalID` = ".$ID[$i]." AND\n"
-                        ."  `listenerID` != ''";
-                    $result =   \Rxx\Database::query($sql);
-                    $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                    $logs =     $row["logs"];
-
-                    if ($update_signal) {
-                        $this_YYYY =  substr($YYYYMMDD[$i], 0, 4);
-                        $this_MM =    substr($YYYYMMDD[$i], 4, 2);
-                        $this_DD =    substr($YYYYMMDD[$i], 6, 2);
-                        $this->stats['latest_for_signal']++;
-                        $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
-                        \Rxx\Tools\Signal::signal_update_full(
-                            $ID[$i],
-                            $LSB[$i],
-                            $LSB_approx[$i],
-                            $USB[$i],
-                            $USB_approx[$i],
-                            $sec[$i],
-                            htmlentities($fmt[$i]),
-                            $logs,
-                            $last_heard,
-                            $this->listener->record["region"]
-                        );
-                    } else {
-                        $sql =
-                             "UPDATE\n"
-                            ."  `signals`\n"
-                            ."SET\n"
-                            ."  `logs` = $logs,\n"
-                            ."  `heard_in_".$this->listener->record["region"]."`=1\n"
-                            ."WHERE\n"
-                            ."  `ID` = ".$ID[$i];
-                        \Rxx\Database::query($sql);
-                        if ($this->debug) {
-                            $this->html.=    "<pre>$sql</pre>";
-                        }
-                    }
-                }
-                \Rxx\Rxx::update_listener_log_count($this->listener->getID());
-                break;
-        }
-
-        switch ($submode) {
             case "":
-                if ($this->listener->getID()) {
-                    $log_format =    $this->listener->record["log_format"];
-                }
-                $this->html.=
-                     "<h1>Add Log > Parse Data</h1><br>"
-                    ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
-                    ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
-                    ."  <tr>\n"
-                    ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
-                    ."  </tr>\n"
-                    ."  <tr class='rownormal'>\n"
-                    ."    <th align='left'>Listener</th>"
-                    ."    <td colspan='3'>"
-                    ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
-                    ." style='font-family: monospace;'>\n"
-                    .\Rxx\Rxx::get_listener_options_list("1", $this->listener->getID(), "Select Listener")
-                    ."</select>\n"
-                    ."</td>\n"
-                    ."  </tr>\n"
-                    ."</table>\n";
+                $this->drawInputScreen();
                 break;
-
             case "parse_log":
-                $this->listener->updateLogFormat($log_format);
-                $this->listener->load();
+                $this->formatUpdate();
                 $this->html.=
-                     "<h1>Add Log > Confirm Data</h1><br>"
-                    ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
-                    ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
-                    ."  <tr>\n"
-                    ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
-                    ."  </tr>\n"
-                    ."  <tr class='rownormal'>\n"
-                    ."    <th align='left'>Listener</th>\n"
-                    ."    <td colspan='3'>\n"
-                    ."    <input type='hidden' name='listenerID' value='".$this->listener->getID()."'>\n"
-                    .$this->listener->record["name"]
-                    .($this->listener->record["callsign"] ? " <b>".$this->listener->record["callsign"]."</b>" : "")." "
-                    .$this->listener->record["QTH"].", "
-                    .($this->listener->record["SP"] ? $this->listener->record["SP"].", " : "")
-                    .$this->listener->record["ITU"]
-                    .($this->listener->record["notes"] ? " (".stripslashes($this->listener->record["notes"]).")" : "")
-                    ."</td>\n"
-                    ."  </tr>\n"
-                    ."</table>\n";
+                     "<h1>Add Log > Confirm Data</h1><br>";
+                $this->drawListenerDetails();
                 break;
-
+            case "save_format":
+                $this->formatUpdate();
+                $submode = '';
+                $this->drawInputScreen();
+                break;
             case "submit_log":
+                $this->logSubmit();
+                \Rxx\Rxx::update_listener_log_count($this->listener->getID());
                 $this->drawStats();
                 break;
         }
-
         $this->tokens =    array();
         $start =    0;
         $len =      0;
@@ -325,7 +112,11 @@ class LogUploader
                     $this->tokens[$param_name] = array($start,$len+1);
                     if (!in_array($param_name, $valid)) {
                         $tokens[] = $param_name;
-                        $flags[] = "<span style='color:#ff0000;font-weight:bold;cursor:pointer' title='Token not recognised'>".$param_name."</span>";
+                        $flags[] =
+                            "<span style='color:#ff0000;font-weight:bold;cursor:pointer'"
+                           ." title='Token not recognised'>"
+                           .$param_name
+                            ."</span>";
                         $log_format_errors.=
                              "<tr class='rownormal'>\n"
                             ."  <th align='left'>".$param_name."</th>\n"
@@ -335,7 +126,9 @@ class LogUploader
                     }
                 } else {
                     $tokens[] = $param_name;
-                    $flags[] = "<span style='color:#ff00ff;font-weight:bold;cursor:pointer' title='Token occurs more than once'>".$param_name."</span>";
+                    $flags[] =
+                         "<span style='color:#ff00ff;font-weight:bold;cursor:pointer'"
+                        ." title='Token occurs more than once'>".$param_name."</span>";
                     $log_format_errors.=
                          "<tr class='rownormal'>\n"
                         ."  <th align='left'>".$param_name."</th>\n"
@@ -359,13 +152,18 @@ class LogUploader
                 .$log_format_errors
                 ."</table>\n\n"
                 ."<ul>\n"
-                ."  <li>Click <a href='javascript:history.back()'><b><u>here</u></b></a> to check your log format and try again.</li>\n"
-                ."  <li>Click <a href='".system_URL."/admin_help' target='_blank'><b><u>here</u></b></a> for the full list of tokens that can be used.</li>\n"
+                ."  <li>Click <a href='javascript:history.back()'><b><u>here</u></b></a>"
+                ." to check your log format and try again.</li>\n"
+                ."  <li>Click <a href='".system_URL."/admin_help' target='_blank'><b><u>here</u></b></a>"
+                ." for the full list of tokens that can be used.</li>\n"
                 ."</ul>\n";
+            $this->html.=    "</form>";
+            return $this->html;
         }
 
         $this->checkLogDateTokens();
-
+        $this->initialiseDateParser();
+        
         switch ($submode) {
             case "parse_log":
                 if (!isset($this->tokens["ID"])) {
@@ -385,7 +183,8 @@ class LogUploader
                         ."    <th class='SP'>SP</th>\n"
                         ."    <th class='GSQ'>GSQ</th>\n"
                         ."    <th class='QTH'>QTH</th>\n"
-                        ."    <th class='DT' title='Daytime Logging - 10am to 2pm local time for listener'>DT<br /><sup>(*)</sup></th>\n"
+                        ."    <th class='DT' title='Daytime Logging - 10am to 2pm local time for listener'>DT<br />"
+                        ."<sup>(*)</sup></th>\n"
                         ."    <th class='Km'>DX<br />Km</th>\n"
                         ."    <th class='Mi'>DX<br />Mi</th>\n"
                         ."    <th class='HeardIn'>Heard In</th>\n"
@@ -402,252 +201,35 @@ class LogUploader
 
                     $total_loggings =    0;
                     $date_fail =        false;
-                    if (isset($this->tokens["DM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DM\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,1,1)).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["D.M"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.M\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,2,1)).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["DDM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDM\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,2,1)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.M"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.M\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,3,1)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMM\"][0])); return (\$Y.substr(\$t,1,2).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["D.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MM\"][0])); return (\$Y.substr(\$t,2,2).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["DDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMM\"][0])); return (\$Y.substr(\$t,2,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM\"][0])); return (\$Y.substr(\$t,3,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DMMM\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,1,3)).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["D.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"D.MMM\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,2,3)).\\Rxx\\Rxx::D_to_DD(substr(\$t,0,1))); }");
-                    } elseif (isset($this->tokens["DDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMM\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
-                    }
 
-                    if (isset($this->tokens["MD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MD\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,0,1)).\\Rxx\\Rxx::D_to_DD(substr(\$t,1,1))); }");
-                    } elseif (isset($this->tokens["M.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.D\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,0,1)).\\Rxx\\Rxx::D_to_DD(substr(\$t,2,1))); }");
-                    } elseif (isset($this->tokens["MDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MDD\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,0,1)).substr(\$t,1,2)); }");
-                    } elseif (isset($this->tokens["M.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"M.DD\"][0])); return (\$Y.\\Rxx\\Rxx::M_to_MM(substr(\$t,0,1)).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["MMD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMD\"][0])); return (\$Y.substr(\$t,0,2).\\Rxx\\Rxx::D_to_DD(substr(\$t,2,1))); }");
-                    } elseif (isset($this->tokens["MM.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.D\"][0])); return (\$Y.substr(\$t,0,2).\\Rxx\\Rxx::D_to_DD(substr(\$t,3,1))); }");
-                    } elseif (isset($this->tokens["MMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD\"][0])); return (\$Y.substr(\$t,0,2).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMMD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMD\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).\\Rxx\\Rxx::D_to_DD(substr(\$t,3,1))); }");
-                    } elseif (isset($this->tokens["MMM.D"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.D\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).\\Rxx\\Rxx::D_to_DD(substr(\$t,4,1))); }");
-                    } elseif (isset($this->tokens["MMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDD\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD\"][0])); return (\$Y.\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["DDMMYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,4,2)).substr(\$t,2,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MM.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,6,2)).substr(\$t,3,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DDYYMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,2,2)).substr(\$t,4,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.YY.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,3,2)).substr(\$t,6,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["MMDDYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,4,2)).substr(\$t,0,2).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["MM.DD.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,6,2)).substr(\$t,0,2).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYDD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,2,2)).substr(\$t,0,2).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["MM.YY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YY.DD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,3,2)).substr(\$t,0,2).substr(\$t,6,2)); }");
-                    } elseif (isset($this->tokens["YYDDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).substr(\$t,4,2).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["YY.DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).substr(\$t,6,2).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["YYMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMDD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).substr(\$t,2,2).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["YY.MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MM.DD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).substr(\$t,3,2).substr(\$t,6,2)); }");
-                    } elseif (isset($this->tokens["DDMMMYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,5,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MMM.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,7,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DDYYMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYMMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,2,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,4,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.YY.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YY.MMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,3,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["MMMDDYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,5,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMM.DD.YY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YY\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,7,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["MMMYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYDD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,3,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,5,2)); }");
-                    } elseif (isset($this->tokens["MMM.YY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YY.DD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,4,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }");
-                    } elseif (isset($this->tokens["YYDDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYDDMMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,4,3)).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["YY.DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.DD.MMM\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,6,3)).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["YYMMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYMMMDD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,2,3)).substr(\$t,5,2)); }");
-                    } elseif (isset($this->tokens["YY.MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YY.MMM.DD\"][0])); return (\\Rxx\\Rxx::YY_to_YYYY(substr(\$t,0,2)).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,3,3)).substr(\$t,7,2)); }");
-                    } elseif (isset($this->tokens["DDMMYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,2,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MM.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MM.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,3,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DDYYYYMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMM\"][0])); return (substr(\$t,2,4).substr(\$t,6,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.YYYY.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MM\"][0])); return (substr(\$t,3,4).substr(\$t,8,2).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["MMDDYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMDDYYYY\"][0])); return (substr(\$t,4,4).substr(\$t,0,2).substr(\$t,2,2)); }");
-                    } elseif (isset($this->tokens["MM.DD.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.DD.YYYY\"][0])); return (substr(\$t,6,4).substr(\$t,0,2).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMYYYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMYYYYDD\"][0])); return (substr(\$t,2,4).substr(\$t,0,2).substr(\$t,6,2)); }");
-                    } elseif (isset($this->tokens["MM.YYYY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MM.YYYY.DD\"][0])); return (substr(\$t,3,4).substr(\$t,0,2).substr(\$t,8,2)); }");
-                    } elseif (isset($this->tokens["YYYYDDMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMM\"][0])); return (substr(\$t,0,4).substr(\$t,6,2).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["YYYY.DD.MM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MM\"][0])); return (substr(\$t,0,4).substr(\$t,8,2).substr(\$t,5,2)); }");
-                    } elseif (isset($this->tokens["YYYYMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMDD\"][0])); return (substr(\$t,0,4).substr(\$t,4,2).substr(\$t,6,2)); }");
-                    } elseif (isset($this->tokens["YYYY.MM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MM.DD\"][0])); return (substr(\$t,0,4).substr(\$t,5,2).substr(\$t,8,2)); }");
-                    } elseif (isset($this->tokens["DDMMMYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDMMMYYYY\"][0])); return (substr(\$t,5,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,2,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.MMM.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.MMM.YYYY\"][0])); return (substr(\$t,7,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,3,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DDYYYYMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DDYYYYMMM\"][0])); return (substr(\$t,2,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,6,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["DD.YYYY.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"DD.YYYY.MMM\"][0])); return (substr(\$t,3,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,8,3)).substr(\$t,0,2)); }");
-                    } elseif (isset($this->tokens["MMMDDYYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMDDYYYY\"][0])); return (substr(\$t,5,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,3,2)); }");
-                    } elseif (isset($this->tokens["MMM.DD.YYYY"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.DD.YYYY\"][0])); return (substr(\$t,7,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["MMMYYYYDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMMYYYYDD\"][0])); return (substr(\$t,3,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,7,2)); }");
-                    } elseif (isset($this->tokens["MMM.YYYY.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"MMM.YYYY.DD\"][0])); return (substr(\$t,4,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,0,3)).substr(\$t,9,2)); }");
-                    } elseif (isset($this->tokens["YYYYDDMMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYDDMMM\"][0])); return (substr(\$t,0,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,6,3)).substr(\$t,4,2)); }");
-                    } elseif (isset($this->tokens["YYYY.DD.MMM"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.DD.MMM\"][0])); return (substr(\$t,0,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,8,3)).substr(\$t,5,2)); }");
-                    } elseif (isset($this->tokens["YYYYMMMDD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYYMMMDD\"][0])); return (substr(\$t,0,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,4,3)).substr(\$t,7,2)); }");
-                    } elseif (isset($this->tokens["YYYY.MMM.DD"])) {
-                        eval("function parse(\$a,\$b,\$Y,\$M,\$D){\$t = trim(substr(\$b,\$a[\"YYYY.MMM.DD\"][0])); return (substr(\$t,0,4).\\Rxx\\Rxx::MMM_to_MM(substr(\$t,5,3)).substr(\$t,9,2)); }");
-                    }
+                    $specified_YYYY =    \Rxx\Rxx::YY_to_YYYY(\Rxx\Rxx::get_var('log_yyyy'));
+                    $specified_MM =      \Rxx\Rxx::M_to_MM(\Rxx\Rxx::get_var('log_mm'));
+                    $specified_DD =      \Rxx\Rxx::D_to_DD(\Rxx\Rxx::get_var('log_dd'));
+                    foreach ($lines as $line) {
+                        $YYYYMMDD = $this->extractDate($line, $specified_YYYY, $specified_MM, $specified_DD);
+                        $hhmm =     $this->extractTime($line);
+                        $KHZ =      $this->extractKhz($line);
+                        $ID =       $this->extractID($line);
+                        $sec =      $this->extractSec($line);
+                        $fmt =      $this->extractFmt($line);
+                        // The following parameters are only used for simplifying adding of new signals"
+                        // if the input format happens to include them:
+                        $GSQ =      $this->extractGSQ($line);
+                        $QTH =      $this->extractQTH($line);
+                        $ITU =      $this->extractITU($line);
+                        $SP =       $this->extractSP($line);
+                        $PWR =      $this->extractPWR($line);
+                        
+                        $YYYY =     substr($YYYYMMDD, 0, 4);
+                        $MM =       substr($YYYYMMDD, 4, 2);
+                        $DD =       substr($YYYYMMDD, 6, 2);
 
-                    for ($i=0; $i<count($lines); $i++) {
-                        //          print "<pre>".$lines[$i]."</pre>";
-                        $YYYY =    \Rxx\Rxx::YY_to_YYYY($log_yyyy);
-                        $MM =      \Rxx\Rxx::M_to_MM($log_mm);
-                        $DD =      \Rxx\Rxx::D_to_DD($log_dd);
-
-                        if (function_exists("parse")) {
-                            $YYYYMMDD = parse($this->tokens, $lines[$i], $YYYY, $MM, $DD);
-                            $YYYY =     substr($YYYYMMDD, 0, 4);
-                            $MM =       substr($YYYYMMDD, 4, 2);
-                            $DD =       substr($YYYYMMDD, 6, 2);
-                        } elseif (isset($this->tokens["D"]) ||
-                            isset($this->tokens["DD"]) ||
-                            isset($this->tokens["M"]) ||
-                            isset($this->tokens["MM"]) ||
-                            isset($this->tokens["MMM"]) ||
-                            isset($this->tokens["YY"]) ||
-                            isset($this->tokens["YYYY"])
-                        ) {
-                            if (isset($this->tokens["D"])) {
-                                $DD =
-                                    \Rxx\Rxx::D_to_DD(trim(substr($lines[$i], $this->tokens["D"][0], 2)));
-                            }
-                            if (isset($this->tokens["DD"])) {
-                                $DD =
-                                    trim(substr($lines[$i], $this->tokens["DD"][0], $this->tokens["DD"][1]));
-                            }
-                            if (isset($this->tokens["M"])) {
-                                // DD shown in log
-                                $MM =
-                                    \Rxx\Rxx::M_to_MM(trim(substr($lines[$i], $this->tokens["M"][0], $this->tokens["M"][1])));
-                            }
-                            if (isset($this->tokens["MM"])) {
-                                // DD shown in log
-                                $MM =
-                                    trim(substr($lines[$i], $this->tokens["MM"][0], $this->tokens["MM"][1]));
-                            }
-                            if (isset($this->tokens["MMM"])) {
-                                // DD shown in log
-                                $MM =
-                                    \Rxx\Rxx::MMM_to_MM(trim(substr($lines[$i], $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
-                            }
-                            if (isset($this->tokens["YY"])) {
-                                // DD shown in log
-                                $YYYY =
-                                    \Rxx\Rxx::YY_to_YYYY(trim(substr($lines[$i], $this->tokens["YY"][0], $this->tokens["YY"][1])));
-                                    print 'yes';
-                            }
-                            if (isset($this->tokens["YYYY"])) {
-                                // DD shown in log
-                                $YYYY =
-                                    trim(substr($lines[$i], $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
-                            }
-                        }
-
-                        $YYYYMMDD =    $YYYY.$MM.$DD;
-
-                        // Parse Time: Options are hh:mm and hhmm
-                        $hhmm =        "";
-                        if (isset($this->tokens["hh:mm"])) {
-                            // hh:mm shown in log
-                            $hhmm_arr = explode(":", trim(substr($lines[$i], $this->tokens["hh:mm"][0], 6)));
-                            if (isset($hhmm_arr[1])) {
-                                $hhmm =
-                                    (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
-                            }
-                        }
-                        if (isset($this->tokens["hhmm"])) {
-                            // hhmm shown in log
-                            $hhmm =
-                                substr(trim(substr($lines[$i], $this->tokens["hhmm"][0], $this->tokens["hhmm"][1])), 0, 4);
-                        }
-                        if (!is_numeric($hhmm)) {
-                            $hhmm =    "";
-                        }
-                        $KHZ =    (float)(isset($this->tokens["KHZ"]) ?
-                            str_replace(",", ".", trim(substr($lines[$i], $this->tokens["KHZ"][0], $this->tokens["KHZ"][1])))
-                         :
-                            ""
-                        );
-                        $ID =     strtoUpper(trim(substr($lines[$i], $this->tokens["ID"][0], $this->tokens["ID"][1])));
-
-                        $sec =    (isset($this->tokens["sec"]) ?
-                            htmlentities(trim(substr($lines[$i], $this->tokens["sec"][0], $this->tokens["sec"][1])))
-                         :
-                            ""
-                        );
-                        $fmt =    (isset($this->tokens["fmt"]) ?
-                            htmlentities(trim(substr($lines[$i], $this->tokens["fmt"][0], $this->tokens["fmt"][1])))
-                         :
-                            ""
-                        );
                         $LSB =    "";
                         $USB =    "";
                         $LSB_approx =    "";
                         $USB_approx =    "";
                         if (isset($this->tokens["LSB"])) {
-                            $LSB =        trim(substr($lines[$i], $this->tokens["LSB"][0], $this->tokens["LSB"][1]));
+                            $LSB =        trim(substr($line, $this->tokens["LSB"][0], $this->tokens["LSB"][1]));
                             if (substr($LSB, 0, 1)=="~") {
                                 $LSB =    substr($LSB, 1);
                                 $LSB_approx =    "~";
@@ -657,8 +239,13 @@ class LogUploader
                                 $LSB = "";
                             }
                         }
+                        if (isset($this->tokens["~LSB"])) {
+                            $LSB =        trim(substr($line, $this->tokens["~LSB"][0], $this->tokens["~LSB"][1]));
+                            $LSB_approx =    "~";
+                        }
+
                         if (isset($this->tokens["USB"])) {
-                            $USB =        trim(substr($lines[$i], $this->tokens["USB"][0], $this->tokens["USB"][1]));
+                            $USB =        trim(substr($line, $this->tokens["USB"][0], $this->tokens["USB"][1]));
                             if (substr($USB, 0, 1)=="~") {
                                 $USB =    substr($USB, 1);
                                 $USB_approx =    "~";
@@ -667,49 +254,16 @@ class LogUploader
                                 $USB = "";
                             }
                         }
-                        if (isset($this->tokens["~LSB"])) {
-                            $LSB =        trim(substr($lines[$i], $this->tokens["~LSB"][0], $this->tokens["~LSB"][1]));
-                            $LSB_approx =    "~";
-                        }
                         if (isset($this->tokens["~USB"])) {
-                            $USB =        trim(substr($lines[$i], $this->tokens["~USB"][0], $this->tokens["~USB"][1]));
+                            $USB =        trim(substr($line, $this->tokens["~USB"][0], $this->tokens["~USB"][1]));
                             $USB_approx =    "~";
                         }
-
-                        // The following parameters are only used for simplifying adding of new signals"
-                        // if the input format happens to include them:
-                        $GSQ =    (isset($this->tokens["GSQ"]) ?
-                            trim(substr($lines[$i], $this->tokens["GSQ"][0], $this->tokens["GSQ"][1]))
-                         :
-                            ""
-                        );
-                        $QTH =    (isset($this->tokens["QTH"]) ?
-                            trim(substr($lines[$i], $this->tokens["QTH"][0], $this->tokens["QTH"][1]))
-                         :
-                            ""
-                        );
-                        $ITU =    (isset($this->tokens["ITU"]) ?
-                            trim(substr($lines[$i], $this->tokens["ITU"][0], $this->tokens["ITU"][1]))
-                         :
-                            ""
-                        );
-                        $SP =     (isset($this->tokens["SP"]) ?
-                            trim(substr($lines[$i], $this->tokens["SP"][0], $this->tokens["SP"][1]))
-                         :
-                            ""
-                        );
-                        $PWR =    (isset($this->tokens["PWR"]) ?
-                            trim(substr($lines[$i], $this->tokens["PWR"][0], $this->tokens["PWR"][1]))
-                         :
-                            ""
-                        );
-
 
                         if (isset($this->tokens["+SB-"])) {
                             $sb =    str_replace(
                                 "–",
                                 "-",
-                                trim(substr($lines[$i], $this->tokens["+SB-"][0], $this->tokens["+SB-"][1]))
+                                trim(substr($line, $this->tokens["+SB-"][0], $this->tokens["+SB-"][1]))
                             );
                             // Convert hyphen symbol to - (For Steve R's Offsets)
                             $sb_arr =    explode(" ", $sb);
@@ -747,7 +301,6 @@ class LogUploader
                                         $approx = "~";
                                         $sb = substr($sb, 1);
                                     }
-
                                     if (substr($sb, 0, 1)=="+" || substr($sb, strlen($sb)-1, 1)=="+") {
                                         // + at start or end
                                         $USB = abs($sb);
@@ -772,7 +325,7 @@ class LogUploader
                             $sb =    str_replace(
                                 "–",
                                 "-",
-                                trim(substr($lines[$i], $this->tokens["+~SB-"][0], $this->tokens["+~SB-"][1]))
+                                trim(substr($line, $this->tokens["+~SB-"][0], $this->tokens["+~SB-"][1]))
                             );
                             // Convert hyphen symbol to - (For Steve R's Offsets)
                             $sb =    str_replace("~", "", $sb); // Remove ~ symbol now we know it's approx
@@ -835,7 +388,7 @@ class LogUploader
                                 str_replace(
                                     "–",
                                     "-",
-                                    trim(substr($lines[$i], $this->tokens["+K-"][0], $this->tokens["+K-"][1]))
+                                    trim(substr($line, $this->tokens["+K-"][0], $this->tokens["+K-"][1]))
                                 )
                             ); // Convert hyphen symbol to -
                             if ($sb ===    "0.4") {
@@ -865,7 +418,7 @@ class LogUploader
 
 
                         if (isset($this->tokens["ABS"])) {
-                            $ABS =    trim(substr($lines[$i], $this->tokens["ABS"][0], $this->tokens["ABS"][1]));
+                            $ABS =    trim(substr($line, $this->tokens["ABS"][0], $this->tokens["ABS"][1]));
                             $ABS_arr =    explode(" ", $ABS);
                             for ($j=0; $j<count($ABS_arr); $j++) {
                                 //              print "ABS=$ABS, KHZ=$KHZ";
@@ -881,7 +434,7 @@ class LogUploader
                         }
 
                         if (isset($this->tokens["~ABS"])) {
-                            $ABS =    trim(substr($lines[$i], $this->tokens["~ABS"][0], $this->tokens["~ABS"][1]));
+                            $ABS =    trim(substr($line, $this->tokens["~ABS"][0], $this->tokens["~ABS"][1]));
                             $ABS_arr =    explode(" ", $ABS);
                             for ($j=0; $j<count($ABS_arr); $j++) {
                                 $ABS = (double)trim($ABS_arr[$j]);
@@ -955,7 +508,12 @@ class LogUploader
                                                     break;
                                             }
                                         }
-                                        $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lon'], $row["lat"], $row["lon"]);
+                                        $dx = \Rxx\Rxx::get_dx(
+                                            $this->listener->record['lat'],
+                                            $this->listener->record['lon'],
+                                            $row["lat"],
+                                            $row["lon"]
+                                        );
                                         $this->html.=
                                              "  <td class='KHz'>"
                                             ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
@@ -966,7 +524,8 @@ class LogUploader
                                             )
                                             ."</td>\n"
                                             ."  <td$bgcolor class='ID'>"
-                                            ."<a style='font-family:monospace' href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
+                                            ."<a style='font-family:monospace'"
+                                            ." href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
                                             ."</td>\n"
                                             ."  <td class='ITU'>".$row['ITU']."</td>\n"
                                             ."  <td class='SP'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
@@ -984,32 +543,58 @@ class LogUploader
                                             .($row['QTH'] ?
                                                 ""
                                              :
-                                                " bgcolor='#FFE7B9' title='Please provide a value for QTH if you have one'"
+                                                 " bgcolor='#FFE7B9'"
+                                                ." title='Please provide a value for QTH if you have one'"
                                             )
                                             .">"
                                             .$row['QTH']
                                             ."</td>\n"
-                                            ."  <td class='DT center'>".($this->listener->isDaytime($hhmm) ? 'Y' : '')."</td>\n"
-                                            ."  <td class='Km num'>".($dx[1]!=='' ? number_format($dx[1]) : '')."</th>\n"
-                                            ."  <td class='Mi num'>".($dx[0]!=='' ? number_format($dx[0]) : '')."</th>\n"
+                                            ."  <td class='DT center'>"
+                                            .($this->listener->isDaytime($hhmm) ? 'Y' : '')
+                                            ."</td>\n"
+                                            ."  <td class='Km num'>"
+                                            .($dx[1]!=='' ? number_format($dx[1]) : '')
+                                            ."</th>\n"
+                                            ."  <td class='Mi num'>"
+                                            .($dx[0]!=='' ? number_format($dx[0]) : '')
+                                            ."</th>\n"
                                             ."  <td class='HeardIn'>"
-                                            .(strpos($row['heard_in'], ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']))===false ?
+                                            .(strpos(
+                                                $row['heard_in'],
+                                                ($this->listener->record['SP'] ?
+                                                    $this->listener->record['SP']
+                                                 :
+                                                    $this->listener->record['ITU']
+                                                )
+                                            )===false ?
                                                "<font color='#008000'><b>".$row['heard_in']."</b></font>"
                                               :
-                                                \Rxx\Rxx::highlight($row['heard_in'], ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']))
+                                                \Rxx\Rxx::highlight(
+                                                    $row['heard_in'],
+                                                    ($this->listener->record['SP'] ?
+                                                        $this->listener->record['SP']
+                                                     :
+                                                        $this->listener->record['ITU']
+                                                    )
+                                                )
                                             )
                                             ."</td>\n";
-
                                     } else {
                                         $this->html.=
                                              "<tr bgcolor='#ffe0a0'>\n"
                                             ."  <td colspan='10' class='Combined'>"
-                                            ."<select name='ID[]' class='formfixed' style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
+                                            ."<select name='ID[]' class='formfixed'"
+                                            ." style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
                                         $defaultChosen =    false;
                                         $selected =         false;
                                         for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                                            $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lat'], $row["lat"], $row["lon"]);
+                                            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                                            $dx =   \Rxx\Rxx::get_dx(
+                                                $this->listener->record['lat'],
+                                                $this->listener->record['lat'],
+                                                $row["lat"],
+                                                $row["lon"]
+                                            );
                                             if (!$defaultChosen && $row["active"]=="1") {
                                                 $selected = true;
                                                 $defaultChosen =  true;
@@ -1031,7 +616,12 @@ class LogUploader
                                                 .$row["ITU"]." |"
                                                 .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
                                                 .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
-                                                .(strlen($row["QTH"])<25 ? \Rxx\Rxx::pad_nbsp($row["QTH"], 25) : \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25))."|"
+                                                .(strlen($row["QTH"])<25 ?
+                                                    \Rxx\Rxx::pad_nbsp($row["QTH"], 25)
+                                                 :
+                                                    \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25)
+                                                )
+                                                ."|"
                                                 .($this->listener->isDaytime($hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
 
                                                 .\Rxx\Rxx::lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
@@ -1052,7 +642,8 @@ class LogUploader
                                             "</select></td>\n";
                                     }
                                     $this->html.=
-                                        "  <td align='center'><input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
+                                         "  <td align='center'>"
+                                        ."<input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
 
                                     if (strlen($YYYYMMDD)!=8) {
                                         $date_fail = true;
@@ -1063,7 +654,8 @@ class LogUploader
                                         $this->html.=
                                             "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                     } else {
-                                        $this->html.=    ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                        $this->html.=
+                                            ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
                                         if (!checkdate($MM, $DD, $YYYY)) {
                                             $date_fail = true;
                                             $this->html.=
@@ -1118,7 +710,12 @@ class LogUploader
                                     $dx = array('0','0');
                                     if ($GSQ) {
                                         $ll = \Rxx\Rxx::GSQ_deg($GSQ);
-                                        $dx = \Rxx\Rxx::get_dx($this->listener->record['lat'], $this->listener->record['lat'], $ll["lat"], $ll["lon"]);
+                                        $dx = \Rxx\Rxx::get_dx(
+                                            $this->listener->record['lat'],
+                                            $this->listener->record['lat'],
+                                            $ll["lat"],
+                                            $ll["lon"]
+                                        );
                                     }
                                     $this->html.=
                                          "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
@@ -1134,19 +731,24 @@ class LogUploader
                                         ."  <td class='SP'>$SP</td>\n"
                                         ."  <td class='GSQ'>$GSQ</td>\n"
                                         ."  <td class='QTH'>$QTH</td>\n"
-                                        ."  <td class='DT center'>".($this->listener->isDaytime($hhmm) ? 'Y' : '')."</td>\n"
+                                        ."  <td class='DT center'>"
+                                        .($this->listener->isDaytime($hhmm) ? 'Y' : '')
+                                        ."</td>\n"
                                         ."  <td class='Km num'>".($dx[1] ? number_format($dx[1]) : '')."</th>\n"
                                         ."  <td class='Mi num'>".($dx[0] ? number_format($dx[0]) : '')."</th>\n"
                                         ."  <td>&nbsp;</td>\n"
                                         ."  <td align='center'>";
                                     if (strlen($YYYYMMDD)!=8) {
                                         $date_fail = true;
-                                        $this->html.=    "<font color='red'><b><strike>$YYYYMMDD</strike></i></b></font>";
+                                        $this->html.=
+                                            "<font color='red'><b><strike>$YYYYMMDD</strike></i></b></font>";
                                     } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
                                         $date_fail = true;
-                                        $this->html.=    "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                        $this->html.=
+                                            "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
                                     } else {
-                                        $this->html.=    ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                        $this->html.=
+                                            ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
                                         if (!checkdate($MM, $DD, $YYYY)) {
                                             $date_fail = true;
                                             $this->html.=    "<font color='red'><b><strike>$MM</strike></b></font>";
@@ -1171,7 +773,7 @@ class LogUploader
                                         ."\"$ID\",\"$KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
                                         .")'><b>Add...</b></a></td>\n"
                                         ."</tr>";
-                                    $unresolved_signals[] =    $lines[$i];
+                                    $unresolved_signals[] =    $line;
                                 }
                             }
                         }
@@ -1190,7 +792,8 @@ class LogUploader
                         $this->html.=
                              "  <tr class='downloadTableHeadings_nosort'>\n"
                             ."    <th colspan='17'>"
-                            ."<input type='button' value='Serious errors found - Go Back...' id='btn_go' class='formbutton' name='go'"
+                            ."<input type='button' value='Serious errors found - Go Back...' id='btn_go'"
+                            ." class='formbutton' name='go'"
                             ." onclick='history.back()'>"
                             ."<script type='text/javascript'>document.form.go.focus()</script>\n"
                             ."</th>\n"
@@ -1210,14 +813,16 @@ class LogUploader
                             )
                             ." contained in the log</b>.</small><br>"
                             ."<textarea rows='10' cols='90' style='width:1040px'>"
-                            .str_repeat('-', 1+strlen($log_format))."\n"
-                            .$log_format."\n"
-                            .str_repeat('-', 1+strlen($log_format))
+                            .str_repeat('-', 2+strlen($log_format))."\n"
+                            ." ".$log_format."\n"
+                            .str_repeat('-', 2+strlen($log_format))."\n"
                             .implode("", $unresolved_signals)
                             ."</textarea>";
                     } else {
                         $this->html.=
-                            "<span class='p'><small><b>Total Loggings in this report: $total_loggings</b></small></span>";
+                             "<span class='p'><small><b>"
+                            ."Total Loggings in this report: $total_loggings"
+                            ."</b></small></span>";
                     }
 
                     $this->html.=
@@ -1263,13 +868,18 @@ class LogUploader
                 ."    <th class='downloadTableHeadings_nosort'>Log to Parse</th>\n"
                 ."  </tr>\n"
                 ."  <tr class='rownormal'>\n"
-                ."    <td><input name='log_format' class='fixed_heading' size='105' style='width:1040px".($log_format_errors ? ';background:#804040' : '')."' value=\"$log_format\">\n"
+                ."    <td>"
+                ."<input name='log_format' class='fixed_heading' size='105' style='width:1040px"
+                .($log_format_errors ? ';background:#804040' : '')
+                ."' value=\"$log_format\">\n"
                 ."<input class='formbutton' name='save' type='button' value='Save' onclick='"
                 ."this.disabled=true;document.form.go.disabled=true;document.form.conv.disabled=true;"
                 ."document.form.submode.value=\"save_format\";document.form.submit()'>"
                 ."  </tr>\n"
                 ."  <tr class='rownormal'>\n"
-                ."    <td><textarea rows='".($log_format_errors ? 19 : 30)."' cols='110' class='fixed' style='width:1100px' name='log_entries'"
+                ."    <td><textarea rows='"
+                .($log_format_errors ? 19 : 30)
+                ."' cols='110' class='fixed' style='width:1100px' name='log_entries'"
                 ." onKeyUp='check_for_tabs(document.form);'"
                 ." onchange='check_for_tabs(document.form);'>"
                 .stripslashes($log_entries)
@@ -1282,37 +892,40 @@ class LogUploader
                 if (!$this->logHas['DD']) {
                     $this->html.=
                          "Day "
-                        ."<input type='text' name='log_dd' size='2' maxlength='2' class='formfield' value='$log_dd'>\n";
+                        ."<input type='text' name='log_dd' size='2' maxlength='2' class='formfield'"
+                        ." value='".\Rxx\Rxx::get_var('log_dd')."' />\n";
                 }
                 if (!$this->logHas['MM']) {
                     $this->html.=
                          "Month "
-                        ."<input type='text' name='log_mm' size='2' maxlength='2' class='formfield' value='$log_mm'>\n";
+                        ."<input type='text' name='log_mm' size='2' maxlength='2' class='formfield'"
+                        ." value='".\Rxx\Rxx::get_var('log_mm')."' />\n";
                 }
                 if (!$this->logHas['YYYY']) {
                     $this->html.=
                          "Year "
-                        ."<input type='text' name='log_yyyy' size='4' maxlength='4' class='formfield' value='$log_yyyy'>\n";
+                        ."<input type='text' name='log_yyyy' size='4' maxlength='4' class='formfield'"
+                        ." value='".\Rxx\Rxx::get_var('log_yyyy')."' />\n";
                 }
-                $now =        mktime();
-                $now_DD =        gmdate("d", $now);
-                $now_MM =        gmdate("m", $now);
-                $now_YYYY =    gmdate("Y", $now);
+                $now =        time();
+                $now_DD =     gmdate("d", $now);
+                $now_MM =     gmdate("m", $now);
+                $now_YYYY =   gmdate("Y", $now);
 
                 $this->html.=
                      "<input type='button' value='&lt;-- Current' class='formButton' onclick=\""
                     .(!$this->logHas['DD'] ?
-                        "if (document.form.log_dd.value=='')   { document.form.log_dd.value='$now_DD'; };"
+                        "document.form.log_dd.value='$now_DD';"
                      :
                         ""
                     )
                     .(!$this->logHas['MM'] ?
-                        "if (document.form.log_mm.value=='')   { document.form.log_mm.value='$now_MM'; };"
+                        "document.form.log_mm.value='$now_MM';"
                      :
                         ""
                     )
                     .(!$this->logHas['YYYY'] ?
-                        "if (document.form.log_yyyy.value=='') { document.form.log_yyyy.value='$now_YYYY'; };"
+                        "document.form.log_yyyy.value='$now_YYYY';"
                      :
                         ""
                     )
@@ -1340,7 +953,29 @@ class LogUploader
         return $this->html;
     }
 
-    protected function drawStats()
+    private function drawListenerDetails()
+    {
+        $this->html.=
+             "<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
+            ."  <tr>\n"
+            ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
+            ."  </tr>\n"
+            ."  <tr class='rownormal'>\n"
+            ."    <th align='left'>Listener</th>\n"
+            ."    <td colspan='3'>\n"
+            ."    <input type='hidden' name='listenerID' value='".$this->listener->getID()."'>\n"
+            .$this->listener->record["name"]
+            .($this->listener->record["callsign"] ? " <b>".$this->listener->record["callsign"]."</b>" : "")." "
+            .$this->listener->record["QTH"].", "
+            .($this->listener->record["SP"] ? $this->listener->record["SP"].", " : "")
+            .$this->listener->record["ITU"]
+            .($this->listener->record["notes"] ? " (".stripslashes($this->listener->record["notes"]).")" : "")
+            ."</td>\n"
+            ."  </tr>\n"
+            ."</table>\n";
+    }
+
+    private function drawStats()
     {
         global $ID;
         $this->html.=
@@ -1438,9 +1073,457 @@ class LogUploader
         }
     }
 
-    protected function updateLogFormat()
+    private function extractDate($line, $YYYY, $MM, $DD)
     {
-        $this->listener->updateLogFormat(\Rxx\Rxx::get_var('log_format'));
+        if (function_exists("parse")) {
+            $YYYYMMDD = parse($this->tokens, $line, $YYYY, $MM, $DD);
+            $YYYY =     substr($YYYYMMDD, 0, 4);
+            $MM =       substr($YYYYMMDD, 4, 2);
+            $DD =       substr($YYYYMMDD, 6, 2);
+        } elseif (isset($this->tokens["D"]) ||
+            isset($this->tokens["DD"]) ||
+            isset($this->tokens["M"]) ||
+            isset($this->tokens["MM"]) ||
+            isset($this->tokens["MMM"]) ||
+            isset($this->tokens["YY"]) ||
+            isset($this->tokens["YYYY"])
+        ) {
+            if (isset($this->tokens["D"])) {
+                $DD =
+                \Rxx\Rxx::D_to_DD(trim(substr($line, $this->tokens["D"][0], 2)));
+            }
+            if (isset($this->tokens["DD"])) {
+                $DD =
+                trim(substr($line, $this->tokens["DD"][0], $this->tokens["DD"][1]));
+            }
+            if (isset($this->tokens["M"])) {
+                // DD shown in log
+                $MM =
+                \Rxx\Rxx::M_to_MM(trim(substr($line, $this->tokens["M"][0], $this->tokens["M"][1])));
+            }
+            if (isset($this->tokens["MM"])) {
+                // DD shown in log
+                $MM =
+                trim(substr($line, $this->tokens["MM"][0], $this->tokens["MM"][1]));
+            }
+            if (isset($this->tokens["MMM"])) {
+                // DD shown in log
+                $MM =
+                \Rxx\Rxx::MMM_to_MM(trim(substr($line, $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
+            }
+            if (isset($this->tokens["YY"])) {
+                // DD shown in log
+                $YYYY =
+                \Rxx\Rxx::YY_to_YYYY(trim(substr($line, $this->tokens["YY"][0], $this->tokens["YY"][1])));
+                print 'yes';
+            }
+            if (isset($this->tokens["YYYY"])) {
+                // DD shown in log
+                $YYYY =
+                trim(substr($line, $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
+            }
+        }
+        return $YYYY.$MM.$DD;
+    }
+
+    private function extractID($line)
+    {
+        return strtoUpper(trim(substr($line, $this->tokens["ID"][0], $this->tokens["ID"][1])));
+    }
+
+    private function extractKhz($line)
+    {
+        return (float)(isset($this->tokens["KHZ"]) ?
+            str_replace(",", ".", trim(substr($line, $this->tokens["KHZ"][0], $this->tokens["KHZ"][1])))
+         :
+            ""
+        );
+    }
+
+    private function extractSec($line)
+    {
+        return (isset($this->tokens["sec"]) ?
+            htmlentities(trim(substr($line, $this->tokens["sec"][0], $this->tokens["sec"][1])))
+         :
+            ""
+        );
+    }
+
+    private function extractFmt($line)
+    {
+        return (isset($this->tokens["fmt"]) ?
+            htmlentities(trim(substr($line, $this->tokens["fmt"][0], $this->tokens["fmt"][1])))
+         :
+            ""
+        );
+    }
+
+    private function extractGSQ($line)
+    {
+        return (isset($this->tokens["GSQ"]) ?
+            trim(substr($line, $this->tokens["GSQ"][0], $this->tokens["GSQ"][1]))
+         :
+            ""
+        );
+    }
+
+    private function extractITU($line)
+    {
+        return (isset($this->tokens["ITU"]) ?
+            trim(substr($line, $this->tokens["ITU"][0], $this->tokens["ITU"][1]))
+         :
+            ""
+        );
+    }
+
+    private function extractSP($line)
+    {
+        return (isset($this->tokens["SP"]) ?
+            trim(substr($line, $this->tokens["SP"][0], $this->tokens["SP"][1]))
+         :
+            ""
+        );
+    }
+
+    private function extractPWR($line)
+    {
+        return (isset($this->tokens["PWR"]) ?
+            trim(substr($line, $this->tokens["PWR"][0], $this->tokens["PWR"][1]))
+         :
+            ""
+        );
+    }
+
+    private function extractQTH($line)
+    {
+        return (isset($this->tokens["QTH"]) ?
+            trim(substr($line, $this->tokens["QTH"][0], $this->tokens["QTH"][1]))
+         :
+            ""
+        );
+    }
+
+    private function extractTime($line)
+    {
+        $hhmm =        "";
+        if (isset($this->tokens["hh:mm"])) {
+            $hhmm_arr = explode(":", trim(substr($line, $this->tokens["hh:mm"][0], 6)));
+            if (isset($hhmm_arr[1])) {
+                $hhmm = (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
+            }
+        }
+        if (isset($this->tokens["hhmm"])) {
+            $hhmm =     substr(trim(substr($line, $this->tokens["hhmm"][0], $this->tokens["hhmm"][1])), 0, 4);
+        }
+        if (!is_numeric($hhmm)) {
+            $hhmm =    "";
+        }
+        return $hhmm;
+    }
+
+    private function formatUpdate()
+    {
+        global $log_format;
+        $log_format = \Rxx\Rxx::get_var('log_format');
+        $this->listener->updateLogFormat($log_format);
         $this->listener->load();
+    }
+
+    private function drawInputScreen()
+    {
+        $this->html.=
+             "<h1>Add Log > Parse Data</h1><br>"
+            ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+            ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
+            ."  <tr>\n"
+            ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
+            ."  </tr>\n"
+            ."  <tr class='rownormal'>\n"
+            ."    <th align='left'>Listener</th>"
+            ."    <td colspan='3'>"
+            ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
+            ." style='font-family: monospace;'>\n"
+            .\Rxx\Rxx::get_listener_options_list("1", $this->listener->getID(), "Select Listener")
+            ."</select>\n"
+            ."</td>\n"
+            ."  </tr>\n"
+            ."</table>\n";
+    }
+
+    private function logSubmit()
+    {
+        global $log_format, $log_entries;
+        global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
+
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
+        if ($this->debug) {
+            $this->html.=
+                 "1: Logged at least once from this state<br>"
+                ."2: No listener yet listed in this state<br>"
+                ."3: Listener listed, but this is not a duplicate logging so add a new one<br>"
+                ."4: signal never logged in this state<br>";
+        }
+        for ($i=0; $i<count($ID); $i++) {
+            if ($this->debug) {
+                $this->html.=    "<li>ID=".$ID[$i]." ";
+            }
+            $update_signal =            false;
+            $update_signal_heard_in =   true;
+            $signal =   new \Rxx\Signal($ID[$i]);
+            $dx =       $signal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
+            $dx_miles = $dx[0];
+            $dx_km =    $dx[1];
+            $daytime =
+                ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
+            $heardIn =
+                ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
+            $data = array(
+                'signalID' =>   $ID[$i],
+                'date' =>       $YYYYMMDD[$i],
+                'daytime' =>    $daytime,
+                'heard_in' =>   $heardIn,
+                'listenerID' => $this->listener->getID(),
+                'region' =>     $this->listener->record["region"]
+            );
+            if ($dx_km) {
+                $data['dx_km'] =      $dx_km;
+                $data['dx_miles'] =   $dx_miles;
+            }
+            if (htmlentities($fmt[$i])) {
+                $data['format'] =     htmlentities($fmt[$i]);
+            }
+            if ($LSB[$i] !== "") {
+                $data['LSB'] =        $LSB[$i];
+            }
+            if ($LSB_approx[$i]) {
+                $data['LSB_approx'] = "~";
+            }
+            if ($USB[$i] !== "") {
+                $data['USB'] =        $USB[$i];
+            }
+            if ($USB_approx[$i]) {
+                $data['USB_approx'] = "~";
+            }
+            if ($sec[$i]) {
+                $data['sec'] =        $sec[$i];
+            }
+            if ($hhmm[$i]) {
+                $data['time'] =        $hhmm[$i];
+            }
+            if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
+                if ($this->debug) {
+                    $this->html.=    "1 ";
+                }
+                if ($row = \Rxx\Log::checkIfDuplicate(
+                    $ID[$i],
+                    $this->listener->getID(),
+                    $YYYYMMDD[$i],
+                    $hhmm[$i]
+                )) {
+                        $this->stats['exact_duplicate']++;
+                } else {
+                    $update_signal = true;
+                    if ($this->debug) {
+                        $this->html.= "3 ";
+                    }
+                    $row = \Rxx\Log::countTimesHeardByListener($ID[$i], $this->listener->getID());
+                    if ($row["count"]) {
+                        $this->stats['repeat_for_listener']++;
+                    } else {
+                        $this->stats['first_for_listener']++;
+                    }
+                    $log = new \Rxx\Log;
+                    $log->insert($data);
+                    $update_signal = true;          // Update signal record (IF this data is the most recent...)
+                }
+            } else {
+                if ($this->debug) {
+                    $this->html.=    "4 ";
+                }
+                $log = new \Rxx\Log;
+                $log->insert($data);
+        
+                $update_signal = true;              // Update signal record (IF this data is the most recent...)
+                $update_signal_heard_in =    true;  // Update signal heard in record
+                $this->stats['first_for_state_or_itu']++;
+                $this->stats['first_for_listener']++;
+            }
+            if ($this->debug) {
+                $this->html.=
+                     "<li>update_signal = "
+                    .($update_signal ? 'Y' : 'N')
+                    .", update_signal_heard_in = "
+                    .($update_signal_heard_in ? 'Y' : 'N')
+                    ."</li>\n";
+            }
+        
+            if ($update_signal_heard_in) {
+                $signal->updateHeardInList();
+            }
+        
+            if ($update_signal) {
+                // See if the data is more recent than MLR:
+                $sql =
+                     "SELECT\n"
+                    ."  DATE_FORMAT(`last_heard`,'%Y%m%d') AS `last_heard`\n"
+                    ."FROM\n"
+                    ."  `signals`\n"
+                    ."WHERE\n"
+                    ."  `ID` = \"".$ID[$i]."\"";
+                $result =    \Rxx\Database::query($sql);
+                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                if ($row["last_heard"] >= $YYYYMMDD[$i]) {
+                    $update_signal = false;
+                }
+            }
+        
+            $sql =
+                 "SELECT\n"
+                ."  COUNT(*) as `logs`\n"
+                ."FROM\n"
+                ."  `logs`\n"
+                ."WHERE\n"
+                ."  `signalID` = ".$ID[$i]." AND\n"
+                ."  `listenerID` != ''";
+            $result =   \Rxx\Database::query($sql);
+            $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $logs =     $row["logs"];
+
+            if ($update_signal) {
+                $this_YYYY =  substr($YYYYMMDD[$i], 0, 4);
+                $this_MM =    substr($YYYYMMDD[$i], 4, 2);
+                $this_DD =    substr($YYYYMMDD[$i], 6, 2);
+                $this->stats['latest_for_signal']++;
+                $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
+                \Rxx\Tools\Signal::signal_update_full(
+                    $ID[$i],
+                    $LSB[$i],
+                    $LSB_approx[$i],
+                    $USB[$i],
+                    $USB_approx[$i],
+                    $sec[$i],
+                    htmlentities($fmt[$i]),
+                    $logs,
+                    $last_heard,
+                    $this->listener->record["region"]
+                );
+            } else {
+                $sql =
+                     "UPDATE\n"
+                    ."  `signals`\n"
+                    ."SET\n"
+                    ."  `logs` = $logs,\n"
+                    ."  `heard_in_".$this->listener->record["region"]."`=1\n"
+                    ."WHERE\n"
+                    ."  `ID` = ".$ID[$i];
+                \Rxx\Database::query($sql);
+                if ($this->debug) {
+                    $this->html.=    "<pre>$sql</pre>";
+                }
+            }
+        }
+    }
+
+    private function setup()
+    {
+        $this->loadListener();
+    }
+
+    private function initialiseDateParser()
+    {
+        static $dateParsers = array(
+            'DM' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,1,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.M' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDM' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).substr($t,0,2)',
+            'DD.M' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,3,1)).substr($t,0,2)',
+            'DMM' =>         '$Y.substr($t,1,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.MM' =>        '$Y.substr($t,2,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDMM' =>        '$Y.substr($t,2,2).substr($t,0,2)',
+            'DD.MM' =>       '$Y.substr($t,3,2).substr($t,0,2)',
+            'DMMM' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,1,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.MMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDMMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'MD' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,1,1))',
+            'M.D' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
+            'MDD' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,1,2)',
+            'M.DD' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,2,2)',
+            'MMD' =>         '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
+            'MM.D' =>        '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
+            'MMDD' =>        '$Y.substr($t,0,2).substr($t,2,2)',
+            'MM.DD' =>       '$Y.substr($t,0,2).substr($t,3,2)',
+            'MMMD' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
+            'MMM.D' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,4,1))',
+            'MMMDD' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'DDMMYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,2,2).substr($t,0,2)',
+            'DD.MM.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,3,2).substr($t,0,2)',
+            'DDYYMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,4,2).substr($t,0,2)',
+            'DD.YY.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,6,2).substr($t,0,2)',
+            'MMDDYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,0,2).substr($t,2,2)',
+            'MM.DD.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,0,2).substr($t,3,2)',
+            'MMYYDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,0,2).substr($t,4,2)',
+            'MM.YY.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,0,2).substr($t,6,2)',
+            'YYDDMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,4,2).substr($t,2,2)',
+            'YY.DD.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,6,2).substr($t,3,2)',
+            'YYMMDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,2,2).substr($t,4,2)',
+            'YY.MM.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,3,2).substr($t,6,2)',
+            'DDMMMYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'DDYYMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,0,2)',
+            'DD.YY.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
+            'MMMDDYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'MMMYYDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,5,2)',
+            'MMM.YY.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
+            'YYDDMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,2,2)',
+            'YY.DD.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,3,2)',
+            'YYMMMDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,5,2)',
+            'YY.MMM.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,7,2)',
+            'DDMMYYYY' =>    'substr($t,4,4).substr($t,2,2).substr($t,0,2)',
+            'DD.MM.YYYY' =>  'substr($t,6,4).substr($t,3,2).substr($t,0,2)',
+            'DDYYYYMM' =>    'substr($t,2,4).substr($t,6,2).substr($t,0,2)',
+            'DD.YYYY.MM' =>  'substr($t,3,4).substr($t,8,2).substr($t,0,2)',
+            'MMDDYYYY' =>    'substr($t,4,4).substr($t,0,2).substr($t,2,2)',
+            'MM.DD.YYYY' =>  'substr($t,6,4).substr($t,0,2).substr($t,3,2)',
+            'MMYYYYDD' =>    'substr($t,2,4).substr($t,0,2).substr($t,6,2)',
+            'MM.YYYY.DD' =>  'substr($t,3,4).substr($t,0,2).substr($t,8,2)',
+            'YYYYDDMM' =>    'substr($t,0,4).substr($t,6,2).substr($t,4,2)',
+            'YYYY.DD.MM' =>  'substr($t,0,4).substr($t,8,2).substr($t,5,2)',
+            'YYYYMMDD' =>    'substr($t,0,4).substr($t,4,2).substr($t,6,2)',
+            'YYYY.MM.DD' =>  'substr($t,0,4).substr($t,5,2).substr($t,8,2)',
+            'DDMMMYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'DDYYYYMMM' =>   'substr($t,2,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
+            'DD.YYYY.MMM' => 'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,0,2)',
+            'MMMDDYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'MMMYYYYDD' =>   'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
+            'MMM.YYYY.DD' => 'substr($t,4,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,9,2)',
+            'YYYYDDMMM' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,4,2)',
+            'YYYY.DD.MMM' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,5,2)',
+            'YYYYMMMDD' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,7,2)',
+            'YYYY.MMM.DD' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,5,3)).substr($t,9,2)'
+        );
+        foreach ($dateParsers as $key => $code) {
+            if (isset($this->tokens[$key])) {
+                eval(
+                    "function parse(\$a, \$b, \$Y, \$M, \$D){\n"
+                    ."    \$t = trim(substr(\$b, \$a['$key'][0]));\n"
+                    ."     return $code;\n"
+                    ."}\n"
+                );
+            }
+        }
+    }
+
+    private function loadListener()
+    {
+        global $log_format;
+        $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
+        if ($this->listener->getID()) {
+            $this->listener->load();
+            $log_format =    $this->listener->record["log_format"];
+        }
     }
 }
