@@ -57,7 +57,7 @@ class LogUploader
     public function draw()
     {
         global $mode, $submode, $log_format, $log_entries;
-        global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
+        global $fmt, $sec, $ID, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
         
         $this->setup();
         $this->html.=
@@ -160,696 +160,677 @@ class LogUploader
             $this->html.=    "</form>";
             return $this->html;
         }
-
         $this->checkLogDateTokens();
-        $this->initialiseDateParser();
-        
         switch ($submode) {
             case "parse_log":
-                if (!isset($this->tokens["ID"])) {
-                    $this->html.=
-                         "<br><h1>Error</h1><p>Your log format must include the ID field.<br>"
-                        ."Click <a href='javascript:history.back()'><b><u>here</u></b></a>"
-                        ." to check your log format and try again.</p>";
-                } else {
-                    $this->html.=
-                         "<br><span class='p'><b>Parser Results</b><small> - see"
-                        ." <a href='#next'><b>below</b></a> for suggested <b>Next Steps</b></small></span>\n"
-                        ."<table border='0' cellpadding='2' cellspacing='1' bgcolor='#c0c0c0' class='uploadParse'>\n"
-                        ."  <tr class='downloadTableHeadings_nosort'>\n"
-                        ."    <th class='KHz'>KHz</th>\n"
-                        ."    <th class='ID'>ID</th>\n"
-                        ."    <th class='ITU'>ITU</th>\n"
-                        ."    <th class='SP'>SP</th>\n"
-                        ."    <th class='GSQ'>GSQ</th>\n"
-                        ."    <th class='QTH'>QTH</th>\n"
-                        ."    <th class='DT' title='Daytime Logging - 10am to 2pm local time for listener'>DT<br />"
-                        ."<sup>(*)</sup></th>\n"
-                        ."    <th class='Km'>DX<br />Km</th>\n"
-                        ."    <th class='Mi'>DX<br />Mi</th>\n"
-                        ."    <th class='HeardIn'>Heard In</th>\n"
-                        ."    <th class='YYYYMMDD'>YYYYMMDD</th>\n"
-                        ."    <th class='hhmm'>hhmm</th>\n"
-                        ."    <th class='LSB'>LSB</th>\n"
-                        ."    <th class='USB'>USB</th>\n"
-                        ."    <th class='Sec'>Sec</th>\n"
-                        ."    <th class='Fmt'>Fmt</th>\n"
-                        ."    <th class='New'>New?</th>\n"
-                        ."  </tr>\n";
-                    $lines =        explode("\r", " ".stripslashes($log_entries));
-                    $unresolved_signals =    array();
+                $this->html.=
+                     "<br><span class='p'><b>Parser Results</b><small> - see"
+                    ." <a href='#next'><b>below</b></a> for suggested <b>Next Steps</b></small></span>\n"
+                    ."<table border='0' cellpadding='2' cellspacing='1' bgcolor='#c0c0c0' class='uploadParse'>\n"
+                    ."  <tr class='downloadTableHeadings_nosort'>\n"
+                    ."    <th class='KHz'>KHz</th>\n"
+                    ."    <th class='ID'>ID</th>\n"
+                    ."    <th class='ITU'>ITU</th>\n"
+                    ."    <th class='SP'>SP</th>\n"
+                    ."    <th class='GSQ'>GSQ</th>\n"
+                    ."    <th class='QTH'>QTH</th>\n"
+                    ."    <th class='DT' title='Daytime Logging - 10am to 2pm local time for listener'>DT<br />"
+                    ."<sup>(*)</sup></th>\n"
+                    ."    <th class='Km'>DX<br />Km</th>\n"
+                    ."    <th class='Mi'>DX<br />Mi</th>\n"
+                    ."    <th class='HeardIn'>Heard In</th>\n"
+                    ."    <th class='YYYYMMDD'>YYYYMMDD</th>\n"
+                    ."    <th class='hhmm'>hhmm</th>\n"
+                    ."    <th class='LSB'>LSB</th>\n"
+                    ."    <th class='USB'>USB</th>\n"
+                    ."    <th class='Sec'>Sec</th>\n"
+                    ."    <th class='Fmt'>Fmt</th>\n"
+                    ."    <th class='New'>New?</th>\n"
+                    ."  </tr>\n";
+                $lines =        explode("\r", " ".stripslashes($log_entries));
+                $unresolved_signals =    array();
 
-                    $total_loggings =    0;
-                    $date_fail =        false;
+                $total_loggings =    0;
+                $date_fail =        false;
 
-                    $specified_YYYY =    \Rxx\Rxx::YY_to_YYYY(\Rxx\Rxx::get_var('log_yyyy'));
-                    $specified_MM =      \Rxx\Rxx::M_to_MM(\Rxx\Rxx::get_var('log_mm'));
-                    $specified_DD =      \Rxx\Rxx::D_to_DD(\Rxx\Rxx::get_var('log_dd'));
-                    foreach ($lines as $line) {
-                        $YYYYMMDD = $this->extractDate($line, $specified_YYYY, $specified_MM, $specified_DD);
-                        $hhmm =     $this->extractTime($line);
-                        $KHZ =      $this->extractKhz($line);
-                        $ID =       $this->extractID($line);
-                        $sec =      $this->extractSec($line);
-                        $fmt =      $this->extractFmt($line);
-                        // The following parameters are only used for simplifying adding of new signals"
-                        // if the input format happens to include them:
-                        $GSQ =      $this->extractGSQ($line);
-                        $QTH =      $this->extractQTH($line);
-                        $ITU =      $this->extractITU($line);
-                        $SP =       $this->extractSP($line);
-                        $PWR =      $this->extractPWR($line);
-                        
-                        $YYYY =     substr($YYYYMMDD, 0, 4);
-                        $MM =       substr($YYYYMMDD, 4, 2);
-                        $DD =       substr($YYYYMMDD, 6, 2);
+                foreach ($lines as $this->line) {
+                    $line= $this->line;
+                    $YYYYMMDD = $this->extractDate();
+                    $this->extractTime();
+                    $this->extractKhz();
+                    $ID =       $this->extractID();
+                    $sec =      $this->extractSec();
+                    $fmt =      $this->extractFmt();
+                    // The following parameters are only used for simplifying adding of new signals"
+                    // if the input format happens to include them:
+                    $GSQ =      $this->extractGSQ();
+                    $QTH =      $this->extractQTH();
+                    $ITU =      $this->extractITU();
+                    $SP =       $this->extractSP();
+                    $PWR =      $this->extractPWR();
 
-                        $LSB =    "";
-                        $USB =    "";
-                        $LSB_approx =    "";
-                        $USB_approx =    "";
-                        if (isset($this->tokens["LSB"])) {
-                            $LSB =        trim(substr($line, $this->tokens["LSB"][0], $this->tokens["LSB"][1]));
-                            if (substr($LSB, 0, 1)=="~") {
-                                $LSB =    substr($LSB, 1);
-                                $LSB_approx =    "~";
-                            }
-                            if ($LSB=="---") {
-                                // Andy Robins logs use --- as blank
-                                $LSB = "";
-                            }
-                        }
-                        if (isset($this->tokens["~LSB"])) {
-                            $LSB =        trim(substr($line, $this->tokens["~LSB"][0], $this->tokens["~LSB"][1]));
+                    $YYYY =     substr($YYYYMMDD, 0, 4);
+                    $MM =       substr($YYYYMMDD, 4, 2);
+                    $DD =       substr($YYYYMMDD, 6, 2);
+
+                    $LSB =    "";
+                    $USB =    "";
+                    $LSB_approx =    "";
+                    $USB_approx =    "";
+                    if (isset($this->tokens["LSB"])) {
+                        $LSB =        trim(substr($line, $this->tokens["LSB"][0], $this->tokens["LSB"][1]));
+                        if (substr($LSB, 0, 1)=="~") {
+                            $LSB =    substr($LSB, 1);
                             $LSB_approx =    "~";
                         }
-
-                        if (isset($this->tokens["USB"])) {
-                            $USB =        trim(substr($line, $this->tokens["USB"][0], $this->tokens["USB"][1]));
-                            if (substr($USB, 0, 1)=="~") {
-                                $USB =    substr($USB, 1);
-                                $USB_approx =    "~";
-                            }
-                            if ($USB=="---") {
-                                $USB = "";
-                            }
+                        if ($LSB=="---") {
+                            // Andy Robins logs use --- as blank
+                            $LSB = "";
                         }
-                        if (isset($this->tokens["~USB"])) {
-                            $USB =        trim(substr($line, $this->tokens["~USB"][0], $this->tokens["~USB"][1]));
+                    }
+                    if (isset($this->tokens["~LSB"])) {
+                        $LSB =        trim(substr($line, $this->tokens["~LSB"][0], $this->tokens["~LSB"][1]));
+                        $LSB_approx =    "~";
+                    }
+
+                    if (isset($this->tokens["USB"])) {
+                        $USB =        trim(substr($line, $this->tokens["USB"][0], $this->tokens["USB"][1]));
+                        if (substr($USB, 0, 1)=="~") {
+                            $USB =    substr($USB, 1);
                             $USB_approx =    "~";
                         }
+                        if ($USB=="---") {
+                            $USB = "";
+                        }
+                    }
+                    if (isset($this->tokens["~USB"])) {
+                        $USB =        trim(substr($line, $this->tokens["~USB"][0], $this->tokens["~USB"][1]));
+                        $USB_approx =    "~";
+                    }
 
-                        if (isset($this->tokens["+SB-"])) {
-                            $sb =    str_replace(
-                                "–",
-                                "-",
-                                trim(substr($line, $this->tokens["+SB-"][0], $this->tokens["+SB-"][1]))
-                            );
-                            // Convert hyphen symbol to - (For Steve R's Offsets)
-                            $sb_arr =    explode(" ", $sb);
-                            for ($j=0; $j<count($sb_arr); $j++) {
-                                $sb =    trim($sb_arr[$j]);
-                                if ($sb=="X" || $sb=="X-") {
-                                    // Format used by Jim Smith to indicate sb not present
-                                    $sb="";
+                    if (isset($this->tokens["+SB-"])) {
+                        $sb =    str_replace(
+                            "–",
+                            "-",
+                            trim(substr($line, $this->tokens["+SB-"][0], $this->tokens["+SB-"][1]))
+                        );
+                        // Convert hyphen symbol to - (For Steve R's Offsets)
+                        $sb_arr =    explode(" ", $sb);
+                        for ($j=0; $j<count($sb_arr); $j++) {
+                            $sb =    trim($sb_arr[$j]);
+                            if ($sb=="X" || $sb=="X-") {
+                                // Format used by Jim Smith to indicate sb not present
+                                $sb="";
+                            }
+                            if ($sb=="DAID" ||
+                                $sb=="DA2ID" ||
+                                $sb=="DA3ID" ||
+                                $sb=="DBID" ||
+                                $sb=="DB2ID" ||
+                                $sb=="DB3ID") {
+                                $fmt = $sb;
+                            }
+                            if ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
+                            ) {
+                                $USB = abs($sb);
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 1)=="±") {
+                                $USB = abs(substr($sb, 1));
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
+                                $USB = abs(substr($sb, 3));
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
+                                $USB = abs(substr($sb, 2));
+                                $LSB = $USB;
+                            } else {
+                                $approx =    "";
+                                if (substr($sb, 0, 1)=="~") {
+                                    $approx = "~";
+                                    $sb = substr($sb, 1);
                                 }
-                                if ($sb=="DAID" ||
-                                    $sb=="DA2ID" ||
-                                    $sb=="DA3ID" ||
-                                    $sb=="DBID" ||
-                                    $sb=="DB2ID" ||
-                                    $sb=="DB3ID") {
-                                    $fmt = $sb;
-                                }
-                                if ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
-                                    (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
-                                ) {
+                                if (substr($sb, 0, 1)=="+" || substr($sb, strlen($sb)-1, 1)=="+") {
+                                    // + at start or end
                                     $USB = abs($sb);
-                                    $LSB = $USB;
+                                    $USB_approx =    $approx;
+                                } elseif (substr($sb, 0, 1)=="-" || substr($sb, strlen($sb)-1, 1)=="-") {
+                                    // - at start or end
+                                    $LSB = abs($sb);
+                                    $LSB_approx =    $approx;
                                 } elseif (substr($sb, 0, 1)=="±") {
                                     $USB = abs(substr($sb, 1));
                                     $LSB = $USB;
-                                } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
-                                    $USB = abs(substr($sb, 3));
-                                    $LSB = $USB;
-                                } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
-                                    $USB = abs(substr($sb, 2));
-                                    $LSB = $USB;
-                                } else {
-                                    $approx =    "";
-                                    if (substr($sb, 0, 1)=="~") {
-                                        $approx = "~";
-                                        $sb = substr($sb, 1);
-                                    }
-                                    if (substr($sb, 0, 1)=="+" || substr($sb, strlen($sb)-1, 1)=="+") {
-                                        // + at start or end
-                                        $USB = abs($sb);
-                                        $USB_approx =    $approx;
-                                    } elseif (substr($sb, 0, 1)=="-" || substr($sb, strlen($sb)-1, 1)=="-") {
-                                        // - at start or end
-                                        $LSB = abs($sb);
-                                        $LSB_approx =    $approx;
-                                    } elseif (substr($sb, 0, 1)=="±") {
-                                        $USB = abs(substr($sb, 1));
-                                        $LSB = $USB;
-                                    } elseif (is_numeric($sb)) {
-                                        $USB = $sb;
-                                        // neither + nor -, therefore USB
-                                        $USB_approx =    $approx;
-                                    }
+                                } elseif (is_numeric($sb)) {
+                                    $USB = $sb;
+                                    // neither + nor -, therefore USB
+                                    $USB_approx =    $approx;
                                 }
                             }
                         }
+                    }
 
-                        if (isset($this->tokens["+~SB-"])) {
-                            $sb =    str_replace(
-                                "–",
-                                "-",
-                                trim(substr($line, $this->tokens["+~SB-"][0], $this->tokens["+~SB-"][1]))
-                            );
-                            // Convert hyphen symbol to - (For Steve R's Offsets)
-                            $sb =    str_replace("~", "", $sb); // Remove ~ symbol now we know it's approx
-                            $sb_arr =    explode(" ", $sb);
-                            for ($j=0; $j<count($sb_arr); $j++) {
-                                $sb =    trim($sb_arr[$j]);
-                                if ($sb=="DAID" ||
-                                    $sb=="DA2ID" ||
-                                    $sb=="DA3ID" ||
-                                    $sb=="DBID" ||
-                                    $sb=="DB2ID" ||
-                                    $sb=="DB3ID"
-                                ) {
-                                    $fmt = $sb;
-                                } elseif ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
-                                    (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
-                                ) {
+                    if (isset($this->tokens["+~SB-"])) {
+                        $sb =    str_replace(
+                            "–",
+                            "-",
+                            trim(substr($line, $this->tokens["+~SB-"][0], $this->tokens["+~SB-"][1]))
+                        );
+                        // Convert hyphen symbol to - (For Steve R's Offsets)
+                        $sb =    str_replace("~", "", $sb); // Remove ~ symbol now we know it's approx
+                        $sb_arr =    explode(" ", $sb);
+                        for ($j=0; $j<count($sb_arr); $j++) {
+                            $sb =    trim($sb_arr[$j]);
+                            if ($sb=="DAID" ||
+                                $sb=="DA2ID" ||
+                                $sb=="DA3ID" ||
+                                $sb=="DBID" ||
+                                $sb=="DB2ID" ||
+                                $sb=="DB3ID"
+                            ) {
+                                $fmt = $sb;
+                            } elseif ((substr($sb, 0, 1)=="+" && substr($sb, strlen($sb)-1, 1)=="-") ||
+                                (substr($sb, 0, 1)=="-" && substr($sb, strlen($sb)-1, 1)=="+")
+                            ) {
+                                $USB_approx =    "~";
+                                $LSB_approx =    "~";
+                                $USB = abs($sb);
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 1)=="±") {
+                                $USB_approx =    "~";
+                                $LSB_approx =    "~";
+                                $USB = abs(substr($sb, 1));
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
+                                $USB_approx =    "~";
+                                $LSB_approx =    "~";
+                                $USB = abs(substr($sb, 3));
+                                $LSB = $USB;
+                            } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
+                                $USB_approx =    "~";
+                                $LSB_approx =    "~";
+                                $USB = abs(substr($sb, 2));
+                                $LSB = $USB;
+                            } else {
+                                if (substr($sb, 0, 1)=="+" || substr($sb, strlen($sb)-1, 1)=="+") {
+                                    // + at start or end
                                     $USB_approx =    "~";
-                                    $LSB_approx =    "~";
                                     $USB = abs($sb);
-                                    $LSB = $USB;
-                                } elseif (substr($sb, 0, 1)=="±") {
-                                    $USB_approx =    "~";
+                                } elseif (substr($sb, 0, 1)=="-" || substr($sb, strlen($sb)-1, 1)=="-") {
+                                    // - at start or end
                                     $LSB_approx =    "~";
-                                    $USB = abs(substr($sb, 1));
-                                    $LSB = $USB;
-                                } elseif (substr($sb, 0, 3)=="+/-" || substr($sb, 0, 3)=="-/+") {
-                                    $USB_approx =    "~";
-                                    $LSB_approx =    "~";
-                                    $USB = abs(substr($sb, 3));
-                                    $LSB = $USB;
-                                } elseif (substr($sb, 0, 2)=="+-" || substr($sb, 0, 2)=="-+") {
-                                    $USB_approx =    "~";
-                                    $LSB_approx =    "~";
-                                    $USB = abs(substr($sb, 2));
-                                    $LSB = $USB;
+                                    $LSB =     abs($sb);
                                 } else {
-                                    if (substr($sb, 0, 1)=="+" || substr($sb, strlen($sb)-1, 1)=="+") {
-                                        // + at start or end
+                                    if (is_numeric($sb)) {
                                         $USB_approx =    "~";
-                                        $USB = abs($sb);
-                                    } elseif (substr($sb, 0, 1)=="-" || substr($sb, strlen($sb)-1, 1)=="-") {
-                                        // - at start or end
-                                        $LSB_approx =    "~";
-                                        $LSB =     abs($sb);
-                                    } else {
-                                        if (is_numeric($sb)) {
-                                            $USB_approx =    "~";
-                                            $USB =         $sb;
-                                            // neither + nor -, therefore USB
-                                        }
+                                        $USB =         $sb;
+                                        // neither + nor -, therefore USB
                                     }
                                 }
                             }
                         }
+                    }
 
-                        // Cope with Brian Keyte's +0.4 1- offsets
-                        if (isset($this->tokens["+K-"])) {
-                            $sb = trim(
-                                str_replace(
-                                    "–",
-                                    "-",
-                                    trim(substr($line, $this->tokens["+K-"][0], $this->tokens["+K-"][1]))
-                                )
-                            ); // Convert hyphen symbol to -
-                            if ($sb ===    "0.4") {
-                                $USB_approx =    "~";
-                                $LSB_approx =    "~";
-                                $USB = "400";
-                                $LSB = "400";
-                            } elseif ($sb ===    "+0.4") {
-                                $USB_approx =    "~";
-                                $USB = "400";
-                            } elseif ($sb ===    "-0.4") {
-                                $LSB_approx =    "~";
-                                $LSB = "400";
-                            } elseif ($sb ===    "1") {
-                                $USB_approx =    "~";
-                                $LSB_approx =    "~";
-                                $USB = "1020";
-                                $LSB = "1020";
-                            } elseif ($sb ===    "+1") {
-                                $USB_approx =    "~";
-                                $USB = "1020";
-                            } elseif ($sb ===    "-1") {
-                                $LSB_approx =    "~";
-                                $LSB = "1020";
-                            }
+                    // Cope with Brian Keyte's +0.4 1- offsets
+                    if (isset($this->tokens["+K-"])) {
+                        $sb = trim(
+                            str_replace(
+                                "–",
+                                "-",
+                                trim(substr($line, $this->tokens["+K-"][0], $this->tokens["+K-"][1]))
+                            )
+                        ); // Convert hyphen symbol to -
+                        if ($sb ===    "0.4") {
+                            $USB_approx =    "~";
+                            $LSB_approx =    "~";
+                            $USB = "400";
+                            $LSB = "400";
+                        } elseif ($sb ===    "+0.4") {
+                            $USB_approx =    "~";
+                            $USB = "400";
+                        } elseif ($sb ===    "-0.4") {
+                            $LSB_approx =    "~";
+                            $LSB = "400";
+                        } elseif ($sb ===    "1") {
+                            $USB_approx =    "~";
+                            $LSB_approx =    "~";
+                            $USB = "1020";
+                            $LSB = "1020";
+                        } elseif ($sb ===    "+1") {
+                            $USB_approx =    "~";
+                            $USB = "1020";
+                        } elseif ($sb ===    "-1") {
+                            $LSB_approx =    "~";
+                            $LSB = "1020";
                         }
+                    }
 
 
-                        if (isset($this->tokens["ABS"])) {
-                            $ABS =    trim(substr($line, $this->tokens["ABS"][0], $this->tokens["ABS"][1]));
-                            $ABS_arr =    explode(" ", $ABS);
-                            for ($j=0; $j<count($ABS_arr); $j++) {
-                                //              print "ABS=$ABS, KHZ=$KHZ";
-                                $ABS = (double)trim($ABS_arr[$j]);
-                                if ($ABS) {
-                                    if ($ABS>(float)$KHZ) {
-                                        $USB = round((1000*($ABS-$KHZ)));
-                                    } else {
-                                        $LSB = round((1000*($KHZ-$ABS)));
-                                    }
+                    if (isset($this->tokens["ABS"])) {
+                        $ABS =    trim(substr($line, $this->tokens["ABS"][0], $this->tokens["ABS"][1]));
+                        $ABS_arr =    explode(" ", $ABS);
+                        for ($j=0; $j<count($ABS_arr); $j++) {
+                            //              print "ABS=$ABS, KHZ=$this->KHZ";
+                            $ABS = (double)trim($ABS_arr[$j]);
+                            if ($ABS) {
+                                if ($ABS>(float)$this->KHZ) {
+                                    $USB = round((1000*($ABS-$this->KHZ)));
+                                } else {
+                                    $LSB = round((1000*($this->KHZ-$ABS)));
                                 }
                             }
                         }
+                    }
 
-                        if (isset($this->tokens["~ABS"])) {
-                            $ABS =    trim(substr($line, $this->tokens["~ABS"][0], $this->tokens["~ABS"][1]));
-                            $ABS_arr =    explode(" ", $ABS);
-                            for ($j=0; $j<count($ABS_arr); $j++) {
-                                $ABS = (double)trim($ABS_arr[$j]);
-                                if ($ABS) {
-                                    if ($ABS>(float)$KHZ) {
-                                        $USB = round((1000*($ABS-$KHZ)));
-                                        $USB_approx = "~";
-                                    } else {
-                                        $LSB = round((1000*($KHZ-$ABS)));
-                                        $LSB_approx = "~";
-                                    }
+                    if (isset($this->tokens["~ABS"])) {
+                        $ABS =    trim(substr($line, $this->tokens["~ABS"][0], $this->tokens["~ABS"][1]));
+                        $ABS_arr =    explode(" ", $ABS);
+                        for ($j=0; $j<count($ABS_arr); $j++) {
+                            $ABS = (double)trim($ABS_arr[$j]);
+                            if ($ABS) {
+                                if ($ABS>(float)$this->KHZ) {
+                                    $USB = round((1000*($ABS-$this->KHZ)));
+                                    $USB_approx = "~";
+                                } else {
+                                    $LSB = round((1000*($this->KHZ-$ABS)));
+                                    $LSB_approx = "~";
                                 }
                             }
                         }
+                    }
 
-                        $YYYYMMDD =    abs($YYYYMMDD);
-
-
+                    if ($ID && $YYYYMMDD) {
+                        $sta_sel =    "";
                         if ($ID && $YYYYMMDD) {
-                            $sta_sel =    "";
-                            if ($ID && $YYYYMMDD) {
-                                $sql =
-                                     "SELECT\n"
-                                    ."  *\n"
-                                    ."FROM\n"
-                                    ."  `signals`\n"
-                                    ."WHERE\n"
-                                    .($KHZ ?
-                                    ($KHZ>1740 ?
-                                    "  `khz` >= $KHZ-".swing_HF." AND `khz` <= $KHZ+".swing_HF." AND\n"
-                                    :
-                                    "  `khz` >= $KHZ-".swing_LF." AND `khz` <= $KHZ+".swing_LF." AND\n")
-                                    :
+                            $swing = ($this->KHZ>1740 ? swing_LF : swing_HF);
+                            $sql =
+                                 "SELECT\n"
+                                ."  *\n"
+                                ."FROM\n"
+                                ."  `signals`\n"
+                                ."WHERE\n"
+                                .($this->KHZ ?
+                                    "  `khz` >= $this->KHZ-".$swing." AND `khz` <= $this->KHZ+".$swing." AND\n"
+                                 :
                                     ""
-                                    )
-                                    ." `call` = \"$ID\"";
-                                //              print("<pre>$sql</pre>");
-
-                                $result = @\Rxx\Database::query($sql);
-                                if (\Rxx\Database::getError()) {
-                                    $this->html.= "Problem looking up station - frequency was $KHZ";
-                                }
-                                if ($result && \Rxx\Database::numRows($result)) {
-                                    $total_loggings++;
-                                    if (\Rxx\Database::numRows($result) == 1) {
-                                        $this->html.=    "<tr class='rownormal'>\n";
-                                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                                        $bgcolor =    "";
-                                        if (!$row["active"]) {
-                                            $bgcolor =
-                                                " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
-                                        } else {
-                                            switch ($row["type"]) {
-                                                case NDB:
-                                                    $bgcolor = "";
-                                                    break;
-                                                case DGPS:
-                                                    $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
-                                                    break;
-                                                case TIME:
-                                                    $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
-                                                    break;
-                                                case NAVTEX:
-                                                    $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
-                                                    break;
-                                                case HAMBCN:
-                                                    $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
-                                                    break;
-                                                case OTHER:
-                                                    $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
-                                                    break;
-                                            }
+                                 )
+                                ." `call` = \"$ID\"";
+                            $result = @\Rxx\Database::query($sql);
+                            if (\Rxx\Database::getError()) {
+                                $this->html.= "Problem looking up station - frequency was $this->KHZ";
+                            }
+                            if ($result && \Rxx\Database::numRows($result)) {
+                                $total_loggings++;
+                                if (\Rxx\Database::numRows($result) == 1) {
+                                    $this->html.=    "<tr class='rownormal'>\n";
+                                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                                    $bgcolor =    "";
+                                    if (!$row["active"]) {
+                                        $bgcolor =
+                                            " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
+                                    } else {
+                                        switch ($row["type"]) {
+                                            case NDB:
+                                                $bgcolor = "";
+                                                break;
+                                            case DGPS:
+                                                $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
+                                                break;
+                                            case TIME:
+                                                $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
+                                                break;
+                                            case NAVTEX:
+                                                $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
+                                                break;
+                                            case HAMBCN:
+                                                $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
+                                                break;
+                                            case OTHER:
+                                                $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
+                                                break;
                                         }
-                                        $dx = \Rxx\Rxx::get_dx(
-                                            $this->listener->record['lat'],
-                                            $this->listener->record['lon'],
-                                            $row["lat"],
-                                            $row["lon"]
-                                        );
-                                        $this->html.=
-                                             "  <td class='KHz'>"
-                                            ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
-                                            .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
-                                                "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
+                                    }
+                                    $dx = \Rxx\Rxx::get_dx(
+                                        $this->listener->record['lat'],
+                                        $this->listener->record['lon'],
+                                        $row["lat"],
+                                        $row["lon"]
+                                    );
+                                    $this->html.=
+                                         "  <td class='KHz'>"
+                                        ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
+                                        .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
+                                            "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
+                                         :
+                                            (float)$row['khz']
+                                        )
+                                        ."</td>\n"
+                                        ."  <td$bgcolor class='ID'>"
+                                        ."<a style='font-family:monospace'"
+                                        ." href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
+                                        ."</td>\n"
+                                        ."  <td class='ITU'>".$row['ITU']."</td>\n"
+                                        ."  <td class='SP'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
+                                        ."  <td class='GSQ'>"
+                                        .($row["GSQ"] ?
+                                             "<a href='javascript:popup_map("
+                                            ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
+                                            .")' title='Show map (accuracy limited to nearest Grid Square)'>"
+                                            .$row["GSQ"]."</a>"
+                                         :
+                                            "&nbsp;"
+                                         )
+                                        ."</td>\n"
+                                        ."  <td class='QTH'"
+                                        .($row['QTH'] ?
+                                            ""
+                                         :
+                                             " bgcolor='#FFE7B9'"
+                                            ." title='Please provide a value for QTH if you have one'"
+                                        )
+                                        .">"
+                                        .$row['QTH']
+                                        ."</td>\n"
+                                        ."  <td class='DT center'>"
+                                        .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
+                                        ."</td>\n"
+                                        ."  <td class='Km num'>"
+                                        .($dx[1]!=='' ? number_format($dx[1]) : '')
+                                        ."</th>\n"
+                                        ."  <td class='Mi num'>"
+                                        .($dx[0]!=='' ? number_format($dx[0]) : '')
+                                        ."</th>\n"
+                                        ."  <td class='HeardIn'>"
+                                        .(strpos(
+                                            $row['heard_in'],
+                                            ($this->listener->record['SP'] ?
+                                                $this->listener->record['SP']
                                              :
-                                                (float)$row['khz']
+                                                $this->listener->record['ITU']
                                             )
-                                            ."</td>\n"
-                                            ."  <td$bgcolor class='ID'>"
-                                            ."<a style='font-family:monospace'"
-                                            ." href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
-                                            ."</td>\n"
-                                            ."  <td class='ITU'>".$row['ITU']."</td>\n"
-                                            ."  <td class='SP'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
-                                            ."  <td class='GSQ'>"
-                                            .($row["GSQ"] ?
-                                                 "<a href='javascript:popup_map("
-                                                ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
-                                                .")' title='Show map (accuracy limited to nearest Grid Square)'>"
-                                                .$row["GSQ"]."</a>"
-                                             :
-                                                "&nbsp;"
-                                             )
-                                            ."</td>\n"
-                                            ."  <td class='QTH'"
-                                            .($row['QTH'] ?
-                                                ""
-                                             :
-                                                 " bgcolor='#FFE7B9'"
-                                                ." title='Please provide a value for QTH if you have one'"
-                                            )
-                                            .">"
-                                            .$row['QTH']
-                                            ."</td>\n"
-                                            ."  <td class='DT center'>"
-                                            .($this->listener->isDaytime($hhmm) ? 'Y' : '')
-                                            ."</td>\n"
-                                            ."  <td class='Km num'>"
-                                            .($dx[1]!=='' ? number_format($dx[1]) : '')
-                                            ."</th>\n"
-                                            ."  <td class='Mi num'>"
-                                            .($dx[0]!=='' ? number_format($dx[0]) : '')
-                                            ."</th>\n"
-                                            ."  <td class='HeardIn'>"
-                                            .(strpos(
+                                        )===false ?
+                                           "<font color='#008000'><b>".$row['heard_in']."</b></font>"
+                                          :
+                                            \Rxx\Rxx::highlight(
                                                 $row['heard_in'],
                                                 ($this->listener->record['SP'] ?
                                                     $this->listener->record['SP']
                                                  :
                                                     $this->listener->record['ITU']
                                                 )
-                                            )===false ?
-                                               "<font color='#008000'><b>".$row['heard_in']."</b></font>"
-                                              :
-                                                \Rxx\Rxx::highlight(
-                                                    $row['heard_in'],
-                                                    ($this->listener->record['SP'] ?
-                                                        $this->listener->record['SP']
-                                                     :
-                                                        $this->listener->record['ITU']
-                                                    )
-                                                )
                                             )
-                                            ."</td>\n";
-                                    } else {
-                                        $this->html.=
-                                             "<tr bgcolor='#ffe0a0'>\n"
-                                            ."  <td colspan='10' class='Combined'>"
-                                            ."<select name='ID[]' class='formfixed'"
-                                            ." style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
-                                        $defaultChosen =    false;
-                                        $selected =         false;
-                                        for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                                            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                                            $dx =   \Rxx\Rxx::get_dx(
-                                                $this->listener->record['lat'],
-                                                $this->listener->record['lat'],
-                                                $row["lat"],
-                                                $row["lon"]
-                                            );
-                                            if (!$defaultChosen && $row["active"]=="1") {
-                                                $selected = true;
-                                                $defaultChosen =  true;
-                                            }
-                                            $title =
-                                                 (float)$row["khz"]." | "
-                                                .$ID." | "
-                                                .$row["ITU"]." | "
-                                                .($row["SP"] ? $row["SP"] : '  ')." | "
-                                                .$row["GSQ"]." | "
-                                                .$row["QTH"]." | "
-                                                .($this->listener->isDaytime($hhmm) ? 'Y' : ' ')." | "
-                                                .($dx[1]!=='' ? number_format($dx[1])."km" : "  ")." | "
-                                                .($dx[0]!=='' ? number_format($dx[0])."mi" : "  ")." | "
-                                                .$row["heard_in"];
-                                            $label =
-                                                 \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
-                                                .\Rxx\Rxx::pad_nbsp($ID, 5)."|"
-                                                .$row["ITU"]." |"
-                                                .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
-                                                .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
-                                                .(strlen($row["QTH"])<25 ?
-                                                    \Rxx\Rxx::pad_nbsp($row["QTH"], 25)
-                                                 :
-                                                    \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25)
-                                                )
-                                                ."|"
-                                                .($this->listener->isDaytime($hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
-
-                                                .\Rxx\Rxx::lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
-                                                .\Rxx\Rxx::lead_nbsp($dx[0]!=='' ? number_format($dx[0]) : "", 6)."|"
-                                                .$row["heard_in"];
-
-                                            $this->html.=
-                                                 "<option title='".$title."'"
-                                                .($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")
-                                                ." value='".$row["ID"]."'"
-                                                .($selected ? " selected='selected'" : "")
-                                                .">"
-                                                .$label
-                                                ."</option>\n";
-                                            $selected = false;
-                                        }
-                                        $this->html.=
-                                            "</select></td>\n";
-                                    }
-                                    $this->html.=
-                                         "  <td align='center'>"
-                                        ."<input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
-
-                                    if (strlen($YYYYMMDD)!=8) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
-                                    } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
-                                    } else {
-                                        $this->html.=
-                                            ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
-                                        if (!checkdate($MM, $DD, $YYYY)) {
-                                            $date_fail = true;
-                                            $this->html.=
-                                                "<font color='red'><b><strike>$MM</strike></b></font>";
-                                        } else {
-                                            $this->html.=    $MM;
-                                        }
-                                        if (!checkdate($MM, $DD, $YYYY)) {
-                                            $date_fail = true;
-                                            $this->html.=
-                                                "<font color='red'><b><strike>$DD</strike></b></font>";
-                                        } else {
-                                            $this->html.=    $DD;
-                                        }
-                                    }
-                                    $this->html.=
-                                         "</td>\n"
-                                        ."  <td align='center'><input type='hidden' name='hhmm[]' value='$hhmm'>";
-                                    if ((strlen($hhmm)!=0 && strlen($hhmm)!=4) ||
-                                        substr($hhmm, 0, 2)>23 || substr($hhmm, 2, 2)>59
-                                    ) {
-                                        $date_fail = true;
-                                        $this->html.=    "<font color='red'><b><strike>$hhmm</strike></b></font>";
-                                    } else {
-                                        $this->html.=    $hhmm;
-                                    }
-                                    $this->html.=
-                                         "</td>\n"
-                                        ."  <td>"
-                                        ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
-                                        ."<input type='hidden' name='LSB[]' value='$LSB'>"
-                                        .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
-                                            "<font color='#FF8C00'><b>$LSB_approx$LSB</b></font>"
-                                        :
-                                            "$LSB_approx$LSB"
                                         )
-                                        ."</td>\n"
-                                        ."  <td>"
-                                        ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
-                                        ."<input type='hidden' name='USB[]' value='$USB'>"
-                                        .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
-                                            "<font color='#FF8C00'><b>$USB_approx$USB</b></font>"
-                                         :
-                                            "$USB_approx$USB"
-                                        )
-                                        ."</td>\n"
-                                        ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
-                                        ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                        ."  <td align='center'></td>\n"
-                                        ."</tr>\n";
+                                        ."</td>\n";
                                 } else {
-                                    $dx = array('0','0');
-                                    if ($GSQ) {
-                                        $ll = \Rxx\Rxx::GSQ_deg($GSQ);
-                                        $dx = \Rxx\Rxx::get_dx(
+                                    $this->html.=
+                                         "<tr bgcolor='#ffe0a0'>\n"
+                                        ."  <td colspan='10' class='Combined'>"
+                                        ."<select name='ID[]' class='formfixed'"
+                                        ." style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
+                                    $defaultChosen =    false;
+                                    $selected =         false;
+                                    for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
+                                        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                                        $dx =   \Rxx\Rxx::get_dx(
                                             $this->listener->record['lat'],
                                             $this->listener->record['lat'],
-                                            $ll["lat"],
-                                            $ll["lon"]
+                                            $row["lat"],
+                                            $row["lon"]
                                         );
+                                        if (!$defaultChosen && $row["active"]=="1") {
+                                            $selected = true;
+                                            $defaultChosen =  true;
+                                        }
+                                        $title =
+                                             (float)$row["khz"]." | "
+                                            .$ID." | "
+                                            .$row["ITU"]." | "
+                                            .($row["SP"] ? $row["SP"] : '  ')." | "
+                                            .$row["GSQ"]." | "
+                                            .$row["QTH"]." | "
+                                            .($this->listener->isDaytime($this->hhmm) ? 'Y' : ' ')." | "
+                                            .($dx[1]!=='' ? number_format($dx[1])."km" : "  ")." | "
+                                            .($dx[0]!=='' ? number_format($dx[0])."mi" : "  ")." | "
+                                            .$row["heard_in"];
+                                        $label =
+                                             \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
+                                            .\Rxx\Rxx::pad_nbsp($ID, 5)."|"
+                                            .$row["ITU"]." |"
+                                            .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
+                                            .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
+                                            .(strlen($row["QTH"])<25 ?
+                                                \Rxx\Rxx::pad_nbsp($row["QTH"], 25)
+                                             :
+                                                \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25)
+                                            )
+                                            ."|"
+                                            .($this->listener->isDaytime($this->hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
+
+                                            .\Rxx\Rxx::lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
+                                            .\Rxx\Rxx::lead_nbsp($dx[0]!=='' ? number_format($dx[0]) : "", 6)."|"
+                                            .$row["heard_in"];
+
+                                        $this->html.=
+                                             "<option title='".$title."'"
+                                            .($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")
+                                            ." value='".$row["ID"]."'"
+                                            .($selected ? " selected='selected'" : "")
+                                            .">"
+                                            .$label
+                                            ."</option>\n";
+                                        $selected = false;
                                     }
                                     $this->html.=
-                                         "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
-                                        ."  <td>"
-                                        .(((float)$KHZ<198 || (float)$KHZ > 530) ?
-                                            "<font color='#FF8C00'><b>".(float)$KHZ."</b></font>"
-                                         :
-                                            (float)$KHZ
-                                        )
-                                        ."</td>\n"
-                                        ."  <td class='ID'>$ID</td>\n"
-                                        ."  <td class='ITU'>$ITU</td>\n"
-                                        ."  <td class='SP'>$SP</td>\n"
-                                        ."  <td class='GSQ'>$GSQ</td>\n"
-                                        ."  <td class='QTH'>$QTH</td>\n"
-                                        ."  <td class='DT center'>"
-                                        .($this->listener->isDaytime($hhmm) ? 'Y' : '')
-                                        ."</td>\n"
-                                        ."  <td class='Km num'>".($dx[1] ? number_format($dx[1]) : '')."</th>\n"
-                                        ."  <td class='Mi num'>".($dx[0] ? number_format($dx[0]) : '')."</th>\n"
-                                        ."  <td>&nbsp;</td>\n"
-                                        ."  <td align='center'>";
-                                    if (strlen($YYYYMMDD)!=8) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<font color='red'><b><strike>$YYYYMMDD</strike></i></b></font>";
-                                    } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
-                                    } else {
-                                        $this->html.=
-                                            ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
-                                        if (!checkdate($MM, $DD, $YYYY)) {
-                                            $date_fail = true;
-                                            $this->html.=    "<font color='red'><b><strike>$MM</strike></b></font>";
-                                        } else {
-                                            $this->html.=    $MM;
-                                        }
-                                        if (!checkdate($MM, $DD, $YYYY)) {
-                                            $date_fail = true;
-                                            $this->html.=    "<font color='red'><b><strike>$DD</strike></b></font>";
-                                        } else {
-                                            $this->html.=    $DD;
-                                        }
-                                    }
-                                    $this->html.=
-                                         "</td>\n"
-                                        ."  <td align='center'>$hhmm</td>\n"
-                                        ."  <td>$LSB_approx$LSB</td>\n"
-                                        ."  <td>$USB_approx$USB</td>\n"
-                                        ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
-                                        ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                        ."  <td><a href='javascript:signal_add("
-                                        ."\"$ID\",\"$KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
-                                        .")'><b>Add...</b></a></td>\n"
-                                        ."</tr>";
-                                    $unresolved_signals[] =    $line;
+                                        "</select></td>\n";
                                 }
+                                $this->html.=
+                                     "  <td align='center'>"
+                                    ."<input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
+
+                                if (strlen($YYYYMMDD)!=8) {
+                                    $date_fail = true;
+                                    $this->html.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
+                                    $date_fail = true;
+                                    $this->html.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                } else {
+                                    $this->html.=
+                                        ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                    if (!checkdate($MM, $DD, $YYYY)) {
+                                        $date_fail = true;
+                                        $this->html.=
+                                            "<font color='red'><b><strike>$MM</strike></b></font>";
+                                    } else {
+                                        $this->html.=    $MM;
+                                    }
+                                    if (!checkdate($MM, $DD, $YYYY)) {
+                                        $date_fail = true;
+                                        $this->html.=
+                                            "<font color='red'><b><strike>$DD</strike></b></font>";
+                                    } else {
+                                        $this->html.=    $DD;
+                                    }
+                                }
+                                $this->html.=
+                                     "</td>\n"
+                                    ."  <td align='center'><input type='hidden' name='hhmm[]' value='$this->hhmm'>";
+                                if ((strlen($this->hhmm)!=0 && strlen($this->hhmm)!=4) ||
+                                    substr($this->hhmm, 0, 2)>23 || substr($this->hhmm, 2, 2)>59
+                                ) {
+                                    $date_fail = true;
+                                    $this->html.=    "<font color='red'><b><strike>$this->hhmm</strike></b></font>";
+                                } else {
+                                    $this->html.=    $this->hhmm;
+                                }
+                                $this->html.=
+                                     "</td>\n"
+                                    ."  <td>"
+                                    ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
+                                    ."<input type='hidden' name='LSB[]' value='$LSB'>"
+                                    .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
+                                        "<font color='#FF8C00'><b>$LSB_approx$LSB</b></font>"
+                                    :
+                                        "$LSB_approx$LSB"
+                                    )
+                                    ."</td>\n"
+                                    ."  <td>"
+                                    ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
+                                    ."<input type='hidden' name='USB[]' value='$USB'>"
+                                    .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
+                                        "<font color='#FF8C00'><b>$USB_approx$USB</b></font>"
+                                     :
+                                        "$USB_approx$USB"
+                                    )
+                                    ."</td>\n"
+                                    ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
+                                    ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
+                                    ."  <td align='center'></td>\n"
+                                    ."</tr>\n";
+                            } else {
+                                $dx = array('0','0');
+                                if ($GSQ) {
+                                    $ll = \Rxx\Rxx::GSQ_deg($GSQ);
+                                    $dx = \Rxx\Rxx::get_dx(
+                                        $this->listener->record['lat'],
+                                        $this->listener->record['lat'],
+                                        $ll["lat"],
+                                        $ll["lon"]
+                                    );
+                                }
+                                $this->html.=
+                                     "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
+                                    ."  <td>"
+                                    .(((float)$this->KHZ<198 || (float)$this->KHZ > 530) ?
+                                        "<font color='#FF8C00'><b>".(float)$this->KHZ."</b></font>"
+                                     :
+                                        (float)$this->KHZ
+                                    )
+                                    ."</td>\n"
+                                    ."  <td class='ID'>$ID</td>\n"
+                                    ."  <td class='ITU'>$ITU</td>\n"
+                                    ."  <td class='SP'>$SP</td>\n"
+                                    ."  <td class='GSQ'>$GSQ</td>\n"
+                                    ."  <td class='QTH'>$QTH</td>\n"
+                                    ."  <td class='DT center'>"
+                                    .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
+                                    ."</td>\n"
+                                    ."  <td class='Km num'>".($dx[1] ? number_format($dx[1]) : '')."</th>\n"
+                                    ."  <td class='Mi num'>".($dx[0] ? number_format($dx[0]) : '')."</th>\n"
+                                    ."  <td>&nbsp;</td>\n"
+                                    ."  <td align='center'>";
+                                if (strlen($YYYYMMDD)!=8) {
+                                    $date_fail = true;
+                                    $this->html.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></i></b></font>";
+                                } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
+                                    $date_fail = true;
+                                    $this->html.=
+                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                } else {
+                                    $this->html.=
+                                        ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                    if (!checkdate($MM, $DD, $YYYY)) {
+                                        $date_fail = true;
+                                        $this->html.=    "<font color='red'><b><strike>$MM</strike></b></font>";
+                                    } else {
+                                        $this->html.=    $MM;
+                                    }
+                                    if (!checkdate($MM, $DD, $YYYY)) {
+                                        $date_fail = true;
+                                        $this->html.=    "<font color='red'><b><strike>$DD</strike></b></font>";
+                                    } else {
+                                        $this->html.=    $DD;
+                                    }
+                                }
+                                $this->html.=
+                                     "</td>\n"
+                                    ."  <td align='center'>$this->hhmm</td>\n"
+                                    ."  <td>$LSB_approx$LSB</td>\n"
+                                    ."  <td>$USB_approx$USB</td>\n"
+                                    ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
+                                    ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
+                                    ."  <td><a href='javascript:signal_add("
+                                    ."\"$ID\",\"$this->KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
+                                    .")'><b>Add...</b></a></td>\n"
+                                    ."</tr>";
+                                $unresolved_signals[] =    trim($line);
                             }
                         }
                     }
-                    if (!count($unresolved_signals) && !$date_fail) {
-                        $this->html.=
-                             "  <tr class='downloadTableHeadings_nosort'>\n"
-                            ."    <th colspan='17'>"
-                            ."<input type='button' value='Submit Log' class='formbutton' id='btn_go' name='go'"
-                            ." onclick='submit_log()'>"
-                            ."<script type='text/javascript'>document.form.go.focus()</script>\n"
-                            ."</th>\n"
-                            ."  </tr>\n";
-
-                    } else {
-                        $this->html.=
-                             "  <tr class='downloadTableHeadings_nosort'>\n"
-                            ."    <th colspan='17'>"
-                            ."<input type='button' value='Serious errors found - Go Back...' id='btn_go'"
-                            ." class='formbutton' name='go'"
-                            ." onclick='history.back()'>"
-                            ."<script type='text/javascript'>document.form.go.focus()</script>\n"
-                            ."</th>\n"
-                            ."  </tr>\n";
-                    }
-
-                    $this->html.=  "</table>\n";
-
-                    if (count($unresolved_signals)) {
-                        $this->html.=
-                             "<p><b>Issues:</b><br>\n"
-                            ."<small>There "
-                            .(count($unresolved_signals)!=1 ?
-                                "are <b><font color='red'>".count($unresolved_signals)." unresolved signals</font></b>"
-                             :
-                                "<b><font color='red'>is one</font></b> unresolved signal"
-                            )
-                            ." contained in the log</b>.</small><br>"
-                            ."<textarea rows='10' cols='90' style='width:1040px'>"
-                            .str_repeat('-', 2+strlen($log_format))."\n"
-                            ." ".$log_format."\n"
-                            .str_repeat('-', 2+strlen($log_format))."\n"
-                            .implode("", $unresolved_signals)
-                            ."</textarea>";
-                    } else {
-                        $this->html.=
-                             "<span class='p'><small><b>"
-                            ."Total Loggings in this report: $total_loggings"
-                            ."</b></small></span>";
-                    }
-
-                    $this->html.=
-                         "<p><a name='next'></a><b>Next Steps...</b></p>\n"
-                        ."<ul>\n"
-                        ."<li>Please review the results shown above, especially warnings"
-                        ." (<font color='#FF8C00'><b>orange</b></font>) and serious errors"
-                        ." (<font color='red'><b>red</b></font>).</li>\n"
-                        ."<li>Serious errors (invalid dates and unrecognised signals) prevent the"
-                        ." <b>Submit Log</b> button from appearing.</li>"
-                        ."<li>If LSB or USB appear to be too high or low, click on the link shown for the signal ID"
-                        ." to see the offset history.</li>\n"
-                        ."<li>If data seems to have been misread, click"
-                        ." <a href='javascript:history.back()'><b><u>here</u></b></a>"
-                        ." to check your formatting and try again.<br>\n"
-                        ."(See the <b>Help</b> page on the main menu for details on acceptable formats).</li>\n"
-                        ."<li>If a signal is not in the system, a link is provided to add the signal -"
-                        ." check the details carefully before you add a new signal.</li>\n"
-                        ."<li>If you have just added a signal for this log and you are asked by your browser whether"
-                        ." you wish to 'Repost Data', say 'Yes'.</li>\n";
-                    if (!count($unresolved_signals) && !$date_fail) {
-                        $this->html.=
-                             "<li>If you are happy with the results shown above, press"
-                            ." <b>Submit Log</b> to process the data.</li>\n";
-                    }
-                    $this->html.=    "</ul>\n";
                 }
+                if (!count($unresolved_signals) && !$date_fail) {
+                    $this->html.=
+                         "  <tr class='downloadTableHeadings_nosort'>\n"
+                        ."    <th colspan='17'>"
+                        ."<input type='button' value='Submit Log' class='formbutton' id='btn_go' name='go'"
+                        ." onclick='submit_log()'>"
+                        ."<script type='text/javascript'>document.form.go.focus()</script>\n"
+                        ."</th>\n"
+                        ."  </tr>\n";
+
+                } else {
+                    $this->html.=
+                         "  <tr class='downloadTableHeadings_nosort'>\n"
+                        ."    <th colspan='17'>"
+                        ."<input type='button' value='Serious errors found - Go Back...' id='btn_go'"
+                        ." class='formbutton' name='go'"
+                        ." onclick='history.back()'>"
+                        ."<script type='text/javascript'>document.form.go.focus()</script>\n"
+                        ."</th>\n"
+                        ."  </tr>\n";
+                }
+
+                $this->html.=  "</table>\n";
+
+                if (count($unresolved_signals)) {
+                    $this->html.=
+                         "<p><b>Issues:</b><br>\n"
+                        ."<small>There "
+                        .(count($unresolved_signals)!=1 ?
+                            "are <b><font color='red'>".count($unresolved_signals)." unresolved signals</font></b>"
+                         :
+                            "<b><font color='red'>is one</font></b> unresolved signal"
+                        )
+                        ." contained in the log</b>.</small><br>"
+                        ."<textarea rows='10' cols='90' style='width:1040px'>"
+                        .str_repeat('-', 2+strlen($log_format))."\n"
+                        ." ".$log_format."\n"
+                        .str_repeat('-', 2+strlen($log_format))."\n"
+                        ." ".implode("\n ", $unresolved_signals)
+                        ."</textarea>";
+                } else {
+                    $this->html.=
+                         "<span class='p'><small><b>"
+                        ."Total Loggings in this report: $total_loggings"
+                        ."</b></small></span>";
+                }
+
+                $this->html.=
+                     "<p><a name='next'></a><b>Next Steps...</b></p>\n"
+                    ."<ul>\n"
+                    ."<li>Please review the results shown above, especially warnings"
+                    ." (<font color='#FF8C00'><b>orange</b></font>) and serious errors"
+                    ." (<font color='red'><b>red</b></font>).</li>\n"
+                    ."<li>Serious errors (invalid dates and unrecognised signals) prevent the"
+                    ." <b>Submit Log</b> button from appearing.</li>"
+                    ."<li>If LSB or USB appear to be too high or low, click on the link shown for the signal ID"
+                    ." to see the offset history.</li>\n"
+                    ."<li>If data seems to have been misread, click"
+                    ." <a href='javascript:history.back()'><b><u>here</u></b></a>"
+                    ." to check your formatting and try again.<br>\n"
+                    ."(See the <b>Help</b> page on the main menu for details on acceptable formats).</li>\n"
+                    ."<li>If a signal is not in the system, a link is provided to add the signal -"
+                    ." check the details carefully before you add a new signal.</li>\n"
+                    ."<li>If you have just added a signal for this log and you are asked by your browser whether"
+                    ." you wish to 'Repost Data', say 'Yes'.</li>\n";
+                if (!count($unresolved_signals) && !$date_fail) {
+                    $this->html.=
+                         "<li>If you are happy with the results shown above, press"
+                        ." <b>Submit Log</b> to process the data.</li>\n";
+                }
+                $this->html.=    "</ul>\n";
                 break;
 
             case "submit_log":
@@ -1073,10 +1054,18 @@ class LogUploader
         }
     }
 
-    private function extractDate($line, $YYYY, $MM, $DD)
+    private function extractDate()
     {
-        if (function_exists("parse")) {
-            $YYYYMMDD = parse($this->tokens, $line, $YYYY, $MM, $DD);
+        static $initialised = false;
+        $specified_YYYY =    \Rxx\Rxx::YY_to_YYYY(\Rxx\Rxx::get_var('log_yyyy'));
+        $specified_MM =      \Rxx\Rxx::M_to_MM(\Rxx\Rxx::get_var('log_mm'));
+        $specified_DD =      \Rxx\Rxx::D_to_DD(\Rxx\Rxx::get_var('log_dd'));
+        if (!$initialised) {
+            $this->initialiseDateParser();
+            $initialised = true;
+        }
+        if (function_exists("parseDate")) {
+            $YYYYMMDD = parseDate($this->tokens, $this->line, $specified_YYYY, $specified_MM, $specified_DD);
             $YYYY =     substr($YYYYMMDD, 0, 4);
             $MM =       substr($YYYYMMDD, 4, 2);
             $DD =       substr($YYYYMMDD, 6, 2);
@@ -1090,135 +1079,135 @@ class LogUploader
         ) {
             if (isset($this->tokens["D"])) {
                 $DD =
-                \Rxx\Rxx::D_to_DD(trim(substr($line, $this->tokens["D"][0], 2)));
+                \Rxx\Rxx::D_to_DD(trim(substr($this->line, $this->tokens["D"][0], 2)));
             }
             if (isset($this->tokens["DD"])) {
                 $DD =
-                trim(substr($line, $this->tokens["DD"][0], $this->tokens["DD"][1]));
+                trim(substr($this->line, $this->tokens["DD"][0], $this->tokens["DD"][1]));
             }
             if (isset($this->tokens["M"])) {
                 // DD shown in log
                 $MM =
-                \Rxx\Rxx::M_to_MM(trim(substr($line, $this->tokens["M"][0], $this->tokens["M"][1])));
+                \Rxx\Rxx::M_to_MM(trim(substr($this->line, $this->tokens["M"][0], $this->tokens["M"][1])));
             }
             if (isset($this->tokens["MM"])) {
                 // DD shown in log
                 $MM =
-                trim(substr($line, $this->tokens["MM"][0], $this->tokens["MM"][1]));
+                trim(substr($this->line, $this->tokens["MM"][0], $this->tokens["MM"][1]));
             }
             if (isset($this->tokens["MMM"])) {
                 // DD shown in log
                 $MM =
-                \Rxx\Rxx::MMM_to_MM(trim(substr($line, $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
+                \Rxx\Rxx::MMM_to_MM(trim(substr($this->line, $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
             }
             if (isset($this->tokens["YY"])) {
                 // DD shown in log
                 $YYYY =
-                \Rxx\Rxx::YY_to_YYYY(trim(substr($line, $this->tokens["YY"][0], $this->tokens["YY"][1])));
+                \Rxx\Rxx::YY_to_YYYY(trim(substr($this->line, $this->tokens["YY"][0], $this->tokens["YY"][1])));
                 print 'yes';
             }
             if (isset($this->tokens["YYYY"])) {
                 // DD shown in log
                 $YYYY =
-                trim(substr($line, $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
+                trim(substr($this->line, $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
             }
         }
         return $YYYY.$MM.$DD;
     }
 
-    private function extractID($line)
+    private function extractID()
     {
-        return strtoUpper(trim(substr($line, $this->tokens["ID"][0], $this->tokens["ID"][1])));
+        return strtoUpper(trim(substr($this->line, $this->tokens["ID"][0], $this->tokens["ID"][1])));
     }
 
-    private function extractKhz($line)
+    private function extractKhz()
     {
-        return (float)(isset($this->tokens["KHZ"]) ?
-            str_replace(",", ".", trim(substr($line, $this->tokens["KHZ"][0], $this->tokens["KHZ"][1])))
-         :
-            ""
-        );
+        if ((float)isset($this->tokens["KHZ"])) {
+            $this->KHZ =
+                str_replace(",", ".", trim(substr($this->line, $this->tokens["KHZ"][0], $this->tokens["KHZ"][1])));
+        }
     }
 
-    private function extractSec($line)
+    private function extractSec()
     {
         return (isset($this->tokens["sec"]) ?
-            htmlentities(trim(substr($line, $this->tokens["sec"][0], $this->tokens["sec"][1])))
+            htmlentities(trim(substr($this->line, $this->tokens["sec"][0], $this->tokens["sec"][1])))
          :
             ""
         );
     }
 
-    private function extractFmt($line)
+    private function extractFmt()
     {
         return (isset($this->tokens["fmt"]) ?
-            htmlentities(trim(substr($line, $this->tokens["fmt"][0], $this->tokens["fmt"][1])))
+            htmlentities(trim(substr($this->line, $this->tokens["fmt"][0], $this->tokens["fmt"][1])))
          :
             ""
         );
     }
 
-    private function extractGSQ($line)
+    private function extractGSQ()
     {
         return (isset($this->tokens["GSQ"]) ?
-            trim(substr($line, $this->tokens["GSQ"][0], $this->tokens["GSQ"][1]))
+            trim(substr($this->line, $this->tokens["GSQ"][0], $this->tokens["GSQ"][1]))
          :
             ""
         );
     }
 
-    private function extractITU($line)
+    private function extractITU()
     {
         return (isset($this->tokens["ITU"]) ?
-            trim(substr($line, $this->tokens["ITU"][0], $this->tokens["ITU"][1]))
+            trim(substr($this->line, $this->tokens["ITU"][0], $this->tokens["ITU"][1]))
          :
             ""
         );
     }
 
-    private function extractSP($line)
+    private function extractSP()
     {
         return (isset($this->tokens["SP"]) ?
-            trim(substr($line, $this->tokens["SP"][0], $this->tokens["SP"][1]))
+            trim(substr($this->line, $this->tokens["SP"][0], $this->tokens["SP"][1]))
          :
             ""
         );
     }
 
-    private function extractPWR($line)
+    private function extractPWR()
     {
         return (isset($this->tokens["PWR"]) ?
-            trim(substr($line, $this->tokens["PWR"][0], $this->tokens["PWR"][1]))
+            trim(substr($this->line, $this->tokens["PWR"][0], $this->tokens["PWR"][1]))
          :
             ""
         );
     }
 
-    private function extractQTH($line)
+    private function extractQTH()
     {
         return (isset($this->tokens["QTH"]) ?
-            trim(substr($line, $this->tokens["QTH"][0], $this->tokens["QTH"][1]))
+            trim(substr($this->line, $this->tokens["QTH"][0], $this->tokens["QTH"][1]))
          :
             ""
         );
     }
 
-    private function extractTime($line)
+    private function extractTime()
     {
-        $hhmm =        "";
+        $this->hhmm =        "";
         if (isset($this->tokens["hh:mm"])) {
-            $hhmm_arr = explode(":", trim(substr($line, $this->tokens["hh:mm"][0], 6)));
+            $hhmm_arr = explode(":", trim(substr($this->line, $this->tokens["hh:mm"][0], 6)));
             if (isset($hhmm_arr[1])) {
-                $hhmm = (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
+                $this->hhmm =
+                    (strlen($hhmm_arr[0])==1 ? "0" : "").$hhmm_arr[0].$hhmm_arr[1];
             }
         }
         if (isset($this->tokens["hhmm"])) {
-            $hhmm =     substr(trim(substr($line, $this->tokens["hhmm"][0], $this->tokens["hhmm"][1])), 0, 4);
+            $this->hhmm =
+                substr(trim(substr($this->line, $this->tokens["hhmm"][0], $this->tokens["hhmm"][1])), 0, 4);
         }
-        if (!is_numeric($hhmm)) {
-            $hhmm =    "";
+        if (!is_numeric($this->hhmm)) {
+            $this->hhmm =    "";
         }
-        return $hhmm;
     }
 
     private function formatUpdate()
@@ -1253,7 +1242,7 @@ class LogUploader
     private function logSubmit()
     {
         global $log_format, $log_entries;
-        global $fmt, $sec, $ID, $KHZ, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
+        global $fmt, $sec, $ID, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
 
         set_time_limit(600);    // Extend maximum execution time to 10 mins
         if ($this->debug) {
@@ -1508,7 +1497,7 @@ class LogUploader
         foreach ($dateParsers as $key => $code) {
             if (isset($this->tokens[$key])) {
                 eval(
-                    "function parse(\$a, \$b, \$Y, \$M, \$D){\n"
+                    "function parseDate(\$a, \$b, \$Y, \$M, \$D){\n"
                     ."    \$t = trim(substr(\$b, \$a['$key'][0]));\n"
                     ."     return $code;\n"
                     ."}\n"

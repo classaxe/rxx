@@ -283,7 +283,7 @@ class SignalList
             ."<br>\n"
             .$this->drawVisitorPoll()
             ."</div>"
-            ."<br style='clear:both' /><br />";
+            ."<br style='clear:both'><br>";
         if ($this->rows) {
             if ($this->show!='map') {
                 $this->drawListing();
@@ -311,22 +311,22 @@ class SignalList
                 ."You are not presently displaying all ".$this->total." available records.\\n"
                 ."Continue anyway?\""
                 .")) { window.print(); }": "window.print()"
-            )."'/> "
+            )."'> "
             .(Rxx::isAdmin() ?
              "<input type='button' value='Add signal...'"
                 ." onclick=\"signal_add("
                 ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
-                .")\" /> "
+                .")\"> "
             :
                 ""
             )
             ."<input type='button' value='All ".system." > Excel'"
-            ." title='Get the whole database as Excel' onclick='export_signallist_excel();' /> "
+            ." title='Get the whole database as Excel' onclick='export_signallist_excel();'> "
             ."<input type='button' value='All ".system." > PDF'"
-            ." title='get the whole database as PDF' onclick='export_signallist_pdf();' /> "
+            ." title='get the whole database as PDF' onclick='export_signallist_pdf();'> "
             ."<input type='button' value='All ".system." > ILG'"
             ." title='get the whole database as ILGRadio format for Ham Radio Deluxe'"
-            ." onclick='export_signallist_ilg()' /> "
+            ." onclick='export_signallist_ilg()'> "
             ."</p>\n";
 
     }
@@ -409,7 +409,7 @@ class SignalList
             ."<input title='Enter one or more NDBList approved 3-letter country codes (e.g. CAN or BRA) to show only"
             ." signals physically located there' type='text' name='filter_itu' id='filter_itu' size='20' value='"
             .$this->filter_itu
-            ."' class='formfield' style='width:360px'/>";
+            ."' class='formfield' style='width:360px'>";
     }
 
     /**
@@ -463,12 +463,12 @@ class SignalList
              "<input title='Lowest frequency (or leave blank)' type='text' name='filter_khz_1' id='filter_khz_1'"
             ." size='6' maxlength='9' value='"
             .($this->filter_khz_1 !="0" ? $this->filter_khz_1 : "")
-            ."' class='formfield' />"
+            ."' class='formfield'>"
             ." - "
             ."<input title='Highest frequency (or leave bank)' type='text' name='filter_khz_2' id='filter_khz_2'"
             ." size='6' maxlength='9' value='"
             .($this->filter_khz_2 != 1000000 ? $this->filter_khz_2 : "")
-            ."' class='formfield' /> KHz";
+            ."' class='formfield'> KHz";
 
     }
 
@@ -480,7 +480,7 @@ class SignalList
         return
              "<input title='Enter a grid square to show only signals physically located between the distances chosen'"
             ." type='text' class='formfield' name='filter_dx_gsq' id='filter_dx_gsq' size='6' maxlength='6'"
-            ." value='".$this->filter_dx_gsq."' onkeyup='set_range(form)' onchange='set_range(form)' />";
+            ." value='".$this->filter_dx_gsq."' onkeyup='set_range(form)' onchange='set_range(form)'>";
     }
 
     /**
@@ -556,7 +556,7 @@ class SignalList
         return
              "<input type='text' name='filter_id' id='filter_id' size='6' maxlength='12' value='".$this->filter_id."'"
             ." class='formfield' title='Limit results to signals with this ID or partial ID -\n"
-            ."use _ to indicate a wildcard character' />";
+            ."use _ to indicate a wildcard character'>";
     }
 
     /**
@@ -571,7 +571,7 @@ class SignalList
             ."<input title='Enter one or more states or provinces (e.g. MI or NB) to show only signals physically"
             ." located there' type='text' name='filter_sp' id='filter_sp' size='20' value='"
             .$this->filter_sp
-            ."' class='formfield' style='width:360px'/>";
+            ."' class='formfield' style='width:360px'>";
     }
 
     /**
@@ -609,10 +609,10 @@ class SignalList
     {
         $html =
              "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
-            ."<input type='hidden' name='mode' value='".$this->mode."' />\n"
-            ."<input type='hidden' name='submode' value='' />\n"
-            ."<input type='hidden' name='targetID' value='' />\n"
-            ."<input type='hidden' name='sort_by' id = 'sort_by' value='".$this->sort_by."' />\n"
+            ."<input type='hidden' name='mode' value='".$this->mode."'>\n"
+            ."<input type='hidden' name='submode' value=''>\n"
+            ."<input type='hidden' name='targetID' value=''>\n"
+            ."<input type='hidden' name='sort_by' id = 'sort_by' value='".$this->sort_by."'>\n"
             ."<div class='form_box shadow'>\n"
             ."  <div class='header'>Customise ".system." Report</div>\n"
             ."  <div class='body rowForm'>\n"
@@ -658,9 +658,9 @@ class SignalList
             ."        <th align='left'><label for='filter_sp'>Locations</label></th>\n"
             ."        <td nowrap>\n"
             .$this->drawControlStates()
-            ."<br />\n"
+            ."<br>\n"
             .$this->drawControlCountries()
-            ."<br />\n"
+            ."<br>\n"
             .$this->drawControlContinents()
             ."</td>"
             ."     </tr>\n"
@@ -693,8 +693,12 @@ class SignalList
         }
         $html.=
              "     <tr class='rowForm'>\n"
-            ."       <th align='left'><label title='Only signals heard by the selected listener'>Heard by<br /><br />"
-            ."<span style='font-weight: normal;'>Use SHIFT or <br />CONTROL to<br />select multiple<br />values</span>"
+            ."       <th align='left'>\n"
+            ."<label title='Only signals heard by the selected listener'>Heard by<br>\n"
+            ."<br>\n"
+            ."<span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>\n"
+            ."select multiple<br>\n"
+            ."values</span>"
             ."</label></th>"
             ."       <td>"
             .$this->drawControlHeardBy()
@@ -721,11 +725,11 @@ class SignalList
             ."            <td>"
             ."<div style='float:left'><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
             ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
-            ." value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield' /></div>\n"
+            ." value='".($this->filter_date_1 != "1900-01-01" ? $this->filter_date_1 : "")."' class='formfield'></div>\n"
             ."<div style='float:left;padding:0 1em'>-</div>\n"
             ."<div style='float:left'><input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
             ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
-            ." value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield' /></div>"
+            ." value='".($this->filter_date_2 != "2020-01-01" ? $this->filter_date_2 : "")."' class='formfield'></div>"
             ."</td>"
             ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
             ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"

@@ -200,7 +200,8 @@ class Signal extends Record
             $html_arr[] =
                  ($old_link!="" && $old_link != $link ? "</a>" : "")
                 .($link != $old_link ? $link : "")
-                .($daytime ? "<b>".$heard_in."</b>" : $heard_in);
+                .($daytime ? "<b>".$heard_in."</b>" : $heard_in)
+                .($old_link=="" && $old_link != $link ? "</a>" : "");
             $arr[] =        $heard_in;
             $old_link =     $link;
         }
