@@ -157,8 +157,6 @@ class LogUploader
                 ."  <li>Click <a href='".system_URL."/admin_help' target='_blank'><b><u>here</u></b></a>"
                 ." for the full list of tokens that can be used.</li>\n"
                 ."</ul>\n";
-            $this->html.=    "</form>";
-            return $this->html;
         }
         $this->checkLogDateTokens();
         switch ($submode) {
@@ -760,7 +758,7 @@ class LogUploader
                         }
                     }
                 }
-                if (!count($unresolved_signals) && !$date_fail) {
+                if (!count($unresolved_signals) && !$date_fail  && $total_loggings>0) {
                     $this->html.=
                          "  <tr class='downloadTableHeadings_nosort'>\n"
                         ."    <th colspan='17'>"

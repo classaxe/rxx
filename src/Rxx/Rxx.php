@@ -983,6 +983,7 @@ class Rxx
             ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
             ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
             ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
+            ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
             ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
             ."<script type='text/javascript'>\n"
             ."//<![CDATA[\n"
