@@ -1350,15 +1350,21 @@ class Rxx
     {
         global $region;
         $cols =        2;
-        $out =        array();
-        $out[] =        "<form><a name='top'></a>\n";
-        $out[] =        "<table border='0' align='center' cellpadding='0' cellspacing='1' class='tableContainer'>\n";
-        $out[] =        "  <tr>\n";
-        $out[] =        "    <td><table border='0' align='center' cellpadding='0' cellspacing='0'>\n";
-        $out[] =        "      <tr>\n";
-        $out[] =        "        <td class='downloadTableContent' colspan='2' width='100%'><h1>".system." Country Code Locator</h1>\n";
-        $out[] =        "        <p class='help'>Countries</b> in this system are given by NDB List approved <a href='http://www.beaconworld.org.uk/files/countrylist.pdf' target='_blank' title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n";
-        $out[] =        "<script language=javascript' type='text/javascript'>if (window.opener && window.opener.form && (window.opener.form.ITU || window.opener.form.filter_itu)) { document.write(\"<b>Click</b> on any entry to copy it automatically to the form.</b>\"); }</script></p>\n";
+        $out = 
+            "<form><a name='top'></a>\n"
+           ."<table border='0' align='center' cellpadding='0' cellspacing='1' class='tableContainer'>\n"
+           ."  <tr>\n"
+           ."    <td><table border='0' align='center' cellpadding='0' cellspacing='0'>\n"
+           ."      <tr>\n"
+           ."        <td class='downloadTableContent' colspan='2' width='100%'>"
+           ."<h1>".system." Country Code Locator</h1>\n"
+           ."        <p class='help'>Countries</b> in this system are given by NDB List approved "
+           ."<a href='http://www.ndblist.info/beacons/countrylist.pdf' target='_blank'"
+           ." title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n"
+           ."<script type='text/javascript'>"
+           ."if (window.opener && window.opener.form && (window.opener.form.ITU || window.opener.form.filter_itu)) {"
+           ."  document.write(\"<b>Click</b> on any entry to copy it automatically to the form.</b>\");"
+           ."}</script></p>\n";
 
         $regions =        array();
         $sql =         "SELECT\n"
@@ -1379,36 +1385,49 @@ class Rxx
         for ($i=0; $i<count($regions); $i++) {
             $links[] =        "<nobr><a href='#".$regions[$i]["region"]."'><b>".$regions[$i]["name"]."</b></a></nobr>";
         }
-        $out[] =        "<p align='center'><small>[ ".implode($links, " |\n")." ]</small></p>\n";
+        $out.=        "<p align='center'><small>[ ".implode($links, " |\n")." ]</small></p>\n";
 
         for ($h=0; $h<count($regions); $h++) {
-            $out[] =        "        <table cellpadding='2' border='0' cellspacing='1' class='downloadtable' width='100%'>\n";
-            $out[] =        "          <tr class='rownormal'>\n";
-            $out[] =        "            <th class='downloadTableHeadings_nosort' align='center'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
-            $out[] =        "              <tr>\n";
-            $out[] =        "                <th class='downloadTableHeadings_nosort' align='left'><a name='".$regions[$h]["region"]."'></a>".$regions[$h]["name"]."</th>\n";
-            $out[] =        "                <th class='downloadTableHeadings_nosort' align='right'>[";
+            $out.=
+                 "        <table cellpadding='2' border='0' cellspacing='1' class='downloadtable' width='100%'>\n"
+                ."          <tr class='rownormal'>\n"
+                ."            <th class='downloadTableHeadings_nosort' align='center'>"
+                ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+                ."              <tr>\n"
+                ."                <th class='downloadTableHeadings_nosort' align='left'>"
+                ."<a name='".$regions[$h]["region"]."'></a>"
+                .$regions[$h]["name"]
+                ."</th>\n"
+                ."                <th class='downloadTableHeadings_nosort' align='right'>[";
 
             switch($regions[$h]["region"]) {
-                case "af":    $out[] = "<a href='/dx/images/af_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "af":
+                    $out.= "<a href='/dx/images/af_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "au":    $out[] = "<a href='/dx/images/au_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "au":
+                    $out.= "<a href='/dx/images/au_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "ca":    $out[] = "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "ca":
+                    $out.= "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "eu":    $out[] = "<a href='".system_URL."/generate_map_eu' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "eu":
+                    $out.= "<a href='".system_URL."/generate_map_eu' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "na":    $out[] = "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "na":
+                    $out.= "<a href='".system_URL."/generate_map_na' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
-                case "sa":    $out[] = "<a href='/dx/images/sa_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
+                case "sa":
+                    $out.= "<a href='/dx/images/sa_map.gif' target='_blank' class='yellow'><b>Map</b></a> | ";
                     break;
             }
-            $out[] =        "<a href='#top' class='yellow'><b>Top</b></a>]</th>\n";
-            $out[] =        "              </tr>\n";
-            $out[] =        "            </table></th>\n";
-            $out[] =        "          </tr>\n";
-            $out[] =        "          <tr class='rownormal'>\n";
-            $out[] =        "            <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
+            $out.=
+                 "<a href='#top' class='yellow'><b>Top</b></a>]</th>\n"
+                ."              </tr>\n"
+                ."            </table></th>\n"
+                ."          </tr>\n"
+                ."          <tr class='rownormal'>\n"
+                ."            <td class='downloadTableContent'>"
+                ."<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
             $sql =        "SELECT `ITU`,`name` FROM `itu` WHERE `region` = '".$regions[$h]["region"]."' ORDER BY `name`";
             $result =        \Rxx\Database::query($sql);
             $itu_arr =        array();
@@ -1418,36 +1437,45 @@ class Rxx
             }
             $cells_col =        ceil(count($itu_arr)/$cols);
             for ($i=0; $i<$cells_col; $i++) {
-                $out[] =        "          <tr>\n";
+                $out.=        "          <tr>\n";
                 for ($j=0; $j<$cols; $j++) {
                     if ($i+($j*$cells_col) < count($itu_arr)) {
-                        $out[] =    "            <td onclick=\"itu('".$itu_arr[$i+($j*$cells_col)]["ITU"]."')\" onMouseOver='return sp_itu_over(this,1);' onMouseOut='return sp_itu_over(this,0);' width='".(int)100/$cols."%'>\n";
-                        $out[] =    "            <table cellpadding='0' cellspacing='0' width='100%'>\n";
-                        $out[] =    "              <tr>\n";
-                        $out[] =    "                <td nowrap valign='top'>".$itu_arr[$i+($j*$cells_col)]["name"]."</td>\n";
-                        $out[] =    "                <td nowrap valign='top' align='right'>".$itu_arr[$i+($j*$cells_col)]["ITU"]."</td>\n";
-                        $out[] =    "              </tr>\n";
-                        $out[] =    "            </table></td>\n";
+                        $out.=
+                             "            <td onclick=\"itu('".$itu_arr[$i+($j*$cells_col)]["ITU"]."')\""
+                            ." onMouseOver='return sp_itu_over(this,1);'"
+                            ." onMouseOut='return sp_itu_over(this,0);'"
+                            ." width='".(int)100/$cols."%'>\n"
+                            ."            <table cellpadding='0' cellspacing='0' width='100%'>\n"
+                            ."              <tr>\n"
+                            ."                <td nowrap valign='top'>"
+                            .$itu_arr[$i+($j*$cells_col)]["name"]
+                            ."</td>\n"
+                            ."                <td nowrap valign='top' align='right'>"
+                            .$itu_arr[$i+($j*$cells_col)]["ITU"]
+                            ."</td>\n"
+                            ."              </tr>\n"
+                            ."            </table></td>\n";
                     } else {
-                        $out[] =    "            <td>&nbsp;</td>\n";
+                        $out.=    "            <td>&nbsp;</td>\n";
                     }
                     if ($j!=$cols-1) {
-                        $out[] =    "            <td width='30' nowrap>&nbsp;</td>\n";
+                        $out.=    "            <td width='30' nowrap>&nbsp;</td>\n";
                     }
                 }
-                $out[] =        "          </tr>\n";
+                $out.=        "          </tr>\n";
             }
-            $out[] =        "        </table></td>\n";
-            $out[] =        "          </tr>\n";
-            $out[] =        "        </table>\n";
-            $out[] =        "<br><br>\n";
+            $out.=
+                 "        </table></td>\n"
+                ."          </tr>\n"
+                ."        </table>\n"
+                ."<br><br>\n";
         }
-        $out[] =        "<p align='center'>";
-        $out[] =        "<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> ";
-        $out[] =        "<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> ";
-        $out[] =        "</p>";
-
-        return implode($out, "");
+        $out.=
+             "<p align='center'>"
+            ."<input type='button' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
+            ."<input type='button' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
+            ."</p>";
+        return $out;
     }
 
     /**
@@ -1491,7 +1519,7 @@ class Rxx
             ."    <td><table border='0' align='center' cellpadding='0' cellspacing='0'>\n"
             ."      <tr>\n"
             ."        <td class='downloadTableContent' colspan='2' width='100%'><h1>".system." State and Province Locator</h1>\n"
-            ."        <p class='help'>States and provinces</b> in this system are given by NDB List approved <a href='http://www.beaconworld.org.uk/files/countrylist.pdf' target='_blank' title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n"
+            ."        <p class='help'>States and provinces</b> in this system are given by NDB List approved <a href='http://www.ndblist.info/beacons/countrylist.pdf' target='_blank' title='NDBList country, state and province codes'><b>standard codes</b></a>.<br>\n"
             ."<script language=javascript' type='text/javascript'>if (window.opener && window.opener.form && (window.opener.form.SP || window.opener.form.filter_sp)) { document.write(\"<b>Click</b> on any entry to copy it automatically to the form.</b>\"); }</script></p>\n"
             ."        <table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
             ."          <tr class='rownormal'>\n"
