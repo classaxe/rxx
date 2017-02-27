@@ -2215,7 +2215,7 @@ class Rxx
      */
     public static function y($var)
     {
-        var_dump($var);
+        print "<pre>".print_r($var, true)."</pre>";
     }
 
     /**

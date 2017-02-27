@@ -166,7 +166,8 @@ class Signal
     public static function signal_info()
     {
         global $ID, $mode, $submode;
-        global $active, $call, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx, $notes, $pwr, $QTH, $SP, $type, $USB, $USB_approx;
+        global $active, $call, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx;
+        global $notes, $pwr, $QTH, $SP, $type, $USB, $USB_approx;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
@@ -239,9 +240,7 @@ class Signal
                         ."  `USB_approx` = \"$USB_approx\"\n"
                         ."WHERE `ID` = \"".addslashes(trim($ID))."\"";
                     \Rxx\Database::query($sql);
-                    //        $out[] = "<pre>$sql</pre>";
-                    return    "<script language='javascript' type='text/javascript'>window.close()</script>";
-                    //      return	"<script language='javascript' type='text/javascript'>window.setTimeout('window.opener.location.reload(1);window.close()',500)</script>";
+                    return    "<script type='text/javascript'>window.close()</script>";
                     break;
             }
         }

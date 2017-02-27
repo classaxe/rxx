@@ -1251,7 +1251,7 @@ class SignalList
             'gsq|0|Sort by GSQ Grid Locator Square|GSQ',
             'pwr|1|Sort by Transmitter Power|PWR',
             'notes|0|Sort by Notes column|Notes',
-            'heard_in|0|Sort by \'Heard In\' column|Heard In',
+            'heard_in|0|Sort by \'Heard In\' column|Heard In <i>(Daytime reception is <b>bold</b>)</i>',
             'logs|0|Sort by number of times logged|Logs',
             'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Heard'
         );

@@ -164,50 +164,49 @@ class Signal extends Record
             ."    `region`,\n"
             ."    `heard_in`";
         $rows = $this->getRecordsForSql($sql);
-        $arr =        array();
-        $html_arr =        array();
-        $region =        "";
-        $old_link =        "";
+        $arr =          array();
+        $html_arr =     array();
+        $region =       "";
+        $old_link =     false;
+        $link =         false;
+        $eu_link =
+             "<a title='European Reception Map' class='hover' href='./signal_map_eu/".$this->getID()."'"
+            ." onclick='return signal_map_eu(".$this->getID().")'>";
+        $na_link =
+             "<a title='North American Reception Map' class='hover' href='./signal_map_na/".$this->getID()."'"
+            ." onclick='return signal_map_na(".$this->getID().")'>";
         foreach ($rows as $row) {
             $heard_in = $row["heard_in"];
             $daytime =  $row["daytime"];
             $region =   $row["region"];
-            $link =     "";
+            $link =     false;
             switch ($region) {
                 case "ca":
-                    $link =
-                         "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
-                        ." title='North American Reception Map'>";
-                    break;
                 case "na":
-                    $link =
-                         "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
-                        ." title='North American Reception Map'>";
+                    $link = $na_link;
                     break;
                 case "oc":
                     if ($heard_in=='HI') {
-                        $link =
-                             "<a class='hover' href='#' onclick='return signal_map_na(".$this->getID().")'"
-                            ." title='North American Reception Map'>";
+                        $link = $na_link;
                     }
                     break;
                 case "eu":
-                    $link =
-                         "<a class='hover' href='#' onclick='return signal_map_eu(".$this->getID().")'"
-                        ." title='European Reception Map'>";
+                    $link = $eu_link;
                     break;
             }
             $html_arr[] =
-                 ($old_link!="" && $old_link != $link ? "</a>" : "")
-                .($link != $old_link ? $link : "")
-                .($daytime ? "<b>".$heard_in."</b>" : $heard_in)
-                .($old_link=="" && $old_link != $link ? "</a>" : "");
-            $arr[] =        $heard_in;
+                 ($old_link !==false && $link !== $old_link ? "</a> " : " ")
+                .($link !==false     && $link !== $old_link ? $link : "")
+                .($daytime ? "<b>".$heard_in."</b>" : $heard_in);
+            $arr[] =        htmlentities($heard_in);
             $old_link =     $link;
         }
+        if ($link !== false) {
+            $html_arr[] = "</a>";
+        }
         $data = array(
-            'heard_in' =>       implode($arr, " "),
-            'heard_in_html' =>  implode($html_arr, " ")
+            'heard_in' =>       implode("", $arr),
+            'heard_in_html' =>  implode("", $html_arr)
         );
         $this->update($data);
         return $this->getAffectedRows();

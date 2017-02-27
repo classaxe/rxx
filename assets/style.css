@@ -124,7 +124,7 @@ h2
 }
 a
 {
-    COLOR: #003366;
+    COLOR: #0033a0;
     FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
     TEXT-DECORATION: none
 }
@@ -224,6 +224,10 @@ a.hover:hover
     BACKGROUND-COLOR: #707070;
     border-bottom: #D6D2C2 3px solid;
 }
+.listTable thead th i
+{
+    COLOR: #ffff00;
+s}
 .listTable thead th:hover
 {
     BACKGROUND-COLOR: #808080;
@@ -477,8 +481,6 @@ img.nav
 }
 
 pre {margin: 0px; font-family: monospace;}
-a:link {color: #000099; text-decoration: none;}
-a:hover {text-decoration: underline;}
 .center table { margin-left: auto; margin-right: auto; text-align: left;}
 .center th { text-align: center; }
 h1 {font-size: 150%;}
