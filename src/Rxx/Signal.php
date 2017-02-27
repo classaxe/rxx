@@ -205,7 +205,7 @@ class Signal extends Record
             $html_arr[] = "</a>";
         }
         $data = array(
-            'heard_in' =>       implode("", $arr),
+            'heard_in' =>       implode(" ", $arr),
             'heard_in_html' =>  implode("", $html_arr)
         );
         $this->update($data);
