@@ -1077,38 +1077,46 @@ class LogUploader
         ) {
             if (isset($this->tokens["D"])) {
                 $DD =
-                \Rxx\Rxx::D_to_DD(trim(substr($this->line, $this->tokens["D"][0], 2)));
+                    \Rxx\Rxx::D_to_DD(trim(substr($this->line, $this->tokens["D"][0], 2)));
             }
             if (isset($this->tokens["DD"])) {
                 $DD =
-                trim(substr($this->line, $this->tokens["DD"][0], $this->tokens["DD"][1]));
+                    trim(substr($this->line, $this->tokens["DD"][0], $this->tokens["DD"][1]));
             }
             if (isset($this->tokens["M"])) {
                 // DD shown in log
                 $MM =
-                \Rxx\Rxx::M_to_MM(trim(substr($this->line, $this->tokens["M"][0], $this->tokens["M"][1])));
+                    \Rxx\Rxx::M_to_MM(trim(substr($this->line, $this->tokens["M"][0], $this->tokens["M"][1])));
             }
             if (isset($this->tokens["MM"])) {
                 // DD shown in log
                 $MM =
-                trim(substr($this->line, $this->tokens["MM"][0], $this->tokens["MM"][1]));
+                    trim(substr($this->line, $this->tokens["MM"][0], $this->tokens["MM"][1]));
             }
             if (isset($this->tokens["MMM"])) {
                 // DD shown in log
                 $MM =
-                \Rxx\Rxx::MMM_to_MM(trim(substr($this->line, $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
+                    \Rxx\Rxx::MMM_to_MM(trim(substr($this->line, $this->tokens["MMM"][0], $this->tokens["MMM"][1])));
             }
             if (isset($this->tokens["YY"])) {
-                // DD shown in log
+                // YY shown in log
                 $YYYY =
-                \Rxx\Rxx::YY_to_YYYY(trim(substr($this->line, $this->tokens["YY"][0], $this->tokens["YY"][1])));
-                print 'yes';
+                    \Rxx\Rxx::YY_to_YYYY(trim(substr($this->line, $this->tokens["YY"][0], $this->tokens["YY"][1])));
             }
             if (isset($this->tokens["YYYY"])) {
                 // DD shown in log
                 $YYYY =
-                trim(substr($this->line, $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
+                    trim(substr($this->line, $this->tokens["YYYY"][0], $this->tokens["YYYY"][1]));
             }
+        }
+        if (!isset($YYYY)) {
+            $YYYY = $specified_YYYY;
+        }
+        if (!isset($MM)) {
+            $MM = $specified_MM;
+        }
+        if (!isset($DD)) {
+            $DD = $specified_DD;
         }
         return $YYYY.$MM.$DD;
     }
