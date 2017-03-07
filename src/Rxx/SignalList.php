@@ -1,272 +1,74 @@
 <?php
 namespace Rxx;
 
-/**
- * Class SignalList
- * @package Rxx
- */
 class SignalList
 {
-    /**
-     * @var string
-     */
     public $html = '';
-    /**
-     * @var string
-     */
     public $head = '';
-    /**
-     * @var
-     */
     protected $ObjSignal;
-
-    /**
-     * @var
-     */
     protected $total;
-    /**
-     * @var array
-     */
     protected $rows =   array();
-    /**
-     * @var array
-     */
     protected $stats =  array();
-    /**
-     * @var
-     */
     protected $region;
 
-    /**
-     * @var
-     */
     protected $filter_active;
-    /**
-     * @var
-     */
     protected $filter_by_range;
-    /**
-     * @var
-     */
     protected $filter_channels;
-    /**
-     * @var
-     */
     protected $filter_continent;
-    /**
-     * @var
-     */
-    protected $filter_custom;
-    /**
-     * @var
-     */
     protected $filter_date_1;
-    /**
-     * @var
-     */
     protected $filter_date_2;
-    /**
-     * @var
-     */
     protected $filter_dx_gsq;
-    /**
-     * @var
-     */
     protected $filter_dx_lat;
-    /**
-     * @var
-     */
     protected $filter_dx_lon;
-    /**
-     * @var
-     */
     protected $filter_dx_max;
-    /**
-     * @var
-     */
     protected $filter_dx_min;
-    /**
-     * @var
-     */
     protected $filter_dx_units;
-    /**
-     * @var
-     */
     protected $filter_heard_in;
-    /**
-     * @var
-     */
     protected $filter_id;
-    /**
-     * @var
-     */
     protected $filter_itu;
-    /**
-     * @var
-     */
     protected $filter_khz_1;
-    /**
-     * @var
-     */
     protected $filter_khz_2;
-    /**
-     * @var
-     */
     protected $filter_listener;
-    /**
-     * @var
-     */
     protected $filter_sp;
-    /**
-     * @var
-     */
+    protected $filter_sp_itu_clause;
     protected $filter_system;
 
-    /**
-     * @var
-     */
     protected $type_NDB;
-    /**
-     * @var
-     */
     protected $type_TIME;
-    /**
-     * @var
-     */
     protected $type_DGPS;
-    /**
-     * @var
-     */
     protected $type_DSC;
-    /**
-     * @var
-     */
     protected $type_NAVTEX;
-    /**
-     * @var
-     */
     protected $type_HAMBCN;
-    /**
-     * @var
-     */
     protected $type_OTHER;
 
-    /**
-     * @var
-     */
     protected $listeners_list_filter;
-    /**
-     * @var
-     */
     protected $offsets;
-
-    /**
-     * @var
-     */
     protected $limit;
-    /**
-     * @var
-     */
     protected $offset;
-    /**
-     * @var
-     */
     protected $sort_by;
-    /**
-     * @var
-     */
     protected $show;
-
-    /**
-     * @var
-     */
     protected $mode;
-    /**
-     * @var
-     */
     protected $submode;
 
-    /**
-     * @var bool
-     */
     protected $sql_filter_active =          false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_channels =        false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_continent =       false;
-    /**
-     * @var bool
-     */
-    protected $sql_filter_custom =          false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_frequency =       false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_heard_in =        false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_heard_in_mod =    false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_id =              false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_itu =             false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_last_heard =      false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_listener =        false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_range_max =       false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_range_min =       false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_sp =              false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_system =          false;
-    /**
-     * @var bool
-     */
     protected $sql_filter_type =            false;
-    /**
-     * @var bool
-     */
     protected $sql_limit =                  false;
-    /**
-     * @var bool
-     */
     protected $sql_offset =                 false;
-    /**
-     * @var bool
-     */
     protected $sql_sort_by =                false;
 
-
-    /**
-     *
-     */
     public function draw()
     {
         $this->setup();
@@ -297,10 +99,7 @@ class SignalList
         $this->html.= $this->drawButtons();
     }
 
-    /**
-     *
-     */
-    protected function drawButtons()
+    private function drawButtons()
     {
         $this->html .=
              "<p class='noprint buttons'>\n"
@@ -331,10 +130,7 @@ class SignalList
 
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlChannels()
+    private function drawControlChannels()
     {
         return
              "<select name='filter_channels' id='filter_channels' class='formField'>\n"
@@ -344,10 +140,7 @@ class SignalList
             ."</select>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlColumnSortby()
+    private function drawControlColumnSortby()
     {
         $columns = array(
             'khz|KHz - Nominal carrier',
@@ -383,10 +176,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlContinents()
+    private function drawControlContinents()
     {
         return
              "<label style='display:inline-block; width:70px; margin:0.25em 0;' for='filter_continent'>"
@@ -397,10 +187,7 @@ class SignalList
             ."</select>\n";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlCountries()
+    private function drawControlCountries()
     {
         return
              "<label title='List of Countries' style='display:inline-block; width:70px; margin:0.25em 0;'>"
@@ -412,10 +199,7 @@ class SignalList
             ."' class='formfield' style='width:360px'>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlDXMax()
+    private function drawControlDXMax()
     {
         return
              "<input title='Enter a value to show only signals up to this distance' type='text'"
@@ -425,10 +209,7 @@ class SignalList
             .">";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlDXMin()
+    private function drawControlDXMin()
     {
         return
              "<input title='Enter a value to show only signals equal or greater to this distance' type='text'"
@@ -438,10 +219,7 @@ class SignalList
             .">";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlDXUnits()
+    private function drawControlDXUnits()
     {
         return
              "<input type='radio' id='filter_dx_units_km' name='filter_dx_units' value='km'"
@@ -454,10 +232,7 @@ class SignalList
             ."<label for='filter_dx_units_miles'>miles</label>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlFrequencyRange()
+    private function drawControlFrequencyRange()
     {
         return
              "<input title='Lowest frequency (or leave blank)' type='text' name='filter_khz_1' id='filter_khz_1'"
@@ -469,13 +244,9 @@ class SignalList
             ." size='6' maxlength='9' value='"
             .($this->filter_khz_2 != 1000000 ? $this->filter_khz_2 : "")
             ."' class='formfield'> KHz";
-
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlGSQ()
+    private function drawControlGSQ()
     {
         return
              "<input title='Enter a grid square to show only signals physically located between the distances chosen'"
@@ -483,10 +254,7 @@ class SignalList
             ." value='".$this->filter_dx_gsq."' onkeyup='set_range(form)' onchange='set_range(form)'>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlHeardBy()
+    private function drawControlHeardBy()
     {
         return
              "<select name='filter_listener[]' id='filter_listener' multiple class='formfield'"
@@ -498,13 +266,9 @@ class SignalList
                 "Anyone (or enter values in \"Heard here\" box)"
             )
             ."</select>";
-
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlHeardIn()
+    private function drawControlHeardIn()
     {
         return
              "<input type='text' name='filter_heard_in' id='filter_heard_in' size='41'"
@@ -517,23 +281,16 @@ class SignalList
             .">";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlHeardInContinent()
+    private function drawControlHeardInContinent()
     {
         return
              "<select name='region' id='region' onchange='document.form.go.disabled=1;document.form.submit()'"
             ." class='formField' style='width: 100%;'>\n"
             .Rxx::get_region_options_list($this->region, "(All Continents)", 'listener')
             ."</select>";
-
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlHeardInMatch()
+    private function drawControlHeardInMatch()
     {
         return
              "<input id='radio_filter_heard_in_mod_any' type='radio' value='any' name='filter_heard_in_mod'"
@@ -548,10 +305,7 @@ class SignalList
             ."<label for='radio_filter_heard_in_mod_all' title='Show where all terms match'>All</label>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlId()
+    private function drawControlId()
     {
         return
              "<input type='text' name='filter_id' id='filter_id' size='6' maxlength='12' value='".$this->filter_id."'"
@@ -559,10 +313,7 @@ class SignalList
             ."use _ to indicate a wildcard character'>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlStates()
+   private function drawControlStates()
     {
         return
              "<label title='List of States or Provinces' style='display:inline-block; width:70px; margin:0.25em 0;'>"
@@ -574,10 +325,19 @@ class SignalList
             ."' class='formfield' style='width:360px'>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawControlType()
+   private function drawControlSpItuClause()
+    {
+        return
+             "<label style='display:inline-block; width:70px; margin:0.25em 0;' for='filter_sp_itu_clause'>"
+            ."&nbsp;</label> "
+            ."<select class='formfield' title='Only used when both States and Countries are given'"
+            ." name='filter_sp_itu_clause' id='filter_sp_itu_clause'>"
+            ."<option value='AND'".($this->filter_sp_itu_clause=='AND' ? " selected='selected'" : "").">AND</option>"
+            ."<option value='OR'".($this->filter_sp_itu_clause=='OR' ? " selected='selected'" : "").">OR</option>"
+            ."</select> (only when both State AND Country are given)";
+    }
+
+    private function drawControlType()
     {
         $types = array(
             array(DGPS,     'type_DGPS',    'DGPS',     14),
@@ -602,10 +362,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawForm()
+    private function drawForm()
     {
         $html =
              "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
@@ -658,6 +415,8 @@ class SignalList
             ."        <th align='left'><label for='filter_sp'>Locations</label></th>\n"
             ."        <td nowrap>\n"
             .$this->drawControlStates()
+            ."<br>\n"
+            .$this->drawControlSpItuClause()
             ."<br>\n"
             .$this->drawControlCountries()
             ."<br>\n"
@@ -776,13 +535,6 @@ class SignalList
             ."      </tr>"
             : ""
             )
-            ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Custom Filter:</th>\n"
-            ."        <td nowrap><select name='filter_custom' class='formField'>\n"
-            ."<option value=''".($this->filter_custom=='' ? " selected" : "").">(None)</option>\n"
-            ."<option value='cle160'".($this->filter_custom=='cle160' ? " selected" : "").">CLE160</option>\n"
-            ."</select></td>\n"
-            ."      </tr>"
             ."      <tr class='rowForm noprint'>\n"
             ."        <th colspan='2'>"
             ."<input type='submit' onclick='return send_form(form)' name='go' value='Go'"
@@ -819,10 +571,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawHelp()
+    private function drawHelp()
     {
         $html =
              "<ul>\n"
@@ -888,10 +637,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     *
-     */
-    protected function drawListing()
+    private function drawListing()
     {
         $this->html.=
              $this->drawResultsInfo()
@@ -905,10 +651,7 @@ class SignalList
             ."</span>\n";
     }
 
-    /**
-     *
-     */
-    protected function drawMap()
+    private function drawMap()
     {
         $this->head.=
              "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js\"></script>\n"
@@ -1043,10 +786,7 @@ class SignalList
             ."</div>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawResultsData()
+    private function drawResultsData()
     {
         $html =
             "  <tbody>";
@@ -1114,7 +854,8 @@ class SignalList
                 ."<td><a href='".system_URL."/signal_list?filter_khz_1="
                 .(float)$row["khz"]."&amp;filter_khz_2="
                 .(float)$row["khz"]."&amp;limit=-1' title='Filter on this value'>".(float)$row["khz"]."</a></td>\n"
-                ."<td><a href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\">"
+                ."<td>"
+                ."<a href=\"".system_URL."/".$row["ID"]."\" onclick=\"signal_info('".$row["ID"]."');return false\">"
                 ."<b>$call</b></a></td>\n";
             if ($this->type_NDB) {
                 $html.=
@@ -1233,10 +974,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawResultsHeadings()
+    private function drawResultsHeadings()
     {
         $columns = array(
             'khz|0|Sort by Frequency|KHz',
@@ -1379,28 +1117,9 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawResultsInfo()
+    private function drawResultsInfo()
     {
         $html = "";
-        switch($this->sort_by) {
-            case 'CLE64':
-            case 'CLE64_d':
-                $html.=
-                     "<div><span style='color:#ff0000'>CLE64 Custom sort order applied:</span></b></div>\n"
-                    ."<ul>\n"
-                    ."  <li>Show <b>active</b> beacons first</li>\n"
-                    ."  <li>Sort by <b>first letter</b> of callsign: <b>("
-                    .($this->sort_by=='CLE64' ? 'A-Z' : 'Z-A')
-                    .")</b></li>\n"
-                    ."  <li>Sort by <b>DX</b> from Grid Square <b>".$this->filter_dx_gsq."</b>.</li>\n"
-                    ."</ul>\n"
-                    ."<p><b>Tip:</b> You can further <b>refine this search</b> by entering additional"
-                    ." search criteria such as range limits.</p>\n";
-                break;
-        }
         if ($this->filter_id) {
             $html.=
                  "<p><b>Note:</b> Any exact matches for <b>".$this->filter_id."</b>"
@@ -1409,10 +1128,7 @@ class SignalList
         return $html;
     }
 
-    /**
-     * @return string
-     */
-    protected function drawStatsListeners()
+    private function drawStatsListeners()
     {
         return
              "<div class='form_box shadow'>\n"
@@ -1440,10 +1156,7 @@ class SignalList
             ."</div>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawStatsSignals()
+    private function drawStatsSignals()
     {
         return
              "<div class='form_box shadow'>\n"
@@ -1479,10 +1192,7 @@ class SignalList
             ."</div>";
     }
 
-    /**
-     * @return string
-     */
-    protected function drawVisitorPoll()
+    private function drawVisitorPoll()
     {
         $Obj = new Poll;
         return
@@ -1500,18 +1210,12 @@ class SignalList
             ."</div>";
     }
 
-    /**
-     *
-     */
-    protected function getCountLocations()
+    private function getCountLocations()
     {
         $this->stats['locations'] = Tools\Listener::listener_get_count($this->region);
     }
 
-    /**
-     *
-     */
-    protected function getCountLogs()
+    private function getCountLogs()
     {
         switch ($this->filter_system) {
             case "1":
@@ -1540,10 +1244,7 @@ class SignalList
         $this->stats['logs'] =    $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountMatched()
+    private function getCountMatched()
     {
         $sql = ($this->filter_heard_in || $this->filter_listener ?
                 "SELECT\n"
@@ -1567,24 +1268,29 @@ class SignalList
             .($this->sql_filter_active ?        " AND\n".$this->sql_filter_active       : "")
             .($this->sql_filter_channels ?      " AND\n".$this->sql_filter_channels     : "")
             .($this->sql_filter_continent ?     " AND\n".$this->sql_filter_continent    : "")
-            .($this->sql_filter_custom ?        " AND\n".$this->sql_filter_custom       : "")
             .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?            " AND\n".$this->sql_filter_id           : "")
-            .($this->sql_filter_itu ?           " AND\n".$this->sql_filter_itu          : "")
             .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
             .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
             .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
-            .($this->sql_filter_sp ?            " AND\n".$this->sql_filter_sp           : "")
             .($this->sql_filter_type ?          " AND\n".$this->sql_filter_type         : "")
-            ;
+
+            .($this->sql_filter_sp || $this->sql_filter_itu ? " AND\n(\n" : "")
+            .($this->sql_filter_sp ?            $this->sql_filter_sp           : "")
+            .($this->sql_filter_sp && $this->sql_filter_itu ?
+                ($this->filter_sp_itu_clause ? $this->filter_sp_itu_clause : " OR ")
+             :
+                ""
+            )
+            .($this->sql_filter_itu ?           $this->sql_filter_itu          : "")
+            .($this->sql_filter_sp || $this->sql_filter_itu ? ")\n" : "")
+            
+        ;
 //        z($sql);die;
         $this->total = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountSignalsREUOnly()
+    private function getCountSignalsREUOnly()
     {
         $sql =
              "SELECT\n"
@@ -1604,10 +1310,7 @@ class SignalList
         $this->stats['REU_only'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountSignalsRNAOnly()
+    private function getCountSignalsRNAOnly()
     {
         $sql =
              "SELECT\n"
@@ -1627,10 +1330,7 @@ class SignalList
         $this->stats['RNA_only'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountSignalsRNAAndREU()
+    private function getCountSignalsRNAAndREU()
     {
         $sql =
              "SELECT\n"
@@ -1644,10 +1344,7 @@ class SignalList
         $this->stats['RNA_and_REU'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountSignalsRWW()
+    private function getCountSignalsRWW()
     {
         $sql =
              "SELECT\n"
@@ -1659,10 +1356,7 @@ class SignalList
         $this->stats['RWW'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getCountSignalsUnassigned()
+    private function getCountSignalsUnassigned()
     {
         $sql =
              "SELECT\n"
@@ -1682,18 +1376,12 @@ class SignalList
         $this->stats['Unassigned'] = $this->ObjSignal->getFieldForSql($sql);
     }
 
-    /**
-     *
-     */
-    protected function getDateFirstAndLastLogs()
+    private function getDateFirstAndLastLogs()
     {
         $this->stats = array_merge($this->stats, Log::getLogDateRange($this->filter_system, $this->region));
     }
 
-    /**
-     *
-     */
-    protected function getResultsMatched()
+    private function getResultsMatched()
     {
         $sql =
              "SELECT\n"
@@ -1725,15 +1413,23 @@ class SignalList
             .($this->sql_filter_active ?        " AND\n".$this->sql_filter_active       : "")
             .($this->sql_filter_channels ?      " AND\n".$this->sql_filter_channels     : "")
             .($this->sql_filter_continent ?     " AND\n".$this->sql_filter_continent    : "")
-            .($this->sql_filter_custom ?        " AND\n".$this->sql_filter_custom       : "")
             .($this->sql_filter_frequency ?     " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?            " AND\n".$this->sql_filter_id           : "")
-            .($this->sql_filter_itu ?           " AND\n".$this->sql_filter_itu          : "")
             .($this->sql_filter_last_heard ?    " AND\n".$this->sql_filter_last_heard   : "")
             .($this->sql_filter_range_min ?     " AND\n".$this->sql_filter_range_min    : "")
             .($this->sql_filter_range_max ?     " AND\n".$this->sql_filter_range_max    : "")
-            .($this->sql_filter_sp ?            " AND\n".$this->sql_filter_sp           : "")
             .($this->sql_filter_type ?          " AND\n".$this->sql_filter_type         : "")
+
+            .($this->sql_filter_sp || $this->sql_filter_itu ? " AND\n(\n" : "")
+            .($this->sql_filter_sp ?            $this->sql_filter_sp           : "")
+            .($this->sql_filter_sp && $this->sql_filter_itu ?
+                ($this->filter_sp_itu_clause ? $this->filter_sp_itu_clause : " OR ")
+             :
+                ""
+            )
+            .($this->sql_filter_itu ?           $this->sql_filter_itu          : "")
+            .($this->sql_filter_sp || $this->sql_filter_itu ? ")\n" : "")
+
             .($this->sql_sort_by ?              "\nORDER BY\n  ".$this->sql_sort_by : "")
             .($this->limit!=-1 ?                "\nLIMIT\n  ".$this->offset.", ".$this->limit : "");
 //        z($sql);
@@ -1743,10 +1439,7 @@ class SignalList
         }
     }
 
-    /**
-     * @return string
-     */
-    protected function getSqlDxColumns()
+    private function getSqlDxColumns()
     {
         return
            "    CAST(\n"
@@ -1824,10 +1517,7 @@ class SignalList
           ."    ) AS `range_dx_deg`\n";
     }
 
-    /**
-     *
-     */
-    protected function setup()
+    private function setup()
     {
         $this->ObjSignal = new Signal;
         $this->setupLoadVars();
@@ -1840,10 +1530,7 @@ class SignalList
         $this->getResultsMatched();
     }
 
-    /**
-     *
-     */
-    protected function setupDoSubmode()
+    private function setupDoSubmode()
     {
         if (!Rxx::isAdmin()) {
             return;
@@ -1858,10 +1545,7 @@ class SignalList
         }
     }
 
-    /**
-     *
-     */
-    protected function setupInitListenersListFilter()
+    private function setupInitListenersListFilter()
     {
         switch ($this->filter_system) {
             case "1":
@@ -1892,15 +1576,11 @@ class SignalList
         }
     }
 
-    /**
-     *
-     */
-    protected function setupInitSql()
+    private function setupInitSql()
     {
         $this->setupInitSqlFilterActive();
         $this->setupInitSqlFilterChannels();
         $this->setupInitSqlFilterContinent();
-        $this->setupInitSqlFilterCustom();
         $this->setupInitSqlFilterFrequency();
         $this->setupInitSqlFilterHeardIn();
         $this->setupInitSqlFilterId();
@@ -1913,23 +1593,16 @@ class SignalList
         $this->setupInitSqlFilterSystem();
         $this->setupInitSqlFilterType();
         $this->setupInitSqlSortBy();
-
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterActive()
+    private function setupInitSqlFilterActive()
     {
         if ($this->filter_active) {
             $this->sql_filter_active = "    (`active` = 1)";
         }
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterChannels()
+    private function setupInitSqlFilterChannels()
     {
         switch ($this->filter_channels) {
             case 1:
@@ -1941,34 +1614,7 @@ class SignalList
         }
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterCustom()
-    {
-        switch ($this->filter_custom){
-            case 'cle160':
-                $itu_codes =
-                     'ABW AFG AFS AGL AIA ALB ALG ALS AND ANI AOE ARG ARM ARS ASC ATA ATG ATN AUI AUS AUT AZE AZR '
-                    .'BAH BAL BAR BDI BEL BEN BER BFA BGD BHR BIH BLR BLZ BOL BOT BRA BRB BRI BRM BRU BTN BUL '
-                    .'CAB CAF CBG CEU CHL CHN CHR CKH CKS CLI CLM CLN CME CNR COD COG COM COR CPV CTI CTR CUB '
-                    .'CVA CYM CYP CZE';
-                $sp_codes =
-                    'AB AK AL AR AT AZ BC CA CO CT';
-                $this->sql_filter_custom =
-                     "    (`signals`.`ITU` IN('"
-                    .implode("','", explode(' ', $itu_codes))
-                    ."') OR `signals`.`SP` IN('"
-                    .implode("','", explode(' ', $sp_codes))
-                    ."'))";
-                break;
-        }
-    }
-
-    /**
-     *
-     */
-    protected function setupInitSqlFilterFrequency()
+    private function setupInitSqlFilterFrequency()
     {
         if (!$this->filter_khz_2) {
             return;
@@ -1977,10 +1623,7 @@ class SignalList
             "    (`khz` >= ".$this->filter_khz_1." AND `khz` <= ".$this->filter_khz_2.")";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterHeardIn()
+    private function setupInitSqlFilterHeardIn()
     {
         if ($this->filter_heard_in=='') {
             return;
@@ -1999,10 +1642,7 @@ class SignalList
             ."'))";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterId()
+    private function setupInitSqlFilterId()
     {
         if ($this->filter_id===false) {
             return;
@@ -2010,25 +1650,19 @@ class SignalList
         $this->sql_filter_id = "    (`signals`.`call` LIKE \"%".$this->filter_id."%\")";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterItu()
+    private function setupInitSqlFilterItu()
     {
         if (!$this->filter_itu) {
             return;
         }
-        $tmp =        explode(" ", $this->filter_itu);
-        sort($tmp);
-        $this->filter_itu =     implode(" ", $tmp);
-        $this->sql_filter_itu = explode(" ", $this->filter_itu);
-        $this->sql_filter_itu = "    (`signals`.`ITU` IN('".implode($this->sql_filter_itu, "', '")."'))";
+        $this->sql_filter_itu = explode(" ", str_replace('*', '%', $this->filter_itu));
+        $this->sql_filter_itu =
+             "    (`signals`.`ITU` LIKE '"
+            .implode($this->sql_filter_itu, "' OR `signals`.`ITU` LIKE '")
+            ."')";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterLastHeard()
+    private function setupInitSqlFilterLastHeard()
     {
         if (!$this->filter_date_1) {
             return;
@@ -2037,10 +1671,7 @@ class SignalList
             "    (`last_heard` >= \"".$this->filter_date_1."\" AND `last_heard` <= \"".$this->filter_date_2."\")";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterListener()
+    private function setupInitSqlFilterListener()
     {
         if (!$this->filter_listener) {
             return;
@@ -2049,10 +1680,7 @@ class SignalList
             "    (`logs`.`listenerID` IN(".implode(',', $this->filter_listener)."))";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterRangeMax()
+    private function setupInitSqlFilterRangeMax()
     {
         if (!$this->filter_by_range || !$this->filter_dx_max) {
             return;
@@ -2077,10 +1705,7 @@ class SignalList
             ."    ) < ".$this->filter_dx_max.")";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterRangeMin()
+    private function setupInitSqlFilterRangeMin()
     {
         if (!$this->filter_by_range || !$this->filter_dx_min) {
             return;
@@ -2103,13 +1728,9 @@ class SignalList
             .",\n"
             ."        2\n"
             ."    ) > ".$this->filter_dx_min.")";
-
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterContinent()
+    private function setupInitSqlFilterContinent()
     {
         if (!$this->filter_continent) {
             return;
@@ -2120,25 +1741,19 @@ class SignalList
             ."    )";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterSP()
+    private function setupInitSqlFilterSP()
     {
         if (!$this->filter_sp) {
             return;
         }
-        $tmp =        explode(" ", $this->filter_sp);
-        sort($tmp);
-        $this->filter_sp =  implode(" ", $tmp);
-        $this->sql_filter_sp =    explode(" ", $this->filter_sp);
-        $this->sql_filter_sp =    "    (`signals`.`SP` IN('".implode($this->sql_filter_sp, "', '")."'))";
+        $this->sql_filter_sp =  explode(" ", str_replace('*', '%', $this->filter_sp));
+        $this->sql_filter_sp =
+            "    (`signals`.`SP` LIKE '"
+           .implode($this->sql_filter_sp, "' OR `signals`.`SP` LIKE '")
+           ."')";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterSystem()
+    private function setupInitSqlFilterSystem()
     {
         switch ($this->filter_system) {
             case "1":
@@ -2168,13 +1783,9 @@ class SignalList
                     "    (1)";
                 break;
         }
-
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlFilterType()
+    private function setupInitSqlFilterType()
     {
         $filter_type =    array();
         if ($this->type_NDB) {
@@ -2204,10 +1815,7 @@ class SignalList
            ."))";
     }
 
-    /**
-     *
-     */
-    protected function setupInitSqlSortBy()
+    private function setupInitSqlSortBy()
     {
         switch ($this->sort_by) {
             case "call":
@@ -2398,10 +2006,7 @@ class SignalList
         }
     }
 
-    /**
-     *
-     */
-    protected function setupLoadStats()
+    private function setupLoadStats()
     {
         $this->getCountSignalsRNAOnly();
         $this->getCountSignalsREUOnly();
@@ -2413,11 +2018,7 @@ class SignalList
         $this->getDateFirstAndLastLogs();
     }
 
-
-    /**
-     *
-     */
-    protected function setupLoadVars()
+    private function setupLoadVars()
     {
         global $mode, $sort_by;
         $this->mode =                   $mode;
@@ -2427,7 +2028,6 @@ class SignalList
         $this->filter_active =          Rxx::get_var('filter_active');
         $this->filter_channels =        Rxx::get_var('filter_channels');
         $this->filter_continent =       Rxx::get_var('filter_continent');
-        $this->filter_custom =          Rxx::get_var('filter_custom');
         $this->filter_date_1 =          Rxx::get_var('filter_date_1');
         $this->filter_date_2 =          Rxx::get_var('filter_date_2');
         $this->filter_dx_gsq =          Rxx::get_var('filter_dx_gsq');
@@ -2437,14 +2037,16 @@ class SignalList
         $this->filter_heard_in =        Rxx::get_var('filter_heard_in');
         $this->filter_heard_in_mod =    Rxx::get_var('filter_heard_in_mod');
         $this->filter_id =              strToUpper(Rxx::get_var('filter_id'));
-        $this->filter_itu =             strToUpper(Rxx::get_var('filter_itu'));
         $this->filter_khz_1 =           Rxx::get_var('filter_khz_1');
         $this->filter_khz_2 =           Rxx::get_var('filter_khz_2');
         $this->filter_listener =        Rxx::get_var('filter_listener');
         $this->filter_system =          Rxx::get_var('filter_system');
-        $this->filter_sp =              strToUpper(Rxx::get_var('filter_sp'));
         $this->offsets =                Rxx::get_var('offsets');
         $this->region =                 Rxx::get_var('region');
+
+        $this->filter_sp =              strToUpper(Rxx::get_var('filter_sp'));
+        $this->filter_itu =             strToUpper(Rxx::get_var('filter_itu'));
+        $this->filter_sp_itu_clause =   strToUpper(Rxx::get_var('filter_sp_itu_clause'));
 
         $this->limit =                  (int)Rxx::get_var('limit', 50);
         $this->offset =                 (int)Rxx::get_var('offset', 0);
@@ -2459,10 +2061,7 @@ class SignalList
         $this->type_OTHER =             Rxx::get_var('type_OTHER');
     }
 
-    /**
-     *
-     */
-    protected function setupTweakVars()
+    private function setupTweakVars()
     {
         if ($this->filter_date_1 || $this->filter_date_2) {
             if ($this->filter_date_1 == "") {
@@ -2564,6 +2163,5 @@ class SignalList
         if ($this->sort_by=="") {
             $this->sort_by = "khz";
         }
-
     }
 }

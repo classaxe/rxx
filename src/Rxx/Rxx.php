@@ -493,7 +493,11 @@ class Rxx
      */
     public static function highlight($string, $find)
     {
-        $find = str_replace("_", "[A-Z0-9]", $find);
+        $find = str_replace(
+            array('_', '*'),
+            array('[A-Z0-9]'),
+            $find
+        );
         return ($find ?
             (preg_replace("/($find)/", "<span style='font-weight:bold;color:".g_highlight."'>\\1</span>", $string))
             :
@@ -552,6 +556,10 @@ class Rxx
                 break;
             case 'signal_list':
                 $Obj = new SignalList;
+                $Obj->draw();
+                break;
+            case 'signal_seeklist':
+                $Obj = new SignalSeekList;
                 $Obj->draw();
                 break;
             case 'poll_list':
@@ -750,7 +758,7 @@ class Rxx
                 $out.= $Obj->drawList();
                 break;
             case 'signal_seeklist':
-                $out.= \Rxx\Tools\Signal::signal_seeklist();
+                $out.= $Obj->html;
                 break;
             case 'listener_list':
                 $out.= \Rxx\Tools\Listener::listener_list();

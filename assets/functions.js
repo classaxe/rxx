@@ -1,5 +1,8 @@
 /*
 Version History:
+  1.0.6 (2017-03-06)
+    1) Function validate_alphasp() now allows the wild-card character *
+    2) Function clear_signal_list() now has sp_itu_clause instead of custom
   1.0.5 (2015-04-05)
     1) Changes following renaming of:
          filter_heard ->    filter_heard_in
@@ -94,7 +97,7 @@ function clear_signal_list(form){
     filter_dx_gsq.value="";
     filter_dx_max.value="";
     filter_dx_min.value="";
-    filter_custom.value="";
+    filter_sp_itu_clause.value="AND";
     filter_heard_in.value="";
     radio_filter_heard_in_mod_any.checked=1;
     filter_dx_units_km.checked=1;
@@ -973,7 +976,7 @@ function validate_alphasp(field) {
   if (field=="") {
     return true;
   }
-  if (field.match(/[a-zA-Z ]*/i) == field) {
+  if (field.match(/[a-zA-Z\* ]*/i) == field) {
     return true;
   }
   return false;

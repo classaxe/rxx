@@ -1,32 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: module17
- * Date: 16-01-23
- * Time: 9:57 PM
- */
-
 namespace Rxx\Tools;
 
-/**
- * Class Cle
- * @package Rxx\Tools
- */
 class Cle
 {
-    /**
-     * @param $var
-     * @return string
-     */
     public static function set($var)
     {
         return addslashes(htmlentities(isset($_POST[$var]) ? $_POST[$var] : ''));
     }
 
-    /**
-     * @param $prefix
-     * @return string
-     */
     public static function setType($prefix)
     {
         $vars = array();
@@ -51,9 +32,6 @@ class Cle
         return implode('&amp;', $vars);
     }
 
-    /**
-     * @return string
-     */
     public static function cle()
     {
         global $ID, $mode, $submode, $script, $sortBy, $target;
@@ -76,6 +54,7 @@ class Cle
                 ."  `world_range_1_type` = '".Cle::setType('world_range_1_type')."',\n"
                 ."  `world_range_1_itu` = '".Cle::set('world_range_1_itu')."',\n"
                 ."  `world_range_1_sp` = '".Cle::set('world_range_1_sp')."',\n"
+                ."  `world_range_1_sp_itu_clause` = '".Cle::set('world_range_1_sp_itu_clause')."',\n"
                 ."  `world_range_1_filter_other` = '".Cle::set('world_range_1_filter_other')."',\n"
                 ."  `world_range_1_text_extra` = '".Cle::set('world_range_1_text_extra')."',\n"
                 ."  `world_range_2_low` = '".Cle::set('world_range_2_low')."',\n"
@@ -84,6 +63,7 @@ class Cle
                 ."  `world_range_2_type` = '".Cle::setType('world_range_2_type')."',\n"
                 ."  `world_range_2_itu` = '".Cle::set('world_range_2_itu')."',\n"
                 ."  `world_range_2_sp` = '".Cle::set('world_range_2_sp')."',\n"
+                ."  `world_range_2_sp_itu_clause` = '".Cle::set('world_range_2_sp_itu_clause')."',\n"
                 ."  `world_range_2_filter_other` = '".Cle::set('world_range_2_filter_other')."',\n"
                 ."  `world_range_2_text_extra` = '".Cle::set('world_range_2_text_extra')."',\n"
                 ."  `europe_range_1_low` = '".Cle::set('europe_range_1_low')."',\n"
@@ -92,6 +72,7 @@ class Cle
                 ."  `europe_range_1_type` = '".Cle::setType('europe_range_1_type')."',\n"
                 ."  `europe_range_1_itu` = '".Cle::set('europe_range_1_itu')."',\n"
                 ."  `europe_range_1_sp` = '".Cle::set('europe_range_1_sp')."',\n"
+                ."  `europe_range_1_sp_itu_clause` = '".Cle::set('europe_range_1_sp_itu_clause')."',\n"
                 ."  `europe_range_1_filter_other` = '".Cle::set('europe_range_1_filter_other')."',\n"
                 ."  `europe_range_1_text_extra` = '".Cle::set('europe_range_1_text_extra')."',\n"
                 ."  `europe_range_2_low` = '".Cle::set('europe_range_2_low')."',\n"
@@ -100,6 +81,7 @@ class Cle
                 ."  `europe_range_2_type` = '".Cle::setType('europe_range_2_type')."',\n"
                 ."  `europe_range_2_itu` = '".Cle::set('europe_range_2_itu')."',\n"
                 ."  `europe_range_2_sp` = '".Cle::set('europe_range_2_sp')."',\n"
+                ."  `europe_range_2_sp_itu_clause` = '".Cle::set('europe_range_2_sp_itu_clause')."',\n"
                 ."  `europe_range_2_filter_other` = '".Cle::set('europe_range_2_filter_other')."',\n"
                 ."  `europe_range_2_text_extra` = '".Cle::set('europe_range_2_text_extra')."'\n";
             \Rxx\Database::query($sql);
@@ -121,8 +103,17 @@ class Cle
         $a_type =             $record['world_range_1_type'];
         $a_itu =              $record['world_range_1_itu'];
         $a_sp =               $record['world_range_1_sp'];
+        $a_sp_itu_clause =    $record['world_range_1_sp_itu_clause'];
         $a_filter_other =     $record['world_range_1_filter_other'];
-        $a_url =              "filter_khz_1=".$a_khz_l."&amp;filter_khz_2=".$a_khz_h."&amp;".$a_type.($a_channels ? "&amp;filter_channels=".$a_channels : "").($a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $a_itu) : "").($a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $a_sp) : "").($a_filter_other ? "&amp;".$a_filter_other : "");
+        $a_url =
+             "filter_khz_1=".$a_khz_l
+            ."&amp;filter_khz_2=".$a_khz_h
+            ."&amp;".$a_type
+            .($a_channels ? "&amp;filter_channels=".$a_channels : "")
+            .($a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $a_itu) : "")
+            .($a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $a_sp) : "")
+            .($a_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$a_sp_itu_clause : "")
+            .($a_filter_other ? "&amp;".$a_filter_other : "");
         $a_text =             "<b>".$a_khz_l."kHz to ".$a_khz_h."kHz ".$a_text_extra."</b>";
 
         $b_text_extra =       $record['world_range_2_text_extra'];
@@ -132,8 +123,17 @@ class Cle
         $b_type =             $record['world_range_2_type'];
         $b_itu =              $record['world_range_2_itu'];
         $b_sp =               $record['world_range_2_sp'];
+        $b_sp_itu_clause =    $record['world_range_2_sp_itu_clause'];
         $b_filter_other =     $record['world_range_2_filter_other'];
-        $b_url =              "filter_khz_1=".$b_khz_l."&amp;filter_khz_2=".$b_khz_h."&amp;".$b_type.($b_channels ? "&amp;filter_channels=".$b_channels : "").($b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $b_itu) : "").($b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $b_sp) : "").($b_filter_other ? "&amp;".$b_filter_other : "");
+        $b_url =
+            "filter_khz_1=".$b_khz_l
+            ."&amp;filter_khz_2=".$b_khz_h
+            ."&amp;".$b_type
+            .($b_channels ? "&amp;filter_channels=".$b_channels : "")
+            .($b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $b_itu) : "")
+            .($b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $b_sp) : "")
+            .($b_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$b_sp_itu_clause : "")
+            .($b_filter_other ? "&amp;".$b_filter_other : "");
         $b_text =             "<b>".$b_khz_l."kHz to ".$b_khz_h."kHz ".$b_text_extra."</b>";
 
         $eu_a_text_extra =    ($record['europe_range_1_text_extra'] ?     $record['europe_range_1_text_extra'] :      $record['world_range_1_text_extra']);
@@ -143,8 +143,17 @@ class Cle
         $eu_a_type =          ($record['europe_range_1_type'] ?           $record['europe_range_1_type'] :            $record['world_range_1_type']);
         $eu_a_itu =           ($record['europe_range_1_itu'] ?            $record['europe_range_1_itu'] :             $record['world_range_1_itu']);
         $eu_a_sp =            ($record['europe_range_1_sp'] ?             $record['europe_range_1_sp'] :              $record['world_range_1_sp']);
+        $eu_a_sp_itu_clause = ($record['europe_range_1_sp_itu_clause'] ?  $record['europe_range_1_sp_itu_clause'] :   $record['world_range_1_sp_itu_clause']);
         $eu_a_filter_other =  ($record['europe_range_1_filter_other'] ?   $record['europe_range_1_filter_other'] :    $record['world_range_1_filter_other']);
-        $eu_a_url =           "filter_khz_1=".$eu_a_khz_l."&amp;filter_khz_2=".$eu_a_khz_h."&amp;".$eu_a_type.($eu_a_channels ? "&amp;filter_channels=".$eu_a_channels : "").($eu_a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_a_itu) : "").($eu_a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_a_sp) : "").($eu_a_filter_other ? "&amp;".$eu_a_filter_other : "");
+        $eu_a_url =
+             "filter_khz_1=".$eu_a_khz_l
+            ."&amp;filter_khz_2=".$eu_a_khz_h
+            ."&amp;".$eu_a_type
+            .($eu_a_channels ? "&amp;filter_channels=".$eu_a_channels : "")
+            .($eu_a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_a_itu) : "")
+            .($eu_a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_a_sp) : "")
+            .($eu_a_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$eu_a_sp_itu_clause : "")
+            .($eu_a_filter_other ? "&amp;".$eu_a_filter_other : "");
         $eu_a_text =          "<b>".$eu_a_khz_l."kHz to ".$eu_a_khz_h."kHz ".$eu_a_text_extra."</b>";
 
         $eu_b_text_extra =    ($record['europe_range_2_text_extra'] ?     $record['europe_range_2_text_extra'] :      $record['world_range_2_text_extra']);
@@ -154,8 +163,17 @@ class Cle
         $eu_b_type =          ($record['europe_range_2_type'] ?           $record['europe_range_2_type'] :            $record['world_range_2_type']);
         $eu_b_itu =           ($record['europe_range_2_itu'] ?            $record['europe_range_2_itu'] :             $record['world_range_2_itu']);
         $eu_b_sp =            ($record['europe_range_2_sp'] ?             $record['europe_range_2_sp'] :              $record['world_range_2_sp']);
+        $eu_b_sp_itu_clause = ($record['europe_range_2_sp_itu_clause'] ?  $record['europe_range_2_sp_itu_clause'] :   $record['world_range_2_sp_itu_clause']);
         $eu_b_filter_other =  ($record['europe_range_2_filter_other'] ?   $record['europe_range_2_filter_other'] :    $record['world_range_2_filter_other']);
-        $eu_b_url =           "filter_khz_1=".$eu_b_khz_l."&amp;filter_khz_2=".$eu_b_khz_h."&amp;".$eu_b_type.($eu_b_channels ? "&amp;filter_channels=".$eu_b_channels : "").($eu_b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_b_itu) : "").($eu_b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_b_sp) : "").($eu_b_filter_other ? "&amp;".$eu_b_filter_other : "");
+        $eu_b_url =
+             "filter_khz_1=".$eu_b_khz_l
+            ."&amp;filter_khz_2=".$eu_b_khz_h
+            ."&amp;".$eu_b_type
+            .($eu_b_channels ? "&amp;filter_channels=".$eu_b_channels : "")
+            .($eu_b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_b_itu) : "")
+            .($eu_b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_b_sp) : "")
+            .($eu_b_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$eu_b_sp_itu_clause : "")
+            .($eu_b_filter_other ? "&amp;".$eu_b_filter_other : "");
         $eu_b_text =          "<b>".$eu_b_khz_l."kHz to ".$eu_b_khz_h."kHz ".$eu_b_text_extra."</b>";
 
         $out =
@@ -337,21 +355,6 @@ class Cle
                 ."    </td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
-                ."    <th>ITU Codes</th>\n"
-                ."    <td>\n"
-                ."      <input type='text' name='world_range_1_itu' id='world_range_1_itu' value=\"".$a_itu."\" style='text-align:left;width:220px;' />\n"
-                ."    </td>\n"
-                ."    <td>\n"
-                ."      <input type='text' name='europe_range_1_itu' id='europe_range_1_itu' value=\"".$eu_a_itu."\" style='text-align:left;width:220px;' />\n"
-                ."    </td>\n"
-                ."    <td>\n"
-                ."      <input type='text' name='world_range_2_itu' id='world_range_2_itu' value=\"".$b_itu."\" style='text-align:left;width:220px;' />\n"
-                ."    </td>\n"
-                ."    <td>\n"
-                ."      <input type='text' name='europe_range_2_itu' id='europe_range_2_itu' value=\"".$eu_b_itu."\" style='text-align:left;width:220px;' />\n"
-                ."    </td>\n"
-                ."  </tr>\n"
-                ."  <tr>\n"
                 ."    <th>SP Codes</th>\n"
                 ."    <td>\n"
                 ."      <input type='text' name='world_range_1_sp' id='world_range_1_sp' value=\"".$a_sp."\" style='text-align:left;width:220px;' />\n"
@@ -364,6 +367,48 @@ class Cle
                 ."    </td>\n"
                 ."    <td>\n"
                 ."      <input type='text' name='europe_range_2_sp' id='europe_range_2_sp' value=\"".$eu_b_sp."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."  </tr>\n"
+                ."  <tr>\n"
+                ."    <th>SP / ITU</th>\n"
+                ."    <td>\n"
+                ."      <select name='world_range_1_sp_itu_clause' id='world_range_1_sp_itu_clause'>\n"
+                ."        <option value='AND'".($a_sp_itu_clause == 'AND' ? " selected='selected'" : "").">AND</option>\n"
+                ."        <option value='OR'".($a_sp_itu_clause == 'OR' ? " selected='selected'" : "").">OR</option>\n"
+                ."      </select>\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <select name='europe_range_1_sp_itu_clause' id='europe_range_1_sp_itu_clause'>\n"
+                ."        <option value='AND'".($eu_a_sp_itu_clause == 'AND' ? " selected='selected'" : "").">AND</option>\n"
+                ."        <option value='OR'".($eu_a_sp_itu_clause == 'OR' ? " selected='selected'" : "").">OR</option>\n"
+                ."      </select>\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <select name='world_range_2_sp_itu_clause' id='world_range_2_sp_itu_clause'>\n"
+                ."        <option value='AND'".($b_sp_itu_clause == 'AND' ? " selected='selected'" : "").">AND</option>\n"
+                ."        <option value='OR'".($b_sp_itu_clause == 'OR' ? " selected='selected'" : "").">OR</option>\n"
+                ."      </select>\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <select name='europe_range_2_sp_itu_clause' id='europe_range_2_sp_itu_clause'>\n"
+                ."        <option value='AND'".($eu_b_sp_itu_clause == 'AND' ? " selected='selected'" : "").">AND</option>\n"
+                ."        <option value='OR'".($eu_b_sp_itu_clause == 'OR' ? " selected='selected'" : "").">OR</option>\n"
+                ."      </select>\n"
+                ."    </td>\n"
+                ."  </tr>\n"
+                ."  <tr>\n"
+                ."    <th>ITU Codes</th>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='world_range_1_itu' id='world_range_1_itu' value=\"".$a_itu."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='europe_range_1_itu' id='europe_range_1_itu' value=\"".$eu_a_itu."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='world_range_2_itu' id='world_range_2_itu' value=\"".$b_itu."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='europe_range_2_itu' id='europe_range_2_itu' value=\"".$eu_b_itu."\" style='text-align:left;width:220px;' />\n"
                 ."    </td>\n"
                 ."  </tr>\n"
                 ."  <tr>\n"
