@@ -307,7 +307,7 @@ class Image
         Image::ImageRectangleWithRoundedCorners($image, 3, 5, 300, 56, 5, $darkgray, $white);
         ImageString($image, 5, 10, 10, "NDBList State and Country codes", $black);
         ImageString($image, 2, 10, 27, "Please use these when reporting.", $black);
-        ImageString($image, 2, 10, 40, "Contact: mapmaster@beaconworld.org.uk", $black);
+        ImageString($image, 2, 10, 40, "Contact: martin@classaxe.com", $black);
 
 
         ImageCopyMerge($image, $codes, 0, 0, 0, 0, 653, 665, 30);
@@ -357,7 +357,7 @@ class Image
         Image::ImageRectangleWithRoundedCorners($image, 3, 565, 300, 616, 5, $darkgray, $white);
         ImageString($image, 5, 10, 570, "NDBList State and Country codes", $black);
         ImageString($image, 2, 10, 587, "Please use these when reporting.", $black);
-        ImageString($image, 2, 10, 600, "Contact: mapmaster@beaconworld.org.uk", $black);
+        ImageString($image, 2, 10, 600, "Contact: martin@classaxe.com", $black);
 
         ImageCopyMerge($image, $codes, 0, 0, 0, 0, 653, 620, 30);
         ImageColorTransparent($image, $col_background);
