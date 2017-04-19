@@ -624,11 +624,14 @@ function set_ICAO_cookies(form) {
 
 function set_range(form) {
   if (form.filter_dx_gsq.value.length==6) {
+    form.filter_dx_gsq.value = form.filter_dx_gsq.value.substr(0,2).toUpperCase()+form.filter_dx_gsq.value.substr(2);
     if (!validate_GSQ(form.filter_dx_gsq.value)) {
-        alert("Sorry, that doen't look like a valid GSQ value.\nValid GSQ values look like this: FN03gv");
+        lastVal = form.filter_dx_gsq.value
+        form.filter_dx_gsq.disabled = 1;
+        alert("Sorry, "+lastVal+" doen't look like a valid GSQ value.\nValid GSQ values look like this: FN03gv");
+        form.filter_dx_gsq.disabled = 0;
         return;
     }
-    form.filter_dx_gsq.value = form.filter_dx_gsq.value.substr(0,2).toUpperCase()+form.filter_dx_gsq.value.substr(2);
     form.filter_dx_min.disabled=0;
     form.filter_dx_max.disabled=0;
     form.filter_dx_min.className="formField";
