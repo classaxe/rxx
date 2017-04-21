@@ -53,7 +53,9 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/af_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'>"
+        ."<img src='".BASE_PATH."assets/images/af_map.gif' alt='Africa map' style='border:1px solid #000'>"
+        ."</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -77,10 +79,12 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'>OR... try the <a href='./?mode=state_map&simple=1&SP=AK' target='_blank'><b>interactive map of Alaska</b></a></td>\n"
+        ."    <td class='downloadTableContent'>OR... try the <a href='".BASE_PATH."state_map/?simple=1&SP=AK' target='_blank'><b>interactive map of Alaska</b></a></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/map_alaska_beacons.gif'></td>\n"
+        ."    <td class='downloadTableContent'>"
+        ."<img src='".BASE_PATH."assets/images/map_alaska_beacons.gif' alt='Alaska map' style='border:1px solid #000'>"
+        ."</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -106,7 +110,9 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/as_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'>"
+        ."<img src='".BASE_PATH."assets/images/as_map.gif' alt='Asia map' style='border:1px solid #000'>"
+        ."</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -133,7 +139,9 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/au_map.gif' alt='Australian map'></td>\n"
+        ."    <td class='downloadTableContent' align='center'>"
+        ."<img src='".BASE_PATH."assets/images/au_map.gif' alt='Australia map' style='border:1px solid #000'>"
+        ."</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -186,7 +194,7 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/japan_map.gif'></td>\n"
+        ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/japan_map.gif' alt='Japan map'></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }
@@ -338,7 +346,8 @@ class Map
         ."    </table></th>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'><img src='".BASE_PATH."assets/images/map_french_polynesia.gif'></td>\n"
+        ."    <td class='downloadTableContent' align='center'>"
+        ."<img src='".BASE_PATH."assets/images/map_french_polynesia.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
         ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
@@ -530,8 +539,7 @@ class Map
             ."  return \"\";\n"
             ." }\n"
             ."</script>"
-            ."<form name='form' action='".system_URL."' method='GET'>\n"
-            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<form name='form' action='".system_URL."/$mode' method='POST'>\n"
             ."<table cellpadding='0' cellspacing='0' border='0'>\n"
             ."  <tr>\n"
             ."    <td><h1>Detailed State maps</h1></td>\n"
@@ -572,20 +580,19 @@ class Map
             ."            <th align='left' width='70'>State</th>\n"
             ."            <td><select name='SP' class='formfield' style='font-family: monospace; width: 100%''>\n"
             ."<option value='' style='color: #0000ff;'>Select a state</option>\n";
-
-
-        $sql =   "SELECT\n"
+        $sql =
+             "SELECT\n"
             ."  `maps`.`SP`,\n"
             ."  `maps`.`ITU`,\n"
             ."  `sp`.`name`\n"
             ."FROM\n"
             ."  `maps`\n"
-            ."left join\n"
-            ."  `sp` on `sp`.`SP` = `maps`.`sp`\n"
+            ."LEFT JOIN `sp` ON\n"
+            ."  `sp`.`SP` = `maps`.`sp`\n"
             ."ORDER BY\n"
             ."  `maps`.`itu`,\n"
-            ."  `maps`.`SP";
-        $result =   @\Rxx\Database::query($sql);
+            ."  `maps`.`SP`";
+        $result =   \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             $thisITU =  $row['ITU'];
@@ -795,7 +802,7 @@ class Map
             $coords =   \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
             global $ID;
             if (!$test) {
-                $out[] =     "<img usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
+                $out[] =     "<img style='clear: both;border:1px solid #888;float: none' usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
                     ."type_DGPS=$type_DGPS&type_HAMBCN=$type_HAMBCN&type_NAVTEX=$type_NAVTEX&type_NDB=$type_NDB&type_TIME=$type_TIME&type_OTHER=$type_OTHER&"
                     ."hide_labels=$hide_labels&places=$places&hide_placenames=$hide_placenames&ID=$ID\" border=\"1\" bordercolor=\"#000000\">\n"
                     ."<map name=\"map\">\n";
