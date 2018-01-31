@@ -545,6 +545,9 @@ class Rxx
             case 'admin_manage':
                 $Obj = new Managers\Admin;
                 break;
+            case 'labs':
+                $Obj = new Labs;
+                break;
             case 'logon':
                 $Obj = new Managers\Logon;
                 break;
@@ -592,6 +595,9 @@ class Rxx
                 break;
             case "help":
                 $out."Help";
+                break;
+            case "labs":
+                $out."Labs";
                 break;
             case "listener_list":
                 $out.=    "Listeners";
@@ -643,7 +649,7 @@ class Rxx
             ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
-            ."<table cellpadding='10' cellspacing='0' width='616' class='titleTable'>\n"
+            ."<table cellpadding='10' cellspacing='0' width='651' class='titleTable'>\n"
             ."  <tr>\n"
             ."    <td align='center'>"
             ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
@@ -663,21 +669,21 @@ class Rxx
         switch (system) {
             case "RNA":
                 $out.=
-                    Rxx::menuItem_selected("<b>North America</b>", 200)
-                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 200)
-                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 200);
+                    Rxx::menuItem_selected("<b>North America</b>", 210)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 210)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 215);
                 break;
             case "REU":
                 $out.=
-                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 200)
-                    .Rxx::menuItem_selected("<b>Europe</b>", 200)
-                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 200);
+                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 210)
+                    .Rxx::menuItem_selected("<b>Europe</b>", 210)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 215);
                 break;
             case "RWW":
                 $out.=
-                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 200)
-                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 200)
-                    .Rxx::menuItem_selected("<b>Worldwide</b>", 200);
+                     Rxx::menuItem("system_RNA", "North America", "sys", 0, 210)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 210)
+                    .Rxx::menuItem_selected("<b>Worldwide</b>", 215);
                 break;
         }
         $out.=
@@ -702,6 +708,7 @@ class Rxx
                 :
                 Rxx::menuItem("logon", "Log On", "mode", 0, 45)
             )
+            .Rxx::menuItem("labs", "Labs", "mode", 0, 30)
             .Rxx::menuItem("help", "Help", "mode", 0, 35)
             .Rxx::menuItem("donate", "Donate", "mode", 0, 45)
             ."      </tr>\n"
@@ -741,6 +748,9 @@ class Rxx
                 break;
             case 'help':
                 $out .= \Rxx\Rxx::help();
+                break;
+            case 'labs':
+                $out.= $Obj->draw();
                 break;
             case 'logon':
                 $out.= $Obj->draw();

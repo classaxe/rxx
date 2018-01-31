@@ -40,6 +40,7 @@ class Logon
             ."  <tr class='rownormal'>\n"
             ."    <td colspan='2' align='center'><input type='submit' value='Logon'></td>"
             ."  </tr>\n"
-            ."</table><script type='text/javascript'>document.form.user.focus();</script>\n";
+            ."</table><script type='text/javascript'>document.form.user.focus();</script>\n"
+            ."</form>";
     }
 }

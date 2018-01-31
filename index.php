@@ -115,6 +115,7 @@ switch ($mode) {
     case "cle":
     case "donate":
     case "help":
+    case "labs":
     case "listener_list":
     case "maps":
     case "poll_list":
