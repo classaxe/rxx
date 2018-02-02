@@ -74,7 +74,7 @@ class Listener extends Record
              :
                 ""
             );
-  //  z($sql);
+  //  \Rxx\Rxx::z($sql);
         return $this->getRecordsForSql($sql);
     }
 
@@ -90,7 +90,7 @@ class Listener extends Record
             ."    `logs`\n"
             ."WHERE\n"
             ."   `listenerID` = ".$this->getID();
-  //  z($sql);
+  //  \Rxx\Rxx::z($sql);
         $result = $this->getRecordForSql($sql);
         return $result['count'];
     }

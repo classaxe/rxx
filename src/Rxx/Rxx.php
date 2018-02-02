@@ -83,7 +83,7 @@ class Rxx
             ."  `logs`.`dx_miles` DESC\n"
             ."LIMIT\n"
             ."  1";
-//  z($sql);
+//  \Rxx\Rxx::z($sql);
         $result =    \Rxx\Database::query($sql);
         if (!\Rxx\Database::numRows($result)) {
             return false;
@@ -2239,8 +2239,10 @@ class Rxx
     /**
      * @param $sql
      */
-    public static function z($sql)
+    public static function z($sql, $label = false)
     {
-        print("<pre>$sql</pre>");
+        print
+            ($label ? "<p style='margin-bottom: 0'>".$label."</p>" : "")
+            ."<pre style='margin-bottom: 1em; border-bottom: solid 1px #888; padding-bottom: 1em'>$sql</pre>";
     }
 }

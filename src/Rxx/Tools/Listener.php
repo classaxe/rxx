@@ -275,7 +275,7 @@ class Listener
      * @param $region
      * @return mixed
      */
-    public static function listener_get_count($region, $itu = '')
+    public static function listener_get_count($region = '', $itu = '')
     {
         $region_SQL =    "1";
         if ($region=="") {
@@ -567,7 +567,7 @@ class Listener
               ."ORDER BY\n"
               ."  `log_latest` DESC\n"
               ."LIMIT 0,$listener_list_limit";
-            //    z($sql);
+            //    \Rxx\Rxx::z($sql);
 
             $result =     \Rxx\Database::query($sql);
             $listener_arr = array();

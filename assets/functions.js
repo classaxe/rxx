@@ -82,46 +82,59 @@ function check_for_tabs(frm) {
 }
 
 function get_type(form){
-  if (form.type_NDB.checked)    return 0;
-  if (form.type_DGPS.checked)   return 1;
-  if (form.type_TIME.checked)   return 2;
-  if (form.type_NAVTEX.checked) return 3;
-  if (form.type_HAMBCN.checked) return 4;
-  if (form.type_OTHER.checked)  return 5;
-  if (form.type_DSC.checked)    return 6;
-  return '';
+    if (form.type_NDB.checked)    return 0;
+    if (form.type_DGPS.checked)   return 1;
+    if (form.type_TIME.checked)   return 2;
+    if (form.type_NAVTEX.checked) return 3;
+    if (form.type_HAMBCN.checked) return 4;
+    if (form.type_OTHER.checked)  return 5;
+    if (form.type_DSC.checked)    return 6;
+    return '';
 }
 
 function clear_signal_list(form){
-  with (form) {
-    filter_dx_gsq.value="";
-    filter_dx_max.value="";
-    filter_dx_min.value="";
-    filter_sp_itu_clause.value="AND";
-    filter_heard_in.value="";
-    radio_filter_heard_in_mod_any.checked=1;
-    filter_dx_units_km.checked=1;
-    form['filter_listener[]'].selectedIndex=0;
-    show_list.checked=1;
-    filter_khz_1.value="";
-    filter_khz_2.value="";
-    filter_sp.value="";
-    filter_itu.value="";
-    filter_id.value="";
-    filter_heard_in.disabled=0;
-    filter_heard_in.className="formField";
-    type_DGPS.checked=0;
-    type_DSC.checked=0;
-    type_HAMBCN.checked=0;
-    type_NAVTEX.checked=0;
-    type_NDB.checked=1;
-    type_OTHER.checked=0;
-    type_TIME.checked=0;
-    filter_date_1.value="";
-    filter_date_2.value="";
-    chk_filter_active.checked=0;
-  }
-  set_range(form);
+    with (form) {
+        filter_dx_gsq.value="";
+        filter_dx_max.value="";
+        filter_dx_min.value="";
+        filter_sp_itu_clause.value="AND";
+        filter_heard_in.value="";
+        radio_filter_heard_in_mod_any.checked=1;
+        filter_dx_units_km.checked=1;
+        form['filter_listener[]'].selectedIndex=0;
+        filter_khz_1.value="";
+        filter_khz_2.value="";
+        filter_sp.value="";
+        filter_itu.value="";
+        filter_continent.selectedIndex=0;
+        filter_channels.selectedIndex=0;
+        filter_id.value="";
+        filter_heard_in.disabled=0;
+        filter_heard_in.className="formField";
+        type_DGPS.checked=0;
+        type_DSC.checked=0;
+        type_HAMBCN.checked=0;
+        type_NAVTEX.checked=0;
+        type_NDB.checked=1;
+        type_OTHER.checked=0;
+        type_TIME.checked=0;
+        filter_date_1.value="";
+        filter_date_2.value="";
+        if (typeof region !== 'undefined') {
+            region.selectedIndex=0;
+        }
+        if (typeof show_list !== 'undefined') {
+            show_list.checked=1;
+        }
+        if (typeof filter_logged_date_1 !== 'undefined') {
+            filter_logged_date_1.value = "";
+            filter_logged_date_2.value = "";
+        }
+        if (typeof chk_filter_active !== 'undefined') {
+            chk_filter_active.checked=0;
+        }
+    }
+    set_range(form);
 }
 
 function clear_state_map(form){

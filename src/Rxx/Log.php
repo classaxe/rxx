@@ -91,10 +91,8 @@ class Log extends Record
         }
         $sql =
              "SELECT\n"
-            ."    DATE_FORMAT(MIN(`date`),'%e %b %Y') AS `first_log`,\n"
-            ."    DATE_FORMAT(MAX(`date`),'%e %b %Y') AS `last_log`,\n"
-            ."    DATE_FORMAT(MIN(`date`),'%Y-%m-%d') AS `first_log_iso`,\n"
-            ."    DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last_log_iso`\n"
+            ."    MIN(`date`) AS `first_log`,\n"
+            ."    MAX(`date`) AS `last_log`\n"
             ."FROM\n"
             ."    `logs`\n"
             ."WHERE\n"

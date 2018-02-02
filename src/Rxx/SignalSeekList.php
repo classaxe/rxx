@@ -272,7 +272,7 @@ class SignalSeekList
             ."  `signals`.`SP`,\n"
             ."  `signals`.`khz`,\n"
             ."  `signals`.`call`";
-//    z($sql);die;
+//    \Rxx\Rxx::z($sql);die;
         $result =     @\Rxx\Database::query($sql);
         $total =    \Rxx\Database::numRows($result);
         $heard =    0;
@@ -375,7 +375,7 @@ class SignalSeekList
             ."        </table></td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'><label for='filter_sp'>Locations</label></th>\n"
+            ."        <th align='left'><label for='filter_sp'>Signal<br />Locations</label></th>\n"
             ."        <td nowrap>\n"
             .$this->drawControlStates()
             ."<br>\n"
@@ -624,8 +624,8 @@ class SignalSeekList
             ."<script type='text/javascript'>"
             ."//<!--\n"
             ."\$(function() {\n"
-            ."  var minDate = new Date('".$row['first_log_iso']."');\n"
-            ."  var maxDate = new Date('".$row['last_log_iso']."');\n"
+            ."  var minDate = new Date('".$row['first_log']."');\n"
+            ."  var maxDate = new Date('".$row['last_log']."');\n"
             ."  minDate.setDate(minDate.getDate()+1);\n"
             ."  maxDate.setDate(maxDate.getDate()+1);\n"
             ."  var config = {\n"

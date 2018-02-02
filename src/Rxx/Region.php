@@ -19,4 +19,10 @@ class Region extends Record
     {
         parent::__construct($ID, 'region');
     }
+
+    public static function getRegionByCode($region)
+    {
+        $sql = "SELECT `name` FROM region WHERE region='".$region."'";
+        return static::getFieldForSql($sql);
+    }
 }

@@ -67,7 +67,7 @@ class Image
             ."WHERE\n"
             ."  `count_logs` !=0 AND\n"
             ."  $region";
-//  z($sql);
+//  \Rxx\Rxx::z($sql);
         $result =   \Rxx\Database::query($sql);
         $reporters_in =     array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
@@ -87,7 +87,7 @@ class Image
             ."  `signals`\n"
             ."WHERE\n"
             ."  `ID` = ".$ID;
-//  z($sql);
+//  \Rxx\Rxx::z($sql);
         $result =   \Rxx\Database::query($sql);
         $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $heard_in =     str_replace(" ", ",", $row['heard_in']);
@@ -103,7 +103,7 @@ class Image
             ."  `listeners`\n"
             ."WHERE\n"
             ."  ".$region;
-//  z($sql);
+//  \Rxx\Rxx::z($sql);
         $result =   @\Rxx\Database::query($sql);
         $reporters =    array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
@@ -136,7 +136,7 @@ class Image
             ."ORDER BY\n"
             ."  `heard_in`,\n"
             ."  `name`";
-//  z($sql);
+//  \Rxx\Rxx::z($sql);
 
         $result =   \Rxx\Database::query($sql);
         $reporter_rxed =    array();
@@ -242,7 +242,7 @@ class Image
             ."ORDER BY\n"
             ."  `heard_in`,\n"
             ."  `name`";
-//  z($sql);die;
+//  \Rxx\Rxx::z($sql);die;
         $result =   \Rxx\Database::query($sql);
         $reporter_rxed =    array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
