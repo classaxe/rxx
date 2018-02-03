@@ -2182,12 +2182,30 @@ class SignalList
 
     private function setupTweakVars()
     {
+        if ($this->filter_first_date_1 || $this->filter_first_date_2) {
+            if ($this->filter_first_date_1 == "") {
+                $this->filter_first_date_1 = static::DATE_EARLIEST;
+            }
+            if ($this->filter_first_date_2 == "") {
+                $this->filter_first_date_2 = static::DATE_LATEST;
+            }
+        }
+
         if ($this->filter_last_date_1 || $this->filter_last_date_2) {
             if ($this->filter_last_date_1 == "") {
                 $this->filter_last_date_1 = static::DATE_EARLIEST;
             }
             if ($this->filter_last_date_2 == "") {
                 $this->filter_last_date_2 = static::DATE_LATEST;
+            }
+        }
+
+        if ($this->filter_logged_date_1 || $this->filter_logged_date_2) {
+            if ($this->filter_logged_date_1 == "") {
+                $this->filter_logged_date_1 = static::DATE_EARLIEST;
+            }
+            if ($this->filter_logged_date_2 == "") {
+                $this->filter_logged_date_2 = static::DATE_LATEST;
             }
         }
 
