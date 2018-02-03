@@ -18,19 +18,21 @@ class SignalList
     protected $filter_by_range;
     protected $filter_channels;
     protected $filter_continent;
-    protected $filter_date_1;
-    protected $filter_date_2;
     protected $filter_dx_gsq;
     protected $filter_dx_lat;
     protected $filter_dx_lon;
     protected $filter_dx_max;
     protected $filter_dx_min;
     protected $filter_dx_units;
+    protected $filter_first_date_1;
+    protected $filter_first_date_2;
     protected $filter_heard_in;
     protected $filter_id;
     protected $filter_itu;
     protected $filter_khz_1;
     protected $filter_khz_2;
+    protected $filter_last_date_1;
+    protected $filter_last_date_2;
     protected $filter_listener;
     protected $filter_logged_date_1;
     protected $filter_logged_date_2;
@@ -58,6 +60,7 @@ class SignalList
     protected $sql_filter_active =          false;
     protected $sql_filter_channels =        false;
     protected $sql_filter_continent =       false;
+    protected $sql_filter_first_heard =     false;
     protected $sql_filter_frequency =       false;
     protected $sql_filter_heard_in =        false;
     protected $sql_filter_heard_in_mod =    false;
@@ -163,7 +166,8 @@ class SignalList
             'notes|Notes column',
             'heard_in|Heard In column',
             'logs|Logs - Number of loggings',
-            'last_heard|Date last heard',
+            'first_heard|Date first logged',
+            'last_heard|Date last logged',
             'CLE64|CLE64 - First letter / DX from GSQ|#ff0000'
         );
         $html =
@@ -371,7 +375,7 @@ class SignalList
     private function drawForm()
     {
         $html =
-             "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
+            "<form name='form' action='".system_URL."/".$this->mode."' method='POST'>\n"
             ."<input type='hidden' name='mode' value='".$this->mode."'>\n"
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='targetID' value=''>\n"
@@ -484,36 +488,53 @@ class SignalList
             ."	 </table></td>"
             ."      </tr>\n"
 
-             ."      <tr class='rowForm'>\n"
-             ."        <th align='left'>Logged&nbsp;Between</th>\n"
-             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-             ."          <tr>\n"
-             ."            <td>\n"
-             ."<div style='float:left'><input title='Enter a start date to show only signals logged after this date (YYYY-MM-DD format)'"
-             ." type='text' name='filter_logged_date_1' id='filter_logged_date_1' size='12' maxlength='10'"
-             ." value='".($this->filter_logged_date_1 != static::DATE_EARLIEST ? $this->filter_logged_date_1 : "")."' class='formfield'></div>\n"
-             ."<div style='float:left;padding:0 1em'>-</div>\n"
-             ."<div style='float:left'><input title='Enter an end date to show only signals logged before this date (YYYY-MM-DD format)'"
-             ." type='text' name='filter_logged_date_2' id='filter_logged_date_2' size='12' maxlength='10'"
-             ." value='".($this->filter_logged_date_2 != static::DATE_LATEST ? $this->filter_logged_date_2 : "")."' class='formfield'></div>"
-             ."</td>"
-             ."<td>&lt;- Takes time - use sparingly!</td>\n"
-             ."          </tr>\n"
-             ."	 </table></td>"
-             ."      </tr>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Logged&nbsp;Between</th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td>\n"
+            ."<div style='float:left'><input title='Enter a start date to show only signals logged after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_logged_date_1' id='filter_logged_date_1' size='12' maxlength='10'"
+            ." value='".($this->filter_logged_date_1 != static::DATE_EARLIEST ? $this->filter_logged_date_1 : "")."' class='formfield'></div>\n"
+            ."<div style='float:left;padding:0 1em'>-</div>\n"
+            ."<div style='float:left'><input title='Enter an end date to show only signals logged before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_logged_date_2' id='filter_logged_date_2' size='12' maxlength='10'"
+            ." value='".($this->filter_logged_date_2 != static::DATE_LATEST ? $this->filter_logged_date_2 : "")."' class='formfield'></div>"
+            ."</td>"
+            ."<td>&lt;- Takes time - use sparingly!</td>\n"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
 
-             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Last Heard</th>\n"
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>First Logged</th>\n"
             ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
             ."          <tr>\n"
             ."            <td>"
-            ."<div style='float:left'><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
-            ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
-            ." value='".($this->filter_date_1 != static::DATE_EARLIEST ? $this->filter_date_1 : "")."' class='formfield'></div>\n"
+            ."<div style='float:left'><input title='Enter a start date to show only signals first logged after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_first_date_1' id='filter_first_date_1' size='12' maxlength='10'"
+            ." value='".($this->filter_first_date_1 != static::DATE_EARLIEST ? $this->filter_first_date_1 : "")."' class='formfield'></div>\n"
             ."<div style='float:left;padding:0 1em'>-</div>\n"
-            ."<div style='float:left'><input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
-            ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
-            ." value='".($this->filter_date_2 != static::DATE_LATEST ? $this->filter_date_2 : "")."' class='formfield'></div>"
+            ."<div style='float:left'><input title='Enter an end date to show only signals first logged before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_first_date_2' id='filter_first_date_2' size='12' maxlength='10'"
+            ." value='".($this->filter_first_date_2 != static::DATE_LATEST ? $this->filter_first_date_2 : "")."' class='formfield'></div>"
+            ."</td>"
+            ."          </tr>\n"
+            ."	 </table></td>"
+            ."      </tr>\n"
+
+            ."      <tr class='rowForm'>\n"
+            ."        <th align='left'>Last Logged</th>\n"
+            ."        <td nowrap><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."          <tr>\n"
+            ."            <td>"
+            ."<div style='float:left'><input title='Enter a start date to show only signals last logged after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_last_date_1' id='filter_last_date_1' size='12' maxlength='10'"
+            ." value='".($this->filter_last_date_1 != static::DATE_EARLIEST ? $this->filter_last_date_1 : "")."' class='formfield'></div>\n"
+            ."<div style='float:left;padding:0 1em'>-</div>\n"
+            ."<div style='float:left'><input title='Enter an end date to show only signals last logged before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_last_date_2' id='filter_last_date_2' size='12' maxlength='10'"
+            ." value='".($this->filter_last_date_2 != static::DATE_LATEST ? $this->filter_last_date_2 : "")."' class='formfield'></div>"
             ."</td>"
             ."            <td align='right'><b>Offsets</b> <select name='offsets' class='formField'>\n"
             ."<option value=''".($this->offsets=="" ? " selected" : "") .">Relative</option>\n"
@@ -587,8 +608,10 @@ class SignalList
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
-            ."  \$('#filter_date_1').datepicker(config);\n"
-            ."  \$('#filter_date_2').datepicker(config);\n"
+            ."  \$('#filter_first_date_1').datepicker(config);\n"
+            ."  \$('#filter_first_date_2').datepicker(config);\n"
+            ."  \$('#filter_last_date_1').datepicker(config);\n"
+            ."  \$('#filter_last_date_2').datepicker(config);\n"
             ."  \$('#filter_logged_date_1').datepicker(config);\n"
             ."  \$('#filter_logged_date_2').datepicker(config);\n"
             ."  \$('#filter_id').focus();\n"
@@ -965,6 +988,7 @@ class SignalList
                     "&nbsp;"
                  )
                 ."</td>\n"
+                ."<td>".($row["first_heard"]!="0000-00-00" ? $row["first_heard"] : "&nbsp;")."</td>\n"
                 ."<td>".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "&nbsp;")."</td>\n";
 
             if ($this->filter_listener) {
@@ -1019,7 +1043,8 @@ class SignalList
             'notes|0|Sort by Notes column|Notes',
             'heard_in|0|Sort by \'Heard In\' column|Heard In <i>(Daytime reception is <b>bold</b>)</i>',
             'logs|0|Sort by number of times logged|Logs',
-            'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Heard'
+            'first_heard|1|Sort by date first logged (YYYY-MM-DD)|First Logged',
+            'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Logged'
         );
         $html =
              "  <thead>\n"
@@ -1316,6 +1341,7 @@ class SignalList
             .($this->sql_filter_active ?         " AND\n".$this->sql_filter_active         : "")
             .($this->sql_filter_channels ?       " AND\n".$this->sql_filter_channels       : "")
             .($this->sql_filter_continent ?      " AND\n".$this->sql_filter_continent      : "")
+            .($this->sql_filter_first_heard ?    " AND\n".$this->sql_filter_first_heard    : "")
             .($this->sql_filter_frequency ?      " AND\n".$this->sql_filter_frequency      : "")
             .($this->sql_filter_id ?             " AND\n".$this->sql_filter_id             : "")
             .($this->sql_filter_last_heard ?     " AND\n".$this->sql_filter_last_heard     : "")
@@ -1461,6 +1487,7 @@ class SignalList
             .($this->sql_filter_active ?         " AND\n".$this->sql_filter_active       : "")
             .($this->sql_filter_channels ?       " AND\n".$this->sql_filter_channels     : "")
             .($this->sql_filter_continent ?      " AND\n".$this->sql_filter_continent    : "")
+            .($this->sql_filter_first_heard ?    " AND\n".$this->sql_filter_first_heard  : "")
             .($this->sql_filter_frequency ?      " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?             " AND\n".$this->sql_filter_id           : "")
             .($this->sql_filter_last_heard ?     " AND\n".$this->sql_filter_last_heard   : "")
@@ -1630,6 +1657,7 @@ class SignalList
         $this->setupInitSqlFilterActive();
         $this->setupInitSqlFilterChannels();
         $this->setupInitSqlFilterContinent();
+        $this->setupInitSqlFilterFirstHeard();
         $this->setupInitSqlFilterFrequency();
         $this->setupInitSqlFilterHeardIn();
         $this->setupInitSqlFilterId();
@@ -1662,6 +1690,15 @@ class SignalList
                 $this->sql_filter_channels =    "    (MOD(`khz`* 1000, 1000) != 0)";
                 break;
         }
+    }
+
+    private function setupInitSqlFilterFirstHeard()
+    {
+        if (!$this->filter_first_date_1) {
+            return;
+        }
+        $this->sql_filter_first_heard =
+            "    (`first_heard` >= \"".$this->filter_first_date_1."\" AND `first_heard` <= \"".$this->filter_first_date_2."\")";
     }
 
     private function setupInitSqlFilterFrequency()
@@ -1714,11 +1751,11 @@ class SignalList
 
     private function setupInitSqlFilterLastHeard()
     {
-        if (!$this->filter_date_1) {
+        if (!$this->filter_last_date_1) {
             return;
         }
         $this->sql_filter_last_heard =
-            "    (`last_heard` >= \"".$this->filter_date_1."\" AND `last_heard` <= \"".$this->filter_date_2."\")";
+            "    (`last_heard` >= \"".$this->filter_last_date_1."\" AND `last_heard` <= \"".$this->filter_last_date_2."\")";
     }
 
     private function setupInitSqlFilterListener()
@@ -1941,15 +1978,29 @@ class SignalList
                 $this->sql_sort_by =
                     "`active` DESC, `khz` DESC, `call` ASC";
                 break;
+            case "first_heard":
+                $this->sql_sort_by =
+                    "`first_heard` IS NULL, `first_heard` ASC";
+                break;
+            case "first_heard_d":
+                $this->sql_sort_by =
+                    "`first_heard` IS NULL, `first_heard` DESC";
+                break;
             case "last_heard":
                 $this->sql_sort_by =
-                    "`active` DESC, `last_heard` IS NULL, `last_heard` ASC";
+                    "`last_heard` IS NULL, `last_heard` ASC";
                 break;
-            case "last_heard_d":$this->sql_sort_by =    "`active` DESC, `last_heard` IS NULL, `last_heard` DESC";
+            case "last_heard_d":
+                $this->sql_sort_by =
+                    "`last_heard` IS NULL, `last_heard` DESC";
                 break;
-            case "logs":        $this->sql_sort_by =    "`active` DESC, `logs` IS NULL, `logs` ASC";
+            case "logs":
+                $this->sql_sort_by =
+                    "`active` DESC, `logs` IS NULL, `logs` ASC";
                 break;
-            case "logs_d":        $this->sql_sort_by =    "`active` DESC, `logs` IS NULL, `logs` DESC";
+            case "logs_d":
+                $this->sql_sort_by =
+                    "`active` DESC, `logs` IS NULL, `logs` DESC";
                 break;
             case "LSB":
                 if ($this->offsets=='') {
@@ -2092,18 +2143,20 @@ class SignalList
         $this->filter_active =          Rxx::get_var('filter_active');
         $this->filter_channels =        Rxx::get_var('filter_channels');
         $this->filter_continent =       Rxx::get_var('filter_continent');
-        $this->filter_date_1 =          Rxx::get_var('filter_date_1');
-        $this->filter_date_2 =          Rxx::get_var('filter_date_2');
         $this->filter_dx_gsq =          Rxx::get_var('filter_dx_gsq');
         $this->filter_dx_max =          Rxx::get_var('filter_dx_max');
         $this->filter_dx_min =          Rxx::get_var('filter_dx_min');
         $this->filter_dx_units =        Rxx::get_var('filter_dx_units', 'km');
+        $this->filter_first_date_1 =    Rxx::get_var('filter_first_date_1');
+        $this->filter_first_date_2 =    Rxx::get_var('filter_first_date_2');
         $this->filter_heard_in =        Rxx::get_var('filter_heard_in');
         $this->filter_heard_in_mod =    Rxx::get_var('filter_heard_in_mod');
         $this->filter_id =              strToUpper(Rxx::get_var('filter_id'));
         $this->filter_khz_1 =           Rxx::get_var('filter_khz_1');
         $this->filter_khz_2 =           Rxx::get_var('filter_khz_2');
         $this->filter_listener =        Rxx::get_var('filter_listener');
+        $this->filter_last_date_1 =     Rxx::get_var('filter_last_date_1');
+        $this->filter_last_date_2 =     Rxx::get_var('filter_last_date_2');
         $this->filter_logged_date_1 =   Rxx::get_var('filter_logged_date_1');
         $this->filter_logged_date_2 =   Rxx::get_var('filter_logged_date_2');
         $this->filter_system =          Rxx::get_var('filter_system');
@@ -2129,12 +2182,12 @@ class SignalList
 
     private function setupTweakVars()
     {
-        if ($this->filter_date_1 || $this->filter_date_2) {
-            if ($this->filter_date_1 == "") {
-                $this->filter_date_1 = static::DATE_EARLIEST;
+        if ($this->filter_last_date_1 || $this->filter_last_date_2) {
+            if ($this->filter_last_date_1 == "") {
+                $this->filter_last_date_1 = static::DATE_EARLIEST;
             }
-            if ($this->filter_date_2 == "") {
-                $this->filter_date_2 = static::DATE_LATEST;
+            if ($this->filter_last_date_2 == "") {
+                $this->filter_last_date_2 = static::DATE_LATEST;
             }
         }
 

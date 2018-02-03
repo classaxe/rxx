@@ -132,7 +132,7 @@ signal.markerClickFunction = function(s, latlng) {
             '    <label>Lat / Lon</label>' + s.lat + ', ' + s.lon + '<br />' +
             (s.usb || s.lsb ? '    <label>Sidebands</label>' + (s.lsb ? 'LSB: ' + s.lsb : '') + (s.usb ? (s.lsb ? ', ' : '') + ' USB: ' + s.usb : '') + '<br />' : '') +
             (s.sec || s.fmt ? '    <label>Secs / Format</label>' + (s.sec ? s.sec + ' sec' : '') + (s.sec && s.fmt ? ', ' : '') + s.fmt + '<br />' : '') +
-            '    <label>Last Heard</label>' + s.heard + '<br />' +
+            '    <label>Last Logged</label>' + s.heard + '<br />' +
             '    <label>Heard In</label><div>' + s.heard_in + '</div><br style="clear:both" />' +
             '  </div>' +
             '</div>';

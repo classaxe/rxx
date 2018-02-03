@@ -160,6 +160,13 @@ class LogUploader
         }
         $this->checkLogDateTokens();
         switch ($submode) {
+            case "submit_log":
+                $this->html.=
+                    "<br><input type='submit' value='&nbsp;Done&nbsp;' name='go'"
+                    ." onclick='window.close();' class='formbutton'>"
+                    ."<script type='text/javascript'>document.form.go.focus();</script>\n";
+                break;
+
             case "parse_log":
                 $this->html.=
                      "<br><span class='p'><b>Parser Results</b><small> - see"
@@ -830,13 +837,6 @@ class LogUploader
                 }
                 $this->html.=    "</ul>\n";
                 break;
-
-            case "submit_log":
-                $this->html.=
-                     "<br><input type='submit' value='&nbsp;Done&nbsp;' name='go'"
-                    ." onclick='window.close();' class='formbutton'>"
-                    ."<script type='text/javascript'>document.form.go.focus();</script>\n";
-                break;
         }
 
         if ($this->listener->getID()!="" && $submode=="") {
@@ -1259,15 +1259,19 @@ class LogUploader
                 ."4: signal never logged in this state<br>";
         }
         for ($i=0; $i<count($ID); $i++) {
+            $ObjSignal =   new \Rxx\Signal($ID[$i]);
             if ($this->debug) {
                 $this->html.=    "<li>ID=".$ID[$i]." ";
             }
-            $update_signal =            false;
-            $update_signal_heard_in =   true;
-            $signal =   new \Rxx\Signal($ID[$i]);
-            $dx =       $signal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
-            $dx_miles = $dx[0];
-            $dx_km =    $dx[1];
+            if ($row = \Rxx\Log::checkIfDuplicate(
+                $ID[$i],
+                $this->listener->getID(),
+                $YYYYMMDD[$i],
+                $hhmm[$i]
+            )) {
+                $this->stats['exact_duplicate']++;
+                continue;
+            }
             $daytime =
                 ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
             $heardIn =
@@ -1280,6 +1284,9 @@ class LogUploader
                 'listenerID' => $this->listener->getID(),
                 'region' =>     $this->listener->record["region"]
             );
+            $dx =       $ObjSignal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
+            $dx_miles = $dx[0];
+            $dx_km =    $dx[1];
             if ($dx_km) {
                 $data['dx_km'] =      $dx_km;
                 $data['dx_miles'] =   $dx_miles;
@@ -1305,117 +1312,53 @@ class LogUploader
             if ($hhmm[$i]) {
                 $data['time'] =        $hhmm[$i];
             }
+
             if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
                 if ($this->debug) {
                     $this->html.=    "1 ";
                 }
-                if ($row = \Rxx\Log::checkIfDuplicate(
-                    $ID[$i],
-                    $this->listener->getID(),
-                    $YYYYMMDD[$i],
-                    $hhmm[$i]
-                )) {
-                        $this->stats['exact_duplicate']++;
-                } else {
-                    $update_signal = true;
-                    if ($this->debug) {
-                        $this->html.= "3 ";
-                    }
-                    $row = \Rxx\Log::countTimesHeardByListener($ID[$i], $this->listener->getID());
-                    if ($row["count"]) {
-                        $this->stats['repeat_for_listener']++;
-                    } else {
-                        $this->stats['first_for_listener']++;
-                    }
-                    $log = new \Rxx\Log;
-                    $log->insert($data);
-                    $update_signal = true;          // Update signal record (IF this data is the most recent...)
+                if ($this->debug) {
+                    $this->html.= "3 ";
                 }
+                $row = \Rxx\Log::countTimesHeardByListener($ID[$i], $this->listener->getID());
+                if ($row["count"]) {
+                    $this->stats['repeat_for_listener']++;
+                } else {
+                    $this->stats['first_for_listener']++;
+                }
+                $log = new \Rxx\Log;
+                $log->insert($data);
             } else {
                 if ($this->debug) {
                     $this->html.=    "4 ";
                 }
                 $log = new \Rxx\Log;
                 $log->insert($data);
-        
-                $update_signal = true;              // Update signal record (IF this data is the most recent...)
-                $update_signal_heard_in =    true;  // Update signal heard in record
+                $ObjSignal->setAsHeardInRegion($this->listener->record["region"]);
                 $this->stats['first_for_state_or_itu']++;
                 $this->stats['first_for_listener']++;
             }
-            if ($this->debug) {
-                $this->html.=
-                     "<li>update_signal = "
-                    .($update_signal ? 'Y' : 'N')
-                    .", update_signal_heard_in = "
-                    .($update_signal_heard_in ? 'Y' : 'N')
-                    ."</li>\n";
-            }
-        
-            if ($update_signal_heard_in) {
-                $signal->updateHeardInList();
-            }
-        
-            if ($update_signal) {
-                // See if the data is more recent than MLR:
-                $sql =
-                     "SELECT\n"
-                    ."  DATE_FORMAT(`last_heard`,'%Y%m%d') AS `last_heard`\n"
-                    ."FROM\n"
-                    ."  `signals`\n"
-                    ."WHERE\n"
-                    ."  `ID` = \"".$ID[$i]."\"";
-                $result =    \Rxx\Database::query($sql);
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-                if ($row["last_heard"] >= $YYYYMMDD[$i]) {
-                    $update_signal = false;
-                }
-            }
-        
-            $sql =
-                 "SELECT\n"
-                ."  COUNT(*) as `logs`\n"
-                ."FROM\n"
-                ."  `logs`\n"
-                ."WHERE\n"
-                ."  `signalID` = ".$ID[$i]." AND\n"
-                ."  `listenerID` != ''";
-            $result =   \Rxx\Database::query($sql);
-            $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-            $logs =     $row["logs"];
+            $ObjSignal->updateHeardInList();
+            $logStats =     $ObjSignal->getLogsAndLastHeardDate();
+            $logs =         $logStats['logs'];
+            $first_heard =  $logStats['first_heard'];
+            $last_heard =   $logStats['last_heard'];
 
-            if ($update_signal) {
-                $this_YYYY =  substr($YYYYMMDD[$i], 0, 4);
-                $this_MM =    substr($YYYYMMDD[$i], 4, 2);
-                $this_DD =    substr($YYYYMMDD[$i], 6, 2);
-                $this->stats['latest_for_signal']++;
-                $last_heard = $this_YYYY."-".$this_MM."-".$this_DD;
-                \Rxx\Tools\Signal::signal_update_full(
-                    $ID[$i],
-                    $LSB[$i],
-                    $LSB_approx[$i],
-                    $USB[$i],
-                    $USB_approx[$i],
-                    $sec[$i],
-                    htmlentities($fmt[$i]),
-                    $logs,
-                    $last_heard,
-                    $this->listener->record["region"]
-                );
-            } else {
-                $sql =
-                     "UPDATE\n"
-                    ."  `signals`\n"
-                    ."SET\n"
-                    ."  `logs` = $logs,\n"
-                    ."  `heard_in_".$this->listener->record["region"]."`=1\n"
-                    ."WHERE\n"
-                    ."  `ID` = ".$ID[$i];
-                \Rxx\Database::query($sql);
-                if ($this->debug) {
-                    $this->html.=    "<pre>$sql</pre>";
-                }
-            }
+
+            $this->stats['latest_for_signal']++;
+            \Rxx\Tools\Signal::signal_update_full(
+                $ID[$i],
+                $LSB[$i],
+                $LSB_approx[$i],
+                $USB[$i],
+                $USB_approx[$i],
+                $sec[$i],
+                htmlentities($fmt[$i]),
+                $logs,
+                $first_heard,
+                $last_heard,
+                $this->listener->record["region"]
+            );
         }
     }
 

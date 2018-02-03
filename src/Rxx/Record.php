@@ -64,6 +64,24 @@ class Record
     /**
      * @return array|bool
      */
+    public function getField($field)
+    {
+        if ($this->getID()=='') {
+            return false;
+        }
+        $sql =
+            "SELECT\n"
+            ."  $field\n"
+            ."FROM\n"
+            ."  `".$this->table."`\n"
+            ."WHERE\n"
+            ."  `ID` = \"".$this->getID()."\"";
+        return static::getFieldForSql($sql);
+    }
+
+    /**
+     * @return array|bool
+     */
     public function getRecord()
     {
         if ($this->getID()=='') {

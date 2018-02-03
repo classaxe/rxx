@@ -104,8 +104,9 @@ class Signal extends Record
     public function getLogsAndLastHeardDate()
     {
         $sql =
-             "SELECT\n"
+            "SELECT\n"
             ."    COUNT(*) AS `logs`,\n"
+            ."    MIN(`date`) AS `first_heard`,\n"
             ."    MAX(`date`) AS `last_heard`\n"
             ."FROM\n"
             ."    `logs`\n"
@@ -141,6 +142,12 @@ class Signal extends Record
              Rxx::tabItem("Messages (".$messages.")", "signal_dgps_messages", 110);
         }
         return $out;
+    }
+
+    public function setAsHeardInRegion($region) {
+        $data = array('heard_in_'.$region => 1);
+        $this->update($data);
+        return $this->getAffectedRows();
     }
 
     /**

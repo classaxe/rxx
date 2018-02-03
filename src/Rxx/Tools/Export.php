@@ -564,7 +564,7 @@ class Export
             ."    <th>Notes</th>\n"
             ."    <th>Heard In</th>\n"
             ."    <th>Logs</th>\n"
-            ."    <th>Last Heard</th>\n"
+            ."    <th>Last Logged</th>\n"
             ."  </tr>\n";
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
@@ -721,7 +721,8 @@ class Export
             'sp'=>          '<b>S/P</b>',
             'notes'=>       '<b>Notes</b>',
             'heard_in'=>    '<b>Heard In</b>',
-            'last_heard'=>  '<b>Last Heard</b>'
+            'first_heard'=> '<b>First Logged</b>',
+            'last_heard'=>  '<b>Last Logged</b>'
         );
         $options = array(
             'shaded' =>         0,
@@ -755,6 +756,7 @@ class Export
                 'sp' =>             ($row["SP"]?$row["SP"]:""),
                 'notes' =>          ($row["notes"]?stripslashes($row["notes"]):""),
                 'heard_in' =>       ($row["heard_in"]?$row["heard_in"]:""),
+                'first_heard' =>    ($row["first_heard"]?$row["first_heard"]:""),
                 'last_heard' =>     ($row["last_heard"]?$row["last_heard"]:"")
             );
         }
@@ -823,7 +825,8 @@ class Export
 
         set_time_limit(600);    // Extend maximum execution time to 10 mins
 
-        $sql = "SELECT\n"
+        $sql =
+            "SELECT\n"
             ."  MAX(LENGTH(`signals`.`call`)) AS `call_len`,\n"
             ."  MAX(LENGTH(`signals`.`QTH`))  AS `QTH_len`,\n"
             ."  MAX(LENGTH(`logs`.`time`))    AS `time_len`,\n"
@@ -842,10 +845,10 @@ class Export
         $result =   \Rxx\Database::query($sql);
         $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
         $call_len =     $row['call_len'];
-        $QTH_len =  $row['QTH_len'];
+        $QTH_len =      $row['QTH_len'];
         $time_len =     $row['time_len'];
-        $LSB_len =  $row['LSB_len'];
-        $USB_len =  $row['USB_len'];
+        $LSB_len =      $row['LSB_len'];
+        $USB_len =      $row['USB_len'];
 
         $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
         if (!$result =  \Rxx\Database::query($sql)) {

@@ -588,7 +588,7 @@ class Listener
                 $listener_links = array();
                 foreach ($listener_arr as $row) {
                     $listener_links[] =
-                    "<a href='javascript:log_upload(\"".$row['ID']."\")'>"
+                    "<a href='".system_URL."/log_upload?listenerID=".$row['ID']."' onclick='log_upload(\"".$row['ID']."\"); return false;'>"
                     ."<b><span title='(latest log: ".$row['log_latest'].")'>".$row['name']."</span></b></a>"
                     ." (".($row['SP']!='' ? $row['SP'] : $row['ITU']).")";
                 }
@@ -739,78 +739,79 @@ class Listener
                 $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
                 $notes =    stripslashes($row["notes"]);
                 $out.=
-                "<tr class='rownormal'>"
-                ."<td>".($row['primary_QTH'] ? "" : "&nbsp; &nbsp; &nbsp;")
-                ."<a onmouseover=\"window.status='View details and log history for ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href=\"javascript:listener_edit('".$row["ID"]."')\" title='Show Details'>"
-                .($row['primary_QTH'] ?
-                "<b>".\Rxx\Rxx::highlight(stripslashes($row["name"]), $filter)."</b>"
-                :
-                    \Rxx\Rxx::highlight(stripslashes($row["name"]), $filter)
-                )
-                ."</a></td>"
-                .(\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY) ?
-                "<td nowrap><a href='javascript:log_upload(\"".$row["ID"]."\")'>Add...</a></td>\n"
-                :
-                ""
-                )
-                ."<td>".($row["callsign"] ?
-                "<a href='http://hamcall.net/call?callsign=".$row["callsign"]."' "
-                ."target='_blank' title='Lookup callsign at QRZ.com'>"
-                .\Rxx\Rxx::highlight($row["callsign"], $filter)
-                ."</a>"
-                :
-                "&nbsp;"
-                )
-                ."</td>\n"
-                ."<td>".\Rxx\Rxx::highlight($row["QTH"], $filter)."</td>\n"
-                ."<td>".($row["SP"] ? $row["SP"] : "&nbsp;")."</td>\n"
-                ."<td>".($row["ITU"] ? $row["ITU"] : "&nbsp;")."</td>\n"
-                .(system=="RWW" || system=="RNA" ?
-                "<td>"
-                .($row["region"] ? strtoupper($row["region"]) : "&nbsp;")
-                ."</td>\n"
-                :
-                ""
-                )
-                ."<td>"
-                .($row["GSQ"] ?
-                "<a href='#' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>"
-                :
-                "&nbsp;"
-                )."</td>\n"
-                ."<td align='right'>"
-                .($row["timezone"]!="" ? $row["timezone"] : "&nbsp;")
-                ."</td>\n"
-                //        ."<td>".($notes ? $notes : "&nbsp;")."</td>\n"
-                ."<td align='right'>"
-                .($row["count_logs"] ?
-                "<a onmouseover=\"window.status='View log history for ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href=\"javascript:listener_log('".$row["ID"]."')\" title='Show Log'><b>".$row["count_logs"]."</b></a>"
-                :
-                "&nbsp;"
-                )
-                ."</td>\n"
-                ."<td nowrap>".($row["log_latest"]!="0000-00-00" ? $row["log_latest"] : "&nbsp;")."</td>\n"
-                .($type_DGPS ?   "<td bgcolor='".\Rxx\Signal::$colors[DGPS]."' nowrap align='right'>".($row["count_DGPS"]   ? $row["count_DGPS"] :   "&nbsp;")."</td>" : "")
-                .($type_DSC ?    "<td bgcolor='".\Rxx\Signal::$colors[DSC]."' nowrap align='right'>".($row["count_DSC"]   ? $row["count_DSC"] :   "&nbsp;")."</td>" : "")
-                .($type_HAMBCN ? "<td bgcolor='".\Rxx\Signal::$colors[HAMBCN]."' nowrap align='right'>".($row["count_HAMBCN"] ? $row["count_HAMBCN"] : "&nbsp;")."</td>" : "")
-                .($type_NAVTEX ? "<td bgcolor='".\Rxx\Signal::$colors[NAVTEX]."' nowrap align='right'>".($row["count_NAVTEX"] ? $row["count_NAVTEX"] : "&nbsp;")."</td>" : "")
-                .($type_NDB ?    "<td bgcolor='".\Rxx\Signal::$colors[NDB]."' nowrap align='right'>".($row["count_NDB"]    ? $row["count_NDB"] :    "&nbsp;")."</td>" : "")
-                .($type_OTHER ?  "<td bgcolor='".\Rxx\Signal::$colors[OTHER]."' nowrap align='right'>".($row["count_OTHER"]  ? $row["count_OTHER"] :  "&nbsp;")."</td>" : "")
-                .($type_TIME ?   "<td bgcolor='".\Rxx\Signal::$colors[TIME]."' nowrap align='right'>".($row["count_TIME"]   ? $row["count_TIME"] :   "&nbsp;")."</td>" : "")
-                .(strlen($type_NDB.$type_DSC.$type_DGPS.$type_TIME.$type_HAMBCN.$type_NAVTEX.$type_OTHER)>1 ?
-                "<td align='right'>".($row["count_signals"] ? "<a onmouseover=\"window.status='View signals logged by ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href=\"javascript:listener_signals('".$row["ID"]."')\" title='Show all signals received'><b>".$row["count_signals"]."</b></a>" : "&nbsp;")."</td>\n"
-                :
-                ""
-                )
-                ."<td>".($row["website"]!="" ? "<a title='View Web Page for this listener' href='".$row["website"]."' target='_blank'>WWW</a>" : "&nbsp;")."</td>\n"
-                ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
-                .(\Rxx\Rxx::isAdmin() ?
-                "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
-                ."<td><a href='#' onclick='if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();};return false;'>Delete</a></td>\n"
-                :
-                ""
-                )
-                ."</tr>";
+                    "<tr class='rownormal'>"
+                    ."<td>".($row['primary_QTH'] ? "" : "&nbsp; &nbsp; &nbsp;")
+                    ."<a href=\"".system_URL."/listener_edit/".$row["ID"]."\" onclick=\"listener_edit('".$row["ID"]."');return false;\" title='Show Details'>"
+                    .($row['primary_QTH'] ?
+                        "<b>".\Rxx\Rxx::highlight(stripslashes($row["name"]), $filter)."</b>"
+                      :
+                        \Rxx\Rxx::highlight(stripslashes($row["name"]), $filter)
+                    )
+                    ."</a></td>"
+                    .(\Rxx\Rxx::isAdmin() && (!defined('READONLY') || !READONLY) ?
+                        "<td nowrap><a href='".system_URL."/log_upload?listenerID=".$row["ID"]."'"
+                        ." onclick='log_upload(\"".$row["ID"]."\"); return false;'>Add...</a></td>\n"
+                      :
+                        ""
+                    )
+                    ."<td>".($row["callsign"] ?
+                        "<a href='http://hamcall.net/call?callsign=".$row["callsign"]."' "
+                        ."target='_blank' title='Lookup callsign at QRZ.com'>"
+                        .\Rxx\Rxx::highlight($row["callsign"], $filter)
+                        ."</a>"
+                      :
+                        "&nbsp;"
+                    )
+                    ."</td>\n"
+                    ."<td>".\Rxx\Rxx::highlight($row["QTH"], $filter)."</td>\n"
+                    ."<td>".($row["SP"] ? $row["SP"] : "&nbsp;")."</td>\n"
+                    ."<td>".($row["ITU"] ? $row["ITU"] : "&nbsp;")."</td>\n"
+                    .(system=="RWW" || system=="RNA" ?
+                        "<td>"
+                        .($row["region"] ? strtoupper($row["region"]) : "&nbsp;")
+                        ."</td>\n"
+                      :
+                        ""
+                    )
+                    ."<td>"
+                    .($row["GSQ"] ?
+                        "<a href='#' onclick='popup_map(\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\");return false;' title='Show map (accuracy limited to nearest Grid Square)'><span class='fixed'>".$row["GSQ"]."</span></a>"
+                      :
+                        "&nbsp;"
+                    )."</td>\n"
+                    ."<td align='right'>"
+                    .($row["timezone"]!="" ? $row["timezone"] : "&nbsp;")
+                    ."</td>\n"
+                    //        ."<td>".($notes ? $notes : "&nbsp;")."</td>\n"
+                    ."<td align='right'>"
+                    .($row["count_logs"] ?
+                    "<a onmouseover=\"window.status='View log history for ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href=\"javascript:listener_log('".$row["ID"]."')\" title='Show Log'><b>".$row["count_logs"]."</b></a>"
+                    :
+                    "&nbsp;"
+                    )
+                    ."</td>\n"
+                    ."<td nowrap>".($row["log_latest"]!="0000-00-00" ? $row["log_latest"] : "&nbsp;")."</td>\n"
+                    .($type_DGPS ?   "<td bgcolor='".\Rxx\Signal::$colors[DGPS]."' nowrap align='right'>".($row["count_DGPS"]   ? $row["count_DGPS"] :   "&nbsp;")."</td>" : "")
+                    .($type_DSC ?    "<td bgcolor='".\Rxx\Signal::$colors[DSC]."' nowrap align='right'>".($row["count_DSC"]   ? $row["count_DSC"] :   "&nbsp;")."</td>" : "")
+                    .($type_HAMBCN ? "<td bgcolor='".\Rxx\Signal::$colors[HAMBCN]."' nowrap align='right'>".($row["count_HAMBCN"] ? $row["count_HAMBCN"] : "&nbsp;")."</td>" : "")
+                    .($type_NAVTEX ? "<td bgcolor='".\Rxx\Signal::$colors[NAVTEX]."' nowrap align='right'>".($row["count_NAVTEX"] ? $row["count_NAVTEX"] : "&nbsp;")."</td>" : "")
+                    .($type_NDB ?    "<td bgcolor='".\Rxx\Signal::$colors[NDB]."' nowrap align='right'>".($row["count_NDB"]    ? $row["count_NDB"] :    "&nbsp;")."</td>" : "")
+                    .($type_OTHER ?  "<td bgcolor='".\Rxx\Signal::$colors[OTHER]."' nowrap align='right'>".($row["count_OTHER"]  ? $row["count_OTHER"] :  "&nbsp;")."</td>" : "")
+                    .($type_TIME ?   "<td bgcolor='".\Rxx\Signal::$colors[TIME]."' nowrap align='right'>".($row["count_TIME"]   ? $row["count_TIME"] :   "&nbsp;")."</td>" : "")
+                    .(strlen($type_NDB.$type_DSC.$type_DGPS.$type_TIME.$type_HAMBCN.$type_NAVTEX.$type_OTHER)>1 ?
+                    "<td align='right'>".($row["count_signals"] ? "<a onmouseover=\"window.status='View signals logged by ".addslashes($row["name"])." (".addslashes($row["QTH"])." ".addslashes($row["SP"]).")';return true;\" onmouseout='window.status=\"\";return true;' href=\"javascript:listener_signals('".$row["ID"]."')\" title='Show all signals received'><b>".$row["count_signals"]."</b></a>" : "&nbsp;")."</td>\n"
+                    :
+                    ""
+                    )
+                    ."<td>".($row["website"]!="" ? "<a title='View Web Page for this listener' href='".$row["website"]."' target='_blank'>WWW</a>" : "&nbsp;")."</td>\n"
+                    ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
+                    .(\Rxx\Rxx::isAdmin() ?
+                        "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
+                        ."<td><a href='#' onclick='if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();};return false;'>Delete</a></td>\n"
+                      :
+                        ""
+                    )
+                    ."</tr>";
             }
             $out.=    "</table>\n";
         } else {

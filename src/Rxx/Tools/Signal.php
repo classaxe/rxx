@@ -49,7 +49,7 @@ class Signal
      */
     public static function signal_dgps_messages()
     {
-        global $ID, $mode, $submode, $sortBy, $target;
+        global $ID, $mode, $submode, $sortBy;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
@@ -66,29 +66,30 @@ class Signal
         }
         $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
-            $row =        $Obj->getRecord();
-            $active =        $row["active"];
-            $call =            $row["call"];
-            $format =        stripslashes($row["format"]);
-            $GSQ =            $row["GSQ"];
+            $row =              $Obj->getRecord();
+            $active =           $row["active"];
+            $call =             $row["call"];
+            $first_heard =      $row["first_heard"];
+            $format =           stripslashes($row["format"]);
+            $GSQ =              $row["GSQ"];
             $heard_in_html =    $row["heard_in_html"];
-            $ITU =        $row["ITU"];
-            $khz =        $row["khz"];
-            $lat =        $row["lat"];
-            $lon =        $row["lon"];
-            $logs =        $row["logs"];
-            $LSB =        $row["LSB"];
-            $LSB_approx =    $row["LSB_approx"];
-            $last_heard =    $row["last_heard"];
-            $notes =        stripslashes($row["notes"]);
-            $pwr =        $row["pwr"];
-            $QTH =        $row["QTH"];
-            $sec =        $row["sec"];
-            $SP =        $row["SP"];
-            $type =        $row["type"];
-            $USB =        $row["USB"];
-            $USB_approx =    $row["USB_approx"];
-            $submode =        "update";
+            $ITU =              $row["ITU"];
+            $khz =              $row["khz"];
+            $lat =              $row["lat"];
+            $lon =              $row["lon"];
+            $logs =             $row["logs"];
+            $LSB =              $row["LSB"];
+            $LSB_approx =       $row["LSB_approx"];
+            $last_heard =       $row["last_heard"];
+            $notes =            stripslashes($row["notes"]);
+            $pwr =              $row["pwr"];
+            $QTH =              $row["QTH"];
+            $sec =              $row["sec"];
+            $SP =               $row["SP"];
+            $type =             $row["type"];
+            $USB =              $row["USB"];
+            $USB_approx =       $row["USB_approx"];
+            $submode =          "update";
         } else {
             $submode =    "add";
             $active =    "1";
@@ -166,7 +167,7 @@ class Signal
     public static function signal_info()
     {
         global $ID, $mode, $submode;
-        global $active, $call, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx;
+        global $active, $call, $first_heard, $GSQ, $format, $sec, $heard_in_html, $ITU, $khz, $last_heard, $LSB, $LSB_approx;
         global $notes, $pwr, $QTH, $SP, $type, $USB, $USB_approx;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
@@ -246,32 +247,33 @@ class Signal
         }
         $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
-            $row =                $Obj->getRecord();
-            $active =            $row["active"];
-            $call =                $row["call"];
-            $format =            stripslashes($row["format"]);
-            $GSQ =                $row["GSQ"];
-            $heard_in_html =    $row["heard_in_html"];
-            $ITU =                $row["ITU"];
-            $khz =                $row["khz"];
-            $lat =                $row["lat"];
-            $lon =                $row["lon"];
-            $logs =                $row["logs"];
-            $LSB =                $row["LSB"];
-            $LSB_approx =        $row["LSB_approx"];
-            $last_heard =        $row["last_heard"];
-            $notes =            stripslashes($row["notes"]);
-            $pwr =                $row["pwr"];
-            $QTH =                $row["QTH"];
-            $sec =                $row["sec"];
-            $SP =                $row["SP"];
-            $type =                $row["type"];
-            $USB =                $row["USB"];
-            $USB_approx =        $row["USB_approx"];
-            $submode =            "update";
+            $row =                  $Obj->getRecord();
+            $active =               $row["active"];
+            $call =                 $row["call"];
+            $first_heard =          $row["first_heard"];
+            $format =               stripslashes($row["format"]);
+            $GSQ =                  $row["GSQ"];
+            $heard_in_html =        $row["heard_in_html"];
+            $ITU =                  $row["ITU"];
+            $khz =                  $row["khz"];
+            $lat =                  $row["lat"];
+            $lon =                  $row["lon"];
+            $logs =                 $row["logs"];
+            $LSB =                  $row["LSB"];
+            $LSB_approx =           $row["LSB_approx"];
+            $last_heard =           $row["last_heard"];
+            $notes =                stripslashes($row["notes"]);
+            $pwr =                  $row["pwr"];
+            $QTH =                  $row["QTH"];
+            $sec =                  $row["sec"];
+            $SP =                   $row["SP"];
+            $type =                 $row["type"];
+            $USB =                  $row["USB"];
+            $USB_approx =           $row["USB_approx"];
+            $submode =              "update";
         } else {
-            $submode =            "add";
-            $active =            "1";
+            $submode =              "add";
+            $active =               "1";
         }
         $out =
             "<table border='0' cellpadding='0' cellspacing='0'>\n"
@@ -407,10 +409,14 @@ class Signal
             ."                <th align='right'>Format</th>\n"
             ."                <td><input type='text' size='12' maxlength='25' name='format' value='".$format."' class='formfield'></td>\n"
             ."              <tr class='rowForm'>\n"
-            ."                <th align='left'>Last Heard</th>\n"
+            ."                <th align='left'>First Logged</th>\n"
+            ."                <td>".$first_heard."</td>\n"
+            ."                <th align='left'>Last Logged</th>\n"
             ."                <td>".$last_heard."</td>\n"
-            ."                <th align='right'>Status</th>\n"
-            ."                <td>"
+
+            ."              <tr class='rowForm'>\n"
+            ."                <th align='left'>Status</th>\n"
+            ."                <td colspan='3'>"
             .(\Rxx\Rxx::isAdmin() ?
                 "<select name='active' class='formfield'>\n"
                 ."  <option value='0'".($active ? "": " selected").">Out Of Service</option>\n"
@@ -420,6 +426,7 @@ class Signal
                 "<input type='text' size='8' maxlength='8' name='active' value='".($active ? "Active" : "Inactive")."' class='formField'>"
             )
             ."</td>\n"
+
             ."              <tr class='rowForm'>\n"
             ."                <th align='left'>Heard In</th>\n"
             ."                <td colspan='3'>".$heard_in_html."</td>\n"
@@ -461,7 +468,7 @@ class Signal
     public static function signal_listeners()
     {
         global $ID, $mode, $submode, $sortBy, $targetID;
-        global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
+        global $call, $ITU, $khz, $QTH, $SP;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);
@@ -469,9 +476,9 @@ class Signal
                 $ID = array_pop($path_arr);
             }
         }
-        $call =    strToUpper(urldecode($call));
-        $ITU =    strToUpper($ITU);
-        $SP =        strToUpper($SP);
+        $call =     strToUpper(urldecode($call));
+        $ITU =      strToUpper($ITU);
+        $SP =       strToUpper($SP);
         if (\Rxx\Rxx::isAdmin()) {
             switch ($submode) {
                 case "delete":
@@ -482,19 +489,12 @@ class Signal
         }
         $Obj =      new \Rxx\Signal($ID);
         if ($ID) {
-            $row =        $Obj->getRecord();
-            $active =        $row["active"];
-            $call =        $row["call"];
-            $GSQ =        $row["GSQ"];
-            $heard_in =        $row["heard_in"];
-            $ITU =        $row["ITU"];
-            $khz =        $row["khz"];
-            $logs =        $row["logs"];
-            $LSB =        $row["LSB"];
-            $notes =        stripslashes($row["notes"]);
-            $QTH =        $row["QTH"];
-            $SP =        $row["SP"];
-            $USB =        $row["USB"];
+            $row =          $Obj->getRecord();
+            $call =         $row["call"];
+            $ITU =          $row["ITU"];
+            $khz =          $row["khz"];
+            $QTH =          $row["QTH"];
+            $SP =           $row["SP"];
         }
 
         if ($sortBy=="") {
@@ -502,29 +502,41 @@ class Signal
         }
         $sortBy_SQL =        "";
         switch ($sortBy) {
-            case "dx":        $sortBy_SQL =    "`dx_km`='' OR `dx_km` IS NULL,`dx_km` ASC";
+            case "dx":
+                $sortBy_SQL =   "`dx_km`='' OR `dx_km` IS NULL,`dx_km` ASC";
                 break;
-            case "dx_d":    $sortBy_SQL =    "`dx_km`='' OR `dx_km` IS NULL,`dx_km` DESC";
+            case "dx_d":
+                $sortBy_SQL =   "`dx_km`='' OR `dx_km` IS NULL,`dx_km` DESC";
                 break;
-            case "ITU":        $sortBy_SQL =    "`ITU` ASC, `SP` ASC, `QTH` ASC";
+            case "ITU":
+                $sortBy_SQL =   "`ITU` ASC, `SP` ASC, `QTH` ASC";
                 break;
-            case "ITU_d":    $sortBy_SQL =    "`ITU` DESC, `SP` ASC, `QTH` ASC";
+            case "ITU_d":
+                $sortBy_SQL =   "`ITU` DESC, `SP` ASC, `QTH` ASC";
                 break;
-            case "logs":    $sortBy_SQL =    "`logs` ASC";
+            case "logs":
+                $sortBy_SQL =   "`logs` ASC";
                 break;
-            case "logs_d":    $sortBy_SQL =    "`logs` DESC";
+            case "logs_d":
+                $sortBy_SQL =   "`logs` DESC";
                 break;
-            case "name":    $sortBy_SQL =    "`listeners`.`name` ASC";
+            case "name":
+                $sortBy_SQL =   "`listeners`.`name` ASC";
                 break;
-            case "name_d":    $sortBy_SQL =    "`listeners`.`name` DESC";
+            case "name_d":
+                $sortBy_SQL =   "`listeners`.`name` DESC";
                 break;
-            case "SP":        $sortBy_SQL =    "`SP` ASC, `QTH` ASC";
+            case "SP":
+                $sortBy_SQL =   "`SP` ASC, `QTH` ASC";
                 break;
-            case "SP_d":    $sortBy_SQL =    "`SP` DESC, `QTH` ASC";
+            case "SP_d":
+                $sortBy_SQL =   "`SP` DESC, `QTH` ASC";
                 break;
-            case "QTH":        $sortBy_SQL =    "`QTH` ASC";
+            case "QTH":
+                $sortBy_SQL =   "`QTH` ASC";
                 break;
-            case "QTH_d":    $sortBy_SQL =    "`QTH` DESC";
+            case "QTH_d":
+                $sortBy_SQL =   "`QTH` DESC";
                 break;
         }
         $sql =
@@ -1015,18 +1027,28 @@ class Signal
      * @param $last_heard
      * @param $region
      */
-    public static function signal_update_full($ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $last_heard, $region)
-    {
+    public static function signal_update_full(
+        $ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $first_heard, $last_heard, $region
+    ) {
         $sql =
             "UPDATE `signals` SET\n"
-            .($LSB!="" ?      "  `LSB` = \"$LSB\",\n"
-                ."  `LSB_approx` = \"".$LSB_approx."\",\n" : "")
-            .($USB!="" ?      "  `USB` = \"$USB\",\n"
-                ."  `USB_approx` = \"".$USB_approx."\",\n" : "")
+            .($LSB!="" ?
+                "  `LSB` = \"$LSB\",\n"
+                ."  `LSB_approx` = \"".$LSB_approx."\",\n"
+              :
+                ""
+            )
+            .($USB!="" ?
+                "  `USB` = \"$USB\",\n"
+                ."  `USB_approx` = \"".$USB_approx."\",\n"
+              :
+                ""
+            )
             .($sec!="" ?      "  `sec` =	\"$sec\",\n" : "")
             .($fmt ?      "  `format` =	\"".$fmt."\",\n" : "")
             ."  `heard_in_$region` = 1,\n"
             ."  `logs` = $logs,\n"
+            ."  `first_heard` = \"$first_heard\",\n"
             ."  `last_heard` = \"$last_heard\"\n"
             ."WHERE `ID` = '$ID'";
         \Rxx\Database::query($sql);
@@ -1039,7 +1061,7 @@ class Signal
     public static function signal_log()
     {
         global $ID, $mode, $submode, $sortBy, $targetID;
-        global $active, $call, $GSQ, $heard_in, $ITU, $khz, $last_heard, $LSB, $notes, $SP, $USB;
+        global $active, $call, $GSQ, $heard_in, $ITU, $khz, $LSB, $notes, $SP, $USB;
         if (!$ID) {
             $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
             $path_arr = explode('/', $path_arr[0]);

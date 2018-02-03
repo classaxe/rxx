@@ -8,7 +8,7 @@ class SignalSeekList
 
     public function draw()
     {
-        global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_date_1, $filter_date_2;
+        global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_last_date_1, $filter_last_date_2;
         global $filter_continent, $filter_dx_gsq, $filter_dx_max, $filter_dx_min, $filter_dx_units;
         global $filter_heard_in, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
         global $filter_sp, $filter_itu, $filter_listener, $sortBy, $filter_heard_in_mod, $limit, $offset;
@@ -189,13 +189,13 @@ class SignalSeekList
             $filter_itu_SQL =    "`signals`.`ITU` LIKE '".implode($filter_itu_SQL, "' OR `signals`.`ITU` LIKE '")."'";
         }
 
-        // Filter on Date Last Heard:
-        if ($filter_date_1 || $filter_date_2) {
-            if ($filter_date_1 == "") {
-                $filter_date_1 = "1900-01-01";
+        // Filter on Date Last Logged:
+        if ($filter_last_date_1 || $filter_last_date_2) {
+            if ($filter_last_date_1 == "") {
+                $filter_last_date_1 = "1900-01-01";
             }
-            if ($filter_date_2 == "") {
-                $filter_date_2 = "2020-01-01";
+            if ($filter_last_date_2 == "") {
+                $filter_last_date_2 = "2030-01-01";
             }
         }
 
@@ -243,7 +243,7 @@ class SignalSeekList
             .($filter_active ?                      "  (`active` = 1) AND\n" : "")
             .($filter_by_range && $filter_dx_min ?  "  round(degrees(acos(sin(radians(".$filter_dx_lat.")) * sin(radians(signals.lat)) + cos(radians(".$filter_dx_lat.")) * cos(radians(signals.lat)) * cos(radians(".$filter_dx_lon." - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) > $filter_dx_min AND\n" : "")
             .($filter_by_range && $filter_dx_max ?  "  round(degrees(acos(sin(radians(".$filter_dx_lat.")) * sin(radians(signals.lat)) + cos(radians(".$filter_dx_lat.")) * cos(radians(signals.lat)) * cos(radians(".$filter_dx_lon." - signals.lon))))*".($filter_dx_units=="km" ? "111.05" : "69").", 2) < $filter_dx_max AND\n" : "")
-            .($filter_date_2 ?                      "  (`last_heard` >= \"".$filter_date_1."\" AND `last_heard` <= \"".$filter_date_2."\") AND\n" : "")
+            .($filter_last_date_2 ?                 "  (`last_heard` >= \"".$filter_last_date_1."\" AND `last_heard` <= \"".$filter_last_date_2."\") AND\n" : "")
             .($filter_id ?                          "  (`signals`.`call` LIKE \"%".$filter_id."%\") AND\n" : "")
             .($filter_khz_2 ?                       "  (`khz` >= ".$filter_khz_1." AND `khz` <= ".$filter_khz_2.") AND\n" : "")
             .($filter_channels==1 ?                 "  MOD((`khz`* 1000),1000) = 0 AND\n" : "")
@@ -432,27 +432,15 @@ class SignalSeekList
             ."	 </table></td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
-            ."        <th align='left'>Last Heard</th>\n"
+            ."        <th align='left'>Last Logged</th>\n"
             ."        <td>"
-            ."<div style='float:left'><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)'"
-            ." type='text' name='filter_date_1' id='filter_date_1' size='12' maxlength='10'"
-            ." value='".($filter_date_1 != "1900-01-01" ? $filter_date_1 : "")."' class='formfield' /></div>\n"
+            ."<div style='float:left'><input title='Enter a start date to show only signals last logged after this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_last_date_1' id='filter_last_date_1' size='12' maxlength='10'"
+            ." value='".($filter_last_date_1 != "1900-01-01" ? $filter_last_date_1 : "")."' class='formfield' /></div>\n"
             ."<div style='float:left;padding:0 1em'>-</div>\n"
-            ."<div style='float:left'><input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)'"
-            ." type='text' name='filter_date_2' id='filter_date_2' size='12' maxlength='10'"
-            ." value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield' /></div>"
-            /*
-
-
-
-                <table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-                ."          <tr>\n"
-                ."            <td><input title='Enter a start date to show only signals last heard after this date (YYYY-MM-DD format)' type='text' name='filter_date_1' size='10' maxlength='10' value='".($filter_date_1 != "1900-01-01" ? $filter_date_1 : "")."' class='formfield'> -\n"
-                ."<input title='Enter an end date to show only signals last heard before this date (YYYY-MM-DD format)' type='text' name='filter_date_2' size='10' maxlength='10' value='".($filter_date_2 != "2020-01-01" ? $filter_date_2 : "")."' class='formfield'></td>"
-                ."            <td align='right'><label for='chk_filter_active'><input id='chk_filter_active'type='checkbox' name='filter_active' value='1'".($filter_active ? " checked" : "").">Only active stations&nbsp;</label></td>"
-                ."          </tr>\n"
-                ."	 </table>"
-            */
+            ."<div style='float:left'><input title='Enter an end date to show only signals last logged before this date (YYYY-MM-DD format)'"
+            ." type='text' name='filter_last_date_2' id='filter_last_date_2' size='12' maxlength='10'"
+            ." value='".($filter_last_date_2 != "2030-01-01" ? $filter_last_date_2 : "")."' class='formfield' /></div>"
             ."</td>"
             ."      </tr>\n"
             ."      <tr class='rowForm noprint'>\n"
@@ -639,8 +627,8 @@ class SignalSeekList
             ."    buttonImageOnly: true,\n"
             ."    buttonText: 'Select date'\n"
             ."  };\n"
-            ."  \$('#filter_date_1').datepicker(config);\n"
-            ."  \$('#filter_date_2').datepicker(config);\n"
+            ."  \$('#filter_last_date_1').datepicker(config);\n"
+            ."  \$('#filter_last_date_2').datepicker(config);\n"
             ."  \$('#filter_id').focus();\n"
             ."  \$('#filter_id').select();\n"
             ."})\n"
