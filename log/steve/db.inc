@@ -391,8 +391,7 @@ function db_load($file) {
     for ($i=0; $i<count($commands); $i++) {
       if (!$result = SQL_query($commands[$i])) {
         $error = 	SQL_error();
-        error_handler(	CRITICAL,ERROR_DB_CANNOT_IMPORT_DATA,
-			txt("cannotExecuteQuery").":<br>\n\n$sql<br>\n\n$error");
+        echo("Error :<br>\n\n$sql<br>\n\n$error");
         return false;
       }
     }

@@ -11,7 +11,7 @@ CREATE TABLE `log` (
   `rx` char(1) NOT NULL default '',
   `notes` varchar(255) default NULL,
   PRIMARY KEY(`ID`)
-) TYPE=MyISAM;
+);
 
 DROP TABLE IF EXISTS `station`;
 CREATE TABLE `station` (
@@ -24,7 +24,7 @@ CREATE TABLE `station` (
   `lat` float NOT NULL default '0',
   `lon` float NOT NULL default '0',
   PRIMARY KEY(`ID`)
-) TYPE=MyISAM;
+);
 
 # ************************************
 # * (End of Table Structures)        *

@@ -251,7 +251,7 @@ class Map
         ."    <td class='downloadTableContent'><img src='".BASE_PATH."assets/images/pacific_map.gif'></td>\n"
         ."  </tr>\n"
         ."  <tr>\n"
-        ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='../log/steve' target='_blank'><b>Pacific Report</b></a>)</td>\n"
+        ."    <td class='downloadTableContent' align='center'>(Originally produced for Steve Ratzlaff's <a href='/dx/ndb/log/steve/?mode=station_list&yyyymm=200307' target='_blank'><b>Pacific Report</b></a>)</td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }

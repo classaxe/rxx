@@ -12,6 +12,7 @@
 // *******************************************
 
 error_reporting(15);
+ini_set('display_errors', true);
 include("config.inc");				// Configuration settings
 
 include("db.inc");				// Database reset and backup
