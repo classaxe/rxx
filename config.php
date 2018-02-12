@@ -1,11 +1,5 @@
 <?php
 
-define("DB_HOST", "localhost");
-define("DB_USER", "rxx");
-define("DB_PASS", "k24l3459");
-define("DB_DATABASE", "rxx");
-
-
 switch(system){
     case 'RNA':
         define("system_ID", "1");
@@ -85,8 +79,6 @@ define("HAMBCN", 4);
 define("OTHER", 5);
 define("DSC", 6);
 
-define("admin_user", "admin");
-define("admin_password", "j35g8sc");
 define("swing_LF", 0.6);    // How much signals may be off frequency before being considered wrong
 define("swing_HF", 1.5);    // LF is enough to pull signals such as 414 RPB on to correct frequency
 
