@@ -22,7 +22,11 @@ if (isset($request_arr[1])) {
 }
 
 require_once 'config.php';
-require_once 'credentials.php';
+if (file_exists('credentials.php')) {
+    require_once 'credentials.php';
+} else {
+    require_once 'default.credentials.php';
+}
 
 if (!defined('system_ID')) {
     header('location: '.BASE_PATH.'rna', 302);
