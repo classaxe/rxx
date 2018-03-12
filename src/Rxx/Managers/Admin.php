@@ -353,38 +353,48 @@ class Admin
 
     protected function signalUpdateFromGSQ()
     {
+        $html = "<h2>Updating Signal Locations...</h2><br><br>";
         $updated =    0;
         $sql =
              "SELECT\n"
             ."  `ID`,"
-            ."  `GSQ`"
+            ."  `call`,"
+            ."  `GSQ`,"
+            ."  `khz`"
             ."FROM\n"
             ."  `signals`";
         $result =    @\Rxx\Database::query($sql);
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
-            $ID =    $row["ID"];
-            $GSQ =    $row["GSQ"];
+            $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $ID =       $row["ID"];
+            $call =     $row['call'];
+            $GSQ =      $row["GSQ"];
+            $khz =      $row['khz'];
             if ($GSQ) {
                 $a =     \Rxx\Rxx::GSQ_deg($GSQ);
-                $lat =    $a["lat"];
-                $lon =    $a["lon"];
-                $sql =
-                     "UPDATE\n"
-                    ."  `signals`\n"
-                    ."SET\n"
-                    ."  `lat` = $lat,\n"
-                    ."  `lon` = $lon\n"
-                    ."WHERE\n"
-                    ."  `ID` = $ID";
-                \Rxx\Database::query($sql);
-                if (\Rxx\Database::affectedRows()) {
-                    $updated++;
+                if ($a===false) {
+                    $html.= "<b>Error:</b> $call on ".(0+$khz)." has invalid GSQ $GSQ.<br />";
+                } else {
+                    $lat =    $a["lat"];
+                    $lon =    $a["lon"];
+                    $sql =
+                        "UPDATE\n"
+                        ."  `signals`\n"
+                        ."SET\n"
+                        ."  `lat` = $lat,\n"
+                        ."  `lon` = $lon\n"
+                        ."WHERE\n"
+                        ."  `ID` = $ID";
+                    \Rxx\Database::query($sql);
+                    if (\Rxx\Database::affectedRows()) {
+                        $updated++;
+                    }
                 }
             }
         }
-        return "<h2>Updating Signal Locations...</h2><br><br><p>Done. $updated signals updated.</p>";
+        $html.= "<p>Done. $updated signals updated.</p>";
+        return $html;
     }
 
 
