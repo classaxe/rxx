@@ -34,6 +34,7 @@ class SignalList
     protected $filter_last_date_1;
     protected $filter_last_date_2;
     protected $filter_listener;
+    protected $filter_listener_invert;
     protected $filter_logged_date_1;
     protected $filter_logged_date_2;
     protected $filter_sp;
@@ -463,12 +464,22 @@ class SignalList
             ."     </tr>\n"
             ."     <tr class='rowForm'>\n"
             ."       <th align='left'>\n"
-            ."<label title='Only signals heard by the selected listener'>Heard by<br>\n"
+            ."<label title='Only signals logged by the selected listener'>"
+            ."<input type='radio' name='filter_listener_invert' id='filter_listener_invert_0' value='0'"
+            .($this->filter_listener_invert ? '' : ' checked="checked"')
+            ."/>Logged by"
+            ."</label>"
             ."<br>\n"
-            ."<span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>\n"
+            ."<label title='Only signals NOT heard by the selected listener' style='white-space: nowrap;'>"
+            ."<input type='radio' name='filter_listener_invert' id='filter_listener_invert_1' value='1'"
+            .($this->filter_listener_invert ? ' checked=\"checked\"' : '')
+            ."/>Not logged by"
+            ."</label>"
+            ."<br>\n"
+            ."<p style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>\n"
             ."select multiple<br>\n"
-            ."values</span>"
-            ."</label></th>"
+            ."values</p>"
+            ."</th>"
             ."       <td>"
             .$this->drawControlHeardBy()
             ."</td>\n"
@@ -990,7 +1001,7 @@ class SignalList
                 ."<td>".($row["first_heard"]!="0000-00-00" ? $row["first_heard"] : "&nbsp;")."</td>\n"
                 ."<td>".($row["last_heard"]!="0000-00-00" ? $row["last_heard"] : "&nbsp;")."</td>\n";
 
-            if ($this->filter_listener) {
+            if ($this->filter_listener && !$this->filter_listener_invert) {
                 $html.=
                  "<td align='right'>".($row["dx_km"]!=='' ? $row["dx_km"] : "&nbsp;")."</td>\n"
                 ."<td align='right'>".($row["dx_miles"]!=='' ? $row["dx_miles"] : "&nbsp;")."</td>\n";
@@ -1072,7 +1083,7 @@ class SignalList
                     ."</th>\n";
             }
         }
-        if ($this->filter_listener) {
+        if ($this->filter_listener && !$this->filter_listener_invert) {
             $html.=    "    <th class='nosort txt_c' colspan='2'>Range from<br />Listener</th>\n";
         }
         if ($this->filter_dx_gsq) {
@@ -1081,7 +1092,7 @@ class SignalList
         if (Rxx::isAdmin()) {
             $html.=    "    <th class='nosort' rowspan='2'>&nbsp;</th>\n";
         }
-        if ($this->filter_listener || $this->filter_dx_gsq) {
+        if (!$this->filter_listener_invert && ($this->filter_listener || $this->filter_dx_gsq)) {
             $html.=    "  <tr>\n";
             if ($this->filter_listener) {
                 $html.=
@@ -1318,7 +1329,7 @@ class SignalList
 
     private function getCountMatched()
     {
-        $sql = ($this->filter_heard_in || $this->filter_listener ?
+        $sql = ($this->filter_heard_in || $this->filter_listener || $this->filter_listener_invert ?
                 "SELECT\n"
                ."    COUNT(distinct `signals`.`ID`) AS `count`\n"
                ."FROM\n"
@@ -1458,8 +1469,8 @@ class SignalList
     {
         $sql =
              "SELECT\n"
-            .($this->filter_heard_in || $this->filter_listener ?
-                ($this->filter_listener ?
+            .($this->filter_heard_in || $this->filter_listener || $this->filter_listener_invert ?
+                (!$this->filter_listener_invert && $this->filter_listener ?
                      "    DISTINCT `signals`.*,\n"
                     ."    `logs`.`dx_km`,\n"
                     ."    `logs`.`dx_miles`\n"
@@ -1474,7 +1485,7 @@ class SignalList
                 ."WHERE\n"
                 .$this->sql_filter_system
                 .($this->filter_heard_in ?  " AND\n".$this->sql_filter_heard_in : "")
-                .($this->filter_listener ?  " AND\n".$this->sql_filter_listener : "")
+                .($this->filter_listener || $this->filter_listener_invert ?  " AND \n".$this->sql_filter_listener : "")
                 :
                  "    `signals`.*"
                 .($this->filter_dx_gsq ? ",\n".$this->getSqlDxColumns() : "\n")
@@ -1759,11 +1770,30 @@ class SignalList
 
     private function setupInitSqlFilterListener()
     {
-        if (!$this->filter_listener) {
-            return;
+        if (!$this->filter_listener && !$this->filter_listener_invert) {
+            return ;
         }
-        $this->sql_filter_listener =
-            "    (`logs`.`listenerID` IN(".implode(',', $this->filter_listener)."))";
+        if (!$this->filter_listener) {
+            $this->sql_filter_listener = "   -- To handle 'Not heard by anyone' case:\n    (0 = 1)";
+            return ;
+        }
+        if ($this->filter_listener_invert) {
+            $this->sql_filter_listener =
+                 "    (`signals`.`ID` NOT IN (\n"
+                ."        SELECT\n"
+                ."            DISTINCT S2.ID\n"
+                ."        FROM\n"
+                ."           signals S2\n"
+                ."        INNER JOIN logs L2 ON\n"
+                ."           S2.ID=L2.signalID\n"
+                ."        WHERE\n"
+                ."           `L2`.`listenerID` IN(" . implode(',', $this->filter_listener) . ")\n"
+                ."    )\n"
+                .")";
+        } else {
+            $this->sql_filter_listener =
+                "    (`logs`.`listenerID` IN(" . implode(',', $this->filter_listener) . "))";
+        }
     }
 
     private function setupInitSqlFilterLoggedBetween()
@@ -2154,6 +2184,7 @@ class SignalList
         $this->filter_khz_1 =           Rxx::get_var('filter_khz_1');
         $this->filter_khz_2 =           Rxx::get_var('filter_khz_2');
         $this->filter_listener =        Rxx::get_var('filter_listener');
+        $this->filter_listener_invert = Rxx::get_var('filter_listener_invert');
         $this->filter_last_date_1 =     Rxx::get_var('filter_last_date_1');
         $this->filter_last_date_2 =     Rxx::get_var('filter_last_date_2');
         $this->filter_logged_date_1 =   Rxx::get_var('filter_logged_date_1');

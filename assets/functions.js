@@ -86,6 +86,7 @@ function clear_signal_list(form){
         radio_filter_heard_in_mod_any.checked=1;
         filter_dx_units_km.checked=1;
         form['filter_listener[]'].selectedIndex=0;
+        filter_listener_invert_0.checked=1;
         filter_khz_1.value="";
         filter_khz_2.value="";
         filter_sp.value="";
