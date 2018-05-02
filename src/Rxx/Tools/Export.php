@@ -850,7 +850,6 @@ class Export
             ."  `signals`\n"
             ."INNER JOIN `logs` ON\n"
             ."  `signals`.`ID` = `logs`.`signalID`\n"
-            ."  `logs`\n"
             ."WHERE\n"
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
