@@ -95,7 +95,7 @@ class Record
             ."WHERE\n"
             ."  `ID` = \"".$this->getID()."\"";
         $result = $this->doSqlQuery($sql);
-        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
     }
 
     /**
@@ -118,7 +118,7 @@ class Record
         if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        $record = \Rxx\Database::fetchArray($result, MYSQL_NUM);
+        $record = \Rxx\Database::fetchArray($result, MYSQLI_NUM);
         return $record[0];
     }
 
@@ -134,7 +134,7 @@ class Record
         if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
     }
 
     /**
@@ -150,7 +150,7 @@ class Record
             return false;
         }
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $out[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $out[] = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         }
         return $out;
     }

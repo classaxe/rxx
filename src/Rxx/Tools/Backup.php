@@ -68,7 +68,7 @@ class Backup
             if (!\Rxx\Database::numRows($result)) {
                 return false;
             }
-            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
                 $table =        array();
                 $table['Name'] =    $row['Name'];
                 $tables[] =    $table;
@@ -90,7 +90,7 @@ class Backup
                 return false;
             }
             $columns =            array();
-            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
                 $column =            array();        // Hold results for this one field
                 $column['Field'] =  $row['Field'];
                 $column['Type'] =   $row['Type'];
@@ -167,7 +167,7 @@ class Backup
         }
 
         $tables =        array();
-        while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+        while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
             $temp =        array();
             $temp['Name'] =    $row['Name'];
             $temp['Type'] =    (isset($row['Type']) ? $row['Type'] : $row['Engine']);
@@ -182,7 +182,7 @@ class Backup
                 return false;
             }
             $columns =            array();
-            while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+            while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
                 $column =            array();        // Hold results for this one field
                 $column['Default'] =    '';
                 if ($row['Extra'] != 'auto_increment') {
@@ -208,7 +208,7 @@ class Backup
 
             $indexes =    array();
             if (\Rxx\Database::numRows($result)) {
-                while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+                while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
                     $indexes[] =    $row;
                 }
                 if (count($indexes)) {

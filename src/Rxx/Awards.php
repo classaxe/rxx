@@ -206,7 +206,7 @@ class Awards
                     .($Eligible_atl ? "" : "<font color='#808080'>")."Atlantic Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result_atl)) {
-                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQL_ASSOC);
+                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQLI_ASSOC);
                         $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
@@ -217,7 +217,7 @@ class Awards
                     ."Pacific Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result_pac)) {
-                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQL_ASSOC);
+                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQLI_ASSOC);
                         $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }
@@ -304,7 +304,7 @@ class Awards
                            .($Eligible ? "" : "<font color='#808080'>");
                         $this_level =    0;
                         for ($j = $old_level; $j < $level; $j++) {
-                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                             $out.= ($row['SP'] && $row['SP']!="AK" && $row['SP']!="PR"  ?
                                 $row['SP']
                               :
@@ -370,7 +370,7 @@ class Awards
                 $result =    @\Rxx\Database::query($sql);
                 $first =    array();
                 for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                    $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                     $first[] =    $row['ID'];
                 }
                 $sql =
@@ -430,7 +430,7 @@ class Awards
                         .($Eligible ? "" : "<font color='#808080'>");
                         $this_level =    0;
                         for ($j = $old_level; $j < $level; $j++) {
-                            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                             if ($row['call']) {
                                 $out.=    "<nobr>".Rxx::pad_dot((float)$row['khz'], 6).($this_country[1]>1 ? Rxx::pad_dot($row['call'], 4)."(".$row['ITU'].")" : Rxx::pad_nbsp($row['call'], 4))."</nobr>&nbsp;&nbsp;";
                             }
@@ -677,7 +677,7 @@ class Awards
         if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $out =
              "<b>LT Alert Awards</b><br>"
             ."This cerificate recognises reception of a single NDBs: LT on 305 KHz, at Alert, Nunavut, in Canada. "
@@ -763,7 +763,7 @@ class Awards
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result)) {
-                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                         $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -862,7 +862,7 @@ class Awards
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result)) {
-                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                         $out.=    (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -964,7 +964,7 @@ class Awards
                     .($Eligible ? "" : "<font color='#808080'>");
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result)) {
-                        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                         $out.=  (float)$row['khz']."-".Rxx::pad_nbsp($row['call'], 3)." ";
                     }
                 }
@@ -1066,7 +1066,7 @@ class Awards
                     ."Atlantic Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result_atl)) {
-                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQL_ASSOC);
+                        $row_atl =    \Rxx\Database::fetchArray($result_atl, MYSQLI_ASSOC);
                         $out.= (float)$row_atl['khz']."-".Rxx::pad_nbsp($row_atl['call'], 3)." (".$row_atl['SP'].") ";
                     }
                 }
@@ -1077,7 +1077,7 @@ class Awards
                     ."Pacific Coast:<br>\n";
                 for ($j = $old_level; $j<$level; $j++) {
                     if ($j<\Rxx\Database::numRows($result_pac)) {
-                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQL_ASSOC);
+                        $row_pac =    \Rxx\Database::fetchArray($result_pac, MYSQLI_ASSOC);
                         $out.= (float)$row_pac['khz']."-".Rxx::pad_nbsp($row_pac['call'], 3)." (".$row_pac['SP'].") ";
                     }
                 }
@@ -1192,7 +1192,7 @@ class Awards
         }
         $sql = "SELECT * FROM `listeners` WHERE `ID` = ".$this->_listenerID;
         $result =                   \Rxx\Database::query($sql);
-        $this->_listener_record =   \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $this->_listener_record =   \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $this->_listener_ITU =      $this->_listener_record['ITU'];
         $this->_listener_name =     $this->_listener_record['name'];
         $this->_listener_region =   Rxx::get_listener_region($this->_listenerID);

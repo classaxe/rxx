@@ -1521,7 +1521,7 @@ class SignalList
 //        \Rxx\Rxx::z($sql, "Matched:");
         $result =   \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $this->rows[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $this->rows[] = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         }
     }
 

@@ -64,7 +64,7 @@ class Export
         $out[] =    "dgps =	new Array();\r\n";
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             if (preg_match("/Ref ID: ([0-9]+)\/*([0-9]+)*; *([0-9]+) *bps/i", $row['notes'], $ID_arr)) {
                 $out[] =    "DGPS (\""
                     .(count($ID_arr)>1 ? $ID_arr[1] : "")."\",\""
@@ -111,7 +111,7 @@ class Export
             ."<Document>\r\n"
             ."  <name>Signals Received</name>\r\n";
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             if ((float)$row['lon'] || (float)$row['lat']) {
                 $out.=
                     "  <Placemark>\r\n"
@@ -185,7 +185,7 @@ class Export
         if (!$result =  \Rxx\Database::query($sql)) {
             return "Invalid User ID";
         }
-        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return
              "// ***********************************************************************\r\n"
             ."// * FILE HEADER:                                                        *\r\n"
@@ -283,7 +283,7 @@ class Export
         $records = array();
         $unique = array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $r =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $r =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $records[] = array(
                 'ID' =>       $r['ID'],
                 'khz' =>      (float)$r['khz'],
@@ -387,7 +387,7 @@ class Export
         $result =   \Rxx\Database::query($sql);
         $records = array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $r = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $r = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $r['khz'] = (float)$r['khz'];
             $records[] = $r;
         }
@@ -568,7 +568,7 @@ class Export
             ."  </tr>\n";
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $bgcolor =  "";
             if (!$row["active"]) {
                 $bgcolor =  " bgcolor=\"#D0D0D0\" title=\"(Reportedly off air or decommissioned)\"";
@@ -744,7 +744,7 @@ class Export
             )
         );
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $data[] = array(
                 'khz' =>            $row['khz'],
                 'call' =>           $row['call'], 'url'=>system_URL.'/signal_info/'.$row["ID"], 'target'=>'_blank',
@@ -794,7 +794,7 @@ class Export
 
         $out = "KHz\tCall\tQTH\tSP\tITU\tSec\tFmt\tLSB\tUSB\tPwr\tLat\tLon\r\n";
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out.=
                 (float)$row['khz']."\t"
                 .htmlentities(\Rxx\Rxx::translate_chars($row['call']))."\t"
@@ -862,7 +862,7 @@ class Export
         $result =   \Rxx\Database::query($sql);
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             print
                 $row['date']."\t"
                 .$row['time']."\t"
@@ -915,7 +915,7 @@ class Export
             ."  `time`";
 
         $result =   \Rxx\Database::query($sql);
-        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $call_len =     $row['call_len'];
         $QTH_len =      $row['QTH_len'];
         $time_len =     $row['time_len'];
@@ -929,7 +929,7 @@ class Export
 
         header("Content-Type: text/plain");
 
-        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
 
         print
             system." Log for ".$row['name']." on ".date("Y-m-d")."\r\n"
@@ -967,7 +967,7 @@ class Export
 
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             print
                 $row['date']." "
                 .($time_len ? \Rxx\Rxx::pad($row['time'], 5) : "")
@@ -1030,7 +1030,7 @@ class Export
         $arr_replace= array(  "");
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out[] =     lead($row['khz'], 7)
                 .Rxx::pad($row['call'], 22)
                 ."0000-2400"

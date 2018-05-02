@@ -97,7 +97,7 @@ class Admin
         $updated =    0;
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             if ($row["qth_lat"] && $row["dx_lat"]) {
                 $a =    \Rxx\Rxx::get_dx($row["qth_lat"], $row["qth_lon"], $row["dx_lat"], $row["dx_lon"]);
                 $sql =
@@ -150,7 +150,7 @@ class Admin
         $affected =    \Rxx\Database::numRows($result);
         $signal = new \Rxx\Signal;
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $ID =    $row['signalID'];
             $region =    $row['region'];
             $signal->setID($ID);
@@ -186,7 +186,7 @@ class Admin
         $result = @\Rxx\Database::query($sql);
         $affected = \Rxx\Database::numRows($result);
         for ($i=0; $i<$affected; $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             \Rxx\Database::query($row['query']);
         }
         return "Updated ".$affected." logs";
@@ -319,7 +319,7 @@ class Admin
         $result =    \Rxx\Database::query($sql);
         $signal = new \Rxx\Signal;
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $ID =    $row["ID"];
             $sql =
                  "SELECT\n"
@@ -330,7 +330,7 @@ class Admin
                 ."  `signalID` = ".$ID." AND\n"
                 ."  `listenerID` != ''";
             $result2 =    @\Rxx\Database::query($sql);
-            $row =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result2, MYSQLI_ASSOC);
             $logs =    $row["logs"];
             $signal->setID($ID);
             $signal->updateHeardInList();
@@ -366,7 +366,7 @@ class Admin
         $result =    @\Rxx\Database::query($sql);
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =      \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $ID =       $row["ID"];
             $call =     $row['call'];
             $GSQ =      $row["GSQ"];

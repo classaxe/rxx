@@ -302,7 +302,7 @@ class Map
                     ."        <td width='25' valign='top'><b>GSQ</b></td>"
                     ."      </tr>\n";
 
-                while ($row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC)) {
+                while ($row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC)) {
                     $out[] =     "      <tr>\n"
                         ."        <td>".$row['name']."</td>\n"
                         ."        <td>".$row['sp']."</td>\n"
@@ -594,7 +594,7 @@ class Map
             ."  `maps`.`SP`";
         $result =   \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $thisITU =  $row['ITU'];
             $thisSP =   $row['SP'];
             $thisName =     $row['name'];
@@ -611,7 +611,7 @@ class Map
         $sql =  "SELECT `ID`,`khz`,`call`,`QTH`,`type` FROM `signals` WHERE `sp` = '$SP' ORDER BY `khz`,`call`";
         $result =   \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $thisID =   $row['ID'];
             $thisKhz =  (float)$row['khz'];
             $thisCall =     $row['call'];
@@ -799,7 +799,7 @@ class Map
         $sql =  "SELECT * FROM `maps` WHERE `SP` = '$SP'";
         $result =   \Rxx\Database::query($sql);
         if (\Rxx\Database::numRows($result)) {
-            $coords =   \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $coords =   \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             global $ID;
             if (!$test) {
                 $out[] =     "<img style='clear: both;border:1px solid #888;float: none' usemap=\"#map\" galleryimg=\"no\" src=\"./?mode=state_map_gif&SP=$SP&simple=$simple&listenerID=$listenerID&filter_active=$filter_active&"
@@ -811,7 +811,7 @@ class Map
                     $sql =      "SELECT * FROM `places` WHERE `sp` = '$SP' AND (`population`>=$places OR `capital` = '1')";
                     $result =   @\Rxx\Database::query($sql);
                     for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                         $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                         $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                         $out[] =
@@ -842,7 +842,7 @@ class Map
                     .($filter_type ? " AND\n $filter_type" : "");
                 $result =    @\Rxx\Database::query($sql);
                 for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                    $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                    $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                     $xpos =     (int)($coords['ix2'] -  ((($coords['ix2'] - $coords['ix1'])/($coords['lon2'] - $coords['lon1'])) * ($coords['lon2'] - $row['lon'])));
                     $ypos =     (int)($coords['iy1'] + ((($coords['lat2'] - $row['lat']) / ($coords['lat2'] - $coords['lat1'])) * ($coords['iy2']-$coords['iy1'])));
                     $out[] =     "<area shape=\"poly\" alt=\"".(float)$row['khz']."-".$row['call'].' '.$row['QTH']."\n(lat:".$row['lat'].", lon:".$row['lon'].")\" "

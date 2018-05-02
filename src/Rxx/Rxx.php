@@ -1,9 +1,5 @@
 <?php
 namespace Rxx;
-if (!defined('MYSQL_NUM')) {
-    define('MYSQL_NUM',2);
-    define('MYSQL_ASSOC',1);
-}
 
 class Rxx
 {
@@ -31,7 +27,7 @@ class Rxx
             if (!\Rxx\Database::numRows($result)) {
                 $error_msg .=    "The S/P code $SP is not valid.\\\\n";
             } else {
-                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 if ($row['ITU']!=$ITU) {
                     $error_msg .=    "$SP belongs in ".$row['ITU'].($ITU ? ", not $ITU" : "").".\\\\n";
                 }
@@ -88,7 +84,7 @@ class Rxx
         if (!\Rxx\Database::numRows($result)) {
             return false;
         }
-        return \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        return \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
     }
 
     /**
@@ -133,7 +129,7 @@ class Rxx
         }
         $sql =    "SELECT `region` FROM `itu` WHERE `itu` = \"$itu\"";
         $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return $row["region"];
     }
 
@@ -166,7 +162,7 @@ class Rxx
     {
         $sql =    "SELECT `name` FROM `itu` WHERE `ITU` = \"$ITU\"";
         $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return $row["name"];
     }
 
@@ -184,7 +180,7 @@ class Rxx
         if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return    $row['name'];
     }
 
@@ -202,7 +198,7 @@ class Rxx
         if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return    $row['email'];
     }
 
@@ -220,7 +216,7 @@ class Rxx
         if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return    $row['region'];
     }
 
@@ -238,7 +234,7 @@ class Rxx
         if (!\Rxx\Database::numRows($result)) {
             return "";
         }
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return    $row["name"].", ".$row["QTH"].($row['SP'] ? " ".$row["SP"]:"")." ".$row["ITU"];
     }
 
@@ -272,7 +268,7 @@ class Rxx
         $result =     @\Rxx\Database::query($sql);
 //  print("<pre>$sql</pre>");
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out[] =    "<option value=\"".$row["ID"]."\"";
             if ($selectedID && is_array($selectedID)) {
                 for ($j=0; $j<count($selectedID); $j++) {
@@ -313,7 +309,7 @@ class Rxx
         $sql =        "SELECT * FROM `icao`";
         $result =     \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $dx =     \Rxx\Rxx::get_dx($deg["lat"], $deg["lon"], $row["lat"], $row["lon"]);
             $icao_arr[] =    array("miles" => $dx[0],"km" => $dx[1],"ICAO" => $row["ICAO"], );
         }
@@ -1397,7 +1393,7 @@ class Rxx
 
         $result =        @\Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $regions[] =    array("name"=>$row["name"], "region"=>$row["region"]);
         }
 
@@ -1452,7 +1448,7 @@ class Rxx
             $result =        \Rxx\Database::query($sql);
             $itu_arr =        array();
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $itu_arr[] =    array("ITU"=>$row['ITU'],"name"=>$row['name']);
             }
             $cells_col =        ceil(count($itu_arr)/$cols);
@@ -1556,7 +1552,7 @@ class Rxx
         $result =        \Rxx\Database::query($sql);
         $sp_arr =        array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1605,7 +1601,7 @@ class Rxx
         $result =        @\Rxx\Database::query($sql);
         $sp_arr =        array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1657,7 +1653,7 @@ class Rxx
         $result =        \Rxx\Database::query($sql);
         $sp_arr =        array();
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $sp_arr[] =        array('SP' => $row['SP'], 'ITU' => $row['ITU'], 'name' => $row['name']);
         }
         $cells_col =        ceil(count($sp_arr)/$cols);
@@ -1779,7 +1775,7 @@ class Rxx
         $sql =    "SELECT * FROM `signals`";
         $result =    \Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out[] =    "  <signal"
                 ." ID=\"".$row['ID']."\""
                 ." active=\"".$row['active']."\""
@@ -1802,7 +1798,7 @@ class Rxx
             $sql =    "SELECT * FROM `logs` WHERE `signalID` = ".$row['ID']." AND `listenerID` !=''";
             $result2 =    \Rxx\Database::query($sql);
             for ($j=0; $j<\Rxx\Database::numRows($result2); $j++) {
-                $row2 =    \Rxx\Database::fetchArray($result2, MYSQL_ASSOC);
+                $row2 =    \Rxx\Database::fetchArray($result2, MYSQLI_ASSOC);
                 $out[] =    "    <log"
                     ." ID=\"".$row2['ID']."\""
                     ." date=\"".$row2['date']."\""
@@ -1908,7 +1904,7 @@ class Rxx
 
         $result =    @\Rxx\Database::query($sql);
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $listeners[$row["ID"]] =
                 array(
                     "count_signals" =>    $row["count_signals"],
@@ -1956,7 +1952,7 @@ class Rxx
             //  print("<pre>$sql</pre>");
             $result =    @\Rxx\Database::query($sql);
             for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $listeners[$row["ID"]]["log_dx"]["dx".$i] = $row["logs"];
             }
         }

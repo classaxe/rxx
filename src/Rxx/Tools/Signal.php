@@ -623,7 +623,7 @@ class Signal
                 ."                  </tr>\n"
                 ."                  </thead>\n";
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $out.=
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='140'><a href=\"javascript:listener_signals('".$row["listenerID"]."')\"><b>".$row["name"]."</b></a></td>"
@@ -705,7 +705,7 @@ class Signal
 
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             if ($row['map_x']) {
                 if ($row['heard_in']!='') {
                     $out[] =
@@ -771,7 +771,7 @@ class Signal
 //print("<pre>$sql</pre>");
 
         $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $total_rx =    $row['listeners'];
 
 
@@ -802,7 +802,7 @@ class Signal
         $result =    @\Rxx\Database::query($sql);
         $name_idx =    0;
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             if ($row['map_x']) {
                 if ($row['heard_in']!='') {
                     $out[] = "<area shape=\"circle\""
@@ -863,7 +863,7 @@ class Signal
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $ID";
                 $result =    \Rxx\Database::query($sql);
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $ID";
                 $result =    \Rxx\Database::query($sql);
 
@@ -872,7 +872,7 @@ class Signal
 
                 $sql =    "select count(*) as `logs` from `logs` where `signalID` = $destinationID";
                 $result =    \Rxx\Database::query($sql);
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $destinationID";
                 $result =    \Rxx\Database::query($sql);
 
@@ -883,7 +883,7 @@ class Signal
         $out[] =    "<p>This function moves <b>all</b> logs for the selected signal to another signal record. It should be used only to combine logs entered against duplicate records for the same signal. This operation is NOT reversible.</p>";
         $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($ID)."'";
         $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $out[] =    "<form action='".system_URL."/".$mode."/".$ID."?submode=merge' method='POST'>\n";
         $out[] =    "<h2>Source Signal:</h2><br>\n";
         $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
@@ -894,7 +894,7 @@ class Signal
             $sql =    "SELECT `ID`,`khz`,`call`,`SP`,`ITU` FROM `signals` ORDER BY `khz`,`call`,`ITU`,`SP`";
             $result =    @\Rxx\Database::query($sql);
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $out[] =
                      "<option value='".$row['ID']."'".($ID==$row['ID'] ? " selected" : "").">"
                     .\Rxx\Rxx::pad_nbsp((float)$row['khz'], 10)
@@ -908,7 +908,7 @@ class Signal
         } else {
             $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($destinationID)."'";
             $result =    \Rxx\Database::query($sql);
-            $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
             $out[] =    "<h2>Result</h2><p>$merged log(s) were moved to the signal record given.";
             $out[] =    "<p align='center'><input type='button' value='Close' onClick='window.close();'></p>";
@@ -949,7 +949,7 @@ class Signal
             if ($METAR = \Rxx\Tools\Weather::METAR($ICAO_signal, $hours_signal, 0)) {
                 $sql =      "SELECT * FROM `icao` WHERE `icao` = \"$ICAO_signal\"";
                 $result =   \Rxx\Database::query($sql);
-                $row =      \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =      \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $dx =       \Rxx\Rxx::get_dx($lat, $lon, $row["lat"], $row["lon"]);
                 $pressure =
                     "QNH at $ICAO_signal - ".$row["name"].($row["SP"] ? ", ".$row["SP"] : "").", ".$row["CNT"]."\n"
@@ -1262,7 +1262,7 @@ class Signal
                 ."                  </tr>\n"
                 ."                  </thead>\n";
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $out.=
                     "                  <tr>\n"
                     ."                    <td class='scroll_list' width='75'>".($row["date"] ? $row["date"] : "&nbsp;")."</td>\n"

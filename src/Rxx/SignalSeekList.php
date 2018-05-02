@@ -75,7 +75,7 @@ class SignalSeekList
 
 //  print("<pre>$sql</pre>");
         $result =     @\Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         $last =    $row["last"];
 
 
@@ -283,7 +283,7 @@ class SignalSeekList
         $signals =    array();
         $itu_sp =    array();
         for ($i=0; $i<$total; $i++) {
-            $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $signals[$row['ID']] = array('active'=>$row['active'],'khz'=>(float)$row['khz'],'call'=>$row['call'],'type'=>$row['type'],'SP'=>$row['SP'],'ITU'=>$row['ITU'],'heard'=>0);
             $itu_sp_index = $row['ITU']."_".$row['SP'];
             if (!isset($itu_sp[$itu_sp_index])) {
@@ -298,7 +298,7 @@ class SignalSeekList
             $sql =    "select DISTINCT `signals`.`ID` FROM `signals`,`logs` WHERE `signals`.`ID` = `logs`.`signalID` AND `listenerID` = $createFor";
             $result =     \Rxx\Database::query($sql);
             for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                $row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                 $ID = $row['ID'];
                 if (isset($signals[$ID])) {
                     $signals[$ID]['heard'] = 1;

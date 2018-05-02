@@ -468,7 +468,7 @@ class LogUploader
                                 $total_loggings++;
                                 if (\Rxx\Database::numRows($result) == 1) {
                                     $this->html.=    "<tr class='rownormal'>\n";
-                                    $row =    \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                                    $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                                     $bgcolor =    "";
                                     if (!$row["active"]) {
                                         $bgcolor =
@@ -575,7 +575,7 @@ class LogUploader
                                     $defaultChosen =    false;
                                     $selected =         false;
                                     for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                                        $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+                                        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
                                         $dx =   \Rxx\Rxx::get_dx(
                                             $this->listener->record['lat'],
                                             $this->listener->record['lat'],

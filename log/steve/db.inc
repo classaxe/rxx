@@ -90,7 +90,7 @@ function db_export_sql_data($tableNames=false,$orderBy=false) {
       return false;
     }
   
-    while ($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+    while ($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
       $table =		array();
       $table['Name'] =	$row['Name'];
       $tables[] =	$table;
@@ -120,7 +120,7 @@ function db_export_sql_data($tableNames=false,$orderBy=false) {
       return false;
     }
     $columns =			array();
-    while ($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+    while ($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
       $column =			array();		// Hold results for this one field
       $column['Field'] =	$row['Field'];
       ereg("([^/(]+)",$row['Type'],$type);
@@ -217,7 +217,7 @@ function db_export_sql_structure() {
   }
 
   $tables =		array();
-  while ($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+  while ($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
     $temp =		array();
     $temp['Name'] =	$row['Name'];
     $temp['Type'] =	$row['Type'];
@@ -238,7 +238,7 @@ function db_export_sql_structure() {
     }
     $columns =			array();
 
-    while ($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+    while ($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
       $column =			array();		// Hold results for this one field
       $column['Default'] =	'';
       if ($row['Extra'] != 'auto_increment') {
@@ -269,7 +269,7 @@ function db_export_sql_structure() {
 
     $indexes =	array();
     if (SQL_num_rows($result))	{		// If there was no match, quit.
-      while ($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+      while ($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
         $indexes[] =	$row;
       }
       if (count($indexes)) {

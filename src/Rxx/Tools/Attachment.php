@@ -66,7 +66,7 @@ class Attachment
             return $out;
         }
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $out[] = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            $out[] = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         }
         return $out;
     }
@@ -93,7 +93,7 @@ class Attachment
             . "  `destinationID` = " . addslashes($ID) . "\n";
 
         $result = \Rxx\Database::query($sql);
-        $row = \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return $row['count'];
     }
 }

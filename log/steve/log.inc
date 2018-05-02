@@ -57,7 +57,7 @@ function log_for_station($stationID) {
     return false;
   }
   $out = array();
-  while($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+  while($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
     $out[] =	$row;
   }
   return $out;

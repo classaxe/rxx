@@ -174,7 +174,7 @@ function table_get($destinationID,$destinationType) {
   if (!SQL_num_rows($result)) {			// If there was no match, quit.
     return false;
   }
-  return SQL_fetch_array($result,MYSQL_ASSOC);
+  return SQL_fetch_array($result,MYSQLI_ASSOC);
 }
 
 
@@ -201,7 +201,7 @@ function table_get_all($destinationType,$orderBy=false) {
   }
 
   $out = array();
-  while($row = SQL_fetch_array($result,MYSQL_ASSOC)) {
+  while($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
     $out[] =	$row;
   }
 
@@ -258,7 +258,7 @@ function table_get_range($destinationType,$records=false,$offset=false,$sortBy=f
     return false;
   }
   $out =		array();
-  while ($row = 	SQL_fetch_array($result,MYSQL_ASSOC)) {
+  while ($row = 	SQL_fetch_array($result,MYSQLI_ASSOC)) {
     $out[] =		$row;
   }
   return $out;

@@ -30,6 +30,11 @@
 
 namespace Rxx\Tools;
 
+if (!defined('MYSQL_NUM')) {
+    define('MYSQL_NUM',2);
+    define('MYSQLI_ASSOC',1);
+}
+
 /**
  * Class Image
  * @package Rxx\Tools

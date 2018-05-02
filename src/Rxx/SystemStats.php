@@ -26,7 +26,7 @@ class SystemStats
             ."  `date` !=\"\" AND\n"
             ."  `date` !=\"0000-00-0000\"";
         $result =   \Rxx\Database::query($sql);
-        $row =        \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+        $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return $row["last"];
     }
 }
