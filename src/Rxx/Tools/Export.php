@@ -830,27 +830,28 @@ class Export
             return "Invalid User ID";
         }
 
-        print "yyyymmdd\thhmm\tkhz\tcall\t\lsb\tusb\tsec\r\n";
+        print "yyyymmdd\thhmm\tkhz\tcall\tlsb\tusb\tsec\tdx_km\tdx_miles\tgsq\tsp\titu\tqth\r\n";
 
         $sql =  "SELECT\n"
             ."  DATE_FORMAT(`logs`.`date`,'%Y%m%d') AS `date`,\n"
             ."  `logs`.`time`,\n"
             ."  `logs`.`LSB`,\n"
             ."  `logs`.`USB`,\n"
+            ."  `logs`.`sec`,\n"
             ."  `logs`.`dx_km`,\n"
             ."  `logs`.`dx_miles`,\n"
+            ."  `signals`.`khz`,\n"
             ."  `signals`.`call`,\n"
+            ."  `signals`.`GSQ`,\n"
             ."  `signals`.`SP`,\n"
             ."  `signals`.`ITU`,\n"
-            ."  `signals`.`khz`,\n"
-            ."  `signals`.`QTH`,\n"
-            ."  `signals`.`pwr`,\n"
-            ."  `signals`.`GSQ`\n"
+            ."  `signals`.`QTH`\n"
             ."FROM\n"
-            ."  `signals`,\n"
+            ."  `signals`\n"
+            ."INNER JOIN `logs` ON\n"
+            ."  `signals`.`ID` = `logs`.`signalID`\n"
             ."  `logs`\n"
             ."WHERE\n"
-            ."  `signals`.`ID` = `logs`.`signalID` AND\n"
             ."  `listenerID` = \"".addslashes($ID)."\"\n"
             ."ORDER BY\n"
             ."  `logs`.`date`,`logs`.`time`, `signals`.`khz`";
@@ -865,7 +866,13 @@ class Export
                 .$row['call']."\t"
                 .$row['LSB']."\t"
                 .$row['USB']."\t"
-                .$row['sec']."\r\n";
+                .$row['sec']."\t"
+                .$row['dx_km']."\t"
+                .$row['dx_miles']."\t"
+                .$row['GSQ']."\t"
+                .$row['SP']."\t"
+                .$row['ITU']."\t"
+                .$row['QTH']."\r\n";
         }
     }
 
