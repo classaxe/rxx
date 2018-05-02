@@ -812,6 +812,67 @@ class Export
     /**
      * @return string
      */
+    public static function export_raw_log()
+    {
+        global $ID, $mode;
+        if (!$ID) {
+            $path_arr = (explode('?', $_SERVER["REQUEST_URI"]));
+            $path_arr = explode('/', $path_arr[0]);
+            if ($path_arr[count($path_arr)-2]==$mode) {
+                $ID = array_pop($path_arr);
+            }
+        }
+
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
+
+        $sql =  "SELECT ID FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
+        if (!$result =  \Rxx\Database::query($sql)) {
+            return "Invalid User ID";
+        }
+
+        print "yyyymmdd\thhmm\tkhz\tcall\t\lsb\tusb\tsec\r\n";
+
+        $sql =  "SELECT\n"
+            ."  DATE_FORMAT(`logs`.`date`,'%Y%m%d') AS `date`,\n"
+            ."  `logs`.`time`,\n"
+            ."  `logs`.`LSB`,\n"
+            ."  `logs`.`USB`,\n"
+            ."  `logs`.`dx_km`,\n"
+            ."  `logs`.`dx_miles`,\n"
+            ."  `signals`.`call`,\n"
+            ."  `signals`.`SP`,\n"
+            ."  `signals`.`ITU`,\n"
+            ."  `signals`.`khz`,\n"
+            ."  `signals`.`QTH`,\n"
+            ."  `signals`.`pwr`,\n"
+            ."  `signals`.`GSQ`\n"
+            ."FROM\n"
+            ."  `signals`,\n"
+            ."  `logs`\n"
+            ."WHERE\n"
+            ."  `signals`.`ID` = `logs`.`signalID` AND\n"
+            ."  `listenerID` = \"".addslashes($ID)."\"\n"
+            ."ORDER BY\n"
+            ."  `logs`.`date`,`logs`.`time`, `signals`.`khz`";
+        $result =   \Rxx\Database::query($sql);
+
+        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
+            $row =  \Rxx\Database::fetchArray($result, MYSQL_ASSOC);
+            print
+                $row['date']."\t"
+                .$row['time']."\t"
+                .(float)$row['khz']."\t"
+                .$row['call']."\t"
+                .$row['LSB']."\t"
+                .$row['USB']."\t"
+                .$row['sec']."\r\n";
+        }
+    }
+
+
+    /**
+     * @return string
+     */
     public static function export_text_log()
     {
         global $ID, $mode;

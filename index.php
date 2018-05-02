@@ -266,6 +266,9 @@ switch ($mode) {
     case "export_text_signals":
         \Rxx\Tools\Export::export_text_signals();
         break;
+    case "export_raw_log":
+        \Rxx\Tools\Export::export_raw_log();
+        break;
     case "export_text":         // old function may still be called from URLs
     case "export_text_log":
         \Rxx\Tools\Export::export_text_log();

@@ -1132,6 +1132,7 @@ class Listener
         ."              </tr>\n"
         ."              <tr>\n"
         ."                <td class='downloadTableContent' valign='top'><BR>Click to access logs in these formats:<ul>\n"
+        ."<li><a href='".system_URL."/export_raw_log/".$ID."' target='_blank'>Raw Text listing showing all logs</a></li>\n"
         ."<li><a href='".system_URL."/export_text_log/".$ID."' target='_blank'>Text listing showing all logs</a></li>\n"
         ."<li><a href='".system_URL."/export_text_signals/".$ID."' target='_blank'>Text listing showing all signals</a></li>\n"
         ."<li><a href='".system_URL."/export_kml_signals/".$ID."'>Google Maps KML format showing all signals</a></li>\n"
