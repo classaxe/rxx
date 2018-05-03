@@ -227,7 +227,7 @@ a.hover:hover
 .listTable thead th i
 {
     COLOR: #ffff00;
-s}
+}
 .listTable thead th:hover
 {
     BACKGROUND-COLOR: #808080;
@@ -387,13 +387,13 @@ img.nav
 {
     COLOR: #000000;
     font-size: 10pt;
-    FONT-FAMILY: courier-new,monospace
+    FONT-FAMILY: "Courier New", Courier, monospace
 }
 .fixed_heading
 {
     COLOR: #ffffff;
     font-size: 10pt;
-    FONT-FAMILY: courier-new,monospace;
+    FONT-FAMILY: "Courier New", Courier, monospace;
     BACKGROUND-COLOR: #999999
 }
 .lookupOn
@@ -480,7 +480,7 @@ img.nav
     font-weight: bold;
 }
 
-pre {margin: 0px; font-family: monospace;}
+pre {margin: 0px; font-family: "Courier New", Courier, monospace;}
 .center table { margin-left: auto; margin-right: auto; text-align: left;}
 .center th { text-align: center; }
 h1 {font-size: 150%;}
@@ -495,21 +495,155 @@ img {float: right; border: 0px;}
 #phpinfo h1, #phpinfo h2 { display: block; width: 800px; margin: auto; text-align: center; }
 
 
-.uploadParse th   { font-family: monospace; }
-.uploadParse td   { font-family: monospace; color:#666; }
-.uploadParse td a { font-family: monospace; }
+hr {
+    height: 2px;
+}
+
+h1 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 21px;
+    display:inline;
+    font-weight: normal;
+}
+
+.txtHighlight {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+.titleTable {
+    border-style: solid;
+    border-width: 3px;
+}
+.navOff {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    text-align: center;
+}
+.navOn {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.navSelected {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.navOff_box {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+}
+.navOn_box {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.navSelected_box {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.tabOff {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-top-style: solid;
+    text-align: center;
+}
+.tabOn {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-top-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.tabSelected {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-top-style: solid;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}
+.tableForm {
+    border-width: 1px;
+    border-style: solid;
+    border-collapse: collapse;
+}
+.rowForm {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+}
+.formFixed {
+    font-family:"Courier New", Courier, monospace;
+    font-size: 8pt;
+    border-width: 1px;
+    border-style: solid;
+    background-color: #F5F5FF;
+}
+.formField {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.uploadParse th   { font-family: "Courier New", Courier, monospace; }
+.uploadParse td   { font-family: "Courier New", Courier, monospace; color:#666; }
+.uploadParse td a { font-family: "Courier New", Courier, monospace; }
 .uploadParse .num       { text-align: right; }
 .uploadParse .center    { text-align: center; }
 
-.uploadParse .KHz       { width: 37px; }
-.uploadParse .ID        { width: 32px; }
-.uploadParse .ITU       { width: 28px; }
-.uploadParse .SP        { width: 20px; }
-.uploadParse .GSQ       { width: 40px; }
-.uploadParse .QTH       { width: 162px; }
-.uploadParse .HeardIn   { width: 380px; min-width: 380px; }
-.uploadParse .km        { width: 40px; }
-.uploadParse .mi        { width: 40px; }
+.uploadParse select     { width: 826px; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+
+.uploadParse .KHz       { width: 42px;  max-width: 42px; }
+.uploadParse .ID        { width: 38px;  max-width: 38px; }
+.uploadParse .ITU       { width: 32px;  max-width: 32px; }
+.uploadParse .SP        { width: 24px;  max-width: 24px; }
+.uploadParse .GSQ       { width: 46px;  max-width: 46px; }
+.uploadParse .QTH       { width: 182px; max-width: 182px; }
+.uploadParse .DT        { width: 24px;  max-width: 24px; }
+.uploadParse .km        { width: 46px;  max-width: 46px; }
+.uploadParse .mi        { width: 46px;  max-width: 46px; }
+.uploadParse .HeardIn   { width: 300px; min-width: 300px; max-width: 300px;}
+
 .uploadParse .Combined  { width: 798px; }
 
 .uploadParse .YYYYMMDD  { width: 50px; }
@@ -518,5 +652,6 @@ img {float: right; border: 0px;}
 .uploadParse .USB       { width: 30px; }
 .uploadParse .Sec       { width: 30px; }
 .uploadParse .Fmt       { width: 45px; }
-.uploadParse .DT        { width: 20px; cursor:pointer; }
 .uploadParse .New       { width: 30px; }
+
+

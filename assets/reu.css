@@ -3,167 +3,75 @@ body {	background-color: #fff8f8;
 hr	{
 	background-color: #ff3333;
 	color: #ff3333;
-	height: 2px;
 }
 h1 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 21px;
 	color: #ff3333;
-	display:inline;
-	font-weight: normal;
 }
 .txtHighlight {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #296D9D;
 }
 .titleTable {
 	border-color: #ff3333;
-	border-style: solid;
-	border-width: 3px;
 	background-color: #ffd0d0;
 }
 
 .navOff {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #333333;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-bottom-style: solid;
-	text-align: center;
 }
 .navOn {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #666666;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-bottom-style: solid;
 	background-color: #ffff00;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .navSelected {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #FFFFFF;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-bottom-style: solid;
 	background-color: #ff3333;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .navOff_box {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #333333;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-style: solid;
-	text-align: center;
 }
 .navOn_box {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #666666;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-style: solid;
 	background-color: #ffff00;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .navSelected_box {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #FFFFFF;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-style: solid;
 	background-color: #ff3333;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .tabOff {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #666666;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-top-style: solid;
-	text-align: center;
 }
 .tabOn {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #666666;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-top-style: solid;
 	background-color: #ffff00;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .tabSelected {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #FFFFFF;
 	border-color: #ff3333;
-	border-width: 1px;
-	border-right-style: solid;
-	border-left-style: solid;
-	border-top-style: solid;
 	background-color: #ff3333;
-	text-align: center;
-	cursor: pointer;
-	cursor: hand;
 }
 .tableForm {
 	border-color: #FF3333;
-	border-width: 1px;
-	border-style: solid;
-	border-collapse: collapse;
 }
 .rowForm {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	font-weight: normal;
 	color: #000000;
 	background-color: #FFF1F1;
 }
 .formFixed {
-	font-family:	monospace;
-	font-size: 8pt;
 	color: #333333;
 	border-color: #FF3333;
-	border-width: 1px;
-	border-style: solid;
 	background-color: #F5F5FF;
 }
 .formField {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #333333;
 	border-color: #FF3333;
-	border-width: 1px;
-	border-style: solid;
 	background-color: #ffffff;
 }
 

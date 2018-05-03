@@ -53,7 +53,35 @@ class LogUploader
         'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm',
         'D',   'DD',  'M',    'MM',   'MMM',   'YY',    'YYYY'
     );
-   
+
+    protected function checkLogDateTokens()
+    {
+        foreach (static::$YYYYMMDDTokens as $token) {
+            if (isset($this->tokens[$token])) {
+                $this->logHas['YYYY'] = true;
+                $this->logHas['MM'] =   true;
+                $this->logHas['DD'] =   true;
+                return;
+            }
+        }
+        foreach (static::$MMDDTokens as $token) {
+            if (isset($this->tokens[$token])) {
+                $this->logHas['MM'] =   true;
+                $this->logHas['DD'] =   true;
+                break;
+            }
+        }
+        if (isset($this->tokens["YYYY"]) || isset($this->tokens["YY"])) {
+            $this->logHas['YYYY'] = true;
+        }
+        if (isset($this->tokens["MMM"]) || isset($this->tokens["MM"]) || isset($this->tokens["M"])) {
+            $this->logHas['MM'] =   true;
+        }
+        if (isset($this->tokens["DD"]) || isset($this->tokens["D"])) {
+            $this->logHas['DD'] =   true;
+        }
+    }
+
     public function draw()
     {
         global $mode, $submode, $log_format, $log_entries;
@@ -141,7 +169,7 @@ class LogUploader
         if (($submode=="" || $submode=="parse_log") && $log_format_errors!="") {
             $this->html.=
                  "<br><span class='p'><b>Log Format Errors</b></span>\n"
-                ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0' width='100%'>\n"
+                ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
                 ."  <tr class='downloadTableHeadings'>\n"
                 ."    <th colspan='2'>Problems Seen</th>\n"
                 ."  </tr>\n"
@@ -445,30 +473,17 @@ class LogUploader
                     }
 
                     if ($ID && $YYYYMMDD) {
-                        $sta_sel =    "";
                         if ($ID && $YYYYMMDD) {
                             $swing = ($this->KHZ>1740 ? swing_LF : swing_HF);
-                            $sql =
-                                 "SELECT\n"
-                                ."  *\n"
-                                ."FROM\n"
-                                ."  `signals`\n"
-                                ."WHERE\n"
-                                .($this->KHZ ?
-                                    "  `khz` >= $this->KHZ-".$swing." AND `khz` <= $this->KHZ+".$swing." AND\n"
-                                 :
-                                    ""
-                                 )
-                                ." `call` = \"$ID\"";
-                            $result = @\Rxx\Database::query($sql);
-                            if (\Rxx\Database::getError()) {
+                            $options = $this->getSignalCandidates($ID, $this->KHZ, $swing);
+                            if (false === $options) {
                                 $this->html.= "Problem looking up station - frequency was $this->KHZ";
                             }
-                            if ($result && \Rxx\Database::numRows($result)) {
+                            if ($options) {
                                 $total_loggings++;
-                                if (\Rxx\Database::numRows($result) == 1) {
+                                if (count($options) == 1) {
                                     $this->html.=    "<tr class='rownormal'>\n";
-                                    $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+                                    $row =    $options[0];
                                     $bgcolor =    "";
                                     if (!$row["active"]) {
                                         $bgcolor =
@@ -505,7 +520,7 @@ class LogUploader
                                          "  <td class='KHz'>"
                                         ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
                                         .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
-                                            "<font color='#FF8C00'><b>".(float)$row['khz']."</b></font>"
+                                            "<span style='color:#FF8C00'><b>".(float)$row['khz']."</b></span>"
                                          :
                                             (float)$row['khz']
                                         )
@@ -554,7 +569,7 @@ class LogUploader
                                                 $this->listener->record['ITU']
                                             )
                                         )===false ?
-                                           "<font color='#008000'><b>".$row['heard_in']."</b></font>"
+                                           "<span style='color:#008000'><b>".$row['heard_in']."</b></span>"
                                           :
                                             \Rxx\Rxx::highlight(
                                                 $row['heard_in'],
@@ -570,18 +585,11 @@ class LogUploader
                                     $this->html.=
                                          "<tr bgcolor='#ffe0a0'>\n"
                                         ."  <td colspan='10' class='Combined'>"
-                                        ."<select name='ID[]' class='formfixed'"
-                                        ." style='width:844px;overflow:hidden;text-overflow:ellipsis'>\n";
+                                        ."<select name='ID[]' class='formfixed'>\n";
                                     $defaultChosen =    false;
                                     $selected =         false;
-                                    for ($j=0; $j<\Rxx\Database::numRows($result); $j++) {
-                                        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-                                        $dx =   \Rxx\Rxx::get_dx(
-                                            $this->listener->record['lat'],
-                                            $this->listener->record['lat'],
-                                            $row["lat"],
-                                            $row["lon"]
-                                        );
+                                    for ($j=0; $j<count($options); $j++) {
+                                        $row =  $options[$j];
                                         if (!$defaultChosen && $row["active"]=="1") {
                                             $selected = true;
                                             $defaultChosen =  true;
@@ -594,8 +602,8 @@ class LogUploader
                                             .$row["GSQ"]." | "
                                             .$row["QTH"]." | "
                                             .($this->listener->isDaytime($this->hhmm) ? 'Y' : ' ')." | "
-                                            .($dx[1]!=='' ? number_format($dx[1])."km" : "  ")." | "
-                                            .($dx[0]!=='' ? number_format($dx[0])."mi" : "  ")." | "
+                                            .($row['dx_km']!=='' ? number_format($row['dx_km'])."km" : "  ")." | "
+                                            .($row['dx_miles']!=='' ? number_format($row['dx_miles'])."mi" : "  ")." | "
                                             .$row["heard_in"];
                                         $label =
                                              \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
@@ -611,13 +619,13 @@ class LogUploader
                                             ."|"
                                             .($this->listener->isDaytime($this->hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
 
-                                            .\Rxx\Rxx::lead_nbsp($dx[1]!=='' ? number_format($dx[1]) : "", 6)."|"
-                                            .\Rxx\Rxx::lead_nbsp($dx[0]!=='' ? number_format($dx[0]) : "", 6)."|"
+                                            .\Rxx\Rxx::lead_nbsp($row['dx_km']!=='' ? number_format($row['dx_km']) : "", 6)."|"
+                                            .\Rxx\Rxx::lead_nbsp($row['dx_miles']!=='' ? number_format($row['dx_miles']) : "", 6)."|"
                                             .$row["heard_in"];
 
                                         $this->html.=
                                              "<option title='".$title."'"
-                                            .($row["active"]=="0" ? " style='background-color: #d0d0d0'" : "")
+                                            .($row["active"]=="0" ? " style='background-color: #d0d0d0;'" : "")
                                             ." value='".$row["ID"]."'"
                                             .($selected ? " selected='selected'" : "")
                                             .">"
@@ -635,25 +643,25 @@ class LogUploader
                                 if (strlen($YYYYMMDD)!=8) {
                                     $date_fail = true;
                                     $this->html.=
-                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                        "<span style='color:red; text-decoration: line-through;'><b>$YYYYMMDD</b></span>";
                                 } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
                                     $date_fail = true;
                                     $this->html.=
-                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
                                 } else {
                                     $this->html.=
-                                        ($YYYY<2005 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                        ($YYYY<2005 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
                                         $this->html.=
-                                            "<font color='red'><b><strike>$MM</strike></b></font>";
+                                            "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
                                     } else {
                                         $this->html.=    $MM;
                                     }
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
                                         $this->html.=
-                                            "<font color='red'><b><strike>$DD</strike></b></font>";
+                                            "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
                                     } else {
                                         $this->html.=    $DD;
                                     }
@@ -665,7 +673,7 @@ class LogUploader
                                     substr($this->hhmm, 0, 2)>23 || substr($this->hhmm, 2, 2)>59
                                 ) {
                                     $date_fail = true;
-                                    $this->html.=    "<font color='red'><b><strike>$this->hhmm</strike></b></font>";
+                                    $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$this->hhmm</b></span>";
                                 } else {
                                     $this->html.=    $this->hhmm;
                                 }
@@ -675,7 +683,7 @@ class LogUploader
                                     ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
                                     ."<input type='hidden' name='LSB[]' value='$LSB'>"
                                     .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
-                                        "<font color='#FF8C00'><b>$LSB_approx$LSB</b></font>"
+                                        "<span style='color:#FF8C00'><b>$LSB_approx$LSB</b></span>"
                                     :
                                         "$LSB_approx$LSB"
                                     )
@@ -684,7 +692,7 @@ class LogUploader
                                     ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
                                     ."<input type='hidden' name='USB[]' value='$USB'>"
                                     .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
-                                        "<font color='#FF8C00'><b>$USB_approx$USB</b></font>"
+                                        "<span style='color:#FF8C00'><b>$USB_approx$USB</b></span>"
                                      :
                                         "$USB_approx$USB"
                                     )
@@ -708,7 +716,7 @@ class LogUploader
                                      "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
                                     ."  <td>"
                                     .(((float)$this->KHZ<198 || (float)$this->KHZ > 530) ?
-                                        "<font color='#FF8C00'><b>".(float)$this->KHZ."</b></font>"
+                                        "<span style='color:#FF8C00'><b>".(float)$this->KHZ."</b></span>"
                                      :
                                         (float)$this->KHZ
                                     )
@@ -728,23 +736,23 @@ class LogUploader
                                 if (strlen($YYYYMMDD)!=8) {
                                     $date_fail = true;
                                     $this->html.=
-                                        "<font color='red'><b><strike>$YYYYMMDD</strike></i></b></font>";
+                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</i></b></span>";
                                 } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
                                     $date_fail = true;
                                     $this->html.=
-                                        "<font color='red'><b><strike>$YYYYMMDD</strike></b></font>";
+                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
                                 } else {
                                     $this->html.=
-                                        ($YYYY<2003 ? "<font color='#FF8C00'><b>$YYYY</b></font>" : "$YYYY");
+                                        ($YYYY<2003 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
-                                        $this->html.=    "<font color='red'><b><strike>$MM</strike></b></font>";
+                                        $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
                                     } else {
                                         $this->html.=    $MM;
                                     }
                                     if (!checkdate($MM, $DD, $YYYY)) {
                                         $date_fail = true;
-                                        $this->html.=    "<font color='red'><b><strike>$DD</strike></b></font>";
+                                        $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
                                     } else {
                                         $this->html.=    $DD;
                                     }
@@ -794,9 +802,9 @@ class LogUploader
                          "<p><b>Issues:</b><br>\n"
                         ."<small>There "
                         .(count($unresolved_signals)!=1 ?
-                            "are <b><font color='red'>".count($unresolved_signals)." unresolved signals</font></b>"
+                            "are <b><span style='color:red'>".count($unresolved_signals)." unresolved signals</span></b>"
                          :
-                            "<b><font color='red'>is one</font></b> unresolved signal"
+                            "<b><span style='color:red'>is one</span></b> unresolved signal"
                         )
                         ." contained in the log</b>.</small><br>"
                         ."<textarea rows='10' cols='90' style='width:1040px'>"
@@ -816,8 +824,8 @@ class LogUploader
                      "<p><a name='next'></a><b>Next Steps...</b></p>\n"
                     ."<ul>\n"
                     ."<li>Please review the results shown above, especially warnings"
-                    ." (<font color='#FF8C00'><b>orange</b></font>) and serious errors"
-                    ." (<font color='red'><b>red</b></font>).</li>\n"
+                    ." (<span style='color:#FF8C00'><b>orange</b></span>) and serious errors"
+                    ." (<span style='color:red'><b>red</b></span>).</li>\n"
                     ."<li>Serious errors (invalid dates and unrecognised signals) prevent the"
                     ." <b>Submit Log</b> button from appearing.</li>"
                     ."<li>If LSB or USB appear to be too high or low, click on the link shown for the signal ID"
@@ -932,6 +940,27 @@ class LogUploader
         return $this->html;
     }
 
+    private function drawInputScreen()
+    {
+        $this->html.=
+            "<h1>Add Log > Parse Data</h1><br>"
+            ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
+            ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
+            ."  <tr>\n"
+            ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
+            ."  </tr>\n"
+            ."  <tr class='rownormal'>\n"
+            ."    <th align='left'>Listener</th>"
+            ."    <td colspan='3'>"
+            ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
+            ." style='font-family: monospace;'>\n"
+            .\Rxx\Rxx::get_listener_options_list("1", $this->listener->getID(), "Select Listener")
+            ."</select>\n"
+            ."</td>\n"
+            ."  </tr>\n"
+            ."</table>\n";
+    }
+
     private function drawListenerDetails()
     {
         $this->html.=
@@ -1022,34 +1051,6 @@ class LogUploader
             ."    <td>".$this->listener->record["count_logs"]."</td>\n"
             ."  </tr>\n"
             ."</table>\n";
-    }
-
-    protected function checkLogDateTokens()
-    {
-        foreach (static::$YYYYMMDDTokens as $token) {
-            if (isset($this->tokens[$token])) {
-                $this->logHas['YYYY'] = true;
-                $this->logHas['MM'] =   true;
-                $this->logHas['DD'] =   true;
-                return;
-            }
-        }
-        foreach (static::$MMDDTokens as $token) {
-            if (isset($this->tokens[$token])) {
-                $this->logHas['MM'] =   true;
-                $this->logHas['DD'] =   true;
-                break;
-            }
-        }
-        if (isset($this->tokens["YYYY"]) || isset($this->tokens["YY"])) {
-            $this->logHas['YYYY'] = true;
-        }
-        if (isset($this->tokens["MMM"]) || isset($this->tokens["MM"]) || isset($this->tokens["M"])) {
-            $this->logHas['MM'] =   true;
-        }
-        if (isset($this->tokens["DD"]) || isset($this->tokens["D"])) {
-            $this->logHas['DD'] =   true;
-        }
     }
 
     private function extractDate()
@@ -1224,25 +1225,135 @@ class LogUploader
         $this->listener->load();
     }
 
-    private function drawInputScreen()
+    private function getSignalCandidates($ID, $frequency, $swing)
     {
-        $this->html.=
-             "<h1>Add Log > Parse Data</h1><br>"
-            ."<img src='".BASE_PATH."assets/spacer.gif' height='4' width='1' alt=''>"
-            ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
-            ."  <tr>\n"
-            ."    <th colspan='4' class='downloadTableHeadings_nosort'>Listener Details</th>\n"
-            ."  </tr>\n"
-            ."  <tr class='rownormal'>\n"
-            ."    <th align='left'>Listener</th>"
-            ."    <td colspan='3'>"
-            ."<select name='listenerID' class='formfield' onchange='document.form.submit()'"
-            ." style='font-family: monospace;'>\n"
-            .\Rxx\Rxx::get_listener_options_list("1", $this->listener->getID(), "Select Listener")
-            ."</select>\n"
-            ."</td>\n"
-            ."  </tr>\n"
-            ."</table>\n";
+        $sql =
+            "SELECT\n"
+            . "  *\n"
+            . "FROM\n"
+            . "  `signals`\n"
+            . "WHERE\n"
+            . ($frequency ?
+                "  `khz` >= $frequency-" . $swing . " AND `khz` <= $frequency+" . $swing . " AND\n"
+                :
+                ""
+            )
+            . " `call` = \"$ID\"";
+        $result = @\Rxx\Database::query($sql);
+        if (\Rxx\Database::getError()) {
+            return false;
+        }
+        $options = array();
+        for ($j = 0; $j < \Rxx\Database::numRows($result); $j++) {
+            $row = \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+            list($row['dx_miles'], $row['dx_km']) = \Rxx\Rxx::get_dx(
+                $this->listener->record['lat'],
+                $this->listener->record['lon'],
+                $row["lat"],
+                $row["lon"]
+            );
+            $options[] = $row;
+        }
+        usort($options, function($a, $b) {if($a['dx_km']===$b['dx_km']){return 0; }; return ($a['dx_km'] > $b['dx_km'] ? 1 : -1); });
+        return $options;
+    }
+
+    private function initialiseDateParser()
+    {
+        static $dateParsers = array(
+            'DM' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,1,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.M' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDM' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).substr($t,0,2)',
+            'DD.M' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,3,1)).substr($t,0,2)',
+            'DMM' =>         '$Y.substr($t,1,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.MM' =>        '$Y.substr($t,2,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDMM' =>        '$Y.substr($t,2,2).substr($t,0,2)',
+            'DD.MM' =>       '$Y.substr($t,3,2).substr($t,0,2)',
+            'DMMM' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,1,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'D.MMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
+            'DDMMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'MD' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,1,1))',
+            'M.D' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
+            'MDD' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,1,2)',
+            'M.DD' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,2,2)',
+            'MMD' =>         '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
+            'MM.D' =>        '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
+            'MMDD' =>        '$Y.substr($t,0,2).substr($t,2,2)',
+            'MM.DD' =>       '$Y.substr($t,0,2).substr($t,3,2)',
+            'MMMD' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
+            'MMM.D' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,4,1))',
+            'MMMDD' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'DDMMYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,2,2).substr($t,0,2)',
+            'DD.MM.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,3,2).substr($t,0,2)',
+            'DDYYMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,4,2).substr($t,0,2)',
+            'DD.YY.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,6,2).substr($t,0,2)',
+            'MMDDYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,0,2).substr($t,2,2)',
+            'MM.DD.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,0,2).substr($t,3,2)',
+            'MMYYDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,0,2).substr($t,4,2)',
+            'MM.YY.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,0,2).substr($t,6,2)',
+            'YYDDMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,4,2).substr($t,2,2)',
+            'YY.DD.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,6,2).substr($t,3,2)',
+            'YYMMDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,2,2).substr($t,4,2)',
+            'YY.MM.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,3,2).substr($t,6,2)',
+            'DDMMMYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'DDYYMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,0,2)',
+            'DD.YY.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
+            'MMMDDYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'MMMYYDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,5,2)',
+            'MMM.YY.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
+            'YYDDMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,2,2)',
+            'YY.DD.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,3,2)',
+            'YYMMMDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,5,2)',
+            'YY.MMM.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,7,2)',
+            'DDMMYYYY' =>    'substr($t,4,4).substr($t,2,2).substr($t,0,2)',
+            'DD.MM.YYYY' =>  'substr($t,6,4).substr($t,3,2).substr($t,0,2)',
+            'DDYYYYMM' =>    'substr($t,2,4).substr($t,6,2).substr($t,0,2)',
+            'DD.YYYY.MM' =>  'substr($t,3,4).substr($t,8,2).substr($t,0,2)',
+            'MMDDYYYY' =>    'substr($t,4,4).substr($t,0,2).substr($t,2,2)',
+            'MM.DD.YYYY' =>  'substr($t,6,4).substr($t,0,2).substr($t,3,2)',
+            'MMYYYYDD' =>    'substr($t,2,4).substr($t,0,2).substr($t,6,2)',
+            'MM.YYYY.DD' =>  'substr($t,3,4).substr($t,0,2).substr($t,8,2)',
+            'YYYYDDMM' =>    'substr($t,0,4).substr($t,6,2).substr($t,4,2)',
+            'YYYY.DD.MM' =>  'substr($t,0,4).substr($t,8,2).substr($t,5,2)',
+            'YYYYMMDD' =>    'substr($t,0,4).substr($t,4,2).substr($t,6,2)',
+            'YYYY.MM.DD' =>  'substr($t,0,4).substr($t,5,2).substr($t,8,2)',
+            'DDMMMYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
+            'DD.MMM.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
+            'DDYYYYMMM' =>   'substr($t,2,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
+            'DD.YYYY.MMM' => 'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,0,2)',
+            'MMMDDYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
+            'MMM.DD.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
+            'MMMYYYYDD' =>   'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
+            'MMM.YYYY.DD' => 'substr($t,4,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,9,2)',
+            'YYYYDDMMM' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,4,2)',
+            'YYYY.DD.MMM' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,5,2)',
+            'YYYYMMMDD' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,7,2)',
+            'YYYY.MMM.DD' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,5,3)).substr($t,9,2)'
+        );
+        foreach ($dateParsers as $key => $code) {
+            if (isset($this->tokens[$key])) {
+                eval(
+                    "function parseDate(\$a, \$b, \$Y, \$M, \$D){\n"
+                    ."    \$t = trim(substr(\$b, \$a['$key'][0]));\n"
+                    ."     return $code;\n"
+                    ."}\n"
+                );
+            }
+        }
+    }
+
+    private function loadListener()
+    {
+        global $log_format;
+        $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
+        if ($this->listener->getID()) {
+            $this->listener->load();
+            $log_format =    $this->listener->record["log_format"];
+        }
     }
 
     private function logSubmit()
@@ -1253,7 +1364,7 @@ class LogUploader
         set_time_limit(600);    // Extend maximum execution time to 10 mins
         if ($this->debug) {
             $this->html.=
-                 "1: Logged at least once from this state<br>"
+                "1: Logged at least once from this state<br>"
                 ."2: No listener yet listed in this state<br>"
                 ."3: Listener listed, but this is not a duplicate logging so add a new one<br>"
                 ."4: signal never logged in this state<br>";
@@ -1365,103 +1476,5 @@ class LogUploader
     private function setup()
     {
         $this->loadListener();
-    }
-
-    private function initialiseDateParser()
-    {
-        static $dateParsers = array(
-            'DM' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,1,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'D.M' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'DDM' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,2,1)).substr($t,0,2)',
-            'DD.M' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,3,1)).substr($t,0,2)',
-            'DMM' =>         '$Y.substr($t,1,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'D.MM' =>        '$Y.substr($t,2,2).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'DDMM' =>        '$Y.substr($t,2,2).substr($t,0,2)',
-            'DD.MM' =>       '$Y.substr($t,3,2).substr($t,0,2)',
-            'DMMM' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,1,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'D.MMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).\Rxx\Rxx::D_to_DD(substr($t,0,1))',
-            'DDMMM' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
-            'DD.MMM' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
-            'MD' =>          '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,1,1))',
-            'M.D' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
-            'MDD' =>         '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,1,2)',
-            'M.DD' =>        '$Y.\Rxx\Rxx::M_to_MM(substr($t,0,1)).substr($t,2,2)',
-            'MMD' =>         '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,2,1))',
-            'MM.D' =>        '$Y.substr($t,0,2).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
-            'MMDD' =>        '$Y.substr($t,0,2).substr($t,2,2)',
-            'MM.DD' =>       '$Y.substr($t,0,2).substr($t,3,2)',
-            'MMMD' =>        '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,3,1))',
-            'MMM.D' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).\Rxx\Rxx::D_to_DD(substr($t,4,1))',
-            'MMMDD' =>       '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
-            'MMM.DD' =>      '$Y.\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
-            'DDMMYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,2,2).substr($t,0,2)',
-            'DD.MM.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,3,2).substr($t,0,2)',
-            'DDYYMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,4,2).substr($t,0,2)',
-            'DD.YY.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,6,2).substr($t,0,2)',
-            'MMDDYY' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).substr($t,0,2).substr($t,2,2)',
-            'MM.DD.YY' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,6,2)).substr($t,0,2).substr($t,3,2)',
-            'MMYYDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).substr($t,0,2).substr($t,4,2)',
-            'MM.YY.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).substr($t,0,2).substr($t,6,2)',
-            'YYDDMM' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,4,2).substr($t,2,2)',
-            'YY.DD.MM' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,6,2).substr($t,3,2)',
-            'YYMMDD' =>      '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,2,2).substr($t,4,2)',
-            'YY.MM.DD' =>    '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).substr($t,3,2).substr($t,6,2)',
-            'DDMMMYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
-            'DD.MMM.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
-            'DDYYMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,2,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,0,2)',
-            'DD.YY.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
-            'MMMDDYY' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,5,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
-            'MMM.DD.YY' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,7,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
-            'MMMYYDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,3,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,5,2)',
-            'MMM.YY.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,4,2)).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
-            'YYDDMMM' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,2,2)',
-            'YY.DD.MMM' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,3,2)',
-            'YYMMMDD' =>     '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,5,2)',
-            'YY.MMM.DD' =>   '\Rxx\Rxx::YY_to_YYYY(substr($t,0,2)).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,7,2)',
-            'DDMMYYYY' =>    'substr($t,4,4).substr($t,2,2).substr($t,0,2)',
-            'DD.MM.YYYY' =>  'substr($t,6,4).substr($t,3,2).substr($t,0,2)',
-            'DDYYYYMM' =>    'substr($t,2,4).substr($t,6,2).substr($t,0,2)',
-            'DD.YYYY.MM' =>  'substr($t,3,4).substr($t,8,2).substr($t,0,2)',
-            'MMDDYYYY' =>    'substr($t,4,4).substr($t,0,2).substr($t,2,2)',
-            'MM.DD.YYYY' =>  'substr($t,6,4).substr($t,0,2).substr($t,3,2)',
-            'MMYYYYDD' =>    'substr($t,2,4).substr($t,0,2).substr($t,6,2)',
-            'MM.YYYY.DD' =>  'substr($t,3,4).substr($t,0,2).substr($t,8,2)',
-            'YYYYDDMM' =>    'substr($t,0,4).substr($t,6,2).substr($t,4,2)',
-            'YYYY.DD.MM' =>  'substr($t,0,4).substr($t,8,2).substr($t,5,2)',
-            'YYYYMMDD' =>    'substr($t,0,4).substr($t,4,2).substr($t,6,2)',
-            'YYYY.MM.DD' =>  'substr($t,0,4).substr($t,5,2).substr($t,8,2)',
-            'DDMMMYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,2,3)).substr($t,0,2)',
-            'DD.MMM.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,3,3)).substr($t,0,2)',
-            'DDYYYYMMM' =>   'substr($t,2,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,0,2)',
-            'DD.YYYY.MMM' => 'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,0,2)',
-            'MMMDDYYYY' =>   'substr($t,5,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,3,2)',
-            'MMM.DD.YYYY' => 'substr($t,7,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,4,2)',
-            'MMMYYYYDD' =>   'substr($t,3,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,7,2)',
-            'MMM.YYYY.DD' => 'substr($t,4,4).\Rxx\Rxx::MMM_to_MM(substr($t,0,3)).substr($t,9,2)',
-            'YYYYDDMMM' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,6,3)).substr($t,4,2)',
-            'YYYY.DD.MMM' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,8,3)).substr($t,5,2)',
-            'YYYYMMMDD' =>   'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,4,3)).substr($t,7,2)',
-            'YYYY.MMM.DD' => 'substr($t,0,4).\Rxx\Rxx::MMM_to_MM(substr($t,5,3)).substr($t,9,2)'
-        );
-        foreach ($dateParsers as $key => $code) {
-            if (isset($this->tokens[$key])) {
-                eval(
-                    "function parseDate(\$a, \$b, \$Y, \$M, \$D){\n"
-                    ."    \$t = trim(substr(\$b, \$a['$key'][0]));\n"
-                    ."     return $code;\n"
-                    ."}\n"
-                );
-            }
-        }
-    }
-
-    private function loadListener()
-    {
-        global $log_format;
-        $this->listener = new \Rxx\Listener(\Rxx\Rxx::get_var('listenerID'));
-        if ($this->listener->getID()) {
-            $this->listener->load();
-            $log_format =    $this->listener->record["log_format"];
-        }
     }
 }
