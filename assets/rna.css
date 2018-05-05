@@ -1,5 +1,4 @@
-body {	background-color: #f8f8ff;
-}
+body {	background-color: #f8f8ff; }
 hr	{
 	background-color: #3333ff;
 	color: #3333ff;
@@ -14,7 +13,6 @@ h1 {
 	border-color: #3333ff;
 	background-color: #d0d0ff;
 }
-
 .navOff {
 	color: #333333;
 	border-color: #3333ff;
@@ -62,6 +60,7 @@ h1 {
 }
 .rowForm {
 	color: #000000;
+	background-color: #F1F1FF;
 }
 .formFixed {
 	color: #333333;
