@@ -634,8 +634,8 @@ h1 {
 
 .uploadParse select     { width: 826px; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
 
-.uploadParse .KHz       { width: 42px;  max-width: 42px; }
-.uploadParse .ID        { width: 38px;  max-width: 38px; }
+.uploadParse .KHz       { width: 42px;  max-width: 48px; }
+.uploadParse .ID        { width: 38px;  max-width: 70px; }
 .uploadParse .ITU       { width: 32px;  max-width: 32px; }
 .uploadParse .SP        { width: 24px;  max-width: 24px; }
 .uploadParse .GSQ       { width: 46px;  max-width: 46px; }
