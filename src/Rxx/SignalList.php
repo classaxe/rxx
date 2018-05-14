@@ -48,6 +48,7 @@ class SignalList
     protected $type_NAVTEX;
     protected $type_HAMBCN;
     protected $type_OTHER;
+    protected $type_ALL;
 
     protected $listeners_list_filter;
     protected $offsets;
@@ -351,21 +352,22 @@ class SignalList
     private function drawControlType()
     {
         $types = array(
-            array(DGPS,     'type_DGPS',    'DGPS',     14),
-            array(DSC,      'type_DSC',     'DSC',      13),
-            array(HAMBCN,   'type_HAMBCN',  'Ham',      13),
-            array(NAVTEX,   'type_NAVTEX',  'NAVTEX',   19),
-            array(NDB,      'type_NDB',     'NDB',      13),
-            array(TIME,     'type_TIME',    'Time',     14),
-            array(OTHER,    'type_OTHER',   'Other',    14)
-
+            array(DGPS,     'type_DGPS',    'DGPS',     13),
+            array(DSC,      'type_DSC',     'DSC',      11),
+            array(HAMBCN,   'type_HAMBCN',  'Ham',      12),
+            array(NAVTEX,   'type_NAVTEX',  'Navtex',   15),
+            array(NDB,      'type_NDB',     'NDB',      11),
+            array(TIME,     'type_TIME',    'Time',     13),
+            array(OTHER,    'type_OTHER',   'Other',    13),
+            array(ALL,      'type_ALL',     '(All)',    12)
         );
         $html = '';
         foreach ($types as $type) {
             $html.=
                  "<label style='width:".$type[3]."%;' class='".strToLower($type[1])."'>"
-                ."<input type='checkbox' name='".$type[1]."' value='1'"
+                ."<input type='checkbox' style='vertical-align: middle' name='".$type[1]."' value='1'"
                 .($this->{$type[1]} ? " checked='checked'" : "")
+                .('type_ALL' == $type[1] ? " onchange=\"set_signal_list_types(document.form, this.checked)\"" : "")
                 .">"
                 .$type[2]
                 ."</label>";
@@ -2208,6 +2210,8 @@ class SignalList
         $this->type_NAVTEX =            Rxx::get_var('type_NAVTEX');
         $this->type_HAMBCN =            Rxx::get_var('type_HAMBCN');
         $this->type_OTHER =             Rxx::get_var('type_OTHER');
+        $this->type_ALL =
+            ($this->type_NDB && $this->type_TIME && $this->type_DGPS && $this->type_DSC && $this->type_NAVTEX && $this->type_HAMBCN && $this->type_OTHER);
     }
 
     private function setupTweakVars()

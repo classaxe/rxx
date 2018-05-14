@@ -78,6 +78,7 @@ define("NAVTEX", 3);
 define("HAMBCN", 4);
 define("OTHER", 5);
 define("DSC", 6);
+define("ALL", 99);
 
 define("swing_LF", 0.6);    // How much signals may be off frequency before being considered wrong
 define("swing_HF", 1.5);    // LF is enough to pull signals such as 414 RPB on to correct frequency

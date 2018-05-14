@@ -404,15 +404,16 @@ img.nav
 {
 }
 
-.type_inactive, tr.inactive td { background-color: #d0d0d0; }
-.type_ndb,      tr.ndb      td { background-color: #ffffff; }
-.type_dgps,     tr.dgps     td { background-color: #00d8ff; }
-.type_dsc,      tr.dsc      td { background-color: #ffb000; }
-.type_time,     tr.time     td { background-color: #ffe0b0; }
-.type_navtex,   tr.navtex   td { background-color: #ffb8d8; }
-.type_hambcn,   tr.hambcn   td { background-color: #b8ffc0; }
-.type_other,    tr.other    td { background-color: #b8f8ff; }
+.type_inactive, tr.inactive td { background-color: #d0d0d0; font-size: 10px; }
+.type_ndb,      tr.ndb      td { background-color: #ffffff; font-size: 10px; }
+.type_dgps,     tr.dgps     td { background-color: #00d8ff; font-size: 10px; }
+.type_dsc,      tr.dsc      td { background-color: #ffb000; font-size: 10px; }
+.type_time,     tr.time     td { background-color: #ffe0b0; font-size: 10px; }
+.type_navtex,   tr.navtex   td { background-color: #ffb8d8; font-size: 10px; }
+.type_hambcn,   tr.hambcn   td { background-color: #b8ffc0; font-size: 10px; }
+.type_other,    tr.other    td { background-color: #b8f8ff; font-size: 10px; }
 
+.type_all  { background-color: #ff0000; color: #fff; font-style:italic; font-weight: bold; color:#FFF; }
 #panel {
     font-family: Arial;
     font-size: 10px;

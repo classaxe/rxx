@@ -76,6 +76,19 @@ function get_type(form){
     return '';
 }
 
+function set_signal_list_types(form, state){
+    with (form) {
+        type_DGPS.checked=state;
+        type_DSC.checked=state;
+        type_HAMBCN.checked=state;
+        type_NAVTEX.checked=state;
+        type_NDB.checked=state;
+        type_OTHER.checked=state;
+        type_TIME.checked=state;
+        type_ALL.checked=state;
+    }
+}
+
 function clear_signal_list(form){
     with (form) {
         filter_dx_gsq.value="";
@@ -86,7 +99,6 @@ function clear_signal_list(form){
         radio_filter_heard_in_mod_any.checked=1;
         filter_dx_units_km.checked=1;
         form['filter_listener[]'].selectedIndex=0;
-        filter_listener_invert_0.checked=1;
         filter_khz_1.value="";
         filter_khz_2.value="";
         filter_sp.value="";
@@ -103,8 +115,12 @@ function clear_signal_list(form){
         type_NDB.checked=1;
         type_OTHER.checked=0;
         type_TIME.checked=0;
+        type_ALL.checked=0;
         filter_last_date_1.value="";
         filter_last_date_2.value="";
+        if (typeof filter_listener_invert_0 !== 'undefined') {
+            filter_listener_invert_0.checked = 1;
+        }
         if (typeof region !== 'undefined') {
             region.selectedIndex=0;
         }

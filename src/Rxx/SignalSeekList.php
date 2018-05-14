@@ -6,9 +6,18 @@ class SignalSeekList
     public $html = '';
     public $head = '';
 
+    protected $type_NDB;
+    protected $type_TIME;
+    protected $type_DGPS;
+    protected $type_DSC;
+    protected $type_NAVTEX;
+    protected $type_HAMBCN;
+    protected $type_OTHER;
+    protected $type_ALL;
+
     public function draw()
     {
-        global $mode, $submode, $paper, $createFor, $region, $targetID, $filter_active, $filter_last_date_1, $filter_last_date_2;
+        global $mode, $paper, $createFor, $region, $filter_active, $filter_last_date_1, $filter_last_date_2;
         global $filter_continent, $filter_dx_gsq, $filter_dx_max, $filter_dx_min, $filter_dx_units;
         global $filter_heard_in, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
         global $filter_sp, $filter_itu, $filter_listener, $sortBy, $filter_heard_in_mod, $limit, $offset;
@@ -328,30 +337,15 @@ class SignalSeekList
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Page Size</th>\n"
             ."        <td nowrap>\n"
-            ."          <select name='paper' class='formField' onchange='document.form.go.value=\"Please wait...\";document.form.go.disabled=1;document.form.submit()'>\n"
-            ."            <option value='ltr'".($paper=='ltr' ? " selected" : "").">Letter (Portrait) - 8.5&quot; x 11&quot;</option>\n"
-            ."            <option value='lgl'".($paper=='lgl' ? " selected" : "").">Legal (Portrait) - 8.5&quot; x 14&quot;</option>\n"
-            ."            <option value='a4'".($paper=='a4' ? " selected" : "").">A4 (Portrait) - 21.6cm x 27.9cm</option>\n"
-            ."            <option value='ltr_l'".($paper=='ltr_l' ? " selected" : "").">Letter (Landscape) - 11&quot; x 8.5&quot;</option>\n"
-            ."            <option value='lgl_l'".($paper=='lgl_l' ? " selected" : "").">Legal (Landscape) - 14&quot; x 8.5&quot;</option>\n"
-            ."            <option value='a4_l'".($paper=='a4_l' ? " selected" : "").">A4 (Landscape) - 27.9cm x 21.6cm</option>\n"
-            ."          </select>\n"
+            .$this->drawControlPaperSize()
             ."          <span class='noprint'>Click <a href='#' onclick='alert(\"Tips:\\n\\nYou should make sure that the size chosen matches the\\npaper size selected in your browser.\\n\\nUse \\\"Print Preview\\\" if available to check that report will fit.\\n\\nYou do not need to print the last page - this just contains\\nsoftware copyright info - save trees!\\n\")'><b>here</b></a> for tips...</span>"
             ."        </td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
             ."        <th align='left'>Types&nbsp;</th>\n"
-            ."        <td nowrap style='padding: 0px;'><table cellpadding='0' cellspacing='1' border='0' width='100%' class='tableForm'>\n"
-            ."          <tr>\n"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[DGPS]."' width='14%' nowrap onclick='toggle(document.form.type_DGPS)'><input type='checkbox' onclick='toggle(document.form.type_DGPS);' name='type_DGPS' value='1'".($type_DGPS? " checked" : "").">DGPS</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[DSC]."' width='14%' nowrap onclick='toggle(document.form.type_DSC)'><input type='checkbox' onclick='toggle(document.form.type_DSC);' name='type_DSC' value='1'".($type_DSC? " checked" : "").">DSC</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[HAMBCN]."' width='14%' nowrap onclick='toggle(document.form.type_HAMBCN)'><input type='checkbox' onclick='toggle(document.form.type_HAMBCN)' name='type_HAMBCN' value='1'".($type_HAMBCN ? " checked" : "").">Ham</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[NAVTEX]."' width='15%' nowrap onclick='toggle(document.form.type_NAVTEX)'><input type='checkbox' onclick='toggle(document.form.type_NAVTEX)' name='type_NAVTEX' value='1'".($type_NAVTEX ? " checked" : "").">NAVTEX&nbsp;</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[NDB]."' width='14%' nowrap onclick='toggle(document.form.type_NDB)'><input type='checkbox' onclick='toggle(document.form.type_NDB)' name='type_NDB' value='1'".($type_NDB? " checked" : "").">NDB</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[TIME]."' width='14%' nowrap onclick='toggle(document.form.type_TIME)'><input type='checkbox' onclick='toggle(document.form.type_TIME)' name='type_TIME' value='1'".($type_TIME? " checked" : "").">Time</td>"
-            ."            <td bgcolor='".\Rxx\Signal::$colors[OTHER]."' width='15%' nowrap onclick='toggle(document.form.type_OTHER)'><input type='checkbox' onclick='toggle(document.form.type_OTHER)' name='type_OTHER' value='1'".($type_OTHER ? " checked" : "").">Other</td>"
-            ."          </tr>\n"
-            ."        </table></td>"
+            ."        <td nowrap class='signalType'>\n"
+            .$this->drawControlType()
+            ."</td>"
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
             ."        <th align='left' title='Select listener to generate Seeklist for'>Create for</th>\n"
@@ -400,7 +394,7 @@ class SignalSeekList
             ."      </tr>\n"
             ."      <tr class='rowForm'>\n"
             ."        <th align='left' valign='top'><span title='Only signals heard by the selected listener'>Heard by<br><br><span style='font-weight: normal;'>Use SHIFT or <br>CONTROL to<br>select multiple<br>values</span></span></th>"
-            ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425; height: 90px;' >\n"
+            ."        <td><select name='filter_listener[]' multiple class='formfield' onchange='set_listener_and_heard_in(document.form)' style='font-family: monospace; width: 425px; height: 90px;' >\n"
             .\Rxx\Rxx::get_listener_options_list($filter_listener_SQL, $filter_listener, "Anyone (or enter values in \"Heard In\" box)")
             ."</select></td>\n"
             ."      </tr>\n";
@@ -444,8 +438,8 @@ class SignalSeekList
             ."</td>"
             ."      </tr>\n"
             ."      <tr class='rowForm noprint'>\n"
-            ."        <th colspan='2'><center><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
-            ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></center></th>"
+            ."        <th colspan='2'><input type='submit' onclick='return send_form(form)' name='go' value='Go' style='width: 100px;' class='formButton' title='Execute search'>\n"
+            ."<input name='clear' type='button' class='formButton' value='Clear' style='width: 100px;' onclick='clear_signal_list(document.form)'></th>"
             ."      </tr>\n"
             ."    </table></td>\n"
             ."  </tr>\n"
@@ -672,6 +666,20 @@ class SignalSeekList
             ."' class='formfield' style='width:360px'>";
     }
 
+    private function drawControlPaperSize()
+    {
+        $paper = RXX::get_var('paper');
+        return
+             "          <select name='paper' class='formField' onchange='document.form.go.value=\"Please wait...\";document.form.go.disabled=1;document.form.submit()'>\n"
+            ."            <option value='ltr'".($paper=='ltr' ? " selected" : "").">Letter (Portrait) - 8.5&quot; x 11&quot;</option>\n"
+            ."            <option value='lgl'".($paper=='lgl' ? " selected" : "").">Legal (Portrait) - 8.5&quot; x 14&quot;</option>\n"
+            ."            <option value='a4'".($paper=='a4' ? " selected" : "").">A4 (Portrait) - 21.6cm x 27.9cm</option>\n"
+            ."            <option value='ltr_l'".($paper=='ltr_l' ? " selected" : "").">Letter (Landscape) - 11&quot; x 8.5&quot;</option>\n"
+            ."            <option value='lgl_l'".($paper=='lgl_l' ? " selected" : "").">Legal (Landscape) - 14&quot; x 8.5&quot;</option>\n"
+            ."            <option value='a4_l'".($paper=='a4_l' ? " selected" : "").">A4 (Landscape) - 27.9cm x 21.6cm</option>\n"
+            ."          </select>\n";
+    }
+
     private function drawControlSpItuClause()
     {
         return
@@ -684,6 +692,32 @@ class SignalSeekList
             ."</select> (only when both State AND Country are given)";
     }
 
+    private function drawControlType()
+    {
+        $types = array(
+            array(DGPS,     'type_DGPS',    'DGPS',     13),
+            array(DSC,      'type_DSC',     'DSC',      11),
+            array(HAMBCN,   'type_HAMBCN',  'Ham',      12),
+            array(NAVTEX,   'type_NAVTEX',  'Navtex',   15),
+            array(NDB,      'type_NDB',     'NDB',      11),
+            array(TIME,     'type_TIME',    'Time',     13),
+            array(OTHER,    'type_OTHER',   'Other',    13),
+            array(ALL,      'type_ALL',     '(All)',    12)
+        );
+        $html = '';
+        foreach ($types as $type) {
+            $html.=
+                "<label style='width:".$type[3]."%;' class='".strToLower($type[1])."'>"
+                ."<input type='checkbox' style='vertical-align: middle' name='".$type[1]."' value='1'"
+                .($this->{$type[1]} ? " checked='checked'" : "")
+                .('type_ALL' == $type[1] ? " onchange=\"set_signal_list_types(document.form, this.checked)\"" : "")
+                .">"
+                .$type[2]
+                ."</label>";
+        }
+        return $html;
+    }
+
     private function setup()
     {
         global $filter_continent, $filter_sp_itu_clause, $filter_sp, $filter_itu;
@@ -691,5 +725,27 @@ class SignalSeekList
         $this->filter_sp_itu_clause = $filter_sp_itu_clause;
         $this->filter_sp =  $filter_sp;
         $this->filter_itu = $filter_itu;
+
+        $this->type_NDB =               Rxx::get_var('type_NDB');
+        $this->type_TIME =              Rxx::get_var('type_TIME');
+        $this->type_DGPS =              Rxx::get_var('type_DGPS');
+        $this->type_DSC =               Rxx::get_var('type_DSC');
+        $this->type_NAVTEX =            Rxx::get_var('type_NAVTEX');
+        $this->type_HAMBCN =            Rxx::get_var('type_HAMBCN');
+        $this->type_OTHER =             Rxx::get_var('type_OTHER');
+        $this->type_ALL =
+            ($this->type_NDB && $this->type_TIME && $this->type_DGPS && $this->type_DSC && $this->type_NAVTEX && $this->type_HAMBCN && $this->type_OTHER);
+        if (!(
+            $this->type_NDB ||
+            $this->type_DGPS ||
+            $this->type_DSC ||
+            $this->type_TIME ||
+            $this->type_HAMBCN ||
+            $this->type_NAVTEX ||
+            $this->type_OTHER
+        )) {
+            $this->type_NDB = 1;
+        }
+
     }
 }
