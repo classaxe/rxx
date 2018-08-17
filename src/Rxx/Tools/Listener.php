@@ -249,7 +249,7 @@ class Listener
         ."<input type='button' name='print' value='Print...' onclick='window.print()' class='formbutton' style='width: 60px;'> "
         ."<input type='button' name='close' value='Close' onclick='window.close()' class='formbutton' style='width: 60px;'> "
         .(\Rxx\Rxx::isAdmin() ?
-            "<input type='submit' name='save' class='formButton' value='Save' onclick='document.form.save.disabled=1;document.form.close.disabled=1;document.form.print.disabled=1;document.form.submode.value=\"".$submode."\"' style='width: 60px;'>"
+            "<input type='submit' name='save' class='formButton' value='Save' onclick=\"document.form.submode.value='".$submode."';\" style='width: 60px;'>"
             :
             ""
         )
