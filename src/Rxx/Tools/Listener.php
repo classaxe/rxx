@@ -53,48 +53,53 @@ class Listener
                 switch ($submode) {
                     case "add":
                         $sql =
-                             "INSERT INTO `listeners` SET\n"
-                            ."  `callsign` =	\"".htmlentities(strtoupper(trim($callsign)))."\",\n"
-                            ."  `email` =		\"".htmlentities(trim($email))."\",\n"
-                            ."  `equipment` =	\"".htmlentities(trim($equipment))."\",\n"
-                            ."  `GSQ` =		\"".htmlentities(trim($GSQ))."\",\n"
-                            .($GSQ ? "  `lat` = \"".$lat."\",\n  `lon` = \"".$lon."\",\n" : "")
-                            ."  `ITU` =		\"".htmlentities(trim($ITU))."\",\n"
-                            ."  `map_x` =		\"".htmlentities(trim($map_x))."\",\n"
-                            ."  `map_y` =		\"".htmlentities(trim($map_y))."\",\n"
-                            ."  `name` =		\"".htmlentities(trim($name))."\",\n"
-                            ."  `notes` =		\"".htmlentities(trim($notes))."\",\n"
-                            ."  `primary_QTH` =	\"".htmlentities(trim($primary_QTH))."\",\n"
-                            ."  `QTH` =		\"".htmlentities(trim($QTH))."\",\n"
-                            ."  `SP` =		\"".htmlentities(trim($SP))."\",\n"
-                            ."  `region` =		\"$region\",\n"
-                            ."  `timezone` =	\"".htmlentities(trim($timezone))."\",\n"
-                            ."  `website` =		\"".htmlentities(trim($website))."\"\n";
+                             "INSERT INTO\n"
+                            ."  `listeners`\n"
+                            ."SET\n"
+                            ."  `callsign` =    \"".htmlentities(strtoupper(trim($callsign)))."\",\n"
+                            ."  `email` =       \"".htmlentities(trim($email))."\",\n"
+                            ."  `equipment` =   \"".htmlentities(trim($equipment))."\",\n"
+                            ."  `GSQ` =         \"".htmlentities(trim($GSQ))."\",\n"
+                            .($GSQ ? "  `lat` =         \"".$lat."\",\n  `lon` =         \"".$lon."\",\n" : "")
+                            ."  `ITU` =         \"".htmlentities(trim($ITU))."\",\n"
+                            ."  `map_x` =       \"".htmlentities(trim($map_x))."\",\n"
+                            ."  `map_y` =       \"".htmlentities(trim($map_y))."\",\n"
+                            ."  `name` =        \"".htmlentities(trim($name))."\",\n"
+                            ."  `notes` =       \"".htmlentities(trim($notes))."\",\n"
+                            ."  `primary_QTH` = \"".htmlentities(trim($primary_QTH))."\",\n"
+                            ."  `QTH` =         \"".htmlentities(trim($QTH))."\",\n"
+                            ."  `SP` =          \"".htmlentities(trim($SP))."\",\n"
+                            ."  `region` =      \"$region\",\n"
+                            ."  `timezone` =    \"".htmlentities(trim($timezone))."\",\n"
+                            ."  `website` =     \"".htmlentities(trim($website))."\"\n";
                         \Rxx\Database::query($sql);
-                        $out.="<script language='javascript' type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
+                        $out.="<script type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
                         break;
                     case "update":
                         $sql =
-                             "UPDATE `listeners` SET\n"
-                            ."  `callsign` =	\"".htmlentities(strtoupper(trim($callsign)))."\",\n"
-                            ."  `email` =		\"".htmlentities(trim($email))."\",\n"
-                            ."  `equipment` =	\"".htmlentities(trim($equipment))."\",\n"
-                            ."  `GSQ` =		\"".htmlentities(trim($GSQ))."\",\n"
-                            .($GSQ ? "  `lat` = \"".$lat."\",\n  `lon` = \"".$lon."\",\n" : "")
-                            ."  `ITU` =		\"".htmlentities(trim($ITU))."\",\n"
-                            ."  `map_x` =		\"".htmlentities(trim($map_x))."\",\n"
-                            ."  `map_y` =		\"".htmlentities(trim($map_y))."\",\n"
-                            ."  `name` =		\"".htmlentities(trim($name))."\",\n"
-                            ."  `notes` =		\"".htmlentities(trim($notes))."\",\n"
-                            ."  `primary_QTH` =	\"".htmlentities(trim($primary_QTH))."\",\n"
-                            ."  `QTH` =		\"".htmlentities(trim($QTH))."\",\n"
-                            ."  `region` =		\"$region\",\n"
-                            ."  `SP` =		\"".htmlentities(trim($SP))."\",\n"
-                            ."  `timezone` =	\"".htmlentities(trim($timezone))."\",\n"
-                            ."  `website` =		\"".htmlentities(trim($website))."\"\n"
-                            ."WHERE `ID` =		\"".addslashes($ID)."\"";
+                             "UPDATE\n"
+                            ." `listeners`\n"
+                            ."SET\n"
+                            ."  `callsign` =    \"".htmlentities(strtoupper(trim($callsign)))."\",\n"
+                            ."  `email` =       \"".htmlentities(trim($email))."\",\n"
+                            ."  `equipment` =   \"".htmlentities(trim($equipment))."\",\n"
+                            ."  `GSQ` =         \"".htmlentities(trim($GSQ))."\",\n"
+                            .($GSQ ? "  `lat` =         \"".$lat."\",\n  `lon` =         \"".$lon."\",\n" : "")
+                            ."  `ITU` =         \"".htmlentities(trim($ITU))."\",\n"
+                            ."  `map_x` =       \"".htmlentities(trim($map_x))."\",\n"
+                            ."  `map_y` =       \"".htmlentities(trim($map_y))."\",\n"
+                            ."  `name` =        \"".htmlentities(trim($name))."\",\n"
+                            ."  `notes` =       \"".htmlentities(trim($notes))."\",\n"
+                            ."  `primary_QTH` = \"".htmlentities(trim($primary_QTH))."\",\n"
+                            ."  `QTH` =         \"".htmlentities(trim($QTH))."\",\n"
+                            ."  `region` =      \"$region\",\n"
+                            ."  `SP` =          \"".htmlentities(trim($SP))."\",\n"
+                            ."  `timezone` =    \"".htmlentities(trim($timezone))."\",\n"
+                            ."  `website` =     \"".htmlentities(trim($website))."\"\n"
+                            ."WHERE\n"
+                            ."  `ID` =          \"".addslashes($ID)."\"";
                         \Rxx\Database::query($sql);
-                        $out.=    "<script language='javascript' type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
+                        $out.=    "<script type='text/javascript'>if (window.opener) { window.opener.document.form.submit();}</script>";
                         break;
                 }
             }

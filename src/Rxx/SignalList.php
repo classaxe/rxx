@@ -35,6 +35,7 @@ class SignalList
     protected $filter_last_date_2;
     protected $filter_listener;
     protected $filter_listener_invert;
+    protected $filter_locator;
     protected $filter_logged_date_1;
     protected $filter_logged_date_2;
     protected $filter_sp;
@@ -70,6 +71,7 @@ class SignalList
     protected $sql_filter_itu =             false;
     protected $sql_filter_last_heard =      false;
     protected $sql_filter_listener =        false;
+    protected $sql_filter_locator =         false;
     protected $sql_filter_logged_between =  false;
     protected $sql_filter_range_max =       false;
     protected $sql_filter_range_min =       false;
@@ -325,7 +327,18 @@ class SignalList
             ."use _ to indicate a wildcard character'>";
     }
 
-   private function drawControlStates()
+    private function drawControlLocator()
+    {
+        return
+            "<label title='Maidenhead Locator Grid Square' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<b>GSQ</b></label> "
+            ."<input title='Enter a GSQ locator value to restrict results to signals in that square'"
+            ." type='text' name='filter_locator' id='filter_locator' size='20' value='"
+            .$this->filter_locator
+            ."' class='formfield' style='width:60px'>";
+    }
+
+    private function drawControlStates()
     {
         return
              "<label title='List of States or Provinces' style='display:inline-block; width:70px; margin:0.25em 0;'>"
@@ -444,6 +457,8 @@ class SignalList
             .$this->drawControlCountries()
             ."<br>\n"
             .$this->drawControlContinents()
+            ."<br>\n"
+            .$this->drawControlLocator()
             ."</td>"
             ."     </tr>\n"
             ."     <tr class='rowForm'>\n"
@@ -1357,6 +1372,7 @@ class SignalList
             .($this->sql_filter_frequency ?      " AND\n".$this->sql_filter_frequency      : "")
             .($this->sql_filter_id ?             " AND\n".$this->sql_filter_id             : "")
             .($this->sql_filter_last_heard ?     " AND\n".$this->sql_filter_last_heard     : "")
+            .($this->sql_filter_locator ?        " AND\n".$this->sql_filter_locator : "")
             .($this->sql_filter_logged_between ? " AND\n".$this->sql_filter_logged_between : "")
             .($this->sql_filter_range_min ?      " AND\n".$this->sql_filter_range_min      : "")
             .($this->sql_filter_range_max ?      " AND\n".$this->sql_filter_range_max      : "")
@@ -1503,6 +1519,7 @@ class SignalList
             .($this->sql_filter_frequency ?      " AND\n".$this->sql_filter_frequency    : "")
             .($this->sql_filter_id ?             " AND\n".$this->sql_filter_id           : "")
             .($this->sql_filter_last_heard ?     " AND\n".$this->sql_filter_last_heard   : "")
+            .($this->sql_filter_locator ?        " AND\n".$this->sql_filter_locator      : "")
             .($this->sql_filter_logged_between ? " AND\n".$this->sql_filter_logged_between   : "")
             .($this->sql_filter_range_min ?      " AND\n".$this->sql_filter_range_min    : "")
             .($this->sql_filter_range_max ?      " AND\n".$this->sql_filter_range_max    : "")
@@ -1676,6 +1693,7 @@ class SignalList
         $this->setupInitSqlFilterITU();
         $this->setupInitSqlFilterLastHeard();
         $this->setupInitSqlFilterListener();
+        $this->setupInitSqlFilterLocator();
         $this->setupInitSqlFilterLoggedBetween();
         $this->setupInitSqlFilterRangeMax();
         $this->setupInitSqlFilterRangeMin();
@@ -1878,6 +1896,15 @@ class SignalList
             "    (`signals`.`SP` LIKE '"
            .implode($this->sql_filter_sp, "' OR `signals`.`SP` LIKE '")
            ."')";
+    }
+
+    private function setupInitSqlFilterLocator()
+    {
+        if (!$this->filter_locator) {
+            return;
+        }
+        $this->sql_filter_locator=
+            "    (`signals`.`gsq` LIKE '".$this->filter_locator."%')";
     }
 
     private function setupInitSqlFilterSystem()
@@ -2189,6 +2216,7 @@ class SignalList
         $this->filter_listener_invert = Rxx::get_var('filter_listener_invert');
         $this->filter_last_date_1 =     Rxx::get_var('filter_last_date_1');
         $this->filter_last_date_2 =     Rxx::get_var('filter_last_date_2');
+        $this->filter_locator =         Rxx::get_var('filter_locator');
         $this->filter_logged_date_1 =   Rxx::get_var('filter_logged_date_1');
         $this->filter_logged_date_2 =   Rxx::get_var('filter_logged_date_2');
         $this->filter_system =          Rxx::get_var('filter_system');

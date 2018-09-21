@@ -52,6 +52,7 @@ class Cle
                 ."  `world_range_1_high` = '".Cle::set('world_range_1_high')."',\n"
                 ."  `world_range_1_channels` = '".Cle::set('world_range_1_channels')."',\n"
                 ."  `world_range_1_type` = '".Cle::setType('world_range_1_type')."',\n"
+                ."  `world_range_1_locator` = '".Cle::set('world_range_1_locator')."',\n"
                 ."  `world_range_1_itu` = '".Cle::set('world_range_1_itu')."',\n"
                 ."  `world_range_1_sp` = '".Cle::set('world_range_1_sp')."',\n"
                 ."  `world_range_1_sp_itu_clause` = '".Cle::set('world_range_1_sp_itu_clause')."',\n"
@@ -61,6 +62,7 @@ class Cle
                 ."  `world_range_2_high` = '".Cle::set('world_range_2_high')."',\n"
                 ."  `world_range_2_channels` = '".Cle::set('world_range_2_channels')."',\n"
                 ."  `world_range_2_type` = '".Cle::setType('world_range_2_type')."',\n"
+                ."  `world_range_2_locator` = '".Cle::set('world_range_2_locator')."',\n"
                 ."  `world_range_2_itu` = '".Cle::set('world_range_2_itu')."',\n"
                 ."  `world_range_2_sp` = '".Cle::set('world_range_2_sp')."',\n"
                 ."  `world_range_2_sp_itu_clause` = '".Cle::set('world_range_2_sp_itu_clause')."',\n"
@@ -70,6 +72,7 @@ class Cle
                 ."  `europe_range_1_high` = '".Cle::set('europe_range_1_high')."',\n"
                 ."  `europe_range_1_channels` = '".Cle::set('europe_range_1_channels')."',\n"
                 ."  `europe_range_1_type` = '".Cle::setType('europe_range_1_type')."',\n"
+                ."  `europe_range_1_locator` = '".Cle::set('europe_range_1_locator')."',\n"
                 ."  `europe_range_1_itu` = '".Cle::set('europe_range_1_itu')."',\n"
                 ."  `europe_range_1_sp` = '".Cle::set('europe_range_1_sp')."',\n"
                 ."  `europe_range_1_sp_itu_clause` = '".Cle::set('europe_range_1_sp_itu_clause')."',\n"
@@ -79,6 +82,7 @@ class Cle
                 ."  `europe_range_2_high` = '".Cle::set('europe_range_2_high')."',\n"
                 ."  `europe_range_2_channels` = '".Cle::set('europe_range_2_channels')."',\n"
                 ."  `europe_range_2_type` = '".Cle::setType('europe_range_2_type')."',\n"
+                ."  `europe_range_2_locator` = '".Cle::set('europe_range_2_locator')."',\n"
                 ."  `europe_range_2_itu` = '".Cle::set('europe_range_2_itu')."',\n"
                 ."  `europe_range_2_sp` = '".Cle::set('europe_range_2_sp')."',\n"
                 ."  `europe_range_2_sp_itu_clause` = '".Cle::set('europe_range_2_sp_itu_clause')."',\n"
@@ -101,6 +105,7 @@ class Cle
         $a_khz_h =            $record['world_range_1_high'];
         $a_channels =         $record['world_range_1_channels'];
         $a_type =             $record['world_range_1_type'];
+        $a_locator =          $record['world_range_1_locator'];
         $a_itu =              $record['world_range_1_itu'];
         $a_sp =               $record['world_range_1_sp'];
         $a_sp_itu_clause =    $record['world_range_1_sp_itu_clause'];
@@ -110,6 +115,7 @@ class Cle
             ."&amp;filter_khz_2=".$a_khz_h
             ."&amp;".$a_type
             .($a_channels ? "&amp;filter_channels=".$a_channels : "")
+            .($a_locator ?  "&amp;filter_locator=".$a_locator : "")
             .($a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $a_itu) : "")
             .($a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $a_sp) : "")
             .($a_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$a_sp_itu_clause : "")
@@ -121,6 +127,7 @@ class Cle
         $b_khz_h =            $record['world_range_2_high'];
         $b_channels =         $record['world_range_2_channels'];
         $b_type =             $record['world_range_2_type'];
+        $b_locator =          $record['world_range_2_locator'];
         $b_itu =              $record['world_range_2_itu'];
         $b_sp =               $record['world_range_2_sp'];
         $b_sp_itu_clause =    $record['world_range_2_sp_itu_clause'];
@@ -130,6 +137,7 @@ class Cle
             ."&amp;filter_khz_2=".$b_khz_h
             ."&amp;".$b_type
             .($b_channels ? "&amp;filter_channels=".$b_channels : "")
+            .($b_locator ?  "&amp;filter_locator=".$b_locator : "")
             .($b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $b_itu) : "")
             .($b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $b_sp) : "")
             .($b_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$b_sp_itu_clause : "")
@@ -141,6 +149,7 @@ class Cle
         $eu_a_khz_h =         ($record['europe_range_1_high'] ?           $record['europe_range_1_high'] :            $record['world_range_1_high']);
         $eu_a_channels =      ($record['europe_range_1_channels'] ?       $record['europe_range_1_channels'] :        $record['world_range_1_channels']);
         $eu_a_type =          ($record['europe_range_1_type'] ?           $record['europe_range_1_type'] :            $record['world_range_1_type']);
+        $eu_a_locator =       ($record['europe_range_1_locator'] ?        $record['europe_range_1_locator'] :         $record['world_range_1_locator']);
         $eu_a_itu =           ($record['europe_range_1_itu'] ?            $record['europe_range_1_itu'] :             $record['world_range_1_itu']);
         $eu_a_sp =            ($record['europe_range_1_sp'] ?             $record['europe_range_1_sp'] :              $record['world_range_1_sp']);
         $eu_a_sp_itu_clause = ($record['europe_range_1_sp_itu_clause'] ?  $record['europe_range_1_sp_itu_clause'] :   $record['world_range_1_sp_itu_clause']);
@@ -150,6 +159,7 @@ class Cle
             ."&amp;filter_khz_2=".$eu_a_khz_h
             ."&amp;".$eu_a_type
             .($eu_a_channels ? "&amp;filter_channels=".$eu_a_channels : "")
+            .($eu_a_locator ?  "&amp;filter_locator=".$eu_a_locator : "")
             .($eu_a_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_a_itu) : "")
             .($eu_a_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_a_sp) : "")
             .($eu_a_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$eu_a_sp_itu_clause : "")
@@ -161,6 +171,7 @@ class Cle
         $eu_b_khz_h =         ($record['europe_range_2_high'] ?           $record['europe_range_2_high'] :            $record['world_range_2_high']);
         $eu_b_channels =      ($record['europe_range_2_channels'] ?       $record['europe_range_2_channels'] :        $record['world_range_2_channels']);
         $eu_b_type =          ($record['europe_range_2_type'] ?           $record['europe_range_2_type'] :            $record['world_range_2_type']);
+        $eu_b_locator =       ($record['europe_range_2_locator'] ?        $record['europe_range_2_locator'] :         $record['world_range_2_locator']);
         $eu_b_itu =           ($record['europe_range_2_itu'] ?            $record['europe_range_2_itu'] :             $record['world_range_2_itu']);
         $eu_b_sp =            ($record['europe_range_2_sp'] ?             $record['europe_range_2_sp'] :              $record['world_range_2_sp']);
         $eu_b_sp_itu_clause = ($record['europe_range_2_sp_itu_clause'] ?  $record['europe_range_2_sp_itu_clause'] :   $record['world_range_2_sp_itu_clause']);
@@ -170,6 +181,7 @@ class Cle
             ."&amp;filter_khz_2=".$eu_b_khz_h
             ."&amp;".$eu_b_type
             .($eu_b_channels ? "&amp;filter_channels=".$eu_b_channels : "")
+            .($eu_b_locator ?  "&amp;filter_locator=".$eu_b_locator : "")
             .($eu_b_itu ? "&amp;filter_itu=".str_replace(' ', '%20', $eu_b_itu) : "")
             .($eu_b_sp ? "&amp;filter_sp=".str_replace(' ', '%20', $eu_b_sp) : "")
             .($eu_b_sp_itu_clause ? "&amp;filter_sp_itu_clause=".$eu_b_sp_itu_clause : "")
@@ -354,6 +366,23 @@ class Cle
                 ."      <label style='width:75px;background:#B8F8FF;'><input type='checkbox' name='europe_range_2_type_OTHER'  id='europe_range_2_type_type_OTHER'  ".(strpos($eu_b_type, 'type_OTHER=1')===false ? '' : " checked='checked'")." />OTHER</label>\n"
                 ."    </td>\n"
                 ."  </tr>\n"
+
+                ."  <tr>\n"
+                ."    <th>Locator (GSQ) Codes</th>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='world_range_1_locator' id='world_range_1_locator' value=\"".$a_locator."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='europe_range_1_locator' id='europe_range_1_locator' value=\"".$eu_a_locator."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='world_range_2_locator' id='world_range_2_locator' value=\"".$b_locator."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."    <td>\n"
+                ."      <input type='text' name='europe_range_2_locator' id='europe_range_2_locator' value=\"".$eu_b_locator."\" style='text-align:left;width:220px;' />\n"
+                ."    </td>\n"
+                ."  </tr>\n"
+
                 ."  <tr>\n"
                 ."    <th>SP Codes</th>\n"
                 ."    <td>\n"

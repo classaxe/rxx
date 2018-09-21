@@ -15,6 +15,9 @@ class SignalSeekList
     protected $type_OTHER;
     protected $type_ALL;
 
+    private $filter_locator;
+    private $filter_continent;
+
     public function draw()
     {
         global $mode, $paper, $createFor, $region, $filter_active, $filter_last_date_1, $filter_last_date_2;
@@ -22,7 +25,7 @@ class SignalSeekList
         global $filter_heard_in, $filter_id, $filter_system, $filter_khz_1, $filter_khz_2, $filter_channels;
         global $filter_sp, $filter_itu, $filter_listener, $sortBy, $filter_heard_in_mod, $limit, $offset;
         global $type_NDB, $type_TIME, $type_DSC, $type_DGPS, $type_NAVTEX, $type_HAMBCN, $type_OTHER;
-        global $filter_sp_itu_clause;
+        global $filter_sp_itu_clause, $filter_locator;
         
         $this->setup();
 
@@ -198,6 +201,9 @@ class SignalSeekList
             $filter_itu_SQL =    "`signals`.`ITU` LIKE '".implode($filter_itu_SQL, "' OR `signals`.`ITU` LIKE '")."'";
         }
 
+        if ($filter_locator) {
+            $filter_locator_SQL =   "`signals`.`GSQ` LIKE '".$filter_locator."%'";
+        }
         // Filter on Date Last Logged:
         if ($filter_last_date_1 || $filter_last_date_2) {
             if ($filter_last_date_1 == "") {
@@ -258,6 +264,7 @@ class SignalSeekList
             .($filter_channels==1 ?                 "  MOD((`khz`* 1000),1000) = 0 AND\n" : "")
             .($filter_channels==2 ?                 "  MOD((`khz`* 1000),1000) != 0 AND\n" : "")
             .($filter_type ?                        "  ".$filter_type." AND\n" : "")
+            .($filter_locator ?                     "  (".$filter_locator_SQL.") AND\n" : "")
 
             .($filter_sp || $filter_itu ? " (\n" : "")
             .($filter_sp ?           "  (".$filter_sp_SQL.")" : "")
@@ -378,6 +385,8 @@ class SignalSeekList
             .$this->drawControlCountries()
             ."<br>\n"
             .$this->drawControlContinents()
+            ."<br>\n"
+            .$this->drawControlLocator()
             ."</td>"
             ."     </tr>\n"
             ."      <tr class='rowForm'>\n"
@@ -666,6 +675,17 @@ class SignalSeekList
             ."' class='formfield' style='width:360px'>";
     }
 
+    private function drawControlLocator()
+    {
+        return
+            "<label title='Maidenhead Locator Grid Square' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<b>GSQ</b></label> "
+            ."<input title='Enter a GSQ locator value to restrict results to signals in that square'"
+            ." type='text' name='filter_locator' id='filter_locator' size='20' value='"
+            .$this->filter_locator
+            ."' class='formfield' style='width:60px'>";
+    }
+
     private function drawControlPaperSize()
     {
         $paper = RXX::get_var('paper');
@@ -720,11 +740,12 @@ class SignalSeekList
 
     private function setup()
     {
-        global $filter_continent, $filter_sp_itu_clause, $filter_sp, $filter_itu;
-        $this->filter_continent = $filter_continent;
-        $this->filter_sp_itu_clause = $filter_sp_itu_clause;
-        $this->filter_sp =  $filter_sp;
-        $this->filter_itu = $filter_itu;
+        global $filter_continent, $filter_itu, $filter_sp_itu_clause, $filter_locator, $filter_sp;
+        $this->filter_continent =       $filter_continent;
+        $this->filter_itu =             $filter_itu;
+        $this->filter_locator =         $filter_locator;
+        $this->filter_sp =              $filter_sp;
+        $this->filter_sp_itu_clause =   $filter_sp_itu_clause;
 
         $this->type_NDB =               Rxx::get_var('type_NDB');
         $this->type_TIME =              Rxx::get_var('type_TIME');

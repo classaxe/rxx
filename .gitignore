@@ -3,5 +3,6 @@
 .settings/
 log/*
 .idea
+.DS_Store
 credentials.php
 rxx.sql.gz

@@ -108,6 +108,7 @@ function clear_signal_list(form){
         filter_id.value="";
         filter_heard_in.disabled=0;
         filter_heard_in.className="formField";
+        filter_locator.value="";
         type_DGPS.checked=0;
         type_DSC.checked=0;
         type_HAMBCN.checked=0;
@@ -1031,6 +1032,7 @@ function send_form(form) {
       }
       form.submit();
   }
+  return false;
 }
 
 function validate_form(form) {
@@ -1083,7 +1085,6 @@ function validate_form(form) {
         }
         return false;
     }
-    return false;
     return true;
 }
 
