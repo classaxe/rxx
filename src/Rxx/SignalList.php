@@ -330,12 +330,12 @@ class SignalList
     private function drawControlLocator()
     {
         return
-            "<label title='Maidenhead Locator Grid Square' style='display:inline-block; width:70px; margin:0.25em 0;'>"
-            ."<b>GSQ</b></label> "
-            ."<input title='Enter a GSQ locator value to restrict results to signals in that square'"
+            "<label title='Maidenhead Locator Grid Squares' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<b>GSQs</b></label> "
+            ."<input title='Enter one or more partial or complete GSQ locator values to restrict results to signals in those squares'"
             ." type='text' name='filter_locator' id='filter_locator' size='20' value='"
             .$this->filter_locator
-            ."' class='formfield' style='width:60px'>";
+            ."' class='formfield' style='width:360px'>";
     }
 
     private function drawControlStates()
@@ -1903,8 +1903,11 @@ class SignalList
         if (!$this->filter_locator) {
             return;
         }
-        $this->sql_filter_locator=
-            "    (`signals`.`gsq` LIKE '".$this->filter_locator."%')";
+        $this->sql_filter_locator = explode(" ", str_replace('*', '%', $this->filter_locator));
+        $this->sql_filter_locator =
+            "    (`signals`.`gsq` LIKE '"
+            .implode($this->sql_filter_locator, "%' OR `signals`.`gsq` LIKE '")
+            ."%')";
     }
 
     private function setupInitSqlFilterSystem()

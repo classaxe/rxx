@@ -202,7 +202,11 @@ class SignalSeekList
         }
 
         if ($filter_locator) {
-            $filter_locator_SQL =   "`signals`.`GSQ` LIKE '".$filter_locator."%'";
+            $filter_locator_SQL = explode(" ", str_replace('*', '%', $filter_locator));
+            $filter_locator_SQL =
+                "    (`signals`.`gsq` LIKE '"
+                .implode($filter_locator_SQL, "%' OR `signals`.`gsq` LIKE '")
+                ."%')";
         }
         // Filter on Date Last Logged:
         if ($filter_last_date_1 || $filter_last_date_2) {
@@ -678,12 +682,12 @@ class SignalSeekList
     private function drawControlLocator()
     {
         return
-            "<label title='Maidenhead Locator Grid Square' style='display:inline-block; width:70px; margin:0.25em 0;'>"
-            ."<b>GSQ</b></label> "
-            ."<input title='Enter a GSQ locator value to restrict results to signals in that square'"
+            "<label title='Maidenhead Locator Grid Squares' style='display:inline-block; width:70px; margin:0.25em 0;'>"
+            ."<b>GSQs</b></label> "
+            ."<input title='Enter one or more partial or complete GSQ locator values to restrict results to signals in those squares'"
             ." type='text' name='filter_locator' id='filter_locator' size='20' value='"
             .$this->filter_locator
-            ."' class='formfield' style='width:60px'>";
+            ."' class='formfield' style='width:360px'>";
     }
 
     private function drawControlPaperSize()
