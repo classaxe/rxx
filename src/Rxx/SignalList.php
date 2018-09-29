@@ -732,7 +732,7 @@ class SignalList
     private function drawMap()
     {
         $this->head.=
-             "<script async defer src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyCmvsfY0bgnVB-gl_nMHGQ71rp1WTz9tGM&callback=initMap\" type=\"text/javascript\"></script>\n"
+             "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js?key=AIzaSyCmvsfY0bgnVB-gl_nMHGQ71rp1WTz9tGM\"></script>\n"
             ."<script type=\"text/javascript\" src=\"".BASE_PATH."assets/markerclusterer.js\"></script>\n"
             ."<script type=\"text/javascript\">"
             ."google.maps.event.addDomListener(window, 'load', signal.init);"
@@ -852,10 +852,6 @@ class SignalList
         $this->html.=
              "<div id=\"panel\">\n"
             ."  <h2>Signals Map</h2>\n"
-            ."  <div style='float:right;margin: 0 2em;'>\n"
-            ."    <input type=\"checkbox\" checked=\"checked\" id=\"usegmm\"/>\n"
-            ."    <label for='usegmm'>Clustering</label>\n"
-            ."  </div>\n"
             ."  <div id=\"markerlist\">\n"
             ."  </div>\n"
             ."</div>\n"

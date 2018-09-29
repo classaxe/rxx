@@ -37,7 +37,6 @@ signal.init = function() {
     };
     signal.map = new google.maps.Map(document.getElementById('map'), options);
     signal.items = signals;
-    google.maps.event.addDomListener(document.getElementById('usegmm'), 'click', signal.change);
     signal.infoWindow = new google.maps.InfoWindow();
     signal.showMarkers();
 };
@@ -54,12 +53,8 @@ signal.icons = {
 }
 
 signal.showMarkers = function() {
-    var fn, i, imageUrl, item, latLng, marker, markerImage, panel, s, title, titleText, type;
+    var fn, i, imageUrl, item, latLng, marker, markerImage, panel, s, title, titleText;
     signal.markers = [];
-    type = (document.getElementById('usegmm').checked ? 0 : 1);
-    if (signal.markerClusterer) {
-        signal.markerClusterer.clearMarkers();
-    }
     panel = document.getElementById('markerlist');
     panel.innerHTML = '';
 
@@ -84,12 +79,8 @@ signal.showMarkers = function() {
         google.maps.event.addDomListener(title, 'click', fn);
         signal.markers.push(marker);
     }
-    if (document.getElementById('usegmm').checked) {
-        signal.markerClusterer = new MarkerClusterer(signal.map, signal.markers);
-    } else {
-        for (var i = 0, marker; marker = signal.markers[i]; i++) {
-            marker.setMap(signal.map);
-        }
+    for (var i = 0, marker; marker = signal.markers[i]; i++) {
+        marker.setMap(signal.map);
     }
 };
 
