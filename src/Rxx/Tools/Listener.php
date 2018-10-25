@@ -475,6 +475,12 @@ class Listener
             case "QTH_d":
                 $sortBy_SQL =    "`QTH` DESC";
                 break;
+            case "SignalsMap":
+                $sortBy_SQL =    "`count_signals`=0 ASC, `name`,`primary_QTH` DESC, `SP` ASC";
+                break;
+            case "SignalsMap_d":
+                $sortBy_SQL =    "`count_signals`=0 DESC, `name`, `primary_QTH` DESC, `SP` ASC";
+                break;
             case "SP":
                 $sortBy_SQL =    "`SP`='',`SP` ASC";
                 break;
@@ -732,6 +738,7 @@ class Listener
             )
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Web Site", "Web", $sortBy, "WWW", "A-Z", false)
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by NDB WebLog", "NWL", $sortBy, "NDBWebLog", "A-Z", false)
+            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Signals Map", "Map", $sortBy, "SignalsMap", "A-Z", false)
             .(\Rxx\Rxx::isAdmin() ?
               "    ".\Rxx\Rxx::show_sortable_column_head("Sort by Map Position", "Map Pos", $sortBy, "map_x", "A-Z", false)
               ."    <th class='downloadTableHeadings_nosort' valign='bottom'>Admin</th>\n"
@@ -810,6 +817,7 @@ class Listener
                     )
                     ."<td>".($row["website"]!="" ? "<a title='View Web Page for this listener' href='".$row["website"]."' target='_blank'>WWW</a>" : "&nbsp;")."</td>\n"
                     ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
+                    ."<td>".($row["count_signals"]!=0 ? "<a title='View Signals Map for this listener' href='https://rxx.classaxe.com/".strToLower(system)."/listeners/".$row['ID']."/signalmap' target='_blank'>Map</a>" : "&nbsp;")."</td>\n"
                     .(\Rxx\Rxx::isAdmin() ?
                         "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
                         ."<td><a href='#' onclick='if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();};return false;'>Delete</a></td>\n"

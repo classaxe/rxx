@@ -777,6 +777,19 @@ class Export
                 $ID = array_pop($path_arr);
             }
         }
+        $sql =  "SELECT * FROM `listeners` WHERE `ID` = \"".addslashes($ID)."\"";
+        if (!$result =  \Rxx\Database::query($sql)) {
+            print "Invalid User ID";
+        }
+
+        header("Content-Type: text/plain");
+
+        $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+
+        $out =
+            system." Signals for ".$row['name']." on ".date("Y-m-d")."\r\n"
+            ."Output sorted by frequency and callsign\r\n";
+
         $sql =
             "SELECT\n"
             ."  DISTINCT `signals`.*\n"
@@ -790,24 +803,26 @@ class Export
             ."  `khz`,`call`";
         $result =   \Rxx\Database::query($sql);
 
-        header("Content-Type: text/plain");
 
-        $out = "KHz\tCall\tQTH\tSP\tITU\tSec\tFmt\tLSB\tUSB\tPwr\tLat\tLon\r\n";
+        $out.=
+             str_repeat("-", 120)."\r\n"
+            ."KHz\tCall\tSec\tFmt\tLSB\tUSB\tPwr\tLat\tLon\tQTH\tSP\tITU\r\n"
+            .str_repeat("-", 120)."\r\n";
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
             $out.=
                 (float)$row['khz']."\t"
                 .htmlentities(\Rxx\Rxx::translate_chars($row['call']))."\t"
-                .htmlentities(\Rxx\Rxx::translate_chars($row['QTH']))."\t"
-                .$row['SP']."\t"
-                .$row['ITU']."\t"
                 .$row['sec']."\t"
                 .$row['format']."\t"
                 .$row['LSB']."\t"
                 .$row['USB']."\t"
                 .$row['pwr']."\t"
                 .$row['lat']."\t"
-                .$row['lon']."\r\n";
+                .$row['lon']."\t"
+                .htmlentities(\Rxx\Rxx::translate_chars($row['QTH']))."\t"
+                .$row['SP']."\t"
+                .$row['ITU']."\r\n";
         }
         print $out;
     }
@@ -835,7 +850,7 @@ class Export
 
         header("Content-Type: text/plain");
 
-        print "yyyymmdd\thhmm\tkhz\tcall\tlsb\tusb\tsec\tdx_km\tdx_miles\tgsq\tsp\titu\tqth\r\n";
+        print "yyyymmdd\thhmm\tkhz\tcall\tlsb\tusb\tsec\tdx_km\tdx_mi\tgsq\tsp\titu\tqth\r\n";
 
         $sql =  "SELECT\n"
             ."  DATE_FORMAT(`logs`.`date`,'%Y%m%d') AS `date`,\n"
@@ -934,12 +949,12 @@ class Export
         print
             system." Log for ".$row['name']." on ".date("Y-m-d")."\r\n"
             ."Output sorted by Date\r\n"
-            ."----------------------------------------------------------------------\r\n"
+            .str_repeat("-", 80)."\r\n"
             ."YYYYMMDD ".($time_len ? "UTC  " : "")."KHz   "
             .(system=="RWW" ? "   " : "")
             .\Rxx\Rxx::pad("ID", $call_len+1).($LSB_len||$USB_len ? "LSB   USB   " : "")
             ."KM    Miles PWR  GSQ    SP ITU Location\r\n"
-            ."----------------------------------------------------------------------\r\n";
+            .str_repeat("-", 80)."\r\n";
 
         $sql =  "SELECT\n"
             ."  DATE_FORMAT(`logs`.`date`,'%Y%m%d') AS `date`,\n"
