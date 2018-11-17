@@ -1877,9 +1877,7 @@ class SignalList
             return;
         }
         $this->sql_filter_continent =
-             "    (`signals`.`ITU` IN(\n"
-            ."        SELECT `ITU` FROM `itu` WHERE `region` = '".$this->filter_continent."')\n"
-            ."    )";
+             "    `signals`.`region` IN('".$this->filter_continent."')\n";
     }
 
     private function setupInitSqlFilterSP()

@@ -280,9 +280,7 @@ class SignalSeekList
             .($filter_itu ?           "  (".$filter_itu_SQL.")" : "")
             .($filter_sp || $filter_itu ? ") AND\n" : "")
             .($filter_continent ?
-                 "    (`signals`.`ITU` IN(\n"
-                ."        SELECT `ITU` FROM `itu` WHERE `region` = '".$this->filter_continent."')\n"
-                ."    ) AND\n"
+                 "  `signals`.`region` IN('".$this->filter_continent."') AND\n"
              :
                 ""
             )

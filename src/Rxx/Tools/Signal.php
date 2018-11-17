@@ -192,6 +192,15 @@ class Signal
             $error_msg = \Rxx\Rxx::check_sp_itu($SP, $ITU);
         }
         if ($error_msg=="") {
+            $region = \Rxx\Rxx::get_region_for_itu($ITU);
+            if ($region=="") {
+                switch (system) {
+                    case "REU":    $region = "eu";
+                        break;
+                    case "RNA":    $region = "na";
+                        break;
+                }
+            }
             switch ($submode) {
                 case "add":
                     if ($call && $khz) {
@@ -208,6 +217,7 @@ class Signal
                             ."  `notes` = \"".addslashes((trim($notes)))."\",\n"
                             ."  `pwr` = \"".addslashes(trim($pwr))."\",\n"
                             ."  `QTH` = \"".addslashes(trim($QTH))."\",\n"
+                            ."  `region` = \"".addslashes(trim($region))."\",\n"
                             ."  `sec` = \"".addslashes(trim($sec))."\",\n"
                             ."  `SP` = \"".addslashes(trim($SP))."\",\n"
                             ."  `type` = \"".addslashes(trim($type))."\",\n"
@@ -234,6 +244,7 @@ class Signal
                         ."  `notes` = \"".addslashes((trim($notes)))."\",\n"
                         ."  `pwr` = \"".addslashes(trim($pwr))."\",\n"
                         ."  `QTH` = \"".addslashes(trim($QTH))."\",\n"
+                        ."  `region` = \"".addslashes(trim($region))."\",\n"
                         ."  `sec` = \"".addslashes(trim($sec))."\",\n"
                         ."  `SP` = \"".addslashes(trim($SP))."\",\n"
                         ."  `type` = \"".addslashes(trim($type))."\",\n"
@@ -258,7 +269,6 @@ class Signal
             $khz =                  $row["khz"];
             $lat =                  $row["lat"];
             $lon =                  $row["lon"];
-            $logs =                 $row["logs"];
             $LSB =                  $row["LSB"];
             $LSB_approx =           $row["LSB_approx"];
             $last_heard =           $row["last_heard"];
