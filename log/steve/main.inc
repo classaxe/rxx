@@ -338,15 +338,27 @@ switch ($mode) {
 
 
     case "station_list":
+        $periods = getLogPeriods();
+
         if (!isset($yyyymm)) {
-            $now =    getdate();
-            $yyyy =   $now['year'];
-            $mm = lead($now['mon']);
-            $yyyymm = $yyyy.$mm;
+            $yyyymm =   $periods[round(count($periods) / 2)];
+            $yyyy =     substr($yyyymm, 0, 4);
+            $mm =       substr($yyyymm, 4, 2);
         } else {
             $mm = substr($yyyymm, 4, 2);
             $yyyy =   substr($yyyymm, 0, 4);
         }
+
+        $period_links = array();
+        foreach ($periods as $period) {
+            $period_links[] =
+                "<a href=\"./?yyyymm=".$period."\""
+                .($period === $yyyymm ? " style='color:red;'" : "")
+                .">"
+                .substr($period, 0,4)."-".substr($period,4,2)
+                ."</a>";
+        }
+
 
         $out =
             "<h1>Steve Ratzlaff's Pacific NDB Beacon Watch</h1>\n"
@@ -365,7 +377,8 @@ switch ($mode) {
             ."M - Medium\\n"
             ."G - Good\\n"
             ."V - Very Good\");return false;'>Key</a> | "
-            ." <a href='#' onclick='region_map();return false;'>Beacon Map</a> ]";
+            ." <a href='#' onclick='region_map();return false;'>Beacon Map</a> ]<br /><br />"
+            ."[ Jump to: ".implode(" | ", $period_links)." ]";
         if ($admin) {
             $out .=
                 "<br>[ <a href='./?mode=station_edit_form' target='_blank'>Edit Beacons</a> ]";

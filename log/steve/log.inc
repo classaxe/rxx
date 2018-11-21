@@ -11,9 +11,6 @@
 // *                                         *
 // *******************************************
 
-// ************************************
-// * log_add()                        *
-// ************************************
 function log_add($stationID, $yyyymmdd, $hhmm, $rx, $notes)
 {
     global $ObjMysql;
@@ -42,11 +39,30 @@ function log_add($stationID, $yyyymmdd, $hhmm, $rx, $notes)
     return $ID;
 }
 
+function getLogPeriods() {
+    global $ObjMysql;
+    $sql =
+        "SELECT DISTINCT\n"
+        ."  SUBSTR(yyyymmdd, 1,6) as yyyymm\n"
+        ."FROM\n"
+        ."  log\n"
+        ."ORDER BY\n"
+        ."  yyyymm";
 
+    if (!$result = $ObjMysql->query($sql)) {
+        print("<b><pre>".$sql."</pre></b><BR>".$ObjMysql->error);
+        return false;
+    }
+    if (!$result->num_rows) {         // If there was no match, quit.
+        return false;
+    }
+    $out = array();
+    while ($row = $result->fetch_assoc()) {
+        $out[] =    $row['yyyymm'];
+    }
+    return $out;
+}
 
-// ************************************
-// * log_for_station()                *
-// ************************************
 function log_for_station($stationID)
 {
     global $ObjMysql;

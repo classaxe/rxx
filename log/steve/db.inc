@@ -50,8 +50,6 @@ function connect_db()
             ."</textarea>"
             ."    </li>\n"
             ."    <li><b>Refresh this page</b> to access the new system;</li>\n"
-            ."    <li><b>Logon as Administrator</b> using the default password <b>000</b>;</li>\n"
-            ."    <li><b>Change the administrator password</b> using the administrator's User Preferences Page - <b>and remember it!</b></li></ol>\n"
             ."</body>\n"
             ."</html>";
     }
