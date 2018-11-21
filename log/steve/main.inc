@@ -345,25 +345,24 @@ switch ($mode) {
         $out =
             "<h1>Steve Ratzlaff's Pacific NDB Beacon Watch</h1>\n"
             ."<p><small><b>[ "
-            ."<a onclick='alert(\"HELP\\n"
+            ."<a href='#' onclick='alert(\"HELP\\n"
             ."1) Click on left or right arrows by month name to change month;\\n"
             ."2) Move mouse over readings and see more info in browser Status Bar;\\n"
             ."3) Click location name to open a map;\\n"
             ."4) Printing - for best results, alter page setup to \\\"Landscape\\\";\\n"
-            ."\\n\\\"NDB Beacon Watch\\\" software by Martin Francis\")'>Help</a> | "
-            ."<a onclick='alert(\"KEY\\n"
+            ."\\n\\\"NDB Beacon Watch\\\" software by Martin Francis\");return false;'>Help</a> | "
+            ."<a href='#' onclick='alert(\"KEY\\n"
             ."(In order of signal strength...)\\n"
             ."F - Faint\\n"
             ."P - Poor\\n"
             ."W - Weak\\n"
             ."M - Medium\\n"
             ."G - Good\\n"
-            ."V - Very Good\")'>Key</a> | "
-            ." <a onclick='region_map()'>Beacon Map</a> ]";
+            ."V - Very Good\");return false;'>Key</a> | "
+            ." <a href='#' onclick='region_map();return false;'>Beacon Map</a> ]";
         if ($admin) {
             $out .=
-                "<br>[ <a href='./?mode=db_export'>Export Data</a> "
-                ."| <a href='./?mode=station_edit_form' target='_blank'>Edit Beacons</a> ]";
+                "<br>[ <a href='./?mode=station_edit_form' target='_blank'>Edit Beacons</a> ]";
         }
         $out .=
             "</b></small></p>\n";
