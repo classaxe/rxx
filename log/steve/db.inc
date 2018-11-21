@@ -1,10 +1,5 @@
 <?php
 
-// ************************************
-// * connect_db()                     *
-// ************************************
-// returns database link or FALSE
-
 function connect_db()
 {
     global $config_db_host, $config_db_name, $config_db_pass, $config_db_user;

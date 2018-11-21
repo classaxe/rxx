@@ -6,8 +6,8 @@
 // *                                         *
 // * Filename:  table.inc                    *
 // * Owner:     Martin Francis               *
-// * Created:   2003/09/02 (MF)              *
-// * Revised:   2018/11/21                   *
+// * Created:   2003-09-02 (MF)              *
+// * Revised:   2018-11-21 (MF)              *
 // *                                         *
 // *******************************************
 

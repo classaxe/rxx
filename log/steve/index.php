@@ -6,8 +6,8 @@
 // *                                         *
 // * Filename:  index.php                    *
 // * Owner:     Martin Francis               *
-// * Created:   01/09/2003 (MF)              *
-// * Revised:   10/09/2003 (MF)              *
+// * Created:   2003-09-01 (MF)              *
+// * Revised:   2018-11-21 (MF)              *
 // *                                         *
 // *******************************************
 

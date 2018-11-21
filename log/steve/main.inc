@@ -6,8 +6,8 @@
 // *                                         *
 // * Filename:  main.inc                     *
 // * Owner:     Martin Francis               *
-// * Created:   01/09/2003 (MF)              *
-// * Revised:   15/12/2003 (MF)              *
+// * Created:   2003-09-01 (MF)              *
+// * Revised:   2018-11-21 (MF)              *
 // *                                         *
 // *******************************************
 
@@ -23,11 +23,11 @@ $head =
     ."th.admin { background: rgb(255,255,160); }\n"
     .".n   { text-align: center; background: rgb(250,250,250); }\n"
     .".f   { text-align: center; background: rgb(255,140,140); }\n"
-    .".p   { text-align: center; background: rgb(255,200,200); }\n"
-    .".w   { text-align: center; background: rgb(255,220,200); }\n"
-    .".m   { text-align: center; background: rgb(220,255,220); }\n"
-    .".g   { text-align: center; background: rgb(100,255,100); }\n"
-    .".v   { text-align: center; background: rgb(0,255,0); }\n"
+    .".p   { text-align: center; background: rgb(255,200,200);  cursor: pointer;}\n"
+    .".w   { text-align: center; background: rgb(255,220,200);  cursor: pointer;}\n"
+    .".m   { text-align: center; background: rgb(220,255,220);  cursor: pointer;}\n"
+    .".g   { text-align: center; background: rgb(100,255,100);  cursor: pointer;}\n"
+    .".v   { text-align: center; background: rgb(0,255,0);  cursor: pointer;}\n"
     ."input.50 { width: 50px; }\n"
     ."input.80 { width: 80px; }\n"
     ."a.nav { text-decoration: none; font-family: Arial; }\n"
@@ -35,11 +35,21 @@ $head =
     ."</style>\n"
     ."<script type='text/javascript'>\n"
     ."function map(lat,lon) {\n"
-    ."  var map_hd =	window.open(\"http://www.mapquest.com/maps/map.adp?latlongtype=decimal&latitude=\"+lat+\"&longitude=\"+lon+\"&size=big&zoom=1\",\"map\",\"width=800,height=600,resizable=1,scrollbars=1,status=0,menubar=0,location=1,toolbar=0\");\n"
+    ."  var map_hd =\n"
+    ."    window.open(\n"
+    ."      \"https://www.google.com/maps/@\"+lat+\",\"+lon+\",11z\",\n"
+    ."      \"map\",\n"
+    ."      \"width=800,height=600,resizable=1,scrollbars=1,status=0,menubar=0,location=1,toolbar=0\"\n"
+    ."    );\n"
     ."  map_hd.focus();\n"
     ."}\n"
     ."function region_map() {\n"
-    ."  var map2_hd =	window.open(\"http://www.classaxe.com/dx/images/pacific_map.gif\",\"map2\",\"width=360,height=420,resizable=1,scrollbars=0,status=0,menubar=1,location=1,toolbar=0\");\n"
+    ."  var map2_hd =\n"
+    ."    window.open(\n"
+    ."      \"/dx/ndb/assets/images/pacific_map.gif\",\n"
+    ."      \"map2\",\n"
+    ."      \"width=360,height=420,resizable=1,scrollbars=0,status=0,menubar=1,location=1,toolbar=0\"\n"
+    ."    );\n"
     ."  map2_hd.focus();\n"
     ."}\n"
     ."function get_range_bearing(qth_lat,qth_lon,dx_lat,dx_lon,units) {\n"
@@ -94,9 +104,7 @@ if (!isset($submode)) {
 // * mode selection switching:        *
 // ************************************
 
-$out =  '';
 switch ($mode) {
-
     case "log_edit_form":
         if ($admin) {
             if ($submode == "delete" and $logID != "") {
@@ -200,7 +208,7 @@ switch ($mode) {
             }
 
             $station =        table_get($destinationID, TYPE_STATION);
-            $out.=
+            $out =
                  "<title>Add Log Entry for ".$station['khz']."-".$station['call']."</title>\n"
                 ."<h1>Add ".($submode=='add' ? "another ": "")."Log Entry for ".$station['khz']."-".$station['call']."</h1>\n"
                 ."<input type='hidden' name='mode' value='log_add_form'>\n"
@@ -424,9 +432,14 @@ switch ($mode) {
                         $rx =       ((isset($stations[$ID]['log'][$dates[$i]]) && $stations[$ID]['log'][$dates[$i]]['rx'])?
                          ($stations[$ID]['log'][$dates[$i]]['rx']):(0));
                         if ($rx) {
-                                $tmp =     $stations[$ID]['call']."-".$stations[$ID]['khz']." on "
-                              .$stations[$ID]['log'][$dates[$i]]['yyyymmdd']
-                              .(($stations[$ID]['log'][$dates[$i]]['hhmm'])?("@".$stations[$ID]['log'][$dates[$i]]['hhmm']."UTC"):(""))."   ";
+                            $tmp =
+                                $stations[$ID]['call']."-".$stations[$ID]['khz']." on "
+                                .substr($stations[$ID]['log'][$dates[$i]]['yyyymmdd'],0,4).'-'
+                                .substr($stations[$ID]['log'][$dates[$i]]['yyyymmdd'],4,2).'-'
+                                .substr($stations[$ID]['log'][$dates[$i]]['yyyymmdd'],6,2)
+
+                                .($stations[$ID]['log'][$dates[$i]]['hhmm'] ? "@".$stations[$ID]['log'][$dates[$i]]['hhmm']."UTC" : "")
+                                ."   ";
 
                             switch ($stations[$ID]['log'][$dates[$i]]['rx']) {
                                 case "F":
@@ -451,10 +464,7 @@ switch ($mode) {
                                 $tmp.=    "   ".str_replace("'", "`", $stations[$ID]['log'][$dates[$i]]['notes']);
 
                                 $out .=
-                                    "    <td class='".$rx."' title='$tmp'>"
-                                    ."<a class='info' href='javascript:void null' onmouseover='window.status=\"$tmp\";return true;' "
-                                    ."onmouseout= \"window.status='';return true;\""
-                                    .">$rx</a></td>\n";
+                                    "    <td class='".$rx."' title='$tmp'>$rx</td>\n";
                         } else {
                             $out .=
                                 "    <td class='n'>&nbsp;</td>";

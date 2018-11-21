@@ -6,8 +6,8 @@
 // *                                         *
 // * Filename:  log.inc                      *
 // * Owner:     Martin Francis               *
-// * Created:   02/09/2003 (MF)              *
-// * Revised:                                *
+// * Created:   2003-09-02 (MF)              *
+// * Revised:   2018-11-21 (MF)              *
 // *                                         *
 // *******************************************
 
