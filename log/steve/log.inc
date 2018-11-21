@@ -14,29 +14,32 @@
 // ************************************
 // * log_add()                        *
 // ************************************
-function log_add($stationID,$yyyymmdd,$hhmm,$rx,$notes) {
-  $ID =			table_uniqID(TYPE_LOG);
-  $sql =		 "INSERT INTO `log` (\n"
-			."  ID,\n"
-			."  stationID,\n"
-			."  yyyymmdd,\n"
-			."  hhmm,\n"
-			."  rx,\n"
-			."  notes\n"
-			.")\n"
-			."VALUES (\n"
-			." '$ID',\n"
-			."  '$stationID',\n"
-			."  '$yyyymmdd',\n"
-			."  '$hhmm',\n"
-			."  '$rx',\n"
-			."  '$notes'\n"
-			.")";
-  if (!$result = SQL_query($sql)) {
-    print("<b><pre>".$sql."</pre></b><BR>".SQL_error());
-    return false;
-  }
-  return $ID;
+function log_add($stationID, $yyyymmdd, $hhmm, $rx, $notes)
+{
+    global $ObjMysql;
+    $ID =         table_uniqID(TYPE_LOG);
+    $sql =
+        "INSERT INTO `log` (\n"
+        ."  `ID`,\n"
+        ."  `stationID`,\n"
+        ."  `yyyymmdd`,\n"
+        ."  `hhmm`,\n"
+        ."  `rx`,\n"
+        ."  `notes`\n"
+        .")\n"
+        ."VALUES (\n"
+        ."  '$ID',\n"
+        ."  '$stationID',\n"
+        ."  '$yyyymmdd',\n"
+        ."  '$hhmm',\n"
+        ."  '$rx',\n"
+        ."  '$notes'\n"
+        .")";
+    if (!$result = $ObjMysql->query($sql)) {
+        print("<b><pre>".$sql."</pre></b><BR>".$ObjMysql->error);
+        return false;
+    }
+    return $ID;
 }
 
 
@@ -44,44 +47,48 @@ function log_add($stationID,$yyyymmdd,$hhmm,$rx,$notes) {
 // ************************************
 // * log_for_station()                *
 // ************************************
-function log_for_station($stationID) {
-  $sql =		 "SELECT * from `log`\n"
-			."WHERE stationID = 	'$stationID'\n"
-			."ORDER BY yyyymmdd\n";
+function log_for_station($stationID)
+{
+    global $ObjMysql;
+    $sql =
+        "SELECT * from `log`\n"
+        ."WHERE stationID = 	'$stationID'\n"
+        ."ORDER BY yyyymmdd\n";
 
-  if (!$result = SQL_query($sql)) {
-    print("<b><pre>".$sql."</pre></b><BR>".SQL_error());
-    return false;
-  }
-  if (!SQL_num_rows($result)) {			// If there was no match, quit.
-    return false;
-  }
-  $out = array();
-  while($row = SQL_fetch_array($result,MYSQLI_ASSOC)) {
-    $out[] =	$row;
-  }
-  return $out;
+    if (!$result = $ObjMysql->query($sql)) {
+        print("<b><pre>".$sql."</pre></b><BR>".$ObjMysql->error);
+        return false;
+    }
+    if (!$result->num_rows) {         // If there was no match, quit.
+        return false;
+    }
+    $out = array();
+    while ($row = $result->fetch_assoc()) {
+        $out[] =    $row;
+    }
+    return $out;
 }
 
 
 // ************************************
 // * log_update()                     *
 // ************************************
-function log_update($ID,$stationID,$yyyymmdd,$hhmm,$rx,$notes) {
-  $sql =		 "UPDATE `log`\n"
-			."SET\n"
-			." stationID  =	'$stationID',\n"
-			." yyyymmdd =	'$yyyymmdd',\n"
-			." hhmm =	'$hhmm',\n"
-			." rx =		'$rx',\n"
-			." notes =  	'$notes'\n"
-			."WHERE ID = 	'$ID'\n";
+function log_update($ID, $stationID, $yyyymmdd, $hhmm, $rx, $notes)
+{
+    global $ObjMysql;
+    $sql =
+        "UPDATE `log`\n"
+        ."SET\n"
+        ." stationID  =	'$stationID',\n"
+        ." yyyymmdd =	'$yyyymmdd',\n"
+        ." hhmm =	'$hhmm',\n"
+        ." rx =		'$rx',\n"
+        ." notes =  	'$notes'\n"
+        ."WHERE ID = 	'$ID'\n";
 
-  if (!$result = SQL_query($sql)) {
-    print("<b><pre>".$sql."</pre></b><BR>".SQL_error());
-    return false;
-  }
-  return true;
+    if (!$result = $ObjMysql->query($sql)) {
+        print("<b><pre>".$sql."</pre></b><BR>".$ObjMysql->error);
+        return false;
+    }
+    return true;
 }
-
-?>
