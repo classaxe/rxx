@@ -56,13 +56,13 @@ function station_update($ID, $khz, $call, $qth, $sta, $cnt, $lat, $lon)
     $sql =
         "UPDATE `station`\n"
         ."SET\n"
-        ." khz  = '$khz',\n"
-        ." call = '$call',\n"
-        ." qth =  '$qth',\n"
-        ." sta =  '$sta',\n"
-        ." cnt =  '$cnt',\n"
-        ." lat =  '$lat',\n"
-        ." lon =  '$lon'\n"
+        ." `khz`  = '$khz',\n"
+        ." `call` = '$call',\n"
+        ." `qth`  =  '$qth',\n"
+        ." `sta`  =  '$sta',\n"
+        ." `cnt`  =  '$cnt',\n"
+        ." `lat`  =  '$lat',\n"
+        ." `lon`  =  '$lon'\n"
         ."WHERE ID = '$ID'\n";
 
     if (!$result = $ObjMysql->query($sql)) {
