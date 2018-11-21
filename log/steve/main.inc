@@ -16,18 +16,18 @@ $head =
     ."<head>\n"
     ."<style>\n"
     ."body { font-family: Verdana,Arial,Helvetica; }\n"
-    ."td   { font-family: courier new, courier regular; width: 20px; text-align: center;}\n"
-    ."th   { font-family: courier new, courier regular; background: rgb(255,255,230); }\n"
+    ."table { border-collapse: collapse; }\n"
+    ."td   { font-family: courier new, courier regular; border: 1px solid #000; padding: 2px; width: 20px; text-align: center;}\n"
+    ."th   { font-family: courier new, courier regular; border: 1px solid #000; padding: 2px; background: rgb(255,255,230); }\n"
     ."th.l { text-align: left; }\n"
     ."th.new { background: rgb(255,200,200); }\n"
     ."th.admin { background: rgb(255,255,160); }\n"
-    .".n   { text-align: center; background: rgb(250,250,250); }\n"
-    .".f   { text-align: center; background: rgb(255,140,140); }\n"
-    .".p   { text-align: center; background: rgb(255,200,200);  cursor: pointer;}\n"
-    .".w   { text-align: center; background: rgb(255,220,200);  cursor: pointer;}\n"
-    .".m   { text-align: center; background: rgb(220,255,220);  cursor: pointer;}\n"
-    .".g   { text-align: center; background: rgb(100,255,100);  cursor: pointer;}\n"
-    .".v   { text-align: center; background: rgb(0,255,0);  cursor: pointer;}\n"
+    .".f   { text-align: center; background: linear-gradient(to top, rgb(255,200,200) 17%, rgba(0,0,0,0) 17%); cursor: pointer}\n"
+    .".p   { text-align: center; background: linear-gradient(to top, rgb(255,180,180) 33%, rgba(0,0,0,0) 33%); cursor: pointer;}\n"
+    .".w   { text-align: center; background: linear-gradient(to top, rgb(255,160,160) 50%,rgba(0,0,0,0) 50%); cursor: pointer;}\n"
+    .".m   { text-align: center; background: linear-gradient(to top, rgb(255,140,140) 67%,rgba(0,0,0,0) 67%); cursor: pointer;}\n"
+    .".g   { text-align: center; background: linear-gradient(to top, rgb(255,120,120) 83%,rgba(0,0,0,0) 83%); cursor: pointer;}\n"
+    .".v   { text-align: center; background: linear-gradient(to top, rgb(255,100,100) 100%,rgba(0,0,0,0) 100%); cursor: pointer;}\n"
     ."input.50 { width: 50px; }\n"
     ."input.80 { width: 80px; }\n"
     ."a.nav { text-decoration: none; font-family: Arial; }\n"
@@ -35,6 +35,9 @@ $head =
     ."</style>\n"
     ."<script type='text/javascript'>\n"
     ."function map(lat,lon) {\n"
+    ."  if (lat==0 && lon == 0){\n"
+    ."    return alert('Exact location is unknown');\n"
+    ."  }"
     ."  var map_hd =\n"
     ."    window.open(\n"
     ."      \"https://www.google.com/maps/@\"+lat+\",\"+lon+\",11z\",\n"
@@ -55,6 +58,9 @@ $head =
     ."function get_range_bearing(qth_lat,qth_lon,dx_lat,dx_lon,units) {\n"
     ."  if (qth_lat == dx_lat && qth_lon==dx_lon) {\n"
     ."    return new Array(0,0);\n"
+    ."  }\n"
+    ."  if (dx_lat == 0 && dx_lon == 0) {\n"
+    ."    return new Array('','');\n"
     ."  }\n"
     ."  var dlon = (dx_lon - qth_lon)\n"
     ."  if (Math.abs(dlon) > 180) {\n"
@@ -391,16 +397,16 @@ switch ($mode) {
                 sort($dates);
             }
             $out .=
-                "<table cellpadding='1' cellspacing='0' border='1' bordercolor='#000000'>\n"
+                "<table>\n"
                 ."  <tr>\n"
                 ."    <th rowspan='2'>Beacon</th>\n"
                 .($admin ? "    <th rowspan='2' class='admin'>Log</th>\n" : "")
+                ."    <th rowspan='2'>Location</th>\n"
                 ."    <th colspan='".count($dates)."'".((count($dates))?(""):(" rowspan='2'"))." nowrap>"
                 ."<a class='nav' href='./?mode=station_list&yyyymm=".yyyymm_dec($yyyymm)."'>&lt;-</a> "
                 .text_month($mm)." ".$yyyy." "
                 ."<a class='nav' href='./?mode=station_list&yyyymm=".yyyymm_inc($yyyymm)."'>-&gt;</a>"
                 ."</th>\n"
-                ."    <th rowspan='2'>Location</th>\n"
                 ."    <th rowspan='2'>Deg</th>\n"
                 ."    <th rowspan='2'>Miles</th>\n"
                 ."  </tr>\n"
@@ -425,7 +431,13 @@ switch ($mode) {
                         ."<a target='_blank' href='./?mode=log_add_form&destinationID=$ID' title='Add Entry'>Add</a></small></th>"
                     :
                         ""
-                    );
+                    )
+                ."    <th class='l' nowrap><a class = 'nav' href='javascript:map(".$stations[$ID]['lat'].",".$stations[$ID]['lon'].")'"
+                ." onmouseover='window.status=\"Show map for this location\"; return true;' onmouseout='window.status=\"\";return true;'>"
+                .$stations[$ID]['qth']
+                .(($stations[$ID]['sta']!='')?(", ".$stations[$ID]['sta']):(""))
+                .(($stations[$ID]['cnt']!='')?(", ".$stations[$ID]['cnt']):(""))
+                ."</a></th>\n";
                 if (count($dates)) {
                     for ($i=0; $i<count($dates); $i++) {
                         $rx =       ((isset($stations[$ID]['log'][$dates[$i]]) && $stations[$ID]['log'][$dates[$i]]['rx'])?
@@ -475,13 +487,7 @@ switch ($mode) {
                 }
 
                 $out .=
-                    "    <th class='l' nowrap><a class = 'nav' href='javascript:map(".$stations[$ID]['lat'].",".$stations[$ID]['lon'].")'"
-                    ." onmouseover='window.status=\"Show map for this location\"; return true;' onmouseout='window.status=\"\";return true;'>"
-                    .$stations[$ID]['qth']
-                    .(($stations[$ID]['sta']!='')?(", ".$stations[$ID]['sta']):(""))
-                    .(($stations[$ID]['cnt']!='')?(", ".$stations[$ID]['cnt']):(""))
-                    ."</a></th>\n"
-                    ."    <th class='l' nowrap><script type='text/javascript'>var rab = get_range_bearing($config_qth_lat,$config_qth_lon,".$stations[$ID]['lat'].",".$stations[$ID]['lon'].",'mi'); document.write(rab[0])</script></th>"
+                     "    <th class='l' nowrap><script type='text/javascript'>var rab = get_range_bearing($config_qth_lat,$config_qth_lon,".$stations[$ID]['lat'].",".$stations[$ID]['lon'].",'mi'); document.write(rab[0])</script></th>"
                     ."    <th class='l' nowrap><script type='text/javascript'>document.write(rab[1])</script></th>"
                     ."  </tr>\n";
             }
@@ -489,15 +495,24 @@ switch ($mode) {
                 "  <tr>\n"
                 ."    <th rowspan='2'>Beacon</th>\n"
                 .($admin ? "    <th rowspan='2' class='admin'>Log</th>\n" : "")
+                ."    <th rowspan='2'>Location</th>\n";
+
+            for ($i=0; $i<count($dates); $i++) {
+                $out .=
+                    "    <th>".$dates[$i]."</th>\n";
+            }
+            $out.=
+
+                 "    <th rowspan='2'>Deg</th>\n"
+                ."    <th rowspan='2'>Miles</th>\n"
+                ."  </tr>\n"
+                ."  <tr>\n"
                 ."    <th colspan='".count($dates)."'".((count($dates))?(""):(" rowspan='2'"))." nowrap>"
                 ."<a class='nav' href='./?mode=station_list&yyyymm=".yyyymm_dec($yyyymm)."'>&lt;-</a>"
                 ." ".text_month($mm)." ".$yyyy." "
                 ."<a class='nav' href='./?mode=station_list&yyyymm=".yyyymm_inc($yyyymm)."'>-&gt;</a>"
                 ."</th>\n"
-                ."    <th rowspan='2'>Location</th>\n"
-                ."    <th rowspan='2'>Deg</th>\n"
-                ."    <th rowspan='2'>Miles</th>\n"
-                ."  </tr>\n"
+                ."  </tr>"
                 ."</table>\n";
         } else {
             $out .=  "No stations have been entered";
