@@ -201,6 +201,23 @@ class Cle
         if (\Rxx\Rxx::isAdmin()) {
             $out.=
                 "<script type=\"text/javascript\" src=\"".BASE_PATH."assets/calendar_db.js\"></script>\n"
+                ."<script src=\"https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=lz0wkk4zh8w8oqbghibz380go0yhscpl15iv46n1ffdy3v2k\"></script>"
+                ."<script type=\"text/javascript\">\n"
+                ."tinymce.init({\n"
+                ."  selector: 'textarea',\n"
+                ."  height: 200,\n"
+                ."  menubar: false,\n"
+                ."  plugins: [\n"
+                ."    'advlist autolink lists link image charmap print preview anchor textcolor colorpicker',\n"
+                ."    'searchreplace visualblocks code fullscreen',\n"
+                ."    'insertdatetime media table contextmenu paste code wordcount'\n"
+                ."  ],\n"
+                ."  toolbar: 'insert | undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code | help',\n"
+                ."  content_css: [\n"
+                ."    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i'\n"
+                ."  ]\n"
+                ."});"
+                ."</script>"
                 ."<link rel=\"stylesheet\" href=\"".BASE_PATH."assets/calendar.css\">\n"
                 ."<div id='cle_editor' style='display:none;text-align:center;border:2px solid #888;background-color:#f0f0ff'>\n"
                 ."<form action='".system_URL."/".$mode."' name='form' method='POST'>\n"
@@ -480,7 +497,7 @@ class Cle
             .($record['date_end']!='0000-00-00' ? " to ".date('l j\<\s\u\p\>S\<\/\s\u\p\> F Y', strtotime($record['date_end'])) : "")
             .($record['date_timespan'] ? " ".$record['date_timespan'] : "").".</p>\n"
             ."<p><b>Scope:</b><br />".$record['scope']."</p>\n"
-            .($record['additional'] ? "<p><b>Additional Info:</b><br />".$record['additional']."</p>\n" : "");
+            .($record['additional'] ? "<p><b>Additional Info:</b></p>".html_entity_decode($record['additional'])."\n" : "");
         if ($special) {
             $out.=
                 "<ul>\n"
