@@ -817,7 +817,7 @@ class Listener
                     )
                     ."<td>".($row["website"]!="" ? "<a title='View Web Page for this listener' href='".$row["website"]."' target='_blank'>WWW</a>" : "&nbsp;")."</td>\n"
                     ."<td>".($row["count_signals"]!=0 ? "<a title='View NDB WebLog for this listener -\nthis may take a while to load' href='".system_URL."/export_ndbweblog_index/".$row['ID']."' target='_blank'>NWL</a>" : "&nbsp;")."</td>\n"
-                    ."<td>".($row["count_signals"]!=0 ? "<a title='View Signals Map for this listener' href='https://rxx.classaxe.com/".strToLower(system)."/listeners/".$row['ID']."/signalmap' target='_blank'>Map</a>" : "&nbsp;")."</td>\n"
+                    ."<td>".($row["count_signals"]!=0 ? "<a title='View Signals Map for this listener' href='https://rxx.classaxe.com/en/".strToLower(system)."/listeners/".$row['ID']."/signalmap' target='_blank'>Map</a>" : "&nbsp;")."</td>\n"
                     .(\Rxx\Rxx::isAdmin() ?
                         "<td>".$row["map_x"].",".$row["map_y"]."</td>\n"
                         ."<td><a href='#' onclick='if(confirm(\"CONFIRM\\n\\nDelete this listener?\")){ document.form.submode.value=\"delete\";document.form.targetID.value=\"".$row["ID"]."\";document.form.submit();};return false;'>Delete</a></td>\n"
