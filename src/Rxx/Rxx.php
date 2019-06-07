@@ -283,13 +283,18 @@ class Rxx
             }
             $out[] =
                 " style='font-family: monospace; color: ".($row['primary_QTH'] ? "#000000" : "#666666")."'>"
-                .Rxx::pad_dot(
+                . Rxx::pad_dot(
                     ($row['primary_QTH'] ? "" : "  ")
-                    .$row["name"].", ".$row["QTH"]." ".$row["callsign"],
-                    50
+                    . $row["name"]
+                    . ", "
+                    . $row["QTH"]
+                    . " "
+                    . $row["callsign"],
+                    55
                 )
-                .($row['SP'] ? " ".$row["SP"]:"...")." "
-                .$row["ITU"]."</option>\n";
+                . ($row['SP'] ? " ".$row["SP"]:"...")
+                . " "
+                . $row["ITU"]."</option>\n";
         }
         \Rxx\Database::freeResult($result);
         return implode($out, "");
@@ -1230,65 +1235,16 @@ class Rxx
      */
     public static function translate_chars($string)
     {
-        $arr_search = array(  "\n\r",
-            "\n",
-            "\r\n",
-            "\r",
-            "\\\"",
-            "\\'",
-            "&quot;",
-            "&deg;",
-            "&egrave;",
-            "&aelig;",
-            "&amp;",
-            "&aacute;",
-            "&acirc;",
-            "&aring;",
-            "&atilde;",
-            "&auml;",
-            "&ccedil;",
-            "&eacute;",
-            "&ecirc;",
-            "&iacute;",
-            "&Icirc;",
-            "&ocirc;",
-            "&Ouml;",
-            "&oslash;",
-            "&Oslash;",
-            "&ouml;",
-            "&uuml;",
-            "&Uuml;"
+        return $string;
+        return strtr(
+            $string,
+            [
+                "\n\r" =>   " ",
+                "\n" =>     " ",
+                "\r\n" =>   " ",
+                "\r" =>     " ",
+            ]
         );
-        $arr_replace= array(  " ",
-            " ",
-            " ",
-            " ",
-            "\"",
-            "'",
-            "\"",
-            "°",
-            "è",
-            "æ",
-            "&",
-            "á",
-            "â",
-            "å",
-            "ã",
-            "ä",
-            "ç",
-            "é",
-            "ê",
-            "í",
-            "Î",
-            "ô",
-            "Ö",
-            "ø",
-            "Ø",
-            "ö",
-            "ü",
-            "Ü"
-        );
-        return str_replace($arr_search, $arr_replace, $string);
     }
 
     /**
@@ -2174,14 +2130,28 @@ class Rxx
      * @param $places
      * @return mixed
      */
+    public static function pad_char($text, $char, $places)
+    {
+        $text = html_entity_decode($text);
+
+        return str_replace(
+            " ",
+            "&nbsp;",
+            (mb_strlen($text) > $places ?
+                substr($text, 0, $places)
+              :
+                $text . substr(
+                    str_repeat($char, 100),
+                    0,
+                    $places - mb_strlen($text)
+                )
+            )
+        );
+    }
+
     public static function pad_dot($text, $places)
     {
-        $text = Rxx::translate_chars($text);
-        if (strlen($text)>=$places) {
-            return str_replace(" ", "&nbsp;", substr($text, 0, $places));
-        }
-        $text = $text.(substr("..................................................", 0, $places-strLen($text)));
-        return str_replace(" ", "&nbsp;", $text);
+        return static::pad_char($text, '.', $places);
     }
 
     /**
@@ -2191,9 +2161,7 @@ class Rxx
      */
     public static function pad_nbsp($text, $places)
     {
-        $text = Rxx::translate_chars($text);
-        $text = $text.(substr("                                                   ", 0, $places-strLen($text)));
-        return str_replace(" ", "&nbsp;", $text);
+        return static::pad_char($text, ' ', $places);
     }
 
     /**
