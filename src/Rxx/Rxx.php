@@ -2141,7 +2141,7 @@ class Rxx
                 substr($text, 0, $places)
               :
                 $text . substr(
-                    str_repeat($char, 100),
+                    str_repeat($char, $places),
                     0,
                     $places - mb_strlen($text)
                 )

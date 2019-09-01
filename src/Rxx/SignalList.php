@@ -1921,7 +1921,7 @@ class SignalList
                         "    (`heard_in_".$this->region."` = 1)";
                 } else {
                     $this->sql_filter_system =
-                        "    (1)";
+                        "    (`logs` > 0)";
                 }
                 break;
             case "not_logged":
