@@ -134,7 +134,6 @@ class Admin
             ."  `heard_in_na` =	0,\n"
             ."  `heard_in_oc` =	0,\n"
             ."  `heard_in_sa` =	0,\n"
-            ."  `heard_in_xx` =	0,\n"
             ."  `heard_in` =	'',\n"
             ."  `heard_in_html` =	''\n";
         \Rxx\Database::query($sql);

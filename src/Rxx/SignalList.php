@@ -1397,6 +1397,7 @@ class SignalList
             ."    `signals`\n"
             ."WHERE (\n"
             ."    `heard_in_af`=0 AND\n"
+            ."    `heard_in_an`=0 AND\n"
             ."    `heard_in_as`=0 AND\n"
             ."    `heard_in_ca`=0 AND\n"
             ."    `heard_in_eu`=1 AND\n"
@@ -1417,6 +1418,7 @@ class SignalList
             ."    `signals`\n"
             ."WHERE (\n"
             ."    `heard_in_af`=0 AND\n"
+            ."    `heard_in_an`=0 AND\n"
             ."    `heard_in_as`=0 AND\n"
             ."    `heard_in_ca`=0 AND\n"
             ."    `heard_in_eu`=0 AND\n"
@@ -1463,6 +1465,7 @@ class SignalList
             ."    `signals`\n"
             ."WHERE (\n"
             ."    `heard_in_af`=0 AND\n"
+            ."    `heard_in_an`=0 AND\n"
             ."    `heard_in_as`=0 AND\n"
             ."    `heard_in_ca`=0 AND\n"
             ."    `heard_in_eu`=0 AND\n"
@@ -1926,8 +1929,17 @@ class SignalList
                 break;
             case "not_logged":
                 $this->sql_filter_system =
-                     "    (`heard_in_af` = 0 AND `heard_in_as` = 0 AND `heard_in_ca` = 0 AND `heard_in_eu` = 0 AND\n"
-                    ."`heard_in_iw` = 0 AND `heard_in_na` = 0 AND `heard_in_oc` = 0 AND `heard_in_sa` = 0)";
+                     "    (\n"
+                    ."        `heard_in_af` = 0 AND\n"
+                    ."        `heard_in_an` = 0 AND\n"
+                    ."        `heard_in_as` = 0 AND\n"
+                    ."        `heard_in_ca` = 0 AND\n"
+                    ."        `heard_in_eu` = 0 AND\n"
+                    ."        `heard_in_iw` = 0 AND\n"
+                    ."        `heard_in_na` = 0 AND\n"
+                    ."        `heard_in_oc` = 0 AND\n"
+                    ."        `heard_in_sa` = 0\n"
+                    ."    )";
                 break;
             case "all":
                 $this->sql_filter_system =
