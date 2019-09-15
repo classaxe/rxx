@@ -118,6 +118,15 @@ class Rxx
         );
     }
 
+    public static function getGitTag()
+    {
+        static $tag = false;
+        if (!$tag) {
+            $tag = exec('git describe --tags --abbrev=0');
+        }
+        return $tag;
+    }
+
     /**
      * @param $itu
      * @return string
@@ -633,12 +642,13 @@ class Rxx
                 $out.=    "Weather";
                 break;
         }
+
         $out.=
             (Rxx::isAdmin() ? " (ADMIN)" : "")
             ."</title>\n"
             ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css'>\n"
-            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
+            ."<link href='".BASE_PATH."assets/style.css?v=".Rxx::getGitTag()."' rel='stylesheet' type='text/css'>\n"
+            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css?v=".Rxx::getGitTag()."' rel='stylesheet' type='text/css' media='screen'>\n"
             .($Obj && isset($Obj->head) ? $Obj->head : "")
             ."<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
             ."<script type='text/javascript' src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
@@ -649,7 +659,7 @@ class Rxx
             ."var system_URL = '".system_URL."';\n"
             ."//-->\n"
             ."</script>\n"
-            ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js'></script>\n"
+            ."<script type='text/javascript' src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
             ."<table cellpadding='10' cellspacing='0' width='651' class='titleTable'>\n"
