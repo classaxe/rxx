@@ -735,10 +735,8 @@ class SignalList
              "<script type=\"text/javascript\" src=\"//maps.googleapis.com/maps/api/js?key=AIzaSyCmvsfY0bgnVB-gl_nMHGQ71rp1WTz9tGM\"></script>\n"
             ."<script type=\"text/javascript\" src=\"".BASE_PATH."assets/markerclusterer.js\"></script>\n"
             ."<script type=\"text/javascript\">"
+             ."//<!--\n"
             ."google.maps.event.addDomListener(window, 'load', signal.init);"
-            ."</script>\n"
-            ."<script type=\"text/javascript\">\n"
-            ."//<!--\n"
             ."var signals = [\n";
         foreach ($this->rows as $row) {
             if (isset($filter_by_dx) && $filter_by_dx) {

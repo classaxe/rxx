@@ -506,59 +506,60 @@ class SignalSeekList
                     $xpos+=    $heading_gap;
                 }
                 $this->html.=
-                     "<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-                    ."  <tr>\n"
-                    ."    <td><b>".$value['ITU']." ".$value['SP']."</b></td>\n"
-                    ."    <td align='right'>("
+                     "<div>\n"
+                    ."<div class='fl'><b>".$value['ITU']." ".$value['SP']."</b></div>\n"
+                    ."<div class='fr'>("
                     .($createFor!="" ? $itu_sp[$value['ITU']."_".$value['SP']]['heard']." of " : "")
                     .$itu_sp[$value['ITU']."_".$value['SP']]['total']
-                    .")</td>\n"
-                    ."  </tr>\n"
-                    ."</table>\n";
+                    .")</div>\n"
+                    ."</div>\n";
                 $xpos+=    $heading_height;
                 $SP =    $value['SP'];
                 $ITU =    $value['ITU'];
             }
             if ($value["active"]!="1") {
-                $bgcolor =    " style='border: 1px dashed #000000; background-color: #d0d0d0;' title='(Reportedly Out Of Service or Decomissioned)'";
+                $style = "";
+                $title = "(Reportedly Out Of Service or Decomissioned)";
             } else {
-                $style = " style='border:1px solid #fff; background-color: ".\Rxx\Signal::$colors[$value['type']]."'";
+                $style = "background-color: ".\Rxx\Signal::$colors[$value['type']];
                 switch ($value['type']) {
                     case NDB:
-                        $bgcolor = $style." title='NDB'";
+                        $title = 'NDB';
                         break;
                     case DGPS:
-                        $bgcolor = $style." title='DGPS Station'";
+                        $title = 'DGPS Station';
                         break;
                     case DSC:
-                        $bgcolor = $style." title='DSC Station'";
+                        $title = 'DSC Station';
                         break;
                     case TIME:
-                        $bgcolor = $style." title='Time Signal Station'";
+                        $title = 'Time Signal Station';
                         break;
                     case NAVTEX:
-                        $bgcolor = $style." title='NAVTEX Station'";
+                        $title = 'NAVTEX Station';
                         break;
                     case HAMBCN:
-                        $bgcolor = $style." title='Amateur signal'";
+                        $title = 'Amateur Beacon';
                         break;
                     case OTHER:
-                        $bgcolor = $style." title='Other form of transmission'";
+                        $title = 'Other form of transmission';
                         break;
                 }
             }
             $this->html.=
-                 "<table cellpadding='0' cellspacing='0' border='0'><tr><td>"
-                ."<span class='fixed'$bgcolor>"
+                 "<div class='" .($value["active"] != "1" ? 'inactive' : 'active') . "'"
+                .($style ? " style='$style'" : '')
+                ." title='$title'>"
+                ."<div class='fl fixed'>"
                 .\Rxx\Rxx::pad_dot($value["khz"], 8)
                 .\Rxx\Rxx::pad_dot($value['call'], 8)
-                ."</td><td>"
+                ."</div>"
                 .($value['heard'] ?
-                    "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y'>"
+                    "<img src='".BASE_PATH."assets/icon-tick-on.gif' alt='Y' class='fr'>"
                  :
-                    "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N'>"
+                    "<img src='".BASE_PATH."assets/icon-tick-off.gif' alt='N' class='fr'>"
                 )
-                ."</span></td></tr></table>\n";
+                ."</div>\n";
             $xpos+=    $line_height;
             if ($xpos>$row) {
                 $xpos=0;
@@ -566,7 +567,8 @@ class SignalSeekList
                 if ($col<$page_cols) {
                     $this->html.=        "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>";
                 } else {
-                    $this->html.=         "</td>\n"
+                    $this->html.=
+                         "</td>\n"
                         ."</tr>\n"
                         ."</table>\n"
                         ."<br>\n"
@@ -592,7 +594,8 @@ class SignalSeekList
                         ."  </tr>\n";
                     $page++;
 
-                    $this->html.=        "  <tr>\n"
+                    $this->html.=
+                         "  <tr>\n"
                         ."    <td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>\n"
                         ."    <table cellpadding='0' cellspacing='0' border='0' width='100%'><tr><td><b>...".$value['ITU']." ".$value['SP']."</b></td><td align='right'>(".($createFor!="" ? $itu_sp[$value['ITU']."_".$value['SP']]['heard']." of " : "").$itu_sp[$value['ITU']."_".$value['SP']]['total'].")</td></tr></table>\n";
                     $xpos+=    $heading_height;

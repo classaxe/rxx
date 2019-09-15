@@ -494,8 +494,26 @@ i {color: #666666;}
 img {float: right; border: 0px;}
 #phpinfo table { width: 810px !important; margin: auto; }
 #phpinfo h1, #phpinfo h2 { display: block; width: 800px; margin: auto; text-align: center; }
-
-
+.fl {
+    float:left;
+}
+.fr {
+    float: right;
+}
+img.fl,
+img.fr {
+    display: inline-block;
+}
+.active {
+    height: 12px;
+    border:1px solid #fff; clear: both;
+}
+.inactive {
+    height: 12px;
+    clear: both;
+    border: 1px dashed #000000;
+    background-color: #d0d0d0;
+}
 hr {
     height: 2px;
 }
