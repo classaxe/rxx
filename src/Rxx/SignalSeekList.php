@@ -465,6 +465,8 @@ class SignalSeekList
         $col =    0;
         $row =    $page_len-$filter_size;
         $listener =    \Rxx\Rxx::get_listener_name($createFor);
+
+    // Column heading:
         $this->html.=
             "<table cellpadding='2' cellspacing='1' border='1' style='page-break-after: always;' class='downloadtable'>\n"
             ."  <tr>\n"
@@ -496,6 +498,7 @@ class SignalSeekList
             ."    </table></td>\n"
             ."  </tr>\n";
         $page++;
+
         $this->html.=
             "  <tr>\n"
             ."    <td valign='top' nowrap width='".floor(100/$page_cols)."%' class='downloadTableContent'>\n";
@@ -547,7 +550,7 @@ class SignalSeekList
                 }
             }
             $this->html.=
-                 "<div class='" .($value["active"] != "1" ? 'inactive' : 'active') . "'"
+                 "<div class='sl " .($value["active"] != "1" ? 'inactive' : 'active') . "'"
                 .($style ? " style='$style'" : '')
                 ." title='$title'>"
                 ."<div class='fl fixed'>"

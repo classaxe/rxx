@@ -494,6 +494,9 @@ i {color: #666666;}
 img {float: right; border: 0px;}
 #phpinfo table { width: 810px !important; margin: auto; }
 #phpinfo h1, #phpinfo h2 { display: block; width: 800px; margin: auto; text-align: center; }
+.sl {
+    min-width: 140px;
+}
 .fl {
     float:left;
 }
