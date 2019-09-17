@@ -102,11 +102,11 @@ class SignalSeekList
         switch ($paper) {
             case "ltr":
                 $page_len =    710; // px length
-                $page_cols =    5;
+                $page_cols =    4;
                 break;
             case "lgl":
                 $page_len =    906; // px length
-                $page_cols =    5;
+                $page_cols =    4;
                 break;
             case "a4":
                 $page_len =    755; // px length
@@ -118,11 +118,11 @@ class SignalSeekList
                 break;
             case "lgl_l":
                 $page_len =    490; // px length
-                $page_cols =    9;
+                $page_cols =    7;
                 break;
             case "a4_l":
                 $page_len =    470; // px length
-                $page_cols =    7;
+                $page_cols =    6;
                 break;
         }
 
