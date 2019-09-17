@@ -498,7 +498,7 @@ class SignalSeekList
         $page++;
         $this->html.=
             "  <tr>\n"
-            ."    <td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>\n";
+            ."    <td valign='top' nowrap width='".floor(100/$page_cols)."%' class='downloadTableContent'>\n";
         foreach ($signals as $key => $value) {
             if ($value['SP'] != $SP || $value['ITU'] != $ITU) {
                 if ($SP.$ITU!="" && $xpos) {
@@ -565,7 +565,7 @@ class SignalSeekList
                 $xpos=0;
                 $col++;
                 if ($col<$page_cols) {
-                    $this->html.=        "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>";
+                    $this->html.=        "<td valign='top' nowrap width='".floor(100/$page_cols)."%' class='downloadTableContent'>";
                 } else {
                     $this->html.=
                          "</td>\n"
@@ -596,7 +596,7 @@ class SignalSeekList
 
                     $this->html.=
                          "  <tr>\n"
-                        ."    <td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'>\n"
+                        ."    <td valign='top' nowrap width='".floor(100/$page_cols)."%' class='downloadTableContent'>\n"
                         ."    <table cellpadding='0' cellspacing='0' border='0' width='100%'><tr><td><b>...".$value['ITU']." ".$value['SP']."</b></td><td align='right'>(".($createFor!="" ? $itu_sp[$value['ITU']."_".$value['SP']]['heard']." of " : "").$itu_sp[$value['ITU']."_".$value['SP']]['total'].")</td></tr></table>\n";
                     $xpos+=    $heading_height;
                     $col = 0;
@@ -609,7 +609,7 @@ class SignalSeekList
         if ($col<$page_cols) {
             $this->html.=    "&nbsp;</td>\n";
             for ($col; $col<$page_cols-1; $col++) {
-                $this->html.=    "<td valign='top' nowrap width='".(100/$page_cols)."%' class='downloadTableContent'><span class='fixed'>&nbsp;</span></td>\n";
+                $this->html.=    "<td valign='top' nowrap width='".floor(100/$page_cols)."%' class='downloadTableContent'><span class='fixed'>&nbsp;</span></td>\n";
             }
         }
         $row = \Rxx\Log::getLogDateRange($filter_system, $region);
