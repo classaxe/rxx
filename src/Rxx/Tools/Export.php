@@ -16,24 +16,6 @@
 // * Revised:   13/02/2005 (MF)              *
 // * Email:     martin@classaxe.com          *
 // *******************************************
-// Note: all functions are declared in alphabetical order
-/*
-Version History:
-  2015-01-17
-    1) export_ndbweblog_stations() now escapes embedded quotes for notes
-  2013-12-21
-    1) export_ndbweblog_stations() now always includes id and active flags
-    2) If there are more than one possible match for ID and frequency, a ;ID suffix is
-       added to the station in both the log entries and station entries
-  2013-12-16
-    1) Moved show_pdf() from functions.php into here as export_pdf()
-    2) Now includes active flag in excel export and supports display of absolute
-       offsets for sidebands in both Excel and PDF exports
-       (Requested by Joachim Rabe, email sent Mon 2013-12-16 2:58 AM)
-  2013-11-30
-    1) Added support for export of type DSC in excel format (Thanks Vincent!)
-*/
-
 namespace Rxx\Tools;
 
 /**
@@ -1046,27 +1028,27 @@ class Export
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            $out[] =     lead($row['khz'], 7)
-                .Rxx::pad($row['call'], 22)
+            $out[] =     \Rxx\Rxx::lead($row['khz'], 7)
+                .\Rxx\Rxx::pad($row['call'], 22)
                 ."0000-2400"
                 ."1234567"
-                .Rxx::pad("", 18)
-                .Rxx::pad("", 48)
-                .Rxx::pad("", 8)
-                .Rxx::pad(substr(str_replace($arr_search, $arr_replace, Rxx::translate_chars($row['QTH'])), 0, 24), 25)
-                .Rxx::pad("", 7)
-                .Rxx::pad("", 3)
-                .Rxx::pad(substr(str_replace($arr_search, $arr_replace, Rxx::translate_chars($row['notes'])), 0, 14), 15)
-                .Rxx::pad("", 1)
-                .Rxx::pad("", 18)
-                .Rxx::pad("", 30)
-                .Rxx::pad("", 5)
-                .Rxx::pad("", 3)
-                .Rxx::pad($row['ITU'], 18)
-                .Rxx::pad("", 6)
-                .Rxx::pad("", 5)
-                .Rxx::pad("", 20) //not 1
-                .Rxx::pad("", 20)
+                .\Rxx\Rxx::pad("", 18)
+                .\Rxx\Rxx::pad("", 48)
+                .\Rxx\Rxx::pad("", 8)
+                .\Rxx\Rxx::pad(substr(str_replace($arr_search, $arr_replace, \Rxx\Rxx::translate_chars($row['QTH'])), 0, 24), 25)
+                .\Rxx\Rxx::pad("", 7)
+                .\Rxx\Rxx::pad("", 3)
+                .\Rxx\Rxx::pad(substr(str_replace($arr_search, $arr_replace, \Rxx\Rxx::translate_chars($row['notes'])), 0, 14), 15)
+                .\Rxx\Rxx::pad("", 1)
+                .\Rxx\Rxx::pad("", 18)
+                .\Rxx\Rxx::pad("", 30)
+                .\Rxx\Rxx::pad("", 5)
+                .\Rxx\Rxx::pad("", 3)
+                .\Rxx\Rxx::pad($row['ITU'], 18)
+                .\Rxx\Rxx::pad("", 6)
+                .\Rxx\Rxx::pad("", 5)
+                .\Rxx\Rxx::pad("", 20) //not 1
+                .\Rxx\Rxx::pad("", 20)
                 ." "
                 ."\r\n";
         }
