@@ -94,5 +94,5 @@ define("awardsAdminName", "Joseph Miller KJ8O");
 define("awardsBCCEmail", "Martin@classaxe.com");
 define("awardsBCCName", "Martin Francis (Awards copy)");
 
-define("SMTP_HOST", "mail.classaxe.com");
+define("SMTP_HOST", "213.219.36.56");
 define("ENABLE_PIWIK", false);
