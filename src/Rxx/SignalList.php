@@ -126,7 +126,9 @@ class SignalList
             )."'> "
             .(Rxx::isAdmin() ?
              "<input type='button' value='Add signal...'"
-                ." onclick=\"signal_add("
+                ." onclick=\"alert('"
+                ."This signal will NOT appear in the regular listing until you add log for it.\\n\\n"
+                ."To see it again before it is logged, choose [Admin: Unlogged signals] in the control at the bottom of the filter panel.');signal_add("
                 ."\$('#filter_id').val(),\$('#filter_khz_1').val(), '', '', '', '', '',get_type(document.form)"
                 .")\"> "
             :
@@ -739,8 +741,8 @@ class SignalList
             ."google.maps.event.addDomListener(window, 'load', signal.init);"
             ."var signals = [\n";
         foreach ($this->rows as $row) {
-            if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        \Rxx\Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+            if (isset($this->filter_dx_gsq) && $this->filter_dx_gsq) {
+                $dx =        \Rxx\Rxx::get_dx($this->filter_dx_lat, $this->filter_dx_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';
@@ -863,8 +865,8 @@ class SignalList
         $html =
             "  <tbody>";
         foreach ($this->rows as $row) {
-            if (isset($filter_by_dx) && $filter_by_dx) {
-                $dx =        \Rxx\Rxx::get_dx($filter_by_lat, $filter_by_lon, $row["lat"], $row["lon"]);
+            if (isset($this->filter_dx_gsq) && $this->filter_dx_gsq) {
+                $dx =        \Rxx\Rxx::get_dx($this->filter_dx_lat, $this->filter_dx_lon, $row["lat"], $row["lon"]);
             }
             if (!$row["active"]) {
                 $class='inactive';

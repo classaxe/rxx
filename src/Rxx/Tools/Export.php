@@ -674,6 +674,7 @@ class Export
             ." `ITU`,\n"
             ." `notes`,\n"
             ." `heard_in`,\n"
+            ." `first_heard`,\n"
             ." `last_heard`\n"
             ."FROM\n"
             ."  `signals`\n"
@@ -683,7 +684,7 @@ class Export
             .($filter_type ? " AND\n  ".$filter_type : "")
             ."\n"
             ."ORDER BY `active` DESC,`khz` ASC, `call` ASC\n"
-//          ."LIMIT 0,10"
+          ."LIMIT 0,10"
         ;
         $result =   \Rxx\Database::query($sql);
         set_include_path(get_include_path() . PATH_SEPARATOR . 'vendor/php_pdf');
@@ -1028,7 +1029,7 @@ class Export
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            $out[] =     \Rxx\Rxx::lead($row['khz'], 7)
+            $out .=     \Rxx\Rxx::lead($row['khz'], 7)
                 .\Rxx\Rxx::pad($row['call'], 22)
                 ."0000-2400"
                 ."1234567"

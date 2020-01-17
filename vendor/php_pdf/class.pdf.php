@@ -194,7 +194,7 @@ var $checkpoint = '';
 * this will start a new document
 * @var array array of 4 numbers, defining the bottom left and upper right corner of the page. first two are normally zero.
 */
-function Cpdf ($pageSize=array(0,0,612,792)){
+function __construct($pageSize=array(0,0,612,792)){
   $this->newDocument($pageSize);
   
   // also initialize the font families that are known about already
@@ -1231,7 +1231,7 @@ function output($debug=0){
   $this->checkAllHere();
 
   $xref=array();
-  $content="%PDF-1.3\n%âãÏÓ\n";
+  $content="%PDF-1.3\n%ï¿½ï¿½ï¿½ï¿½\n";
 //  $content="%PDF-1.3\n";
   $pos=strlen($content);
   foreach($this->objects as $k=>$v){
