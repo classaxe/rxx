@@ -176,12 +176,8 @@ class Signal extends Record
         $region =       "";
         $old_link =     false;
         $link =         false;
-        $eu_link =
-             "<a title='European Reception Map' class='hover' href='./signal_map_eu/".$this->getID()."'"
-            ." onclick='return signal_map_eu(".$this->getID().")'>";
-        $na_link =
-             "<a title='North American Reception Map' class='hover' href='./signal_map_na/".$this->getID()."'"
-            ." onclick='return signal_map_na(".$this->getID().")'>";
+        $eu_link =      "<a data-signal-map-eu='".$this->getID()."'>";
+        $na_link =      "<a data-signal-map-na='".$this->getID()."'>";
         foreach ($rows as $row) {
             $heard_in = $row["heard_in"];
             $daytime =  $row["daytime"];

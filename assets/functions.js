@@ -1182,3 +1182,27 @@ function validate_YYYYMMDD(field) {
     }
     return false;
 }
+
+function setExternalLinks() {
+    $('a[data-signal-map-eu]')
+        .click(function() {
+            return window['signal_map_eu']($(this).data('signal-map-eu'));
+        })
+        .each(function() {
+            $(this).attr('href', './signal_map_eu/' + $(this).data('signal-map-eu'));
+        })
+        .attr('title', 'European Reception Map')
+        .attr('class', 'hover');
+
+    $('a[data-signal-map-na]')
+        .click(function() {
+            return window['signal_map_na']($(this).data('signal-map-na'));
+        })
+        .each(function() {
+            $(this).attr('href', './signal_map_na/' + $(this).data('signal-map-na'));
+        })
+        .attr('title', 'North American Reception Map')
+        .attr('class', 'hover');
+}
+
+$( document ).ready( setExternalLinks );
