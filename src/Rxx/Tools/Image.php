@@ -673,9 +673,6 @@ class Image
         if (!$country) {
             return;
         }
-        if (!isset(MAP_FLOOD['EU'][$country])) {
-            return;
-        }
         foreach (MAP_FLOOD['EU'][$country] as $coords) {
             ImageFill($image, $coords[0], $coords[1], $color);
         }
@@ -688,7 +685,7 @@ class Image
      */
     public static function draw_fill_country_na($country, &$image, $color)
     {
-        if (!isset(MAP_FLOOD['NA'][$country])) {
+        if (!$country) {
             return;
         }
         foreach (MAP_FLOOD['NA'][$country] as $coords) {
