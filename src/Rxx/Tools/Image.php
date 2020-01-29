@@ -20,11 +20,14 @@ namespace Rxx\Tools;
 use Rxx\Database;
 use Rxx\Rxx;
 
+// TODO: Add NA Map coords for ATG, ATN and LCA - we have listeners here
+// TODO: Fix EU Map code   for SER - should be SRB
+
 const MAP_COLORS = [
     'EU' => [
         'e8ffe8' => 'ENG,POR,DEU,ALB,HNG,TUR,LVA,ISL',
         'e8e8ff' => 'IRL,ESP,SUI,SVK,SMR,NOR',
-        'ffffc0' => 'WLS,GSY,AND,ITA,CZE,SER,MDA,RUS',
+        'ffffc0' => 'WLS,GSY,AND,ITA,CZE,SRB,MDA,RUS',
         'ffc8c8' => 'IOM,FRA,DNK,SVN,CVA,BUL,LTU',
         'ffd8ff' => 'SHE,JSY,BEL,COR,AUT,BIH,KAL,GRC,UKR,SWE',
         'ffe098' => 'SCT,LUX,SAR,HRV,MKD,BLR,GEO,FIN',
@@ -37,7 +40,7 @@ const MAP_COLORS = [
         'ffc8c8' => 'BAH,GTM,DOM',
         'ffd8ff' => 'BLZ,CTR,BER,HTI,VIR',
         'ffd898' => 'CUB,NCG,VRG',
-        'd0ffff' => 'HND,PTR'
+        'd0ffff' => 'HND,PTR,CYM'
     ]
 ];
 
@@ -46,6 +49,7 @@ const MAP_FLOOD = [
         'AND' => [[163, 560]],
         'ALB' => [[360, 575]],
         'AUT' => [[300, 490]],
+        'AZR' => [], // Appears off the map
         'BAL' => [[165, 606],[178, 597],[189, 595]],
         'BEL' => [[197, 441]],
         'BIH' => [[335, 540]],
@@ -94,10 +98,11 @@ const MAP_FLOOD = [
         'SAR' => [[242, 593]],
         'SCT' => [[68, 319],[61, 328],[73, 331],[76, 347],[74, 358],[69, 359],[83, 355],[86, 361],[100, 340],[61, 334],[60, 339]],
         'SCY' => [[300, 625]],
-        'SER' => [[370, 540]],
+        'SRB' => [[370, 540]],
         'SHE' => [[134, 268],[134, 273],[129, 278]],
         'SMR' => [[286, 550]],
         'SUI' => [[230, 495]],
+        'SVB' => [], // Appears off the map
         'SVK' => [[350, 470]],
         'SVN' => [[300, 510]],
         'SWE' => [[320, 185],[323, 336],[338, 324]],
@@ -112,6 +117,8 @@ const MAP_FLOOD = [
         'ALS' =>    [[125, 100],[96, 144]],
         'AL' =>     [[415, 360]],
         'AR' =>     [[375, 340]],
+        'ATG' =>    [],
+        'ATN' =>    [],
         'AZ' =>     [[245, 345]],
         'BAH' =>    [[475, 415],[482, 418],[477, 433],[481, 429],[489, 430],[494, 435],[503, 438],[498, 446],[506, 451],[514, 453],[513, 464],[521, 457]],
         'BC' =>     [[200, 190],[190, 220],[163, 189]],
@@ -121,6 +128,7 @@ const MAP_FLOOD = [
         'CO' =>     [[290, 310]],
         'CT' =>     [[500, 285]],
         'CTR' =>    [[435, 565]],
+        'CYM' =>    [[460, 475]],
         'CUB' =>    [[473, 457],[443, 460]],
         'DC' =>     [[475, 308]],
         'DE' =>     [[486, 311]],
@@ -141,6 +149,7 @@ const MAP_FLOOD = [
         'KS' =>     [[340, 315]],
         'KY' =>     [[420, 320]],
         'LA' =>     [[375, 370]],
+        'LCA' =>    [],
         'MA' =>     [[505, 280]],
         'MB' =>     [[350, 180]],
         'MD' =>     [[477, 304]],
@@ -670,11 +679,19 @@ class Image
      */
     public static function draw_fill_country_eu($country, &$image, $color)
     {
+        $coords = MAP_FLOOD['EU'];
+
         if (!$country) {
             return;
         }
-        foreach (MAP_FLOOD['EU'][$country] as $coords) {
-            ImageFill($image, $coords[0], $coords[1], $color);
+
+        if (!isset($coords[$country])) {
+//            print $country. ' ';
+            return;
+        }
+
+        foreach ($coords[$country] as $point) {
+            ImageFill($image, $point[0], $point[1], $color);
         }
     }
 
@@ -685,11 +702,19 @@ class Image
      */
     public static function draw_fill_country_na($country, &$image, $color)
     {
+        $coords = MAP_FLOOD['NA'];
+
         if (!$country) {
             return;
         }
-        foreach (MAP_FLOOD['NA'][$country] as $coords) {
-            ImageFill($image, $coords[0], $coords[1], $color);
+
+        if (!isset($coords[$country])) {
+//            print $country. ' ';
+            return;
+        }
+
+        foreach ($coords[$country] as $point) {
+            ImageFill($image, $point[0], $point[1], $color);
         }
     }
 
