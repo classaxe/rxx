@@ -3,5 +3,9 @@
     "psr-4": {
       "Rxx\\": "src/Rxx/"
     }
+  },
+  "require": {
+    "ext-gd": "*",
+    "ext-mysqli" : "*"
   }
 }
