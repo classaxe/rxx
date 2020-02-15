@@ -14,6 +14,9 @@ class Cle
         if (isset($_POST[$prefix."_DGPS"])) {
             $vars[] = "type_DGPS=1";
         }
+        if (isset($_POST[$prefix."_DSC"])) {
+            $vars[] = "type_DSC=1";
+        }
         if (isset($_POST[$prefix."_HAMBCN"])) {
             $vars[] = "type_HAMBCN=1";
         }
@@ -352,6 +355,7 @@ class Cle
                 ."    <th>Types</th>\n"
                 ."    <td>\n"
                 ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_1_type_DGPS'    id='world_range_1_type_DGPS'         ".(strpos($a_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#FFB000;'><input type='checkbox' name='world_range_1_type_DSC'     id='world_range_1_type_type_DSC'     ".(strpos($a_type, 'type_DSC=1')===false ? '' : " checked='checked'")." />DSC</label><br />\n"
                 ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_1_type_HAMBCN'  id='world_range_1_type_type_HAMBCN'  ".(strpos($a_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
                 ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_1_type_NAVTEX'  id='world_range_1_type_type_NAVTEX'  ".(strpos($a_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
                 ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_1_type_NDB'     id='world_range_1_type_type_NDB'     ".(strpos($a_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
@@ -360,6 +364,7 @@ class Cle
                 ."    </td>\n"
                 ."    <td>\n"
                 ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_1_type_DGPS'   id='europe_range_1_type_DGPS'        ".(strpos($eu_a_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#FFB000;'><input type='checkbox' name='europe_range_1_type_DSC'    id='europe_range_1_type_type_DSC'    ".(strpos($eu_a_type, 'type_DSC=1')===false ? '' : " checked='checked'")." />DSC</label><br />\n"
                 ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_1_type_HAMBCN' id='europe_range_1_type_type_HAMBCN' ".(strpos($eu_a_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
                 ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_1_type_NAVTEX' id='europe_range_1_type_type_NAVTEX' ".(strpos($eu_a_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
                 ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_1_type_NDB'    id='europe_range_1_type_type_NDB'    ".(strpos($eu_a_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
@@ -368,6 +373,7 @@ class Cle
                 ."    </td>\n"
                 ."    <td>\n"
                 ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='world_range_2_type_DGPS'    id='world_range_2_type_DGPS'         ".(strpos($b_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#FFB000;'><input type='checkbox' name='world_range_2_type_DSC'     id='world_range_2_type_type_DSC'     ".(strpos($b_type, 'type_DSC=1')===false ? '' : " checked='checked'")." />DSC</label><br />\n"
                 ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='world_range_2_type_HAMBCN'  id='world_range_2_type_type_HAMBCN'  ".(strpos($b_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
                 ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='world_range_2_type_NAVTEX'  id='world_range_2_type_type_NAVTEX'  ".(strpos($b_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
                 ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='world_range_2_type_NDB'     id='world_range_2_type_type_NDB'     ".(strpos($b_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
@@ -376,6 +382,7 @@ class Cle
                 ."    </td>\n"
                 ."    <td>\n"
                 ."      <label style='width:75px;background:#00D8FF;'><input type='checkbox' name='europe_range_2_type_DGPS'   id='europe_range_2_type_DGPS'        ".(strpos($eu_b_type, 'type_DGPS=1')===false ? '' : " checked='checked'")." />DGPS</label><br />\n"
+                ."      <label style='width:75px;background:#FFB000;'><input type='checkbox' name='europe_range_2_type_DSC'    id='europe_range_2_type_type_DSC'    ".(strpos($eu_b_type, 'type_DSC=1')===false ? '' : " checked='checked'")." />DSC</label><br />\n"
                 ."      <label style='width:75px;background:#B8FFC0;'><input type='checkbox' name='europe_range_2_type_HAMBCN' id='europe_range_2_type_type_HAMBCN' ".(strpos($eu_b_type, 'type_HAMBCN=1')===false ? '' : " checked='checked'")." />HAMBCN</label><br />\n"
                 ."      <label style='width:75px;background:#FFB8D8;'><input type='checkbox' name='europe_range_2_type_NAVTEX' id='europe_range_2_type_type_NAVTEX' ".(strpos($eu_b_type, 'type_NAVTEX=1')===false ? '' : " checked='checked'")." />NAVTEX</label><br />\n"
                 ."      <label style='width:75px;background:#FFFFFF;'><input type='checkbox' name='europe_range_2_type_NDB'    id='europe_range_2_type_type_NDB'    ".(strpos($eu_b_type, 'type_NDB=1')===false ? '' : " checked='checked'")." />NDB</label><br />\n"
