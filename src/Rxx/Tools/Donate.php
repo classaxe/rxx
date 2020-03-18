@@ -30,7 +30,7 @@ class Donate
             ." in terms of equipment and server-room rackspace costs.</p>"
             ."<p style='text-align:center'>\n"
             ."<img src=\"".BASE_PATH."assets/img/server.png\" alt=\"DL38-G5 server hosting RXX system\" style='float:none'><br>\n"
-            ."<i>HP / Compaq DL380-G5 used to host RXX system</i></p>"
+            ."<i>HP / Compaq DL380-G5 formerly used to host RXX system - we're now cloud based</i></p>"
             ."<h3>Donate Via Paypal:</h3>\n"
             ."<p>The Paypal button below is offered exclusively to those who specifically wish"
             ." to offer financial support to offset some of these costs.</p>\n"
@@ -44,17 +44,10 @@ class Donate
             ." border=\"0\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online!\">\n"
             ."<img alt=\"\ border=\"0\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" height=\"1\">\n"
             ."</div></form>\n"
-            ."<h3>Donate By Mail</h3>\n"
-            ."<p>For those of you who would rather mail a cheque, could you please make it"
-            ." out to 'ClassAxe Multimedia Inc.', and send it to the following address:</p>\n"
-            ."<address><strong>ClassAxe Multimedia Inc.</strong><br />\n"
-            ."c/o: 264 Conestoga Avenue<br />\n"
-            ."Richmond Hill, ON<br />\n"
-            ."L4C 2H2, Canada</address>\n"
             ."<p>Sincere thanks to you for visiting and using this site, and whether you choose to donate"
             ." to its upkeep or not, please be blessed by it - you are the reason this site even exists.</p>"
-            ."<p>Respectfully yours,<br />\n"
-            ."Martin Francis<br /><br />(August 23<sup>rd</sup>, 2013)</p>"
+            ."<p>Blessings,<br />\n"
+            ."Martin Francis<br /><br />(March 18<sup>th</sup>, 2019)</p>"
             ;
 
     }

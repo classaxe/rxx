@@ -549,10 +549,7 @@ class Rxx
      */
     public static function main()
     {
-        global $mode, $submode, $script;
-        global $system;
-
-
+        global $mode;
         switch ($mode) {
             case 'admin_manage':
                 $Obj = new Managers\Admin;
@@ -662,6 +659,7 @@ class Rxx
             ."<script src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
+            .\Rxx\Rxx::new_classic(system, $mode)
             ."<table cellpadding='10' cellspacing='0' width='651' class='titleTable'>\n"
             ."  <tr>\n"
             ."    <td align='center'>"
@@ -2105,6 +2103,55 @@ class Rxx
         return $D;
     }
 
+    public static function new_classic($system, $mode)
+    {
+        $show = Rxx::get_var('show');
+        $sys = strtolower($system);
+        $response = [ 'type' => 'url', 'value' => '' ];
+        switch($mode) {
+            case 'cle':
+            case 'help':
+            case 'maps':
+            $response['value'] = $mode;
+                break;
+            case 'listener_list':
+                $response['value'] = "listeners";
+                break;
+            case 'logon':
+                $response['value'] = "admin/logon";
+                break;
+            case 'signal_list':
+                $response['value'] = "signals" . ($show ? '?show=' . $show : '');
+                break;
+            case 'signal_seeklist':
+                $response['value'] = "signals?show=seeklist";
+                break;
+            case 'donate':
+            case 'poll_list':
+            case 'tools':
+                $response = [ 'type' => 'alert', 'value' => 'Not yet implemented.' ];
+                break;
+            case 'awards':
+                $response = [ 'type' => 'alert', 'value' => 'Awards for each listener are shown in their detail screens.' ];
+                break;
+            case 'stats':
+                $response = [ 'type' => 'alert', 'value' => 'Stats for each listener are shown in their detail screens.' ];
+                break;
+            case 'weather':
+                $response = [ 'type' => 'alert', 'value' => 'Not yet implemented.\n\nHowever, you can find localised weather reports for each Listener and Signal in their respective detail screens.' ];
+                break;
+        }
+        $html =
+              "<div class=\"version\">\n"
+            . "    <strong>Version:</strong> [\n"
+            . "    <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> |\n"
+            . "    <a href=\""
+            . ($response['type'] === 'url' ? "//rxx.classaxe.com/en/$sys/" . $response['value'] : "#\" onclick=\"alert('" . $response['value'] . "');return false;")
+            . "\">New</a>\n"
+            . "]\n"
+            . "</div>";
+        return $html;
+    }
     /**
      * @param $text
      * @param $places
