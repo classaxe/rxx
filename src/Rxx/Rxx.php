@@ -2141,14 +2141,16 @@ class Rxx
                 $response = [ 'type' => 'alert', 'value' => 'Not yet implemented.\n\nHowever, you can find localised weather reports for each Listener and Signal in their respective detail screens.' ];
                 break;
         }
+
         $html =
-              "<div class=\"version\">\n"
-            . "    <strong>Version:</strong> [\n"
-            . "    <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> |\n"
-            . "    <a href=\""
+            "<div class=\"version\">\n"
+            . "    <strong>Version:</strong> " . exec('git describe --tags') . " &nbsp;  &nbsp; &nbsp; "
+            . "    <strong>Switch:</strong> [\n"
+            ."        <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> |\n"
+            ."       <a href=\""
             . ($response['type'] === 'url' ? "//rxx.classaxe.com/en/$sys/" . $response['value'] : "#\" onclick=\"alert('" . $response['value'] . "');return false;")
             . "\">New</a>\n"
-            . "]\n"
+            . "]</div>\n"
             . "</div>";
         return $html;
     }
