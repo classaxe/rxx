@@ -105,9 +105,9 @@ class Listener extends Record
 
     public function updateLogCount()
     {
-        $types =  array(DGPS,DSC,HAMBCN,NAVTEX,NDB,TIME,OTHER);
         $sql =
              "SELECT\n"
+            ."    MIN(`date`) AS `log_earliest`,\n"
             ."    MAX(`date`) AS `log_latest`,\n"
             ."    COUNT(*) AS `count_logs`,\n"
             ."    COUNT(DISTINCT(`signalID`)) AS `count_signals`\n"
@@ -116,11 +116,12 @@ class Listener extends Record
             ."WHERE\n"
             ."    `listenerID` = ".$this->getID();
         $row = $this->getRecordForSql($sql);
-        $data =  array(
-            'count_logs' =>     $row["count_logs"],
-            'count_signals' =>  $row["count_signals"],
-            'log_latest' =>     $row["log_latest"]
-        );
+        $data =  [
+            'count_logs' =>     $row['count_logs'],
+            'count_signals' =>  $row['count_signals'],
+            'log_earliest' =>   $row['log_earliest'],
+            'log_latest' =>     $row['log_latest']
+        ];
         foreach (array_keys(Signal::$types) as $type) {
             $sql =
                  "SELECT\n"

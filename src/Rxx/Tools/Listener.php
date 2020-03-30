@@ -379,6 +379,12 @@ class Listener
             case "ITU_d":
                 $sortBy_SQL =    "`ITU` DESC,`SP` ASC";
                 break;
+            case "log_earliest":
+                $sortBy_SQL =    "`log_earliest`=\"0000-00-00\", `log_earliest` ASC";
+                break;
+            case "log_earliest_d":
+                $sortBy_SQL =    "`log_earliest`=\"0000-00-00\", `log_earliest` DESC";
+                break;
             case "log_latest":
                 $sortBy_SQL =    "`log_latest`=\"0000-00-00\", `log_latest` ASC";
                 break;
@@ -723,6 +729,7 @@ class Listener
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by GSQ Grid Locator Square", "GSQ", $sortBy, "GSQ", "A-Z", false)
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Time zone (relative to UTC)", "<img src='".BASE_PATH."assets/txt_timezone.gif' alt='Timezone'>", $sortBy, "timezone", "A-Z", true)
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Loggings", "Logs", $sortBy, "count_logs", "Z-A", true)
+            ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Earliest log", "Earliest Log", $sortBy, "log_earliest", "A-Z", true)
             ."    ".\Rxx\Rxx::show_sortable_column_head("Sort by Latest log", "Latest Log", $sortBy, "log_latest", "Z-A", true)
             .($type_DGPS ?   "    ".\Rxx\Rxx::show_sortable_column_head("Sort by DGPS count", "<img src='".BASE_PATH."assets/txt_DGPS.gif' alt='DGPS'>", $sortBy, "count_DGPS", "Z-A", true) : "")
             .($type_DSC ?   "    ".\Rxx\Rxx::show_sortable_column_head("Sort by DSC count", "<img src='".BASE_PATH."assets/txt_DSC.gif' alt='DSC'>", $sortBy, "count_DSC", "Z-A", true) : "")
@@ -802,6 +809,7 @@ class Listener
                     "&nbsp;"
                     )
                     ."</td>\n"
+                    ."<td nowrap>".($row["log_earliest"]!="0000-00-00" ? $row["log_earliest"] : "&nbsp;")."</td>\n"
                     ."<td nowrap>".($row["log_latest"]!="0000-00-00" ? $row["log_latest"] : "&nbsp;")."</td>\n"
                     .($type_DGPS ?   "<td bgcolor='".\Rxx\Signal::$colors[DGPS]."' nowrap align='right'>".($row["count_DGPS"]   ? $row["count_DGPS"] :   "&nbsp;")."</td>" : "")
                     .($type_DSC ?    "<td bgcolor='".\Rxx\Signal::$colors[DSC]."' nowrap align='right'>".($row["count_DSC"]   ? $row["count_DSC"] :   "&nbsp;")."</td>" : "")
