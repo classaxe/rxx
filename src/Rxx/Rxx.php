@@ -2109,10 +2109,13 @@ class Rxx
         $sys = strtolower($system);
         $response = [ 'type' => 'url', 'value' => '' ];
         switch($mode) {
+            case 'admin_help':
+                $response['value'] = 'admin/help';
+                break;
             case 'cle':
             case 'help':
             case 'maps':
-            $response['value'] = $mode;
+                $response['value'] = $mode;
                 break;
             case 'listener_list':
                 $response['value'] = "listeners";
@@ -2125,6 +2128,9 @@ class Rxx
                 break;
             case 'signal_seeklist':
                 $response['value'] = "signals?show=seeklist";
+                break;
+            case 'sys_info':
+                $response['value'] = 'admin/info';
                 break;
             case 'donate':
             case 'poll_list':
