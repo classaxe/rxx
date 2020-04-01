@@ -23,7 +23,7 @@ class Admin
 
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_signalUpdateFromLogs\"'>"
-            ." <b>Signals: Update listeners, logs, USB, LSB, Sec, and Heard In from latest log data</b>"
+            ." <b>Signals: Update listeners, logs and Heard In from latest log data</b>"
             ." (run if problems are seen)<br><br></li>\n"
 
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
@@ -120,8 +120,14 @@ class Admin
 
     protected function signalUpdateFromLogs()
     {
+        $sql = "select ID from signals;";
+        $results =    @\Rxx\Database::query($sql);
+        $affected = 0;
+
         $Obj = new \Rxx\Tools\Signal;
-        $affected = $Obj->updateFromLogs();
+        foreach ($results as $r) {
+            $affected += $Obj->updateFromLogs($r['ID'], false);
+        }
         return "<h2>Updating Signal Data from latest Logs...</h2><p>Done. $affected signals updated.</p>";
     }
 
