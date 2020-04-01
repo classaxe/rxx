@@ -1,6 +1,8 @@
 <?php
 namespace Rxx\Managers;
 
+use Rxx\Tools\Tools;
+
 class Admin
 {
     public function draw()
@@ -13,17 +15,17 @@ class Admin
             ."<input type='hidden' name='submode' value=''>\n"
             ."<input type='hidden' name='MAX_FILE_SIZE' value='800000'>\n"
             ."<h2>Administrator Management Tools</h2><br>\n<ol class='p'>\n"
+
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_signalUpdateFromGSQ\"'>"
             ." <b>Signals: Update Lat and Lon values from GSQ</b>"
             ." (use after importing new signals using phpMyAdmin)</li>\n"
+
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
-            .$url."?submode=admin_signalUpdateLogCount\"'>"
-            ." <b>Signals: Update log counts and 'Heard In' lists</b> (run periodically)</li>\n"
-            ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
-            .$url."?submode=admin_signalUpdateRegionsHeard\"'>"
-            ." <b>Signals: Update all for regions heard and heard_in lists</b>"
+            .$url."?submode=admin_signalUpdateFromLogs\"'>"
+            ." <b>Signals: Update listeners, logs, USB, LSB, Sec, and Heard In from latest log data</b>"
             ." (run if problems are seen)<br><br></li>\n"
+
             ."<li><input type='button' value='Go' onclick='this.disabled=1;document.location=\""
             .$url."?submode=admin_logsUpdateDX\"'>"
             ." <b>Logs: Recalculate all distances</b>"
@@ -56,11 +58,8 @@ class Admin
             case "admin_setDaytimeLogs":
                 $out.= $this->setDaytimeLogs();
                 break;
-            case "admin_signalUpdateRegionsHeard":
-                $out.= $this->signalUpdateRegionsHeard()." stations updated";
-                break;
-            case "admin_signalUpdateLogCount":
-                $out.= $this->signalUpdateLogCount();
+            case "admin_signalUpdateFromLogs":
+                $out.= $this->signalUpdateFromLogs();
                 break;
             case "admin_signalUpdateFromGSQ":
                 $out.= $this->signalUpdateFromGSQ();
@@ -119,51 +118,11 @@ class Admin
 
 
 
-    protected function signalUpdateRegionsHeard()
+    protected function signalUpdateFromLogs()
     {
-        $sql =
-             "UPDATE\n"
-            ."  `signals`\n"
-            ."SET\n"
-            ."  `heard_in_af` =	0,\n"
-            ."  `heard_in_an` =	0,\n"
-            ."  `heard_in_as` =	0,\n"
-            ."  `heard_in_ca` =	0,\n"
-            ."  `heard_in_eu` =	0,\n"
-            ."  `heard_in_iw` =	0,\n"
-            ."  `heard_in_na` =	0,\n"
-            ."  `heard_in_oc` =	0,\n"
-            ."  `heard_in_sa` =	0,\n"
-            ."  `heard_in` =	'',\n"
-            ."  `heard_in_html` =	''\n";
-        \Rxx\Database::query($sql);
-
-        $sql =
-             "SELECT DISTINCT\n"
-            ."  `region`,\n"
-            ."  `signalID`\n"
-            ."FROM\n"
-            ."  `logs`\n";
-        $result =    @\Rxx\Database::query($sql);
-
-        $affected =    \Rxx\Database::numRows($result);
-        $signal = new \Rxx\Signal;
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            $ID =    $row['signalID'];
-            $region =    $row['region'];
-            $signal->setID($ID);
-            $signal->updateHeardInList();
-            $sql =
-                 "UPDATE\n"
-                ."  `signals`\n"
-                ."SET\n"
-                ."  `heard_in_".$region."` = 1\n"
-                ."WHERE\n"
-                ."  `ID` = \"$ID\"";
-            \Rxx\Database::query($sql);
-        }
-        return $affected;
+        $Obj = new \Rxx\Tools\Signal;
+        $affected = $Obj->updateFromLogs();
+        return "<h2>Updating Signal Data from latest Logs...</h2><p>Done. $affected signals updated.</p>";
     }
 
 
@@ -303,50 +262,6 @@ class Admin
              "</table>\n"
             ."</form>\n";
         return $out;
-    }
-
-
-    protected function signalUpdateLogCount()
-    {
-        set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $updated =    0;
-        $sql =
-             "SELECT\n"
-            ."  `ID`"
-            ."FROM\n"
-            ."  `signals`";
-        $result =    \Rxx\Database::query($sql);
-        $signal = new \Rxx\Signal;
-        for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            $ID =    $row["ID"];
-            $sql =
-                 "SELECT\n"
-                ."  COUNT(*) as `logs`\n"
-                ."FROM\n"
-                ."  `logs`\n"
-                ."WHERE\n"
-                ."  `signalID` = ".$ID." AND\n"
-                ."  `listenerID` != ''";
-            $result2 =    @\Rxx\Database::query($sql);
-            $row =    \Rxx\Database::fetchArray($result2, MYSQLI_ASSOC);
-            $logs =    $row["logs"];
-            $signal->setID($ID);
-            $signal->updateHeardInList();
-
-            $sql =
-                 "UPDATE\n"
-                ."  `signals`\n"
-                ."SET\n"
-                ."  `logs` = $logs\n"
-                ."WHERE\n"
-                ."  `ID` = \"$ID\"";
-            \Rxx\Database::query($sql);
-            if (\Rxx\Database::affectedRows()) {
-                $updated++;
-            }
-        }
-        return "<h2>Updating Log Counts...</h2><br><br><p>Done. $updated signals updated.</p>";
     }
 
 

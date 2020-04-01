@@ -1003,6 +1003,14 @@ class SignalList
                 ."<td>"
                 .($heard_in ? $heard_in : "&nbsp;")
                 ."</td>\n"
+                 ."<td align='right'>"
+                 .($row["listeners"] ?
+                     "<a href=\"".system_URL."/signal_listeners/".$row["ID"]."\""
+                     ." onclick='signal_listeners(\"".$row["ID"]."\");return false;'><b>".$row["listeners"]."</b></a>"
+                     :
+                     "&nbsp;"
+                 )
+                 ."</td>\n"
                 ."<td align='right'>"
                 .($row["logs"] ?
                      "<a href=\"".system_URL."/signal_log/".$row["ID"]."\""
@@ -1065,9 +1073,10 @@ class SignalList
             'pwr|1|Sort by Transmitter Power|PWR',
             'notes|0|Sort by Notes column|Notes',
             'heard_in|0|Sort by \'Heard In\' column|Heard In <i>(Daytime reception is <b>bold</b>)</i>',
-            'logs|0|Sort by number of times logged|Logs',
+            'listeners|1|Sort by number of listener who have logged|Listeners',
+            'logs|1|Sort by number of times logged|Logs',
             'first_heard|1|Sort by date first logged (YYYY-MM-DD)|First Logged',
-            'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Logged'
+            'last_heard|1|Sort by date last logged (YYYY-MM-DD)|Last Logged',
         );
         $html =
              "  <thead>\n"
@@ -2060,6 +2069,14 @@ class SignalList
             case "last_heard_d":
                 $this->sql_sort_by =
                     "`last_heard` IS NULL, `last_heard` DESC";
+                break;
+            case "listeners":
+                $this->sql_sort_by =
+                    "`active` DESC, `listeners` IS NULL, `listeners` ASC";
+                break;
+            case "listeners_d":
+                $this->sql_sort_by =
+                    "`active` DESC, `listeners` IS NULL, `listeners` DESC";
                 break;
             case "logs":
                 $this->sql_sort_by =
