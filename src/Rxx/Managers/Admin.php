@@ -120,15 +120,22 @@ class Admin
 
     protected function signalUpdateFromLogs()
     {
-        $sql = "select ID from signals;";
-        $results =    @\Rxx\Database::query($sql);
-        $affected = 0;
-
+        // 100MB used with specs, 4MB without
+        $update_specs = false; // RXX live runs out of memory otherwise
         $Obj = new \Rxx\Tools\Signal;
-        foreach ($results as $r) {
-            $affected += $Obj->updateFromLogs($r['ID'], false);
+
+        if ($update_specs) {
+            $affected = $Obj->updateFromLogs(false, true);
+        } else {
+            $sql = "select ID from signals;";
+            $results =    @\Rxx\Database::query($sql);
+            $affected = 0;
+            foreach ($results as $r) {
+                $affected += $Obj->updateFromLogs($r['ID'], false);
+            }
         }
-        return "<h2>Updating Signal Data from latest Logs...</h2><p>Done. $affected signals updated.</p>";
+        $mem = number_format(memory_get_peak_usage());
+        return "<h2>Updating Signal Data from latest Logs...</h2><p>Done. $affected signals updated - $mem bytes of memory used.</p>";
     }
 
 

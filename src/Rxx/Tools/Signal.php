@@ -1417,11 +1417,11 @@ EOD;
         return $out;
     }
 
-    public function updateFromLogs($signalId = false, $withSpecs = false)
+    public function updateFromLogs($signalId = false, $updateSpecs = false)
     {
         $logsHeardIn =      $this->getLogsHeardIn($signalId);
         $logsStats =        $this->getLogsStats($signalId);
-        if ($withSpecs) {
+        if ($updateSpecs) {
             $logsLatestSpec =   $this->getLogsLatestSpec($signalId);
         }
 
@@ -1465,7 +1465,7 @@ EOD;
         foreach ($logsStats as $signalID => $stats) {
             $data[$signalID] = array_merge($data[$signalID], $stats);
         }
-        if ($withSpecs) {
+        if ($updateSpecs) {
             foreach ($logsLatestSpec as $signalID => $spec) {
                 $data[$signalID] = array_merge($data[$signalID], $spec);
             }
@@ -1476,9 +1476,9 @@ EOD;
 UPDATE
     signals
 SET
-" . ($withSpecs && $s['LSB'] !== null ? "    `LSB` =             '" . addslashes($s['LSB']) . "',\n" : '') ."
-" . ($withSpecs && $s['USB'] !== null ? "    `USB` =             '" . addslashes($s['USB']) . "',\n" : '') ."
-" . ($withSpecs && $s['sec'] !== null ? "    `sec` =             '" . addslashes($s['sec']) . "',\n" : '') ."
+" . ($updateSpecs && $s['LSB'] !== null ? "    `LSB` =             '" . addslashes($s['LSB']) . "',\n" : '') ."
+" . ($updateSpecs && $s['USB'] !== null ? "    `USB` =             '" . addslashes($s['USB']) . "',\n" : '') ."
+" . ($updateSpecs && $s['sec'] !== null ? "    `sec` =             '" . addslashes($s['sec']) . "',\n" : '') ."
     `first_heard` =     '{$s['first_heard']}',
     `heard_in` =        '" . addslashes($s['heard_in']) . "',
     `heard_in_html` =   '" . addslashes($s['heard_in_html']) . "',
