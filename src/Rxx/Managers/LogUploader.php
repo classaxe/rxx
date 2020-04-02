@@ -1445,31 +1445,11 @@ class LogUploader
                 }
                 $log = new \Rxx\Log;
                 $log->insert($data);
-                $ObjSignal->setAsHeardInRegion($this->listener->record["region"]);
                 $this->stats['first_for_state_or_itu']++;
                 $this->stats['first_for_listener']++;
             }
             $ObjSignal->updateHeardInList();
-            $logStats =     $ObjSignal->getLogsAndLastHeardDate();
-            $logs =         $logStats['logs'];
-            $first_heard =  $logStats['first_heard'];
-            $last_heard =   $logStats['last_heard'];
-
-
             $this->stats['latest_for_signal']++;
-            \Rxx\Tools\Signal::signal_update_full(
-                $ID[$i],
-                $LSB[$i],
-                $LSB_approx[$i],
-                $USB[$i],
-                $USB_approx[$i],
-                $sec[$i],
-                htmlentities($fmt[$i]),
-                $logs,
-                $first_heard,
-                $last_heard,
-                $this->listener->record["region"]
-            );
         }
     }
 

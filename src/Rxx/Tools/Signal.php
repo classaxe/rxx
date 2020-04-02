@@ -861,70 +861,88 @@ class Signal
                 $ID = array_pop($path_arr);
             }
         }
-        $out =    array();
-        $merged =    0;
+        $merged =   0;
+
+        $sql =      "SELECT * FROM `signals` WHERE `ID` = '".addslashes($ID)."'";
+        $result =   \Rxx\Database::query($sql);
+        $row =      \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+        $source =   (float)$row['khz'] . "-" . $row['call'];
+
         switch($submode) {
             case "merge":
-                $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
-                $result =   \Rxx\Database::query($sql);
-                $merged =   \Rxx\Database::affectedRows();
-                $signal =   new \Rxx\Signal($ID);
-                $signal->updateHeardInList();
+                if ($ID === $destinationID) {
+                    print "<p>Error - source is same as destination.</p>";
+                    $submode = "";
+                } else {
+                    $sql =      "UPDATE `logs` SET `signalID` = ".addslashes($destinationID)." WHERE `signalID` = ".addslashes($ID);
+                    $result =   \Rxx\Database::query($sql);
+                    $merged =   \Rxx\Database::affectedRows();
 
-                $sql =    "select count(*) as `logs` from `logs` where `signalID` = $ID";
-                $result =    \Rxx\Database::query($sql);
-                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-                $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $ID";
-                $result =    \Rxx\Database::query($sql);
 
-                $signal =   new \Rxx\Signal($destinationID);
-                $signal->updateHeardInList();
+                    $signal = new \Rxx\Signal($ID);
+                    $signal->delete();
 
-                $sql =    "select count(*) as `logs` from `logs` where `signalID` = $destinationID";
-                $result =    \Rxx\Database::query($sql);
-                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-                $sql =    "UPDATE `signals` SET `logs` = ".$row['logs']." WHERE `ID` = $destinationID";
-                $result =    \Rxx\Database::query($sql);
-
-                break;
+                    $signal = new \Rxx\Signal;
+                    $signal->updateFromLogs($destinationID, false);
+                    break;
+                }
         }
 
-        $out[] =    "<h1>Signal Merge</h1><br>\n";
-        $out[] =    "<p>This function moves <b>all</b> logs for the selected signal to another signal record. It should be used only to combine logs entered against duplicate records for the same signal. This operation is NOT reversible.</p>";
-        $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($ID)."'";
-        $result =    \Rxx\Database::query($sql);
-        $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-        $out[] =    "<form action='".system_URL."/".$mode."/".$ID."?submode=merge' method='POST'>\n";
-        $out[] =    "<h2>Source Signal:</h2><br>\n";
-        $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
-        $out[] =    "<h2>Destination Signal:</h2><br>\n";
-
-        if ($submode!="merge") {
-            $out[] =    "<select name='destinationID' style='font-family: monospace;' class='formField'>\n";
-            $sql =    "SELECT `ID`,`khz`,`call`,`SP`,`ITU` FROM `signals` ORDER BY `khz`,`call`,`ITU`,`SP`";
-            $result =    @\Rxx\Database::query($sql);
-            for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
-                $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-                $out[] =
-                     "<option value='".$row['ID']."'".($ID==$row['ID'] ? " selected" : "").">"
-                    .\Rxx\Rxx::pad_nbsp((float)$row['khz'], 10)
-                    .\Rxx\Rxx::pad_nbsp($row['call'], 12)." "
-                    .\Rxx\Rxx::pad_nbsp($row['SP'], 3)
-                    .$row['ITU']
-                    ."</option>\n";
+        $options = false;
+        if ($submode != "merge") {
+            $sql = "SELECT `ID`,`khz`,`call`,`SP`,`ITU` FROM `signals` ORDER BY `khz`,`call`,`ITU`,`SP`";
+            $rows = @\Rxx\Database::query($sql);
+            foreach ($rows as $row) {
+                $options[] =
+                    "<option value='" . $row['ID'] . "'" . ($ID == $row['ID'] ? " selected" : "") . ">"
+                    . \Rxx\Rxx::pad_nbsp((float)$row['khz'], 10)
+                    . \Rxx\Rxx::pad_nbsp($row['call'], 12) . " "
+                    . \Rxx\Rxx::pad_nbsp($row['SP'], 3)
+                    . $row['ITU']
+                    . "</option>";
             }
-            $out[] =    "</select>\n";
-            $out[] =    "<input type='submit' value='Go' class='formButton'>\n";
         } else {
-            $sql =    "SELECT * FROM `signals` WHERE `ID` = '".addslashes($destinationID)."'";
-            $result =    \Rxx\Database::query($sql);
-            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            $out[] =    "<p>".(float)$row['khz']."-".$row['call']."</p>\n";
-            $out[] =    "<h2>Result</h2><p>$merged log(s) were moved to the signal record given.";
-            $out[] =    "<p align='center'><input type='button' value='Close' onClick='window.close();'></p>";
+            $sql =      "SELECT * FROM `signals` WHERE `ID` = '".addslashes($destinationID)."'";
+            $result =   \Rxx\Database::query($sql);
+            $row =      \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+            $destination =   (float)$row['khz'] . "-" . $row['call'];
         }
-        $out[] =    "</form>\n";
-        return implode($out, "");
+        $out =
+            "<div style='padding: 1em'>"
+            . "<h1>Signal Merge</h1><br>\n"
+            . ($submode !== 'merge' ?
+                 "<p>This function moves <b>all</b> logs for the selected signal to another signal record.</p>"
+                ." <p>The Source signal will be deleted and all its logs will be moved to the new signal.</p>"
+                ." <p>This operation is <strong>NOT</strong> reversible.</p>"
+                . "<form action='".system_URL."/".$mode."/".$ID."?submode=merge' method='POST'>\n"
+                . "<table border='1' cellspacing='0' cellpadding='5'>\n"
+                . "  <thead>\n"
+                . "    <tr>\n"
+                . "      <th>Source Signal</th>\n"
+                . "      <th>Destination Signal</th>\n"
+                . "    </tr>\n"
+                . "  </thead>\n"
+                . "  <tbody>\n"
+                . "    <tr>\n"
+                . "      <td valign='top'>$source</td>\n"
+                . "      <td valign='top'>"
+                . "<select name='destinationID' id='sourceID' size='5' style='font-family: monospace;' class='formField'>\n"
+                . implode("\n", $options) ."\n"
+                . "</select></td>\n"
+                . "    </tr>\n"
+                . "  </tbody>\n"
+                . "</table>\n"
+                . "<p class='txt_c'>\n"
+                . "<input type='submit' value='Merge Signals' class='formButton'"
+                . " onclick=\"return confirm('Merge these two signals and PERMANENTLY delete $source from the database?')\">\n"
+                . "</p>"
+                . "</form>\n"
+            :
+                "<p>$merged log"  .($merged === 1 ? '' : 's') . " were moved from $source to $destination, and signal $source was deleted.</p>"
+                . "<p align='center'><input type='button' value='Close' onClick='window.close();'></p>"
+            );
+        $out .=    "</div>\n";
+        return $out;
     }
 
     /**
@@ -1023,46 +1041,6 @@ class Signal
             ."  </tr>\n"
             ."</table>\n";
         return $out;
-    }
-
-    /**
-     * @param $ID
-     * @param $LSB
-     * @param $LSB_approx
-     * @param $USB
-     * @param $USB_approx
-     * @param $sec
-     * @param $fmt
-     * @param $logs
-     * @param $last_heard
-     * @param $region
-     */
-    public static function signal_update_full(
-        $ID, $LSB, $LSB_approx, $USB, $USB_approx, $sec, $fmt, $logs, $first_heard, $last_heard, $region
-    ) {
-        $sql =
-            "UPDATE `signals` SET\n"
-            .($LSB!="" ?
-                "  `LSB` = \"$LSB\",\n"
-                ."  `LSB_approx` = \"".$LSB_approx."\",\n"
-              :
-                ""
-            )
-            .($USB!="" ?
-                "  `USB` = \"$USB\",\n"
-                ."  `USB_approx` = \"".$USB_approx."\",\n"
-              :
-                ""
-            )
-            .($sec!="" ?      "  `sec` =	\"$sec\",\n" : "")
-            .($fmt ?      "  `format` =	\"".$fmt."\",\n" : "")
-            ."  `heard_in_$region` = 1,\n"
-            ."  `logs` = $logs,\n"
-            ."  `first_heard` = \"$first_heard\",\n"
-            ."  `last_heard` = \"$last_heard\"\n"
-            ."WHERE `ID` = '$ID'";
-        \Rxx\Database::query($sql);
-        //print "<pre>$sql</pre>";
     }
 
     /**
@@ -1318,181 +1296,5 @@ class Signal
 //  $out[] =	"<pre>$sql</pre>";
 
         return $out;
-    }
-
-    public function array_group_by($key, $data) {
-        $result = [];
-        foreach ($data as $val) {
-            if (array_key_exists($key, $val)) {
-                $result[$val[$key]][] = $val;
-            } else {
-                $result[''][] = $val;
-            }
-        }
-        return $result;
-    }
-
-    private function getLogsHeardIn($signalId = false)
-    {
-        $WHERE = ($signalId ? "WHERE\n    signalID = $signalId" : '');
-        $sql = <<<EOD
-            SELECT
-                signalID,
-                heard_in,
-                MAX(daytime) AS daytime,
-                region
-            FROM
-                logs
-            $WHERE
-            GROUP BY
-                heard_in,
-                region,
-                signalID
-            ORDER BY
-                signalID,
-                (region='na' OR region='ca' OR (region='oc' AND heard_in='HI')),
-                region,
-                heard_in
-EOD;
-        $results =    @\Rxx\Database::query($sql);
-        return $this->array_group_by('signalID', $results);
-    }
-
-    private function getLogsStats($signalId = false)
-    {
-        $WHERE = ($signalId ? "WHERE\n    signalID = $signalId" : '');
-        $sql = <<<EOD
-            SELECT
-                signalID,
-                COUNT(*) AS count_logs,
-                COUNT(DISTINCT listenerID) as count_listeners,
-                MIN(`date`) as first_heard,
-                MAX(`date`) as last_heard
-            FROM
-                logs
-            $WHERE
-            GROUP BY
-                signalID
-EOD;
-        $results =    @\Rxx\Database::query($sql);
-        $out = [];
-        foreach ($results as $r) {
-            $out[$r['signalID']] = [
-                'first_heard' =>    $r['first_heard'],
-                'last_heard' =>     $r['last_heard'],
-                'logs' =>           $r['count_logs'],
-                'listeners' =>      $r['count_listeners']
-            ];
-        }
-        return $out;
-    }
-
-    private function getLogsLatestSpec($signalId = false)
-    {
-        $sql = <<<EOD
-SELECT
-    signalID,
-    (SELECT LSB    FROM logs l WHERE l.signalID = logs.signalID AND (l.LSB    IS NOT NULL AND l.LSB    != 0) AND (l.LSB_approx IS NULL OR l.LSB_approx = '') ORDER BY l.date DESC LIMIT 1) as LSB,
-    (SELECT USB    FROM logs l WHERE l.signalID = logs.signalID AND (l.USB    IS NOT NULL AND l.USB    != 0) AND (l.USB_approx IS NULL OR l.USB_approx = '') ORDER BY l.date DESC LIMIT 1) as USB,
-    (SELECT sec    FROM logs l WHERE l.signalID = logs.signalID AND (l.sec    IS NOT NULL AND l.sec    != '') ORDER BY l.date DESC LIMIT 1) as sec
-FROM
-    logs
-GROUP BY
-    signalID
-EOD;
-        if ($signalId) {
-            $sql = str_replace('GROUP BY', "WHERE\n    logs.signalID = $signalId\nGROUP BY", $sql);
-        }
-
-        $results =    @\Rxx\Database::query($sql);
-
-        $out = [];
-        foreach ($results as $r) {
-            $out[$r['signalID']] = [
-                'LSB' =>    $r['LSB'],
-                'USB' =>    $r['USB'],
-                'sec' =>    $r['sec']
-            ];
-        }
-        return $out;
-    }
-
-    public function updateFromLogs($signalId = false, $updateSpecs = false)
-    {
-        $logsHeardIn =      $this->getLogsHeardIn($signalId);
-        $logsStats =        $this->getLogsStats($signalId);
-        if ($updateSpecs) {
-            $logsLatestSpec =   $this->getLogsLatestSpec($signalId);
-        }
-
-        $data =         [];
-        foreach ($logsHeardIn as $signalID => $result) {
-            $heardIn =      [];
-            $old_link =     false;
-            $link =         false;
-            foreach ($result as $row) {
-                switch ($row["region"]) {
-                    case "ca":
-                    case "na":
-                        $link = "<a data-signal-map-na='%s'>";
-                        break;
-                    case "oc":
-                        if ('HI' === $row["heard_in"]) {
-                            $link = "<a data-signal-map-na='%s'>";
-                        }
-                        break;
-                    case "eu":
-                        $link = "<a data-signal-map-eu='%s'>";
-                        break;
-                    default:
-                        $link = false;
-                }
-                $heardIn[] =
-                    ($old_link && ($link !== $old_link) ? '</a>' : ' ')
-                    . ($link && ($link !== $old_link) ? sprintf($link, $row['signalID']) : '')
-                    . ($row["daytime"] ? sprintf("<b>%s</b>", $row["heard_in"]) : $row["heard_in"]);
-                $old_link = $link;
-            }
-            if ($link !== false) {
-                $heardIn[] = "</a>";
-            }
-            $data[$row['signalID']] = [
-                'id' =>             $row['signalID'],
-                'heard_in' =>       trim(strip_tags(implode('', $heardIn))),
-                'heard_in_html' =>  trim(implode('', $heardIn))
-            ];
-        }
-        foreach ($logsStats as $signalID => $stats) {
-            $data[$signalID] = array_merge($data[$signalID], $stats);
-        }
-        if ($updateSpecs) {
-            foreach ($logsLatestSpec as $signalID => $spec) {
-                $data[$signalID] = array_merge($data[$signalID], $spec);
-            }
-        }
-        $affected = 0;
-        foreach ($data as $signalID => $s) {
-            $sql = "
-UPDATE
-    signals
-SET
-" . ($updateSpecs && $s['LSB'] !== null ? "    `LSB` =             '" . addslashes($s['LSB']) . "',\n" : '') ."
-" . ($updateSpecs && $s['USB'] !== null ? "    `USB` =             '" . addslashes($s['USB']) . "',\n" : '') ."
-" . ($updateSpecs && $s['sec'] !== null ? "    `sec` =             '" . addslashes($s['sec']) . "',\n" : '') ."
-    `first_heard` =     '{$s['first_heard']}',
-    `heard_in` =        '" . addslashes($s['heard_in']) . "',
-    `heard_in_html` =   '" . addslashes($s['heard_in_html']) . "',
-    `last_heard` =      '" . addslashes($s['last_heard']) . "',
-    `logs` =            '" . addslashes($s['logs']) . "',
-    `listeners` =       '" . addslashes($s['listeners']) . "'
-WHERE
-    ID =                $signalID";
-
-            \Rxx\Database::query($sql);
-            if (\Rxx\Database::affectedRows()) {
-                $affected += 1;
-            }
-        }
-        return $affected;
     }
 }

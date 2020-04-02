@@ -122,16 +122,16 @@ class Admin
     {
         // 100MB used with specs, 4MB without
         $update_specs = false; // RXX live runs out of memory otherwise
-        $Obj = new \Rxx\Tools\Signal;
+        $signal = new \Rxx\Signal;
 
         if ($update_specs) {
-            $affected = $Obj->updateFromLogs(false, true);
+            $affected = $signal->updateFromLogs(false, true);
         } else {
             $sql = "select ID from signals;";
             $results =    @\Rxx\Database::query($sql);
             $affected = 0;
             foreach ($results as $r) {
-                $affected += $Obj->updateFromLogs($r['ID'], false);
+                $affected += $signal->updateFromLogs($r['ID'], false);
             }
         }
         $mem = number_format(memory_get_peak_usage());

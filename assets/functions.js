@@ -986,7 +986,7 @@ function signal_merge(ID){
         system_URL+'/signal_merge?ID='+ID,
         'popsignalMove',
         'scrollbars=0,resizable=1,status=1',
-        640,
+        720,
         380,
         'centre'
     );
