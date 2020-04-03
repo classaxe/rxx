@@ -247,14 +247,6 @@ EOD;
         return $out;
     }
 
-    /**
-     * @return int
-     */
-    public function updateHeardInList()
-    {
-        return $this->updateFromLogs($this->getID(), true);
-    }
-
     public function updateFromLogs($signalId = false, $updateSpecs = false)
     {
         $all_regions =      ['af', 'an', 'as', 'ca', 'eu', 'iw', 'na', 'oc', 'sa'];

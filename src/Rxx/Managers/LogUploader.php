@@ -1405,17 +1405,11 @@ class LogUploader
             if (htmlentities($fmt[$i])) {
                 $data['format'] =     htmlentities($fmt[$i]);
             }
-            if ($LSB[$i] !== "") {
+            if (!$LSB_approx && $LSB[$i] !== "") {
                 $data['LSB'] =        $LSB[$i];
             }
-            if ($LSB_approx[$i]) {
-                $data['LSB_approx'] = "~";
-            }
-            if ($USB[$i] !== "") {
+            if (!$USB_approx[$i] && $USB[$i] !== "") {
                 $data['USB'] =        $USB[$i];
-            }
-            if ($USB_approx[$i]) {
-                $data['USB_approx'] = "~";
             }
             if ($sec[$i]) {
                 $data['sec'] =        $sec[$i];
@@ -1448,7 +1442,7 @@ class LogUploader
                 $this->stats['first_for_state_or_itu']++;
                 $this->stats['first_for_listener']++;
             }
-            $ObjSignal->updateHeardInList();
+            $ObjSignal->updateFromLogs($ObjSignal->getID(), false);
             $this->stats['latest_for_signal']++;
         }
     }
