@@ -1358,7 +1358,6 @@ class LogUploader
 
     private function logSubmit()
     {
-        global $log_format, $log_entries;
         global $fmt, $sec, $ID, $LSB, $LSB_approx, $USB, $USB_approx, $YYYYMMDD, $hhmm, $daytime;
 
         set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -1387,14 +1386,14 @@ class LogUploader
                 ($this->listener->isDaytime($hhmm[$i]) ? 1 : 0);
             $heardIn =
                 ($this->listener->record['SP'] ? $this->listener->record['SP'] : $this->listener->record['ITU']);
-            $data = array(
+            $data = [
                 'signalID' =>   $ID[$i],
                 'date' =>       $YYYYMMDD[$i],
                 'daytime' =>    $daytime,
                 'heard_in' =>   $heardIn,
                 'listenerID' => $this->listener->getID(),
                 'region' =>     $this->listener->record["region"]
-            );
+            ];
             $dx =       $ObjSignal->getDx($this->listener->record["lat"], $this->listener->record["lon"]);
             $dx_miles = $dx[0];
             $dx_km =    $dx[1];
@@ -1405,10 +1404,16 @@ class LogUploader
             if (htmlentities($fmt[$i])) {
                 $data['format'] =     htmlentities($fmt[$i]);
             }
-            if (!$LSB_approx && $LSB[$i] !== "") {
+            if ($LSB_approx[$i]) {
+                $data['LSB_approx'] = "~";
+            }
+            if ($LSB[$i] !== "") {
                 $data['LSB'] =        $LSB[$i];
             }
-            if (!$USB_approx[$i] && $USB[$i] !== "") {
+            if ($USB_approx[$i]) {
+                $data['USB_approx'] = "~";
+            }
+            if ($USB[$i] !== "") {
                 $data['USB'] =        $USB[$i];
             }
             if ($sec[$i]) {
@@ -1417,7 +1422,6 @@ class LogUploader
             if ($hhmm[$i]) {
                 $data['time'] =        $hhmm[$i];
             }
-
             if ($row = \Rxx\Log::checkIfHeardAtPlace($ID[$i], $heardIn)) {
                 if ($this->debug) {
                     $this->html.=    "1 ";
@@ -1442,8 +1446,15 @@ class LogUploader
                 $this->stats['first_for_state_or_itu']++;
                 $this->stats['first_for_listener']++;
             }
-            $ObjSignal->updateFromLogs($ObjSignal->getID(), false);
             $this->stats['latest_for_signal']++;
+
+            // If $deepUdate is true, signal will be updated from latest good values -
+            // may not even be from this particular log - cool but has memory issues on prod
+            $deepUpdate = false;
+            $ObjSignal->updateFromLogs($ObjSignal->getID(), $deepUpdate);
+            if (!$deepUpdate) {
+                \Rxx\Signal::signal_update_specs($data);
+            }
         }
     }
 

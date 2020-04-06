@@ -217,13 +217,13 @@ EOD;
         return $out;
     }
 
-    private function getLogsLatestSpec($signalId = false)
+    private function getLogsLatestSpecDeep($signalId = false)
     {
         $sql = <<<EOD
 SELECT
     signalID,
-    (SELECT LSB    FROM logs l WHERE l.signalID = logs.signalID AND (l.LSB    IS NOT NULL AND l.LSB    != 0) AND (l.LSB_approx IS NULL OR l.LSB_approx = '') ORDER BY l.date DESC LIMIT 1) as LSB,
-    (SELECT USB    FROM logs l WHERE l.signalID = logs.signalID AND (l.USB    IS NOT NULL AND l.USB    != 0) AND (l.USB_approx IS NULL OR l.USB_approx = '') ORDER BY l.date DESC LIMIT 1) as USB,
+    (SELECT LSB    FROM logs l WHERE l.signalID = logs.signalID AND (l.LSB    IS NOT NULL AND l.LSB    != 0) AND (l.LSB_approx IS NULL OR l.LSB_approx = '') ORDER BY l.date DESC, l.time DESC LIMIT 1) as LSB,
+    (SELECT USB    FROM logs l WHERE l.signalID = logs.signalID AND (l.USB    IS NOT NULL AND l.USB    != 0) AND (l.USB_approx IS NULL OR l.USB_approx = '') ORDER BY l.date DESC, l.time DESC LIMIT 1) as USB,
     (SELECT sec    FROM logs l WHERE l.signalID = logs.signalID AND (l.sec    IS NOT NULL AND l.sec    != '') ORDER BY l.date DESC LIMIT 1) as sec
 FROM
     logs
@@ -247,13 +247,24 @@ EOD;
         return $out;
     }
 
-    public function updateFromLogs($signalId = false, $updateSpecs = false)
+    public function updateFromLogs($signalId = false, $deepUpdate = false)
     {
+        // Without $deepUpdate:
+        /*
+         * signal.first_heard
+         * signal.last_heard
+         * signal.logs
+         * signal.listeners
+         * signal.heard_in
+         * signal.heard_in_html
+         * signal.heard_in_X
+        */
+
         $all_regions =      ['af', 'an', 'as', 'ca', 'eu', 'iw', 'na', 'oc', 'sa'];
         $logsHeardIn =      $this->getLogsHeardIn($signalId);
         $logsStats =        $this->getLogsStats($signalId);
-        if ($updateSpecs) {
-            $logsLatestSpec =   $this->getLogsLatestSpec($signalId);
+        if ($deepUpdate) {
+            $logsLatestSpec =   $this->getLogsLatestSpecDeep($signalId);
         }
 
         $data =         [];
@@ -303,7 +314,7 @@ EOD;
         foreach ($logsStats as $signalID => $stats) {
             $data[$signalID] = array_merge($data[$signalID], $stats);
         }
-        if ($updateSpecs) {
+        if ($deepUpdate) {
             foreach ($logsLatestSpec as $signalID => $spec) {
                 $data[$signalID] = array_merge($data[$signalID], $spec);
             }
@@ -313,10 +324,14 @@ EOD;
             $sql = "
 UPDATE
     signals
-SET
-" . ($updateSpecs && $s['LSB'] !== null ? "    `LSB` =             '" . addslashes($s['LSB']) . "'," : '') ."
-" . ($updateSpecs && $s['USB'] !== null ? "    `USB` =             '" . addslashes($s['USB']) . "'," : '') ."
-" . ($updateSpecs && $s['sec'] !== null ? "    `sec` =             '" . addslashes($s['sec']) . "'," : '') ."
+SET "
+    . ($deepUpdate && $s['LSB'] !== null ?
+        "\n    `LSB` =             '" . addslashes($s['LSB']) . "',\n    `LSB_approx` =       '',"
+    : '')
+    . ($deepUpdate && $s['USB'] !== null ?
+        "\n    `USB` =             '" . addslashes($s['USB']) . "',\n    `USB_approx` =       '',"
+    : '')
+    . ($deepUpdate && $s['sec'] !== null ? "\n    `sec` =             '" . addslashes($s['sec']) . "'," : '') ."
     `first_heard` =     '" . addslashes($s['first_heard']) . "',
     `heard_in` =        '" . addslashes($s['heard_in']) . "',
     `heard_in_html` =   '" . addslashes($s['heard_in_html']) . "',
@@ -334,12 +349,58 @@ SET
     `listeners` =       '" . addslashes($s['listeners']) . "'
 WHERE
     ID =                $signalID";
+//            print "<pre>" . print_r($sql, true) . "</pre>";
             \Rxx\Database::query($sql);
-            if (\Rxx\Database::affectedRows()) {
-                $affected += 1;
-            }
+            $affected += \Rxx\Database::affectedRows();
         }
         return $affected;
+    }
+
+    /**
+     * @param $data
+     */
+    public static function signal_update_specs($data)
+    {
+        $Obj =      new Signal($data['signalID']);
+        $signal =   $Obj->getRecord();
+        $values =   [];
+
+        // Always update format and sec if present
+        if (isset($data['format'])) {
+            $values[] = "`format` = '" . $data['format'] . "'";
+        }
+        if (isset($data['sec'])) {
+            $values[] = "`sec` = '" . $data['sec'] . "'";
+        }
+
+        // Update LSB - but only use approx values if we don't have a more accurate value already saved
+        if (
+            isset($data['LSB']) &&
+            (!isset($data['LSB_approx']) || $signal['LSB_approx'])
+        ) {
+            $values[] = "`LSB` = '" . $data['LSB'] . "'";
+            $values[] = "`LSB_approx` = '" . (isset($data['LSB_approx']) ? $data['LSB_approx'] : '') ."'";
+        }
+
+        // Update USB - but only use approx values if we don't have a more accurate value already saved
+        if (
+            isset($data['USB']) &&
+            (!isset($data['USB_approx']) || $signal['USB_approx'])
+        ) {
+            $values[] = "`USB` = '" . $data['USB'] . "'";
+            $values[] = "`USB_approx` = '" . (isset($data['USB_approx']) ? $data['USB_approx'] : '') ."'";
+        }
+
+        if ($values) {
+            $sql =
+                "UPDATE\n"
+                . "    `signals`\n"
+                . "SET\n"
+                . "    " . implode( ",\n    ", $values) . "\n"
+                . "WHERE\n"
+                . "    `ID` = " . $data['signalID'];
+            \Rxx\Database::query($sql);
+        }
     }
 
 }

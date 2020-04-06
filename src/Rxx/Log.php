@@ -26,7 +26,7 @@ class Log extends Record
             $data['heard_in_'.$r] = 1;
         }
         $signal->update($data);
-        $signal->updateFromLogs($this->getID(), true);
+        $signal->updateFromLogs($log["signalID"], true);
     }
 
     public static function checkIfDuplicate($signalID, $listenerID, $YYYYMMDD, $hhmm = false)
