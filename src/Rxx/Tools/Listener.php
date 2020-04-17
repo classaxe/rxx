@@ -8,6 +8,82 @@ namespace Rxx\Tools;
 
 class Listener
 {
+    const TIMEZONES = [
+        [  -12, '-12:00', 'Dateline ST',        '' ],
+        [  -11, '-11:00', 'Samoa ST',           'Midway Island, Samoa' ],
+        [  -10, '-10:00', 'Hawaiian ST',        'Hawaii' ],
+        [   -9, '-09:00', 'Alaskan ST',         'Alaska' ],
+        [   -8, '-08:00', 'Pacific ST',         'Vancouver, Los Angeles, Tijuana' ],
+        [   -7, '-07:00', 'Mountain ST',        'Calgary, Colorado, La Paz' ],
+        [   -6, '-06:00', 'Central ST',         'Winnipeg, Dallas, Mexico City' ],
+        [   -5, '-05:00', 'Eastern ST',         'Toronto, New York, Lima' ],
+        [   -4, '-04:00', 'Atlantic ST',        'Halifax' ],
+        [ -3.5, '-03:30', 'Nfld / Labrador ST', 'St Johns' ],
+        [   -3, '-03:00', 'S America ST',       'Brasilia, Greenland' ],
+        [   -2, '-02:00', 'Mid-Atlantic ST',    '' ],
+        [   -1, '-01:00', 'Azores ST',          'Azores, Cape Verde' ],
+        [    0, ' 00:00', 'UTC / GMT',          'London, Dublin, Lisbon' ],
+        [    1, '+01:00', 'Central Europe ST',  'Oslo, Paris, Warsaw' ],
+        [    2, '+02:00', 'E Europe ST',        'Helsinki, Bucharest, Jerusalem' ],
+        [    3, '+03:00', 'Russian ST',         'Moscow, Kuwait, Bagdad' ],
+        [  3.5, '+03:30', 'Iran ST',            'Tehran' ],
+        [    4, '+04:00', 'Arabian ST',         'Abu Dhabi, Yerevan' ],
+        [  4.5, '+04:30', 'Afghanistan ST',     'Kabul' ],
+        [    5, '+05:00', 'West Asia ST',       'Islamabad, Tashkent' ],
+        [  5.5, '+05:30', 'India ST',           'Mumbai, New Delhi' ],
+        [ 5.75, '+05:45', 'Nepal ST',           'Kathmandu' ],
+        [    6, '+06:00', 'Central Asia ST',    'Dhaka, Novosibirsk' ],
+        [  6.5, '+06:30', 'Myanmar ST',         'Rangoon' ],
+        [    7, '+07:00', 'SE Asia ST',         'Bangkok, Hanoi, Jakarta' ],
+        [    8, '+08:00', 'W Australia ST',     'Beijing, Perth' ],
+        [    9, '+09:00', 'Tokyo ST',           'Seoul, Tokyo' ],
+        [  9.5, '+09:30', 'C Australian ST',    'Darwin, Adelaide' ],
+        [   10, '+10:00', 'E Australia ST',     'Canberra, Sydney, Brisbane' ],
+        [   11, '+11:00', 'C Pacific ST',       'Solomon Islands, New Caledonia' ],
+        [   12, '+12:00', 'New Zealand ST',     'Auckland, Wellington' ],
+        [   13, '+13:00', 'Tonga ST',           'Tonga' ]
+    ];
+
+    public static function getTimezoneOptions($value)
+    {
+        /*
+         * TODO:
+         * Fix 'Daytime' calculations to operate in conventional order
+         * Update DB to multiply all timezone values by -1
+         * Remove the modifier code here and in RXX1
+        */
+
+        $modifier = -1;
+        $out = [];
+        foreach (static::TIMEZONES as $tz) {
+            $optVal = '' . ($tz[0] * $modifier);
+            $out[] =
+                "<option value='$optVal'" .($value === $optVal ? " selected='selected'" : '') .">"
+                . $tz[1] . ' ' . str_pad($tz[2], 20, ' ') . ' | ' . $tz[3]
+                . "</option>";
+        }
+        return implode("\n", $out);
+    }
+
+    public static function getTimezoneValue($value)
+    {
+        /*
+         * TODO:
+         * Fix 'Daytime' calculations to operate in conventional order
+         * Update DB to multiply all timezone values by -1
+         * Remove the modifier code here and in RXX1
+        */
+
+        $modifier = -1;
+        foreach (static::TIMEZONES as $tz) {
+            $optVal = '' . ($tz[0] * $modifier);
+            if ($value === $optVal) {
+                return $tz[1] . ' hr ' . $tz[2] . ' <i>(' . $tz[3] . ")</i>";
+            }
+        }
+        return '';
+    }
+
     public static function listener_edit()
     {
         global $script, $mode, $submode;
@@ -208,17 +284,8 @@ class Listener
         ."                </table></td>\n"
         ."              </tr>\n"
         ."              <tr>\n"
-        ."                <th class='downloadTableContent' align='left'>Timezone</th>\n"
-        ."                <td class='downloadTableContent'><table cellpadding='0' cellspacing='0' width='100%'>"
-        ."                  <tr>\n"
-        ."                    <td><span title='Number of hours behind UTC for Standard time (Not DST)'><b>After UTC</b></span></td>\n"
-        ."                    <td align='right'>".(\Rxx\Rxx::isAdmin() ? "<input class='formField' name='timezone' value=\"$timezone\" size='2' maxlength='3'>":($timezone!="" ? $timezone : "&nbsp;"))."</td>\n"
-        ."                  </tr>\n"
-        ."                </table></td>\n"
-        ."                <td class='downloadTableContent' align='left'><table cellpadding='0' cellspacing='0' width='100%'>"
-        ."                  <tr>\n"
-        ."                    <td><b>Primary QTH?</b></td>\n"
-        ."                    <td align='right'>"
+        ."                <th class='downloadTableContent' align='left'>Primary QTH?</th>\n"
+        ."                <td class='downloadTableContent' align='left' colspan='2'>"
         .(\Rxx\Rxx::isAdmin() ?
             "<select name='primary_QTH' class='formField'>"
             ."  <option value='0'".($primary_QTH==1 ? " selected" : "").">No</option>\n"
@@ -227,8 +294,7 @@ class Listener
             :
             ($primary_QTH ? "Yes" : "No"))
         ."</td>\n"
-        ."                  </tr>\n"
-        ."                </table></td>\n"
+        ."                </td>\n"
         ."                <td class='downloadTableContent' align='left' colspan='2'><table cellpadding='0' cellspacing='0' width='100%'>"
         ."                  <tr>\n"
         ."                    <td><b>"
@@ -241,6 +307,19 @@ class Listener
         ."                  </tr>\n"
         ."                </table></td>\n"
         ."              </tr>\n"
+
+        ."              <tr>\n"
+        ."                <th class='downloadTableContent' align='left'>Timezone</th>\n"
+        ."                <td class='downloadTableContent' colspan='4'>"
+        .(\Rxx\Rxx::isAdmin() ?
+            "<select class='formField' name='timezone' style='width: 100%'>". static::getTimezoneOptions($timezone) ."</select>"
+//            "<input class='formField' name='timezone' value=\"$timezone\" size='2' maxlength='3'>"
+        :
+            ($timezone!="" ? static::getTimezoneValue($timezone) : "&nbsp;")
+        )
+        ."</td>\n"
+        ."              </tr>\n"
+
         ."              <tr>\n"
         ."                <th class='downloadTableContent' align='left' valign='top' height='25%'>Notes</th>\n"
         ."                <td class='downloadTableContent' colspan='4'><textarea class='formField' name='notes' rows='2' cols='60' style='width: 100%; height: 95%;'>$notes</textarea></td>\n"
