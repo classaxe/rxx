@@ -21,6 +21,7 @@ class SysInfo
             $details =  implode(' ', $bits);
             $entry =    $date.'  '.\Rxx\Rxx::pad($version, 7).' '.$details;
         }
+        $countEntries = count($changelog);
         $changelog = implode("\n", $changelog);
 
         return
@@ -35,7 +36,7 @@ class SysInfo
             ."<tr><td class=\"e\">system_date</td><td class=\"v\">".system_date."</td></tr>\n"
             ."<tr><td class=\"e\">system_version</td><td class=\"v\">".system_version."</td></tr>\n"
             ."<tr><td class=\"e\">system_revision</td><td class=\"v\">".system_revision."</td></tr>\n"
-            ."<tr><td class=\"e\">Recent Changes</td><td class=\"v\"><pre>".$changelog."</pre></td></tr>\n"
+            ."<tr><td class=\"e\">Changelog (".$countEntries." items)</td><td class=\"v\"><pre>".$changelog."</pre></td></tr>\n"
             ."<tr><td class=\"e\">awardsAdminEmail</td><td class=\"v\">".awardsAdminEmail."</td></tr>\n"
             ."<tr><td class=\"e\">awardsAdminName</td><td class=\"v\">".awardsAdminName."</td></tr>\n"
             ."</table>\n"

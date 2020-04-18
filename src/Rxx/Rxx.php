@@ -737,7 +737,8 @@ class Rxx
                 .Rxx::menuItem_box("sys_info", "Info", "mode", 0, 30)
                 .Rxx::menuItem_box("admin_manage", "Manage", "mode", 0, 50)
                 ."      <th class='downloadTableContent' align='right' width='42'><font color='#004400'>NDBList</font></th>\n"
-                .Rxx::menuItem_box("http://groups.yahoo.com/group/ndblist/", "Yahoo", "", 1, 32)
+                .Rxx::menuItem_box("http://ndblist.info", "Website", "", 1, 32)
+                .Rxx::menuItem_box("https://groups.io/g/ndblist", "Groups.io", "", 1, 32)
                 ."      <th class='downloadTableContent' align='right' width='30'><font color='#004400'>XML</font></th>\n"
                 .Rxx::menuItem_box("xml_listener_stats", "Listener Stats", "mode", 1, 87)
                 .Rxx::menuItem_box("xml_signallist", "Signals", "mode", 1, 53)
@@ -2122,6 +2123,9 @@ class Rxx
         switch($mode) {
             case 'admin_help':
                 $response['value'] = 'admin/help';
+                break;
+            case 'admin_manage':
+                $response['value'] = 'admin/tools';
                 break;
             case 'cle':
             case 'help':
