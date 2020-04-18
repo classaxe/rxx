@@ -481,9 +481,9 @@ class Awards
         }
         $out=
              "<b>Daytime DX Awards (Daytime hours are "
-            .Rxx::lead_zero(1000 + $this->_listener_record['timezone']*100 % 2400, 4)
+            .Rxx::lead_zero(1000 + $this->_listener_record['timezone'] * -100 % 2400, 4)
             ." - "
-            .Rxx::lead_zero(1400 + $this->_listener_record['timezone']*100 % 2400, 4)
+            .Rxx::lead_zero(1400 + $this->_listener_record['timezone'] * -100 % 2400, 4)
             ." hrs UTC)</b><br>"
             ."This cerificate recognises long distance reception of NDBs between the hours of 1000 and 1400 local"
             ." standard time -<br>\n"

@@ -152,8 +152,8 @@ class Admin
             ."  `logs`,`listeners`\n"
             ."WHERE\n"
             ."  `logs`.`listenerID` = `listeners`.`ID` AND\n"
-            ."  (`logs`.`time`+2400 >=3400+(`listeners`.`timezone`*100) AND\n"
-            ."   `logs`.`time`+2400 < 3800+(`listeners`.`timezone`*100))\n";
+            ."  (`logs`.`time`+2400 >= 3400+(`listeners`.`timezone` * -100) AND\n"
+            ."   `logs`.`time`+2400 < 3800+(`listeners`.`timezone` * -100))\n";
         $result = @\Rxx\Database::query($sql);
         $affected = \Rxx\Database::numRows($result);
         for ($i=0; $i<$affected; $i++) {

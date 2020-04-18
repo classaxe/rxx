@@ -1727,6 +1727,17 @@ class Rxx
         return implode($out, "");
     }
 
+    public static function formatTimezone($num)
+    {
+        $sign = ($num < 0 ? '-' : '');
+        $whole = (int) $num;  // 5
+        $frac  = $num - $whole;
+
+        $hh =   self::lead_zero(abs(floor($whole)),2);
+        $mm =    abs($frac * 60);
+        return "$sign$hh:".($mm ? $mm : '00');
+    }
+
     /**
      *
      */

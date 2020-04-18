@@ -47,17 +47,9 @@ class Listener
 
     public static function getTimezoneOptions($value)
     {
-        /*
-         * TODO:
-         * Fix 'Daytime' calculations to operate in conventional order
-         * Update DB to multiply all timezone values by -1
-         * Remove the modifier code here and in RXX1
-        */
-
-        $modifier = -1;
         $out = [];
         foreach (static::TIMEZONES as $tz) {
-            $optVal = '' . ($tz[0] * $modifier);
+            $optVal = '' . $tz[0];
             $out[] =
                 "<option value='$optVal'" .($value === $optVal ? " selected='selected'" : '') .">"
                 . $tz[1] . ' ' . str_pad($tz[2], 20, ' ') . ' | ' . $tz[3]
@@ -68,16 +60,8 @@ class Listener
 
     public static function getTimezoneValue($value)
     {
-        /*
-         * TODO:
-         * Fix 'Daytime' calculations to operate in conventional order
-         * Update DB to multiply all timezone values by -1
-         * Remove the modifier code here and in RXX1
-        */
-
-        $modifier = -1;
         foreach (static::TIMEZONES as $tz) {
-            $optVal = '' . ($tz[0] * $modifier);
+            $optVal = '' . $tz[0];
             if ($value === $optVal) {
                 return $tz[1] . ' hr ' . $tz[2] . ' <i>(' . $tz[3] . ")</i>";
             }
@@ -87,7 +71,7 @@ class Listener
 
     public static function listener_edit()
     {
-        global $script, $mode, $submode;
+        global $mode, $submode;
         global $ID, $callsign, $email, $equipment, $GSQ, $ITU, $name, $notes, $QTH, $primary_QTH, $region, $SP;
         global $timezone, $website, $map_x, $map_y;
         if (!$ID) {
@@ -314,7 +298,6 @@ class Listener
         ."                <td class='downloadTableContent' colspan='4'>"
         .(\Rxx\Rxx::isAdmin() ?
             "<select class='formField' name='timezone' style='width: 100%'>". static::getTimezoneOptions($timezone) ."</select>"
-//            "<input class='formField' name='timezone' value=\"$timezone\" size='2' maxlength='3'>"
         :
             ($timezone!="" ? static::getTimezoneValue($timezone) : "&nbsp;")
         )
@@ -393,7 +376,7 @@ class Listener
 
     public static function listener_list()
     {
-        global $script, $mode, $submode, $targetID, $filter, $region, $itu, $sortBy;
+        global $mode, $submode, $targetID, $filter, $region, $itu, $sortBy;
         global $type_DGPS, $type_DSC, $type_HAMBCN, $type_NAVTEX, $type_NDB, $type_TIME, $type_OTHER;
         $listener_list_limit = 25;
         if (\Rxx\Rxx::isAdmin()) {
@@ -574,10 +557,10 @@ class Listener
                 $sortBy_SQL =    "`SP`='',`SP` DESC";
                 break;
             case "timezone":
-                $sortBy_SQL =    "`timezone`='',`timezone` ASC, `SP` ASC";
+                $sortBy_SQL =    "`timezone`='',cast(`timezone` AS DECIMAL(4,2)) ASC, `SP` ASC";
                 break;
             case "timezone_d":
-                $sortBy_SQL =    "`timezone`='',`timezone` DESC, `SP` ASC";
+                $sortBy_SQL =    "`timezone`='',cast(`timezone` AS DECIMAL(4,2)) DESC, `SP` ASC";
                 break;
             case "WWW":
                 $sortBy_SQL =    "(`website` is NULL or `website`='') ASC, `name`,`primary_QTH` DESC";
@@ -879,7 +862,7 @@ class Listener
                         "&nbsp;"
                     )."</td>\n"
                     ."<td align='right'>"
-                    .($row["timezone"]!="" ? $row["timezone"] : "&nbsp;")
+                    .($row["timezone"]!="" ? \Rxx\Rxx::formatTimezone($row["timezone"]) : "&nbsp;")
                     ."</td>\n"
                     //        ."<td>".($notes ? $notes : "&nbsp;")."</td>\n"
                     ."<td align='right'>"
