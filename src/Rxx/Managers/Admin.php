@@ -141,25 +141,20 @@ class Admin
 
     protected function setDaytimeLogs()
     {
-        $sql =
-            "UPDATE `logs` SET `daytime` = 0";
+        $sql = <<< EOD
+            UPDATE
+                logs
+            INNER JOIN listeners l ON
+                logs.listenerID = l.ID
+            SET
+                daytime = IF(
+                    (logs.time + 2400 >= 3400 + (l.timezone * -100)) AND
+                    (logs.time + 2400 < 3800 + (l.timezone * -100)),
+                    1, 0
+                )
+EOD;
         \Rxx\Database::query($sql);
-
-        $sql =
-             "SELECT\n"
-            ."  CONCAT(\"UPDATE `logs` set `logs`.`daytime`=1 where `ID`=\",`logs`.`ID`,\";\") AS `query`\n"
-            ."FROM\n"
-            ."  `logs`,`listeners`\n"
-            ."WHERE\n"
-            ."  `logs`.`listenerID` = `listeners`.`ID` AND\n"
-            ."  (`logs`.`time`+2400 >= 3400+(`listeners`.`timezone` * -100) AND\n"
-            ."   `logs`.`time`+2400 < 3800+(`listeners`.`timezone` * -100))\n";
-        $result = @\Rxx\Database::query($sql);
-        $affected = \Rxx\Database::numRows($result);
-        for ($i=0; $i<$affected; $i++) {
-            $row =    \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
-            \Rxx\Database::query($row['query']);
-        }
+        $affected = \Rxx\Database::affectedRows();
         return "Updated ".$affected." logs";
     }
 
