@@ -163,6 +163,7 @@ EOD;
     {
         global $mode, $submode, $subsubmode, $data;
         $url =    "http://www.rap.ucar.edu/weather/surface/stations.txt";
+        $url =    "https://www.aviationweather.gov/docs/metar/stations.txt";
         $out =
              "<form name='form' action='".system_URL."' method='POST'>\n"
             ."<input type='hidden' name='mode' id='mode' value='$mode'>\n"
