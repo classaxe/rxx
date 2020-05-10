@@ -112,70 +112,72 @@ class LogUploader
                 $this->drawStats();
                 break;
         }
-        $this->tokens =    array();
-        $start =    0;
-        $len =      0;
-
-        $log_format_parse =    $log_format." ";
-        $log_format_errors = "";
         $valid = array_merge(
             static::$singleTokens,
             static::$MMDDTokens,
             static::$YYYYMMDDTokens
         );
-        $tokens =       array();
-        $fieldFlags =   array();
-        $flags =        array();
-        while (substr($log_format_parse, $start, 1)==" ") {
+        $tokens =   [];
+        $errors =   [];
+        $log_format_parse =    $log_format . ' ';
+        $start =    0;
+        while (substr($log_format_parse, $start, 1) === ' ') {
             $start++;
         }
-        while ($start<strlen($log_format_parse)) {
-            $len =        strpos(substr($log_format_parse, $start), " ");
-            $param_name =    substr($log_format_parse, $start, $len);
+        while ($start < strlen($log_format_parse)) {
+            $len =  strpos(substr($log_format_parse, $start), ' ');
+            $key =  substr($log_format_parse, $start, $len);
             if ($len) {
-                while (substr($log_format_parse, $start+$len, 1)==" ") {
+                while (substr($log_format_parse, $start + $len, 1) === ' ') {
                     $len++;
                 }
-                if ($param_name=="X" || !isset($this->tokens[$param_name])) {
-                    $this->tokens[$param_name] = array($start,$len+1);
-                    if (!in_array($param_name, $valid)) {
-                        $tokens[] = $param_name;
-                        $flags[] =
-                            "<span style='color:#ff0000;font-weight:bold;cursor:pointer'"
-                           ." title='Token not recognised'>"
-                           .$param_name
-                            ."</span>";
-                        $log_format_errors.=
-                             "<tr class='rownormal'>\n"
-                            ."  <th align='left'>".$param_name."</th>\n"
-                            ."  <td><span style='color:#ff0000;'>Token not recognised</span></td>\n"
-                            ."</tr>\n";
-
+                if ($key === 'X' || !isset($tokens[$key])) {
+                    $tokens[$key] = [ $start, $len + 1 ];
+                    if (!in_array($key, $valid)) {
+                        $errors[$key] = [
+                            'class' =>  'unknown',
+                            'msg' =>    'Token not recognised'
+                        ];
                     }
                 } else {
-                    $tokens[] = $param_name;
-                    $flags[] =
-                         "<span style='color:#ff00ff;font-weight:bold;cursor:pointer'"
-                        ." title='Token occurs more than once'>".$param_name."</span>";
-                    $log_format_errors.=
-                         "<tr class='rownormal'>\n"
-                        ."  <th align='left'>".$param_name."</th>\n"
-                        ."  <td><span style='color:#ff00ff;'>Token occurs more than once</span></td>\n"
-                        ."</tr>\n";
+                    $errors[$key] = [
+                        'class' =>  'duplicate',
+                        'msg' =>    'Token occurs more than once'
+                    ];
                 }
             }
-            $start = $start+$len;
+            $start += $len;
         }
-        if (($submode=="" || $submode=="parse_log") && $log_format_errors!="") {
+        $this->tokens = $tokens;
+
+        if (($submode=="" || $submode=="parse_log") && $errors) {
+            $log_format_highlighted = $log_format;
+            $log_format_errors = '';
+            foreach ($errors as $key => $error) {
+                $log_format_highlighted = str_replace(
+                    $key,
+                    "<strong class='". $error['class'] . "' title='" . $error['msg'] . "'>$key</strong>",
+                    $log_format_highlighted
+                );
+                $log_format_errors .=
+                    "<tr class='rownormal'>\n"
+                    ."  <th>".$key."</th>\n"
+                    ."  <td><span class='" .$error['class'] ."'>" . $error['msg'] . "</span></td>\n"
+                    ."</tr>\n";
+            }
+
+
             $this->html.=
-                 "<br><span class='p'><b>Log Format Errors</b></span>\n"
-                ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0'>\n"
+                "<br><span class='p'><b>Log Format Errors</b></span>\n"
+                ."<table cellpadding='2' cellspacing='1' border='0' bgcolor='#c0c0c0' id='tokenErrors'>\n"
                 ."  <tr class='downloadTableHeadings'>\n"
                 ."    <th colspan='2'>Problems Seen</th>\n"
                 ."  </tr>\n"
                 ."  <tr class='rownormal'>\n"
                 ."    <th align='left'>Input</th>\n"
-                ."    <td><pre style='margin:0;'>".str_replace($tokens, $flags, $log_format)."</pre></td>\n"
+                ."    <td><pre style='margin:0;'>"
+                .$log_format_highlighted
+                ."</pre></td>\n"
                 ."  </tr>\n"
                 .$log_format_errors
                 ."</table>\n\n"
@@ -857,7 +859,7 @@ class LogUploader
                 ."  <tr class='rownormal'>\n"
                 ."    <td>"
                 ."<input name='log_format' class='fixed_heading' size='105' style='width:1040px"
-                .($log_format_errors ? ';background:#804040' : '')
+                .($errors ? ';background:#804040' : '')
                 ."' value=\"$log_format\">\n"
                 ."<input class='formbutton' name='save' type='button' value='Save' onclick='"
                 ."this.disabled=true;document.form.go.disabled=true;document.form.conv.disabled=true;"
@@ -865,7 +867,7 @@ class LogUploader
                 ."  </tr>\n"
                 ."  <tr class='rownormal'>\n"
                 ."    <td><textarea rows='"
-                .($log_format_errors ? 19 : 30)
+                .($errors ? 19 : 30)
                 ."' cols='110' class='fixed' style='width:1100px' name='log_entries'"
                 ." onKeyUp='check_for_tabs(document.form);'"
                 ." onchange='check_for_tabs(document.form);'>"
@@ -1213,7 +1215,7 @@ class LogUploader
                 substr(trim(substr($this->line, $this->tokens["hhmm"][0], $this->tokens["hhmm"][1])), 0, 4);
         }
         if (!is_numeric($this->hhmm)) {
-            $this->hhmm =    "";
+            $this->hhmm =    "ERROR";
         }
     }
 

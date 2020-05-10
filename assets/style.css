@@ -692,3 +692,14 @@ body {
     font-weight: bold;
     text-decoration: underline;
 }
+#tokenErrors th {
+    text-align: left;
+}
+#tokenErrors .unknown {
+    color: #ff0000;
+    cursor: pointer;
+}
+#tokenErrors .duplicate {
+    color: #ff00ff;
+    cursor: pointer
+}

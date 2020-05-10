@@ -97,6 +97,9 @@ class Listener extends Record
 
     public function isDaytime($hhmm)
     {
+        if (!is_numeric($hhmm)) {
+            return false;
+        }
         return
             $hhmm + 2400 >= ($this->record['timezone'] * -100) + 3400 &&
             $hhmm + 2400 <  ($this->record['timezone'] * -100) + 3800;

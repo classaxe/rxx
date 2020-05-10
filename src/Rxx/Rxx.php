@@ -1968,44 +1968,12 @@ class Rxx
      */
     public static function MMM_to_MM($MMM)
     {
-        switch (strToUpper($MMM)) {
-            case "JAN":
-                return "01";
-                break;
-            case "FEB":
-                return "02";
-                break;
-            case "MAR":
-                return "03";
-                break;
-            case "APR":
-                return "04";
-                break;
-            case "MAY":
-                return "05";
-                break;
-            case "JUN":
-                return "06";
-                break;
-            case "JUL":
-                return "07";
-                break;
-            case "AUG":
-                return "08";
-                break;
-            case "SEP":
-                return "09";
-                break;
-            case "OCT":
-                return "10";
-                break;
-            case "NOV":
-                return "11";
-                break;
-            case "DEC":
-                return "12";
-                break;
+        $months = explode(',', 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC');
+        $idx = array_search(strToUpper($MMM), $months);
+        if (false === $idx) {
+            return $idx;
         }
+        return str_pad((1 + $idx), 2, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -2014,44 +1982,8 @@ class Rxx
      */
     public static function MM_to_MMM($MM)
     {
-        switch ($MM) {
-            case "01":
-                return "Jan";
-                break;
-            case "02":
-                return "Feb";
-                break;
-            case "03":
-                return "Mar";
-                break;
-            case "04":
-                return "Apr";
-                break;
-            case "05":
-                return "May";
-                break;
-            case "06":
-                return "Jun";
-                break;
-            case "07":
-                return "Jul";
-                break;
-            case "08":
-                return "Aug";
-                break;
-            case "09":
-                return "Sep";
-                break;
-            case "10":
-                return "Oct";
-                break;
-            case "11":
-                return "Nov";
-                break;
-            case "12":
-                return "Dec";
-                break;
-        }
+        $months = explode(',', 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec');
+        return $months[(int)$MM -1];
     }
 
     /**

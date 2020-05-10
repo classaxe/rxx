@@ -6,3 +6,4 @@ log/*
 .DS_Store
 credentials.php
 rxx.sql.gz
+/ubuntu-xenial-16.04-cloudimg-console.log
