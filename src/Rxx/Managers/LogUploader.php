@@ -6,22 +6,22 @@ class LogUploader
     protected $debug = false;
     protected $html = '';
     protected $listener;
-    protected $tokens = array();
-    protected $stats =  array(
+    protected $tokens = [];
+    protected $stats =  [
         'first_for_listener' =>     0,
         'first_for_state_or_itu' => 0,
         'repeat_for_listener' =>    0,
         'exact_duplicate' =>        0,
         'latest_for_signal' =>      0
-    );
+    ];
 
-    protected $logHas = array(
+    protected $logHas = [
         'YYYY' =>   false,
         'MM' =>     false,
         'DD' =>     false
-    );
+    ];
 
-    public static $YYYYMMDDTokens = array(
+    public static $YYYYMMDDTokens = [
         'DDMMYY',    'DD.MM.YY',    'DDYYMM',    'DD.YY.MM',
         'DDMMMYY',   'DD.MMM.YY',   'DDYYMMM',   'DD.YY.MMM',
         'DDMMYYYY',  'DD.MM.YYYY',  'DDYYYYMM',  'DD.YYYY.MM',
@@ -36,23 +36,23 @@ class LogUploader
         'YYDDMMM',   'YY.DD.MMM',   'YYMMMDD',   'YY.MMM.DD',
         'YYYYDDMM',  'YYYY.DD.MM',  'YYYYMMDD',  'YYYY.MM.DD',
         'YYYYDDMMM', 'YYYY.DD.MMM', 'YYYYMMMDD', 'YYYY.MMM.DD'
-    );
+    ];
 
-    public static $MMDDTokens = array(
+    public static $MMDDTokens = [
         'DM',        'D.M',         'DDM',       'DD.M',
         'DMM',       'D.MM',        'DDMM',      'DD.MM',
         'DMMM',      'D.MMM',       'DDMMM',     'DD.MMM',
         'MD',        'M.D',         'MDD',       'M.DD',
         'MMD',       'MM.D',        'MMDD',      'MM.DD',
         'MMMD',      'MMM.D',       'MMMDD',     'MMM.DD'
-    );
+    ];
 
-    public static $singleTokens = array(
+    public static $singleTokens = [
         'KHZ', 'ID',  'GSQ',  'PWR',  'QTH',   'SP',    'ITU',
         'LSB', 'USB', '~LSB', '~USB', '+SB-',  '+~SB-', '+K-', 'ABS', '~ABS',
-        'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm',
+        'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm', 'ITU-SP',
         'D',   'DD',  'M',    'MM',   'MMM',   'YY',    'YYYY'
-    );
+    ];
 
     protected function checkLogDateTokens()
     {
@@ -473,306 +473,305 @@ class LogUploader
                             }
                         }
                     }
+                    if (!$ID || !$YYYYMMDD) {
+                        continue;
+                    }
 
-                    if ($ID && $YYYYMMDD) {
-                        if ($ID && $YYYYMMDD) {
-                            $swing = ($this->KHZ>1740 ? swing_LF : swing_HF);
-                            $options = $this->getSignalCandidates($ID, $this->KHZ, $swing);
-                            if (false === $options) {
-                                $this->html.= "Problem looking up station - frequency was $this->KHZ";
-                            }
-                            if ($options) {
-                                $total_loggings++;
-                                if (count($options) == 1) {
-                                    $this->html.=    "<tr class='rownormal'>\n";
-                                    $row =    $options[0];
-                                    $bgcolor =    "";
-                                    if (!$row["active"]) {
-                                        $bgcolor =
-                                            " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
-                                    } else {
-                                        switch ($row["type"]) {
-                                            case NDB:
-                                                $bgcolor = "";
-                                                break;
-                                            case DGPS:
-                                                $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
-                                                break;
-                                            case TIME:
-                                                $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
-                                                break;
-                                            case NAVTEX:
-                                                $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
-                                                break;
-                                            case HAMBCN:
-                                                $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
-                                                break;
-                                            case OTHER:
-                                                $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
-                                                break;
-                                        }
-                                    }
-                                    $dx = \Rxx\Rxx::get_dx(
-                                        $this->listener->record['lat'],
-                                        $this->listener->record['lon'],
-                                        $row["lat"],
-                                        $row["lon"]
-                                    );
-                                    $this->html.=
-                                         "  <td class='KHz'>"
-                                        ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
-                                        .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
-                                            "<span style='color:#FF8C00'><b>".(float)$row['khz']."</b></span>"
-                                         :
-                                            (float)$row['khz']
-                                        )
-                                        ."</td>\n"
-                                        ."  <td$bgcolor class='ID'>"
-                                        ."<a style='font-family:monospace'"
-                                        ." href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
-                                        ."</td>\n"
-                                        ."  <td class='ITU'>".$row['ITU']."</td>\n"
-                                        ."  <td class='SP'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
-                                        ."  <td class='GSQ'>"
-                                        .($row["GSQ"] ?
-                                             "<a href='javascript:popup_map("
-                                            ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
-                                            .")' title='Show map (accuracy limited to nearest Grid Square)'>"
-                                            .$row["GSQ"]."</a>"
-                                         :
-                                            "&nbsp;"
-                                         )
-                                        ."</td>\n"
-                                        ."  <td class='QTH'"
-                                        .($row['QTH'] ?
-                                            ""
-                                         :
-                                             " bgcolor='#FFE7B9'"
-                                            ." title='Please provide a value for QTH if you have one'"
-                                        )
-                                        .">"
-                                        .$row['QTH']
-                                        ."</td>\n"
-                                        ."  <td class='DT center'>"
-                                        .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
-                                        ."</td>\n"
-                                        ."  <td class='Km num'>"
-                                        .($dx[1]!=='' ? number_format($dx[1]) : '')
-                                        ."</th>\n"
-                                        ."  <td class='Mi num'>"
-                                        .($dx[0]!=='' ? number_format($dx[0]) : '')
-                                        ."</th>\n"
-                                        ."  <td class='HeardIn'>"
-                                        .(strpos(
-                                            $row['heard_in'],
-                                            ($this->listener->record['SP'] ?
-                                                $this->listener->record['SP']
-                                             :
-                                                $this->listener->record['ITU']
-                                            )
-                                        )===false ?
-                                           "<span style='color:#008000'><b>".$row['heard_in']."</b></span>"
-                                          :
-                                            \Rxx\Rxx::highlight(
-                                                $row['heard_in'],
-                                                ($this->listener->record['SP'] ?
-                                                    $this->listener->record['SP']
-                                                 :
-                                                    $this->listener->record['ITU']
-                                                )
-                                            )
-                                        )
-                                        ."</td>\n";
-                                } else {
-                                    $this->html.=
-                                         "<tr bgcolor='#ffe0a0'>\n"
-                                        ."  <td colspan='10' class='Combined'>"
-                                        ."<select name='ID[]' class='formfixed'>\n";
-                                    $defaultChosen =    false;
-                                    $selected =         false;
-                                    for ($j=0; $j<count($options); $j++) {
-                                        $row =  $options[$j];
-                                        if (!$defaultChosen && $row["active"]=="1") {
-                                            $selected = true;
-                                            $defaultChosen =  true;
-                                        }
-                                        $title =
-                                             (float)$row["khz"]." | "
-                                            .$ID." | "
-                                            .$row["ITU"]." | "
-                                            .($row["SP"] ? $row["SP"] : '  ')." | "
-                                            .$row["GSQ"]." | "
-                                            .$row["QTH"]." | "
-                                            .($this->listener->isDaytime($this->hhmm) ? 'Y' : ' ')." | "
-                                            .($row['dx_km']!=='' ? number_format($row['dx_km'])."km" : "  ")." | "
-                                            .($row['dx_miles']!=='' ? number_format($row['dx_miles'])."mi" : "  ")." | "
-                                            .$row["heard_in"];
-                                        $label =
-                                             \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
-                                            .\Rxx\Rxx::pad_nbsp($ID, 5)."|"
-                                            .$row["ITU"]." |"
-                                            .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
-                                            .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
-                                            .(strlen($row["QTH"])<25 ?
-                                                \Rxx\Rxx::pad_nbsp($row["QTH"], 25)
-                                             :
-                                                \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25)
-                                            )
-                                            ."|"
-                                            .($this->listener->isDaytime($this->hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
-
-                                            .\Rxx\Rxx::lead_nbsp($row['dx_km']!=='' ? number_format($row['dx_km']) : "", 6)."|"
-                                            .\Rxx\Rxx::lead_nbsp($row['dx_miles']!=='' ? number_format($row['dx_miles']) : "", 6)."|"
-                                            .$row["heard_in"];
-
-                                        $this->html.=
-                                             "<option title='".$title."'"
-                                            .($row["active"]=="0" ? " style='background-color: #d0d0d0;'" : "")
-                                            ." value='".$row["ID"]."'"
-                                            .($selected ? " selected='selected'" : "")
-                                            .">"
-                                            .$label
-                                            ."</option>\n";
-                                        $selected = false;
-                                    }
-                                    $this->html.=
-                                        "</select></td>\n";
-                                }
-                                $this->html.=
-                                     "  <td align='center'>"
-                                    ."<input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
-
-                                if (strlen($YYYYMMDD)!=8) {
-                                    $date_fail = true;
-                                    $this->html.=
-                                        "<span style='color:red; text-decoration: line-through;'><b>$YYYYMMDD</b></span>";
-                                } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
-                                    $date_fail = true;
-                                    $this->html.=
-                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
-                                } else {
-                                    $this->html.=
-                                        ($YYYY<2005 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
-                                    if (!checkdate($MM, $DD, $YYYY)) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
-                                    } else {
-                                        $this->html.=    $MM;
-                                    }
-                                    if (!checkdate($MM, $DD, $YYYY)) {
-                                        $date_fail = true;
-                                        $this->html.=
-                                            "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
-                                    } else {
-                                        $this->html.=    $DD;
-                                    }
-                                }
-                                $this->html.=
-                                     "</td>\n"
-                                    ."  <td align='center'><input type='hidden' name='hhmm[]' value='$this->hhmm'>";
-                                if ((strlen($this->hhmm)!=0 && strlen($this->hhmm)!=4) ||
-                                    substr($this->hhmm, 0, 2)>23 || substr($this->hhmm, 2, 2)>59
-                                ) {
-                                    $date_fail = true;
-                                    $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$this->hhmm</b></span>";
-                                } else {
-                                    $this->html.=    $this->hhmm;
-                                }
-                                $this->html.=
-                                     "</td>\n"
-                                    ."  <td>"
-                                    ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
-                                    ."<input type='hidden' name='LSB[]' value='$LSB'>"
-                                    .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
-                                        "<span style='color:#FF8C00'><b>$LSB_approx$LSB</b></span>"
-                                    :
-                                        "$LSB_approx$LSB"
-                                    )
-                                    ."</td>\n"
-                                    ."  <td>"
-                                    ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
-                                    ."<input type='hidden' name='USB[]' value='$USB'>"
-                                    .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
-                                        "<span style='color:#FF8C00'><b>$USB_approx$USB</b></span>"
-                                     :
-                                        "$USB_approx$USB"
-                                    )
-                                    ."</td>\n"
-                                    ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
-                                    ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                    ."  <td align='center'></td>\n"
-                                    ."</tr>\n";
+                    $swing = ($this->KHZ>1740 ? swing_LF : swing_HF);
+                    $options = $this->getSignalCandidates($ID, $this->KHZ, $swing);
+                    if (false === $options) {
+                        $this->html.= "Problem looking up station - frequency was $this->KHZ";
+                    }
+                    if ($options) {
+                        $total_loggings++;
+                        if (count($options) == 1) {
+                            $this->html.=    "<tr class='rownormal'>\n";
+                            $row =    $options[0];
+                            $bgcolor =    "";
+                            if (!$row["active"]) {
+                                $bgcolor =
+                                    " bgcolor='#d0d0d0' title='(Reportedly off air or decommissioned)'";
                             } else {
-                                $dx = array('0','0');
-                                if ($GSQ) {
-                                    $ll = \Rxx\Rxx::GSQ_deg($GSQ);
-                                    $dx = \Rxx\Rxx::get_dx(
-                                        $this->listener->record['lat'],
-                                        $this->listener->record['lat'],
-                                        $ll["lat"],
-                                        $ll["lon"]
-                                    );
+                                switch ($row["type"]) {
+                                    case NDB:
+                                        $bgcolor = "";
+                                        break;
+                                    case DGPS:
+                                        $bgcolor = " bgcolor='#00D8ff' title='DGPS Station'";
+                                        break;
+                                    case TIME:
+                                        $bgcolor = " bgcolor='#FFE0B0' title='Time Signal Station'";
+                                        break;
+                                    case NAVTEX:
+                                        $bgcolor = " bgcolor='#FFB8D8' title='NAVTEX Station'";
+                                        break;
+                                    case HAMBCN:
+                                        $bgcolor = " bgcolor='#D8FFE0' title='Amateur signal'";
+                                        break;
+                                    case OTHER:
+                                        $bgcolor = " bgcolor='#B8F8FF' title='Other Utility Station'";
+                                        break;
                                 }
-                                $this->html.=
-                                     "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
-                                    ."  <td>"
-                                    .(((float)$this->KHZ<198 || (float)$this->KHZ > 530) ?
-                                        "<span style='color:#FF8C00'><b>".(float)$this->KHZ."</b></span>"
+                            }
+                            $dx = \Rxx\Rxx::get_dx(
+                                $this->listener->record['lat'],
+                                $this->listener->record['lon'],
+                                $row["lat"],
+                                $row["lon"]
+                            );
+                            $this->html.=
+                                 "  <td class='KHz'>"
+                                ."<input type='hidden' name='ID[]' value='".$row["ID"]."'>"
+                                .(((float)$row['khz']<198 || (float)$row['khz'] > 530) ?
+                                    "<span style='color:#FF8C00'><b>".(float)$row['khz']."</b></span>"
+                                 :
+                                    (float)$row['khz']
+                                )
+                                ."</td>\n"
+                                ."  <td$bgcolor class='ID'>"
+                                ."<a style='font-family:monospace'"
+                                ." href='javascript:signal_info(\"".$row["ID"]."\")'>$ID</a>"
+                                ."</td>\n"
+                                ."  <td class='ITU'>".$row['ITU']."</td>\n"
+                                ."  <td class='SP'>".($row['SP'] ? $row['SP'] : "&nbsp;")."</td>\n"
+                                ."  <td class='GSQ'>"
+                                .($row["GSQ"] ?
+                                     "<a href='javascript:popup_map("
+                                    ."\"".$row["ID"]."\",\"".$row["lat"]."\",\"".$row["lon"]."\""
+                                    .")' title='Show map (accuracy limited to nearest Grid Square)'>"
+                                    .$row["GSQ"]."</a>"
+                                 :
+                                    "&nbsp;"
+                                 )
+                                ."</td>\n"
+                                ."  <td class='QTH'"
+                                .($row['QTH'] ?
+                                    ""
+                                 :
+                                     " bgcolor='#FFE7B9'"
+                                    ." title='Please provide a value for QTH if you have one'"
+                                )
+                                .">"
+                                .$row['QTH']
+                                ."</td>\n"
+                                ."  <td class='DT center'>"
+                                .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
+                                ."</td>\n"
+                                ."  <td class='Km num'>"
+                                .($dx[1]!=='' ? number_format($dx[1]) : '')
+                                ."</th>\n"
+                                ."  <td class='Mi num'>"
+                                .($dx[0]!=='' ? number_format($dx[0]) : '')
+                                ."</th>\n"
+                                ."  <td class='HeardIn'>"
+                                .(strpos(
+                                    $row['heard_in'],
+                                    ($this->listener->record['SP'] ?
+                                        $this->listener->record['SP']
                                      :
-                                        (float)$this->KHZ
+                                        $this->listener->record['ITU']
                                     )
-                                    ."</td>\n"
-                                    ."  <td class='ID'>$ID</td>\n"
-                                    ."  <td class='ITU'>$ITU</td>\n"
-                                    ."  <td class='SP'>$SP</td>\n"
-                                    ."  <td class='GSQ'>$GSQ</td>\n"
-                                    ."  <td class='QTH'>$QTH</td>\n"
-                                    ."  <td class='DT center'>"
-                                    .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
-                                    ."</td>\n"
-                                    ."  <td class='Km num'>".($dx[1] ? number_format($dx[1]) : '')."</th>\n"
-                                    ."  <td class='Mi num'>".($dx[0] ? number_format($dx[0]) : '')."</th>\n"
-                                    ."  <td>&nbsp;</td>\n"
-                                    ."  <td align='center'>";
-                                if (strlen($YYYYMMDD)!=8) {
-                                    $date_fail = true;
-                                    $this->html.=
-                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</i></b></span>";
-                                } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
-                                    $date_fail = true;
-                                    $this->html.=
-                                        "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
-                                } else {
-                                    $this->html.=
-                                        ($YYYY<2003 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
-                                    if (!checkdate($MM, $DD, $YYYY)) {
-                                        $date_fail = true;
-                                        $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
-                                    } else {
-                                        $this->html.=    $MM;
-                                    }
-                                    if (!checkdate($MM, $DD, $YYYY)) {
-                                        $date_fail = true;
-                                        $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
-                                    } else {
-                                        $this->html.=    $DD;
-                                    }
+                                )===false ?
+                                   "<span style='color:#008000'><b>".$row['heard_in']."</b></span>"
+                                  :
+                                    \Rxx\Rxx::highlight(
+                                        $row['heard_in'],
+                                        ($this->listener->record['SP'] ?
+                                            $this->listener->record['SP']
+                                         :
+                                            $this->listener->record['ITU']
+                                        )
+                                    )
+                                )
+                                ."</td>\n";
+                        } else {
+                            $this->html.=
+                                 "<tr bgcolor='#ffe0a0'>\n"
+                                ."  <td colspan='10' class='Combined'>"
+                                ."<select name='ID[]' class='formfixed'>\n";
+                            $defaultChosen =    false;
+                            $selected =         false;
+                            for ($j=0; $j<count($options); $j++) {
+                                $row =  $options[$j];
+                                if (!$defaultChosen && $row["active"]=="1") {
+                                    $selected = true;
+                                    $defaultChosen =  true;
                                 }
+                                $title =
+                                     (float)$row["khz"]." | "
+                                    .$ID." | "
+                                    .$row["ITU"]." | "
+                                    .($row["SP"] ? $row["SP"] : '  ')." | "
+                                    .$row["GSQ"]." | "
+                                    .$row["QTH"]." | "
+                                    .($this->listener->isDaytime($this->hhmm) ? 'Y' : ' ')." | "
+                                    .($row['dx_km']!=='' ? number_format($row['dx_km'])."km" : "  ")." | "
+                                    .($row['dx_miles']!=='' ? number_format($row['dx_miles'])."mi" : "  ")." | "
+                                    .$row["heard_in"];
+                                $label =
+                                     \Rxx\Rxx::pad_nbsp((float)$row["khz"], 5)."|"
+                                    .\Rxx\Rxx::pad_nbsp($ID, 5)."|"
+                                    .$row["ITU"]." |"
+                                    .($row["SP"] ? $row["SP"] : "&nbsp;&nbsp;")."&nbsp;|"
+                                    .\Rxx\Rxx::pad_nbsp($row["GSQ"], 6)."|"
+                                    .(strlen($row["QTH"])<25 ?
+                                        \Rxx\Rxx::pad_nbsp($row["QTH"], 25)
+                                     :
+                                        \Rxx\Rxx::pad_nbsp(substr($row["QTH"], 0, 22).'...', 25)
+                                    )
+                                    ."|"
+                                    .($this->listener->isDaytime($this->hhmm) ? ' Y ' : '&nbsp;&nbsp;&nbsp;')."|"
+
+                                    .\Rxx\Rxx::lead_nbsp($row['dx_km']!=='' ? number_format($row['dx_km']) : "", 6)."|"
+                                    .\Rxx\Rxx::lead_nbsp($row['dx_miles']!=='' ? number_format($row['dx_miles']) : "", 6)."|"
+                                    .$row["heard_in"];
+
                                 $this->html.=
-                                     "</td>\n"
-                                    ."  <td align='center'>$this->hhmm</td>\n"
-                                    ."  <td>$LSB_approx$LSB</td>\n"
-                                    ."  <td>$USB_approx$USB</td>\n"
-                                    ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
-                                    ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
-                                    ."  <td><a href='javascript:signal_add("
-                                    ."\"$ID\",\"$this->KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
-                                    .")'><b>Add...</b></a></td>\n"
-                                    ."</tr>";
-                                $unresolved_signals[] =    trim($line);
+                                     "<option title='".$title."'"
+                                    .($row["active"]=="0" ? " style='background-color: #d0d0d0;'" : "")
+                                    ." value='".$row["ID"]."'"
+                                    .($selected ? " selected='selected'" : "")
+                                    .">"
+                                    .$label
+                                    ."</option>\n";
+                                $selected = false;
+                            }
+                            $this->html.=
+                                "</select></td>\n";
+                        }
+                        $this->html.=
+                             "  <td align='center'>"
+                            ."<input type='hidden' name='YYYYMMDD[]' value='$YYYYMMDD'>";
+
+                        if (strlen($YYYYMMDD)!=8) {
+                            $date_fail = true;
+                            $this->html.=
+                                "<span style='color:red; text-decoration: line-through;'><b>$YYYYMMDD</b></span>";
+                        } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
+                            $date_fail = true;
+                            $this->html.=
+                                "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
+                        } else {
+                            $this->html.=
+                                ($YYYY<2005 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
+                            if (!checkdate($MM, $DD, $YYYY)) {
+                                $date_fail = true;
+                                $this->html.=
+                                    "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
+                            } else {
+                                $this->html.=    $MM;
+                            }
+                            if (!checkdate($MM, $DD, $YYYY)) {
+                                $date_fail = true;
+                                $this->html.=
+                                    "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
+                            } else {
+                                $this->html.=    $DD;
                             }
                         }
+                        $this->html.=
+                             "</td>\n"
+                            ."  <td align='center'><input type='hidden' name='hhmm[]' value='$this->hhmm'>";
+                        if ((strlen($this->hhmm)!=0 && strlen($this->hhmm)!=4) ||
+                            substr($this->hhmm, 0, 2)>23 || substr($this->hhmm, 2, 2)>59
+                        ) {
+                            $date_fail = true;
+                            $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$this->hhmm</b></span>";
+                        } else {
+                            $this->html.=    $this->hhmm;
+                        }
+                        $this->html.=
+                             "</td>\n"
+                            ."  <td>"
+                            ."<input type='hidden' name='LSB_approx[]' value='$LSB_approx'>"
+                            ."<input type='hidden' name='LSB[]' value='$LSB'>"
+                            .((($LSB>0 && $LSB<350) || ($LSB>450 && $LSB<960) || ($LSB>1080)) ?
+                                "<span style='color:#FF8C00'><b>$LSB_approx$LSB</b></span>"
+                            :
+                                "$LSB_approx$LSB"
+                            )
+                            ."</td>\n"
+                            ."  <td>"
+                            ."<input type='hidden' name='USB_approx[]' value='$USB_approx'>"
+                            ."<input type='hidden' name='USB[]' value='$USB'>"
+                            .((($USB>0 && $USB<350) || ($USB>450 && $USB<960) || ($USB>1080)) ?
+                                "<span style='color:#FF8C00'><b>$USB_approx$USB</b></span>"
+                             :
+                                "$USB_approx$USB"
+                            )
+                            ."</td>\n"
+                            ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
+                            ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
+                            ."  <td align='center'></td>\n"
+                            ."</tr>\n";
+                    } else {
+                        $dx = array('0','0');
+                        if ($GSQ) {
+                            $ll = \Rxx\Rxx::GSQ_deg($GSQ);
+                            $dx = \Rxx\Rxx::get_dx(
+                                $this->listener->record['lat'],
+                                $this->listener->record['lat'],
+                                $ll["lat"],
+                                $ll["lon"]
+                            );
+                        }
+                        $this->html.=
+                             "<tr bgcolor='#ffd0d0' title='signal not listed in database'>\n"
+                            ."  <td>"
+                            .(((float)$this->KHZ<198 || (float)$this->KHZ > 530) ?
+                                "<span style='color:#FF8C00'><b>".(float)$this->KHZ."</b></span>"
+                             :
+                                (float)$this->KHZ
+                            )
+                            ."</td>\n"
+                            ."  <td class='ID'>$ID</td>\n"
+                            ."  <td class='ITU'>$ITU</td>\n"
+                            ."  <td class='SP'>$SP</td>\n"
+                            ."  <td class='GSQ'>$GSQ</td>\n"
+                            ."  <td class='QTH'>$QTH</td>\n"
+                            ."  <td class='DT center'>"
+                            .($this->listener->isDaytime($this->hhmm) ? 'Y' : '')
+                            ."</td>\n"
+                            ."  <td class='Km num'>".($dx[1] ? number_format($dx[1]) : '')."</th>\n"
+                            ."  <td class='Mi num'>".($dx[0] ? number_format($dx[0]) : '')."</th>\n"
+                            ."  <td>&nbsp;</td>\n"
+                            ."  <td align='center'>";
+                        if (strlen($YYYYMMDD)!=8) {
+                            $date_fail = true;
+                            $this->html.=
+                                "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</i></b></span>";
+                        } elseif ((int)$YYYYMMDD > (int)gmdate("Ymd")) {
+                            $date_fail = true;
+                            $this->html.=
+                                "<span style='color:red; text-decoration: line-through'><b>$YYYYMMDD</b></span>";
+                        } else {
+                            $this->html.=
+                                ($YYYY<2003 ? "<span style='color:#FF8C00'><b>$YYYY</b></span>" : "$YYYY");
+                            if (!checkdate($MM, $DD, $YYYY)) {
+                                $date_fail = true;
+                                $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$MM</b></span>";
+                            } else {
+                                $this->html.=    $MM;
+                            }
+                            if (!checkdate($MM, $DD, $YYYY)) {
+                                $date_fail = true;
+                                $this->html.=    "<span style='color:red; text-decoration: line-through'><b>$DD</b></span>";
+                            } else {
+                                $this->html.=    $DD;
+                            }
+                        }
+                        $this->html.=
+                             "</td>\n"
+                            ."  <td align='center'>$this->hhmm</td>\n"
+                            ."  <td>$LSB_approx$LSB</td>\n"
+                            ."  <td>$USB_approx$USB</td>\n"
+                            ."  <td><input type='hidden' name='sec[]' value=\"$sec\">$sec</td>\n"
+                            ."  <td><input type='hidden' name='fmt[]' value=\"$fmt\">$fmt</td>\n"
+                            ."  <td><a href='javascript:signal_add("
+                            ."\"$ID\",\"$this->KHZ\",\"$GSQ\",\"$QTH\",\"$SP\",\"$ITU\",\"$PWR\""
+                            .")'><b>Add...</b></a></td>\n"
+                            ."</tr>";
+                        $unresolved_signals[] =    trim($line);
                     }
                 }
                 if (!count($unresolved_signals) && !$date_fail  && $total_loggings>0) {
@@ -1166,20 +1165,28 @@ class LogUploader
 
     private function extractITU()
     {
-        return (isset($this->tokens["ITU"]) ?
-            trim(substr($this->line, $this->tokens["ITU"][0], $this->tokens["ITU"][1]))
-         :
-            ""
-        );
+        if (isset($this->tokens["ITU"])) {
+            return trim(substr($this->line, $this->tokens["ITU"][0], $this->tokens["ITU"][1]));
+        }
+        if (isset($this->tokens["ITU-SP"])) {
+            $value = trim(substr($this->line, $this->tokens["ITU-SP"][0], $this->tokens["ITU-SP"][1]));
+            $arr = explode('-', $value);
+            return $arr[0];
+        }
+        return '';
     }
 
     private function extractSP()
     {
-        return (isset($this->tokens["SP"]) ?
-            trim(substr($this->line, $this->tokens["SP"][0], $this->tokens["SP"][1]))
-         :
-            ""
-        );
+        if (isset($this->tokens["SP"])) {
+            return trim(substr($this->line, $this->tokens["SP"][0], $this->tokens["SP"][1]));
+        }
+        if (isset($this->tokens["ITU-SP"])) {
+            $value = trim(substr($this->line, $this->tokens["ITU-SP"][0], $this->tokens["ITU-SP"][1]));
+            $arr = explode('-', $value);
+            return (isset($arr[1]) ? $arr[1] : '');
+        }
+        return '';
     }
 
     private function extractPWR()
