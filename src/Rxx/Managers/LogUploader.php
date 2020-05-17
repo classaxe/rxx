@@ -477,7 +477,7 @@ class LogUploader
                         continue;
                     }
 
-                    $swing = ($this->KHZ>1740 ? swing_LF : swing_HF);
+                    $swing = ($this->KHZ > 1740 ? swing_HF : swing_LF);
                     $options = $this->getSignalCandidates($ID, $this->KHZ, $swing);
                     if (false === $options) {
                         $this->html.= "Problem looking up station - frequency was $this->KHZ";
