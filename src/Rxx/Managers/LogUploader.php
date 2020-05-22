@@ -1138,10 +1138,14 @@ class LogUploader
 
     private function extractSec()
     {
-        return (isset($this->tokens["sec"]) ?
-            htmlentities(trim(substr($this->line, $this->tokens["sec"][0], $this->tokens["sec"][1])))
-         :
-            ""
+        return str_replace(
+            ',',
+            '.',
+            (isset($this->tokens["sec"]) ?
+                htmlentities(trim(substr($this->line, $this->tokens["sec"][0], $this->tokens["sec"][1])))
+             :
+                ""
+            )
         );
     }
 
