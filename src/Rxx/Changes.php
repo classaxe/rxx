@@ -33,7 +33,9 @@ class Changes
             . "</li></ul>";
 
         return
-             "<h2>Change Log for this system</h2>"
+             "<h2>Change Log for this system<br>"
+            ."<span style=\"font-size:75%\">" . count($entries) ." versioned releases since 2015-03-31<br>"
+            ."(First ever version was released in 2004)</span></h2>"
             ."<p>This page gives headline information about changes to this system over time.</p>"
             ."<p>If you spot a bug or have ideas for a new feature, please contact me - you may become famous in the release notes!</p>"
             .$changelog;
