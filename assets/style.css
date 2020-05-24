@@ -703,3 +703,14 @@ body {
     color: #ff00ff;
     cursor: pointer
 }
+.changelog {
+    margin: 0 0 0.5em 5em;
+}
+.changelog li {
+    margin: 0 0 0.5em 0;
+}
+.changelog li span {
+    padding: 0 0.25em;
+    border: 1px solid #dd0;
+    background-color: #ffc;
+}

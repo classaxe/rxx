@@ -554,8 +554,8 @@ class Rxx
             case 'admin_manage':
                 $Obj = new Managers\Admin;
                 break;
-            case 'labs':
-                $Obj = new Labs;
+            case 'changes':
+                $Obj = new Changes;
                 break;
             case 'logon':
                 $Obj = new Managers\Logon;
@@ -599,14 +599,14 @@ class Rxx
             case "awards":
                 $out.=    "Awards";
                 break;
+            case "changes":
+                $out."Changes";
+                break;
             case "cle":
                 $out.=    "CLE";
                 break;
             case "help":
                 $out."Help";
-                break;
-            case "labs":
-                $out."Labs";
                 break;
             case "listener_list":
                 $out.=    "Listeners";
@@ -660,7 +660,7 @@ class Rxx
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
             .\Rxx\Rxx::new_classic(system, $mode)
-            ."<table cellpadding='10' cellspacing='0' width='651' class='titleTable'>\n"
+            ."<table cellpadding='10' cellspacing='0' width='676' class='titleTable'>\n"
             ."  <tr>\n"
             ."    <td align='center'>"
             ."<h1 title='Version ".system_version." (".system_date.")' style='cursor:pointer; cursor:hand;'>"
@@ -680,21 +680,21 @@ class Rxx
         switch (system) {
             case "RNA":
                 $out.=
-                    Rxx::menuItem_selected("<b>North America</b>", 210)
-                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 210)
-                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 215);
+                    Rxx::menuItem_selected("<b>North America</b>", 220)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 220)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 220);
                 break;
             case "REU":
                 $out.=
-                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 210)
-                    .Rxx::menuItem_selected("<b>Europe</b>", 210)
-                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 215);
+                    Rxx::menuItem("system_RNA", "North America", "sys", 0, 220)
+                    .Rxx::menuItem_selected("<b>Europe</b>", 220)
+                    .Rxx::menuItem("system_RWW", "Worldwide", "sys", 0, 220);
                 break;
             case "RWW":
                 $out.=
-                     Rxx::menuItem("system_RNA", "North America", "sys", 0, 210)
-                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 210)
-                    .Rxx::menuItem_selected("<b>Worldwide</b>", 215);
+                     Rxx::menuItem("system_RNA", "North America", "sys", 0, 220)
+                    .Rxx::menuItem("system_REU", "Europe", "sys", 0, 220)
+                    .Rxx::menuItem_selected("<b>Worldwide</b>", 220);
                 break;
         }
         $out.=
@@ -719,7 +719,7 @@ class Rxx
                 :
                 Rxx::menuItem("logon", "Log On", "mode", 0, 45)
             )
-            .Rxx::menuItem("labs", "Labs", "mode", 0, 30)
+            .Rxx::menuItem("changes", "Changes", "mode", 0, 55)
             .Rxx::menuItem("help", "Help", "mode", 0, 35)
             .Rxx::menuItem("donate", "Donate", "mode", 0, 45)
             ."      </tr>\n"
@@ -761,7 +761,7 @@ class Rxx
             case 'help':
                 $out .= \Rxx\Rxx::help();
                 break;
-            case 'labs':
+            case 'changes':
                 $out.= $Obj->draw();
                 break;
             case 'logon':
@@ -2059,7 +2059,9 @@ class Rxx
             case 'admin_manage':
                 $response['value'] = 'admin/tools';
                 break;
+            case 'changes':
             case 'cle':
+            case 'donate':
             case 'help':
             case 'maps':
                 $response['value'] = $mode;
@@ -2079,7 +2081,6 @@ class Rxx
             case 'sys_info':
                 $response['value'] = 'admin/info';
                 break;
-            case 'donate':
             case 'poll_list':
             case 'tools':
                 $response = [ 'type' => 'alert', 'value' => 'Not yet implemented.' ];

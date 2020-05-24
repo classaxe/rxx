@@ -117,10 +117,10 @@ switch ($mode) {
     // Public functions
     case "admin_help":  // made public for Brian
     case "awards":
+    case "changes":
     case "cle":
     case "donate":
     case "help":
-    case "labs":
     case "listener_list":
     case "maps":
     case "poll_list":
