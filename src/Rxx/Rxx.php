@@ -1184,7 +1184,7 @@ class Rxx
             ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
             ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
             ."</head>\n"
-            ."<body leftmargin='0' topmargin='0' marginheight='0' marginwidth='0'>\n";
+            ."<body>\n";
         switch ($mode) {
             case "map_af":                $out[] = Tools\Map::map_af();
                 break;
@@ -2064,6 +2064,7 @@ class Rxx
             case 'donate':
             case 'help':
             case 'maps':
+            case 'tools':
                 $response['value'] = $mode;
                 break;
             case 'listener_list':
