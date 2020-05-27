@@ -16,17 +16,17 @@ class SystemStats
                 $filter_log_SQL = "1";
                 break;
         }
-        $sql =
-             "SELECT\n"
-            ."  DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last`\n"
-            ."FROM\n"
-            ."  `logs`\n"
-            ."WHERE\n"
-            ."  ".$filter_log_SQL." AND\n"
-            ."  `date` !=\"\" AND\n"
-            ."  `date` !=\"0000-00-0000\"";
+        $sql = <<< EOD
+            SELECT
+                DATE_FORMAT(MAX(`date`),'%Y-%m-%d') AS `last`
+            FROM
+                `logs`
+            WHERE
+                $filter_log_SQL
+EOD;
+
         $result =   \Rxx\Database::query($sql);
-        $row =        \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
+        $row =      \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
         return $row["last"];
     }
 }
