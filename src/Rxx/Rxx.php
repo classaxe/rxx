@@ -1120,122 +1120,170 @@ class Rxx
     public static function mini_popup()
     {
         global $mode;
-        $out =    array();
-        $out[] =    "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
-            ."<html><head>\n"
-            ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
-            ."<title>".system." > ";
+        $out =
+            "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
+            . "<html><head>\n"
+            . "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
+            . "<title>".system." > ";
         switch ($mode) {
-            case "map_af":                $out[] = "Africa";
+            case "map_af":
+                $out.= "Africa";
                 break;
-            case "map_alaska":                $out[] = "Alaska";
+            case "map_alaska":
+                $out.= "Alaska";
                 break;
-            case "map_as":                $out[] = "Asia";
+            case "map_as":
+                $out.= "Asia";
                 break;
-            case "map_au":                $out[] = "Australia";
+            case "map_au":
+                $out.= "Australia";
                 break;
-            case "map_eu":                $out[] = "Europe";
+            case "map_eu":
+                $out.= "Europe";
                 break;
-            case "map_na":                $out[] = "N.&amp; C.America + Hawaii";
+            case "map_na":
+                $out.= "N.&amp; C.America + Hawaii";
                 break;
-            case "map_locator":                $out[] = "Map locator for Listeners";
+            case "map_locator":
+                $out.= "Map locator for Listeners";
                 break;
-            case "map_pacific":                $out[] = "Pacific";
+            case "map_pacific":
+                $out.= "Pacific";
                 break;
-            case "map_polynesia":            $out[] = "Polynesia";
+            case "map_polynesia":
+                $out.= "Polynesia";
                 break;
-            case "map_sa":                $out[] = "S.America";
+            case "map_sa":
+                $out.= "S.America";
                 break;
-            case "tools_DGPS_popup":            $out[] = "DGPS Lookup";
+            case "tools_DGPS_popup":
+                $out.= "DGPS Lookup";
                 break;
-            case "tools_coordinates_conversion":    $out[] = "Coordinates Conversion";
+            case "tools_coordinates_conversion":
+                $out.= "Coordinates Conversion";
                 break;
-            case "tools_navtex_fixer":                $out[] = "Navtex Fixer";
+            case "tools_navtex_fixer":
+                $out.= "Navtex Fixer";
                 break;
-            case "tools_links":                $out[] = "links";
+            case "tools_links":
+                $out.= "links";
                 break;
-            case "tools_sunrise_calculator":        $out[] = "Sunrise Calculator";
+            case "tools_sunrise_calculator":
+                $out.= "Sunrise Calculator";
                 break;
-            case "weather_lightning_canada":        $out[] = "Lightning in Canada";
+            case "weather_lightning_canada":
+                $out.= "Lightning in Canada";
                 break;
-            case "weather_lightning_europe":        $out[] = "Lightning in Europe";
+            case "weather_lightning_europe":
+                $out.= "Lightning in Europe";
                 break;
-            case "weather_lightning_na":        $out[] = "Lightning in North America";
+            case "weather_lightning_na":
+                $out.= "Lightning in North America";
                 break;
-            case "weather_metar":            $out[] = "METAR Report";
+            case "weather_metar":
+                $out.= "METAR Report";
                 break;
-            case "weather_pressure_au":            $out[] = "Presure map for Australia";
+            case "weather_pressure_au":
+                $out.= "Presure map for Australia";
                 break;
-            case "weather_pressure_europe":        $out[] = "Presure map for Europe";
+            case "weather_pressure_europe":
+                $out.= "Presure map for Europe";
                 break;
-            case "weather_pressure_na":            $out[] = "Presure map for North America";
+            case "weather_pressure_na":
+                $out.= "Presure map for North America";
                 break;
-            case "weather_solar_map":            $out[] = "Solar Activity Chart";
+            case "weather_solar_map":
+                $out.= "Solar Activity Chart";
                 break;
         }
 
-        $out[] =     "</title>\n"
-            ."<script src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
-            ."<script>\n"
-            ."system_URL = '".system_URL."';\n"
-            ."</script>\n"
-            ."<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
-            ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
-            ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
-            ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
-            ."</head>\n"
-            ."<body>\n";
+        $out.=
+            "</title>\n"
+            . "<script src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
+            . "<script>\n"
+            . "system_URL = '".system_URL."';\n"
+            . "</script>\n"
+            . "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>\n"
+            . "<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
+            . "<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen' />\n"
+            . "<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
+            . "</head>\n"
+            . "<body>\n";
         switch ($mode) {
-            case "map_af":                $out[] = Tools\Map::map_af();
+            case "map_af":
+                $out.= Tools\Map::map_af();
                 break;
-            case "map_alaska":                $out[] = Tools\Map::map_alaska();
+            case "map_alaska":
+                $out.= Tools\Map::map_alaska();
                 break;
-            case "map_as":                $out[] = Tools\Map::map_as();
+            case "map_as":
+                $out.= Tools\Map::map_as();
                 break;
-            case "map_au":                $out[] = Tools\Map::map_au();
+            case "map_au":
+                $out.= Tools\Map::map_au();
                 break;
-            case "map_eu":                $out[] = Tools\Map::map_eu();
+            case "map_eu":
+                $out.= Tools\Map::map_eu();
                 break;
-            case "map_locator":                $out[] = Tools\Map::map_locator();
+            case "map_locator":
+                $out.= Tools\Map::map_locator();
                 break;
-            case "map_na":                $out[] = Tools\Map::map_na();
+            case "map_na":
+                $out.= Tools\Map::map_na();
                 break;
-            case "map_pacific":                $out[] = Tools\Map::map_pacific();
+            case "map_pacific":
+                $out.= Tools\Map::map_pacific();
                 break;
-            case "map_polynesia":            $out[] = Tools\Map::map_polynesia();
+            case "map_polynesia":
+                $out.= Tools\Map::map_polynesia();
                 break;
-            case "map_sa":                $out[] = Tools\Map::map_sa();
+            case "map_sa":
+                $out.= Tools\Map::map_sa();
                 break;
-            case "tools_DGPS_popup":            $out[] = Tools\Tools::tools_DGPS_lookup();
+            case "tools_DGPS_popup":
+                $out.= Tools\Tools::tools_DGPS_lookup();
                 break;
-            case "tools_coordinates_conversion":    $out[] = Tools\Tools::tools_coordinates_conversion();
+            case "tools_coordinates_conversion":
+                $out.= Tools\Tools::tools_coordinates_conversion();
                 break;
-            case "tools_navtex_fixer":                $out[] = Tools\Tools::tools_navtex_fixer();
+            case "tools_navtex_fixer":
+                $out.= Tools\Tools::tools_navtex_fixer();
                 break;
-            case "tools_links":                $out[] = Tools\Tools::tools_links();
+            case "tools_links":
+                $out.= Tools\Tools::tools_links();
                 break;
-            case "tools_sunrise_calculator":        $out[] = Tools\Tools::tools_sunrise_calculator();
+            case "tools_sunrise_calculator":
+                $out.= Tools\Tools::tools_sunrise_calculator();
                 break;
-            case "weather_lightning_canada":        $out[] = Tools\Weather::weather_lightning_canada();
+            case "weather_lightning_canada":
+                $out.= Tools\Weather::weather_lightning_canada();
                 break;
-            case "weather_lightning_europe":        $out[] = Tools\Weather::weather_lightning_europe();
+            case "weather_lightning_europe":
+                $out.= Tools\Weather::weather_lightning_europe();
                 break;
-            case "weather_lightning_na":        $out[] = Tools\Weather::weather_lightning_na();
+            case "weather_lightning_na":
+                $out.= Tools\Weather::weather_lightning_na();
                 break;
-            case "weather_metar":            $out[] = Tools\Weather::weather_metar();
+            case "weather_metar":
+                $out.= Tools\Weather::weather_metar();
                 break;
-            case "weather_pressure_europe":        $out[] = Tools\Weather::weather_pressure_europe();
+            case "weather_pressure_europe":
+                $out.= Tools\Weather::weather_pressure_europe();
                 break;
-            case "weather_pressure_au":            $out[] = Tools\Weather::weather_pressure_au();
+            case "weather_pressure_au":
+                $out.= Tools\Weather::weather_pressure_au();
                 break;
-            case "weather_pressure_na":            $out[] = Tools\Weather::weather_pressure_na();
+            case "weather_pressure_na":
+                $out.= Tools\Weather::weather_pressure_na();
                 break;
-            case "weather_solar_map":            $out[] = Tools\Weather::weather_solar_map();
+            case "weather_solar_map":
+                $out.= Tools\Weather::weather_solar_map();
                 break;
         }
-        $out[] =    "</body>\n"
-            ."</html>\n";
-        print (implode($out, ""));
+        $out.=  "</body>\n"
+                . "</html>\n";
+        print $out;
+        die;
     }
 
     /**

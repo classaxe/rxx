@@ -46,7 +46,7 @@ class Tools
      */
     public static function tools_coordinates_conversion()
     {
-        global $mode,$script,$GSQ;
+        global $mode, $script, $GSQ;
         return
             "<form name='coords' onsubmit='return false;'>\n"
             ."<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
@@ -56,7 +56,7 @@ class Tools
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='coords'></a>Coordinates Converter</th>\n"
             .($mode=="tools" ?
                 "        <th align='right' class='downloadTableHeadings_nosort'>"
-                ."<a href=\"javascript:popWin('$script?mode=tools_coordinates_conversion','tools_coordinates_conversion','scrollbars=0,resizable=0',610,144,'centre')\">"
+                ."<a href=\"javascript:popWin('".system_URL."/tools_coordinates_conversion','tools_coordinates_conversion','scrollbars=0,resizable=0',618,146,'centre')\">"
                 ."<img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
             ."      </tr>\n"
             ."    </table></th>\n"
@@ -196,7 +196,7 @@ class Tools
             ."        <th align='left' class='downloadTableHeadings_nosort'><a name='coords'></a>NAVTEX Missed Shift Translator (Version 1.3)</th>\n"
             .($mode=="tools" ?
                 "        <th align='right' class='downloadTableHeadings_nosort'>"
-                ."<a href=\"javascript:popWin('$script?mode=tools_navtex_fixer','tools_navtex_fixer','scrollbars=0,resizable=0',420,390,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+                ."<a href=\"javascript:popWin('".system_URL."/tools_navtex_fixer','tools_navtex_fixer','scrollbars=0,resizable=0',420,370,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
             ."      </tr>\n"
             ."    </table></th>\n"
             ."  </tr>\n"
@@ -251,7 +251,7 @@ class Tools
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='links'></a>Other Databases on the Web</th>\n"
         .($mode=="tools" ?
             "        <th align='right' class='downloadTableHeadings_nosort'>"
-            ."<a href=\"javascript:popWin('$script?mode=tools_links','tools_links','scrollbars=0,resizable=0',520,112,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+            ."<a href=\"javascript:popWin('".system_URL."/tools_links','tools_links','scrollbars=0,resizable=0',520,130,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
@@ -283,7 +283,7 @@ class Tools
         ."        <th align='left' class='downloadTableHeadings_nosort'><a name='sunrise'></a>Sunrise / Sunset Calculator</th>\n"
         .($mode=="tools" ?
             "        <th align='right' class='downloadTableHeadings_nosort'>"
-            ."<a href=\"javascript:popWin('$script?mode=tools_sunrise_calculator','tools_sunrise_calculator','scrollbars=0,resizable=0',455,312,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
+            ."<a href=\"javascript:popWin('".system_URL."/tools_sunrise_calculator','tools_sunrise_calculator','scrollbars=0,resizable=0',455,312,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
         ."      </tr>\n"
         ."    </table></th>\n"
         ."  </tr>\n"
