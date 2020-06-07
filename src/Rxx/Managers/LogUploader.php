@@ -48,9 +48,9 @@ class LogUploader
     ];
 
     public static $singleTokens = [
-        'KHZ', 'ID',  'GSQ',  'PWR',  'QTH',   'SP',    'ITU',
-        'LSB', 'USB', '~LSB', '~USB', '+SB-',  '+~SB-', '+K-', 'ABS', '~ABS',
-        'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm', 'ITU-SP',
+        'KHZ', 'MHZ', 'ID',  'GSQ',   'PWR',   'QTH',   'SP',   'ITU',
+        'LSB', 'USB', '~LSB', '~USB', '+SB-',  '+~SB-', '+K-',  'ABS', '~ABS',
+        'sec', 'fmt', 'x',    'X',    'hh:mm', 'hhmm',  'ITU-SP',
         'D',   'DD',  'M',    'MM',   'MMM',   'YY',    'YYYY'
     ];
 
@@ -1130,9 +1130,18 @@ class LogUploader
 
     private function extractKhz()
     {
-        if ((float)isset($this->tokens["KHZ"])) {
-            $this->KHZ =
-                str_replace(",", ".", trim(substr($this->line, $this->tokens["KHZ"][0], $this->tokens["KHZ"][1])));
+        if (isset($this->tokens["MHZ"])) {
+            $this->KHZ = 1000 * (float)str_replace(
+                ',',
+                '.',
+                trim(substr($this->line, $this->tokens["MHZ"][0], $this->tokens["MHZ"][1]))
+            );
+        } elseif (isset($this->tokens["KHZ"])) {
+            $this->KHZ = str_replace(
+                ',',
+                '.',
+                trim(substr($this->line, $this->tokens["KHZ"][0], $this->tokens["KHZ"][1]))
+            );
         }
     }
 
