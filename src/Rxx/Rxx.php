@@ -1192,7 +1192,8 @@ class Rxx
             case "weather_pressure_na":
                 $out.= "Presure map for North America";
                 break;
-            case "weather_solar_map":
+            case "weather_solar_map_n":
+            case "weather_solar_map_s":
                 $out.= "Solar Activity Chart";
                 break;
         }
@@ -1276,8 +1277,11 @@ class Rxx
             case "weather_pressure_na":
                 $out.= Tools\Weather::weather_pressure_na();
                 break;
-            case "weather_solar_map":
-                $out.= Tools\Weather::weather_solar_map();
+            case "weather_solar_map_n":
+                $out.= Tools\Weather::weather_solar_map('n');
+                break;
+            case "weather_solar_map_s":
+                $out.= Tools\Weather::weather_solar_map('s');
                 break;
         }
         $out.=  "</body>\n"
@@ -2113,6 +2117,7 @@ class Rxx
             case 'help':
             case 'maps':
             case 'tools':
+            case 'weather':
                 $response['value'] = $mode;
                 break;
             case 'listener_list':

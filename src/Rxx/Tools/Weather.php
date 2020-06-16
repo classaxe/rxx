@@ -15,6 +15,85 @@ namespace Rxx\Tools;
 class Weather
 {
     /**
+     * @return string
+     */
+    public static function weather()
+    {
+        global $script, $mode, $submode, $ICAO, $hours, $GSQ;
+        ini_set("default_socket_timeout", 10);
+        return "<form name='form' action='$script' method='POST'>\n"
+            ."<input type='hidden' name='mode' value='$mode'>\n"
+            ."<input type='hidden' name='submode' value=''>\n"
+            ."</form>\n"
+            ."<h2>Weather</h2>\n"
+            ."<p align='center'><small>Quick Links [\n"
+            ."<a href='#aurora_n'><b>Northern Aurora</b></a> |\n"
+            ."<a href='#aurora_s'><b>Southern Aurora</b></a> |\n"
+            .(system=="RNA" || system=="RWW" ?
+                "<a href='#ltg_usa'><b>Lightning - USA</b></a> |\n"
+                ."<a href='#ltg_can'><b>Lightning - Canada</b></a> |\n"
+                ."<a href='#pres_na'><b>Pressure Map - North America</b></a> |\n"
+             : ""
+            )
+            .(system=="REU" || system=="RWW" ?
+                "<a href='#ltg_eu'><b>Lightning - Europe</b></a> |\n"
+                ."<a href='#pres_eu'><b>Pressure Map - Europe</b></a> |\n" : ""
+            )
+            .(system=="RWW" ?
+                "<a href='#pres_au'><b>Pressure Map - Australia</b></a> |\n" : ""
+            )
+            ."<a href='#pressure'><b>Pressure History</b></a>\n"
+            ."]</small></p><br><br>\n"
+            ."<p>See Also <a href='http://www.qsl.net/ve6wz/geomag.html' target='_blank'>http://www.qsl.net/ve6wz/geomag.html</a>.</p>\n"
+            ."<div>"
+            ."<div style='float: left; margin: 0 1em 0 0'>".Weather::weather_solar_map('n')."</div>"
+            ."<div style='float: left'>".Weather::weather_solar_map('s')."</div>\n"
+            ."</div><br style='clear: both;'><br><br><br>"
+            .(system=="RNA" || system=="RWW" ?
+                Weather::weather_lightning_na()."<br><br><br>\n".Weather::weather_lightning_canada()."<br><br><br>\n".Weather::weather_pressure_na()."<br><br><br>\n"
+                : "")
+            .(system=="REU" || system=="RWW" ?
+                Weather::weather_lightning_europe()."<br><br><br>\n".Weather::weather_pressure_europe()."<br><br><br>\n"
+                : "")
+            .(system=="RWW" ?
+                Weather::weather_pressure_au()."<br><br><br>\n" : "")
+            .Weather::weather_metar();
+    }
+
+    /**
+     * @return string
+     */
+    public static function weather_solar_map($pole)
+    {
+        global $mode;
+        return
+            "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
+            ."  <tr>\n"
+            ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
+            ."      <tr>\n"
+            ."        <th align='left' class='downloadTableHeadings_nosort'>"
+            ."<a name='aurora_$pole'></a>".($pole==='n' ? 'Northern' : 'Southern')." Solar Activity Chart</th>\n"
+            .($mode=="weather" ?
+                "        <th align='right' class='downloadTableHeadings_nosort'>"
+                ."<a href=\"javascript:popWin('".system_URL."/weather_solar_map_$pole','weather_solar_map_$pole','scrollbars=0,resizable=0',471,448,'centre')\">"
+                ."<img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> "
+                ."<a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n"
+                : ""
+            )
+            ."      </tr>\n"
+            ."    </table></th>\n"
+            ."  </tr>\n"
+            ."  <tr>\n"
+            ."    <td class='downloadTableContent'>From "
+            ."<a href='https://services.swpc.noaa.gov/images/animations/ovation-". ($pole==='n' ? 'north' : 'south') ."/latest.jpg' target='_blank'>"
+            ."NOAA Auroral Activity</a> site.<br>\n"
+            ."<a href='https://services.swpc.noaa.gov/images/animations/ovation-". ($pole==='n' ? 'north' : 'south') ."/latest.jpg' target='_blank'><img\n"
+            ."src='https://services.swpc.noaa.gov/images/animations/ovation-". ($pole==='n' ? 'north' : 'south') ."/latest.jpg' height='400' width='450'></a></td>\n"
+            ."  </tr>\n"
+            ."</table>\n";
+    }
+
+    /**
      * @param $ICAO
      * @param $hours
      * @param $list
@@ -69,45 +148,7 @@ class Weather
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function weather()
-    {
-        global $script, $mode, $submode, $ICAO, $hours, $GSQ;
-        ini_set("default_socket_timeout", 10);
-        return "<form name='form' action='$script' method='POST'>\n"
-        ."<input type='hidden' name='mode' value='$mode'>\n"
-        ."<input type='hidden' name='submode' value=''>\n"
-        ."</form>\n"
-        ."<h2>Weather</h2>\n"
-        ."<p align='center'><small>Quick Links [\n"
-        ."<nobr><a href='#aurora'><b>Aurora Map</b></a></nobr> |\n"
-        .(system=="RNA" || system=="RWW" ?
-            "<nobr><a href='#ltg_usa'><b>Lightning - USA</b></a></nobr> |\n"
-            ."<nobr><a href='#ltg_can'><b>Lightning - Canada</b></a></nobr> |\n"
-            ."<nobr><a href='#pres_na'><b>Pressure Map - North America</b></a></nobr> |\n" : "")
-        .(system=="REU" || system=="RWW" ?
-            "<nobr><a href='#ltg_eu'><b>Lightning - Europe</b></a></nobr> |\n"
-            ."<nobr><a href='#pres_eu'><b>Pressure Map - Europe</b></a></nobr> |\n" : "")
-        .(system=="RWW" ?
-            "<nobr><a href='#pres_au'><b>Pressure Map - Australia</b></a></nobr> |\n" : "")
-        ."<nobr><a href='#pressure'><b>Pressure History</b></a></nobr>\n"
-        ."]</small></p><br><br>\n"
-        ."<p>See Also <a href='http://www.qsl.net/ve6wz/geomag.html' target='_blank'>http://www.qsl.net/ve6wz/geomag.html</a>.</p>\n"
-        .Weather::weather_solar_map()."<br><br><br>\n"
-        .(system=="RNA" || system=="RWW" ?
-            Weather::weather_lightning_na()."<br><br><br>\n".Weather::weather_lightning_canada()."<br><br><br>\n".Weather::weather_pressure_na()."<br><br><br>\n"
-            : "")
-        .(system=="REU" || system=="RWW" ?
-            Weather::weather_lightning_europe()."<br><br><br>\n".Weather::weather_pressure_europe()."<br><br><br>\n"
-            : "")
-        .(system=="RWW" ?
-            Weather::weather_pressure_au()."<br><br><br>\n" : "")
-        .Weather::weather_metar();
-    }
-
-    /**
+     /**
      * @return string
      */
     public static function weather_lightning_canada()
@@ -351,31 +392,6 @@ class Weather
             ."<script language='javascript' type='text/javascript'>document.write(\"<a title='Contact the Developer' "
             ."href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com?subject=".system."%20Problem'>Martin Francis\"+\"</a>\")</script> "
             ."if this symptom persists</font></h3></td>")
-        ."  </tr>\n"
-        ."</table>\n";
-    }
-
-    /**
-     * @return string
-     */
-    public static function weather_solar_map()
-    {
-        global $mode,$script;
-        return "<table cellpadding='2' border='0' cellspacing='1' class='downloadtable'>\n"
-        ."  <tr>\n"
-        ."    <th class='downloadTableHeadings_nosort'><table cellpadding='0' cellspacing='0' border='0' width='100%'>\n"
-        ."      <tr>\n"
-        ."        <th align='left' class='downloadTableHeadings_nosort'><a name='aurora'></a>Solar Activity Chart</th>\n"
-        .($mode=="weather" ?
-            "        <th align='right' class='downloadTableHeadings_nosort'>"
-            ."<a href=\"javascript:popWin('$script?mode=weather_solar_map','weather_solar_map','scrollbars=0,resizable=0',471,448,'centre')\"><img src='".BASE_PATH."assets/icon-popup.gif' border='0'></a> <a href='#top' class='yellow'><img src='".BASE_PATH."assets/icon-top.gif' border='0'></th>\n" : "")
-        ."      </tr>\n"
-        ."    </table></th>\n"
-        ."  </tr>\n"
-        ."  <tr>\n"
-        ."    <td class='downloadTableContent'>From <a href='http://www.sec.noaa.gov/pmap/pmapN.html' target='_blank'>SEC POES Auroral Activity</a> site.<br>\n"
-        ."<a href='http://www.sec.noaa.gov/pmap/gif/pmapN.gif' target='_blank'><img\n"
-        ."src='http://www.sec.noaa.gov/pmap/gif/pmapN.gif' height='400' width='450'></a></td>\n"
         ."  </tr>\n"
         ."</table>\n";
     }

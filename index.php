@@ -186,7 +186,8 @@ switch ($mode) {
     case "weather_pressure_au":
     case "weather_pressure_europe":
     case "weather_pressure_na":
-    case "weather_solar_map":
+    case "weather_solar_map_n":
+    case "weather_solar_map_s":
         \Rxx\Rxx::mini_popup();
         break;
     case "lastlog":

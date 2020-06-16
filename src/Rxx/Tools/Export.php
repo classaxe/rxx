@@ -43,7 +43,7 @@ class Export
 
         $result =   @\Rxx\Database::query($sql);
 
-        $out[] =    "dgps =	new Array();\r\n";
+        $out[] =    "dgps =	[];\r\n";
 
         for ($i=0; $i<\Rxx\Database::numRows($result); $i++) {
             $row =  \Rxx\Database::fetchArray($result, MYSQLI_ASSOC);
