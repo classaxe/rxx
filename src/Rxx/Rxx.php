@@ -127,6 +127,29 @@ class Rxx
         return $tag;
     }
 
+    public static function getMatmoCode()
+    {
+        return <<< EOD
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://classaxe.com/piwik/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '45']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+EOD;
+
+    }
+
     /**
      * @param $itu
      * @return string
@@ -581,9 +604,6 @@ class Rxx
                 $Obj = false;
                 break;
         }
-
-
-
         $out =
             "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>\n"
             ."<html><head>\n"
@@ -643,6 +663,7 @@ class Rxx
         $out.=
             (Rxx::isAdmin() ? " (ADMIN)" : "")
             ."</title>\n"
+            .RXX::getMatmoCode()
             ."<link type='text/css' rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>\n"
             ."<link href='".BASE_PATH."assets/style.css?v=".Rxx::getGitTag()."' rel='stylesheet' type='text/css'>\n"
             ."<link href='".BASE_PATH."assets/".strtoLower(system).".css?v=".Rxx::getGitTag()."' rel='stylesheet' type='text/css' media='screen'>\n"
@@ -1010,6 +1031,7 @@ class Rxx
         }
         $out.=
             "</title>\n"
+            .RXX::getMatmoCode()
             ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\n"
             ."<link href='".BASE_PATH."assets/".strtoLower(system).".css' rel='stylesheet' type='text/css' media='screen'>\n"
             ."<link href='".BASE_PATH."assets/print.css' rel='stylesheet' type='text/css' media='print'>\n"
@@ -1200,6 +1222,7 @@ class Rxx
 
         $out.=
             "</title>\n"
+            . RXX::getMatmoCode()
             . "<script src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
             . "<script>\n"
             . "system_URL = '".system_URL."';\n"

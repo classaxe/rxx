@@ -18,6 +18,8 @@
 // *******************************************
 namespace Rxx\Tools;
 
+use Rxx\Rxx;
+
 /**
  * Class Export
  * @package Rxx\Tools
@@ -132,6 +134,7 @@ class Export
         $out[] =
             "<html>\r\n"
             ."<head><title>NDB WebLog Export</title>\r\n"
+            .RXX::getMatmoCode()
             ."<link href='".BASE_PATH."assets/style.css' rel='stylesheet' type='text/css' media='screen'>\r\n"
             ."</head>\r\n"
             ."<body><form>\n"
@@ -209,6 +212,7 @@ class Export
             ."<HTML>\r\n"
             ."<HEAD>\r\n"
             ."<title>NDB Weblog</title>\r\n"
+            .RXX::getMatmoCode()
             ."<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=windows-1252\">\r\n"
             ."<meta http-equiv=\"PICS-Label\""
             ." content='(PICS-1.1 \"http://www.rsac.org/ratingsv01.html\" l gen true r (n 0 s 0 v 0 l 0)'>\r\n"
@@ -528,7 +532,9 @@ class Export
         ;
         $result =   @\Rxx\Database::query($sql);
         print
-            "<html><head><title>".system."</title></head>\n"
+            "<html><head><title>".system."</title>"
+            .RXX::getMatmoCode()
+            ."</head>\n"
             ."<table border=\"1\" bordercolor=\"#000000\" cellpadding=\"0\" cellspacing=\"0\">\n"
             ."  <tr bgcolor=\"#c0c0c0\">\n"
             ."    <th>KHZ</th>\n"
