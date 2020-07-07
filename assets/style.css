@@ -680,9 +680,9 @@ body {
 }
 .version {
     float: right;
-    background: #ffff80;
-    padding: 0 0.5em;
-    border: 1px solid #eee;
+    background: #eee;
+    padding: 0.125em 0.5em;
+    border: 1px solid #ccc;
 }
 .version a {
     color: #0000ff;
@@ -691,6 +691,7 @@ body {
 .version a:active {
     font-weight: bold;
     text-decoration: underline;
+    border: none;
 }
 #tokenErrors th {
     text-align: left;

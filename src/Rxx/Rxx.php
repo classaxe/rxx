@@ -2175,9 +2175,10 @@ EOD;
 
         $html =
             "<div class=\"version\">\n"
-            . "    <strong>Version:</strong> " . exec('git describe --tags') . " &nbsp;  &nbsp; &nbsp; "
-            . "    <strong>Switch:</strong> [\n"
-            ."        <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> |\n"
+            . "[\n"
+            ."       <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> <strong>"
+            . exec('git describe --tags')
+            . "</strong> |\n"
             ."       <a href=\""
             . ($response['type'] === 'url' ? "//rxx.classaxe.com/en/$sys/" . $response['value'] : "#\" onclick=\"alert('" . $response['value'] . "');return false;")
             . "\">New</a>\n"
