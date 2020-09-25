@@ -137,11 +137,11 @@ switch ($mode) {
             if (strtolower($user) === strtolower(admin_user) && strtolower($password) === strtolower(admin_password)) {
                 $_SESSION['admin'] = true;
                 $_SESSION['invaliduser'] = false;
+                header("Location: " . system_URL . "/" . $mode);
             } else {
                 $_SESSION['admin'] = false;
                 $_SESSION['invaliduser'] = true;
             }
-            header("Location: " . system_URL . "/" . $mode);
         }
         \Rxx\Rxx::main();
         break;

@@ -554,7 +554,6 @@ EOD;
     public static function isInvalidLogon()
     {
         $result = (isset($_SESSION['invaliduser']) && $_SESSION['invaliduser'] === true);
-        unset($_SESSION['invaliduser']);
         return $result;
     }
 
@@ -868,6 +867,8 @@ EOD;
             ."</body>\n"
             ."</html>\n";
         print $out;
+
+        unset($_SESSION['invaliduser']);
     }
 
     /**
