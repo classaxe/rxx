@@ -554,7 +554,7 @@ EOD;
     public static function isInvalidLogon()
     {
         $result = (isset($_SESSION['invaliduser']) && $_SESSION['invaliduser'] === true);
-        unset($_SESSION['admin']);
+        unset($_SESSION['invaliduser']);
         return $result;
     }
 
