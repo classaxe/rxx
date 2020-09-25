@@ -22,6 +22,7 @@ class Logon
         }
         return
              "<h2>Logon</h2><p>You must logon in order to perform administrative functions.</p>"
+            .(\Rxx\Rxx::isInvalidLogon() ? "<p style='color: red'><b>Error:</b><br>Invalid username or password given.</p>" : '')
             ."<form name='form' action='".system_URL."' method='post'>\n"
             ."<input type='hidden' name='mode' value='$mode'>\n"
             ."<input type='hidden' name='submode' value='logon'>\n"

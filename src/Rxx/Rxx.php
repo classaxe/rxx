@@ -545,7 +545,17 @@ EOD;
      */
     public static function isAdmin()
     {
-        return (isset($_SESSION['admin']) && $_SESSION['admin']===true);
+        return (isset($_SESSION['admin']) && $_SESSION['admin'] === true);
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isInvalidLogon()
+    {
+        $result = (isset($_SESSION['invaliduser']) && $_SESSION['invaliduser'] === true);
+        unset($_SESSION['admin']);
+        return $result;
     }
 
     /**

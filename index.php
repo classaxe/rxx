@@ -133,9 +133,15 @@ switch ($mode) {
         break;
 
     case "logon":
-        if (isset($submode) && $submode == "logon"  && strtolower($user)==admin_user && strtolower($password)==admin_password) {
-            $_SESSION['admin'] = true;
-            header("Location: ".system_URL."/".$mode);
+        if (isset($submode) && $submode == "logon") {
+            if (strtolower($user) === strtolower(admin_user) && strtolower($password) === strtolower(admin_password)) {
+                $_SESSION['admin'] = true;
+                $_SESSION['invaliduser'] = false;
+            } else {
+                $_SESSION['admin'] = false;
+                $_SESSION['invaliduser'] = true;
+            }
+            header("Location: " . system_URL . "/" . $mode);
         }
         \Rxx\Rxx::main();
         break;
@@ -329,6 +335,7 @@ switch ($mode) {
 
     case "logoff":
         unset($_SESSION['admin']);
+        unset($_SESSION['invaliduser']);
         header("Location: ".system_URL);
         break;
 
