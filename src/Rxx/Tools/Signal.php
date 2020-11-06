@@ -206,7 +206,7 @@ class Signal
                     if ($call && $khz) {
                         $sql = "INSERT INTO `signals` SET\n"
                             ."  `active` = ".addslashes(trim($active)).",\n"
-                            ."  `call` = \"".addslashes(trim($call))."\",\n"
+                            ."  `call` = \"".addslashes(htmlentities(trim($call)))."\",\n"
                             ."  `format` = \"".addslashes(trim($format))."\",\n"
                             ."  `GSQ` = \"".addslashes(trim($GSQ))."\",\n"
                             ."  `ITU` = \"".addslashes(trim($ITU))."\",\n"
@@ -214,9 +214,9 @@ class Signal
                             .($GSQ ? "  `lat` = \"".$lat."\",\n  `lon` = \"".$lon."\",\n" : "")
                             .($LSB!="" ? "  `LSB` = \"".addslashes(trim($LSB))."\",\n" : "")
                             ."  `LSB_approx` = \"$LSB_approx\",\n"
-                            ."  `notes` = \"".addslashes((trim($notes)))."\",\n"
+                            ."  `notes` = \"".addslashes(htmlentities(trim($notes)))."\",\n"
                             ."  `pwr` = \"".addslashes(trim($pwr))."\",\n"
-                            ."  `QTH` = \"".addslashes(trim($QTH))."\",\n"
+                            ."  `QTH` = \"".addslashes(htmlentities(trim($QTH)))."\",\n"
                             ."  `region` = \"".addslashes(trim($region))."\",\n"
                             ."  `sec` = \"".addslashes(trim($sec))."\",\n"
                             ."  `SP` = \"".addslashes(trim($SP))."\",\n"
@@ -233,7 +233,7 @@ class Signal
                     $sql =
                         "UPDATE `signals` SET\n"
                         ."  `active` = ".addslashes(trim($active)).",\n"
-                        ."  `call` = \"".addslashes(trim($call))."\",\n"
+                        ."  `call` = \"".addslashes(htmlentities(trim($call)))."\",\n"
                         ."  `format` = \"".addslashes(trim($format))."\",\n"
                         ."  `GSQ` = \"".addslashes(trim($GSQ))."\",\n"
                         ."  `ITU` = \"".addslashes(trim($ITU))."\",\n"
@@ -241,9 +241,9 @@ class Signal
                         .($GSQ ? "  `lat` = \"".$lat."\",\n  `lon` = \"".$lon."\",\n" : "")
                         .($LSB==="" ? "  `LSB` = \N,\n" : "  `LSB` = \"".addslashes(trim($LSB))."\",\n")
                         ."  `LSB_approx` = \"$LSB_approx\",\n"
-                        ."  `notes` = \"".addslashes((trim($notes)))."\",\n"
+                        ."  `notes` = \"".addslashes(htmlentities(trim($notes)))."\",\n"
                         ."  `pwr` = \"".addslashes(trim($pwr))."\",\n"
-                        ."  `QTH` = \"".addslashes(trim($QTH))."\",\n"
+                        ."  `QTH` = \"".addslashes(htmlentities(trim($QTH)))."\",\n"
                         ."  `region` = \"".addslashes(trim($region))."\",\n"
                         ."  `sec` = \"".addslashes(trim($sec))."\",\n"
                         ."  `SP` = \"".addslashes(trim($SP))."\",\n"
