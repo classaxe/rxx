@@ -689,7 +689,7 @@ EOD;
             ."<script src='".BASE_PATH."assets/functions.js?v=".Rxx::getGitTag()."'></script>\n"
             ."</head>\n"
             ."<body onload='show_time()'><span><a name='top'></a></span>\n"
-            .\Rxx\Rxx::new_classic(system, $mode)
+            .\Rxx\Rxx::new_classic(system, $mode, false)
             ."<table cellpadding='10' cellspacing='0' width='676' class='titleTable'>\n"
             ."  <tr>\n"
             ."    <td align='center'>"
@@ -849,20 +849,16 @@ EOD;
                 $out.= 'Fatal error: Class is not defined. ' . $mode;
                 break;
         }
+        $newLink = \Rxx\Rxx::new_classic(system, $mode, true);
         $out.=
             "    </td>\n"
             ."  </tr>\n"
             ."</table>\n"
             ."<br><br><hr noshade>\n"
             ."<div class='footer'>"
-            ."<p><b>Your ".system." Editors are:</b><br>\n"
-            .system_editor."<br><b>".awardsAdminName."</b> (Awards Coordinator)</p>"
-            ."<p>Software by <b><script type='text/javascript'>//<!--\n"
-            ."document.write(\"<a title='Contact the Developer' href='mail\"+\"to\"+\":martin\"+\"@\"+\"classaxe\"+\".\"+\"com"
-            ."?subject=".system."%20System'>Martin Francis\"+\"<\/a>\");\n"
-            ."//--></script></b>"
-            ." &copy;".date('Y', time())."<br>"
-            ."Original concept".(system=='RNA' ? " &amp; data" : "")." <b>Andy Robins</b></p>\n"
+            ."<h3>Important Note</h3>\n"
+            ."<p><b>This system is no longer maintained and will shortly be removed.</b></p>\n"
+            ."<p>Please update your bookmarks to point to the <a href=\"//rxx.classaxe.com\">New Improved version</a> of RXX.</p>\n"
             ."</div>\n"
             ."</body>\n"
             ."</html>\n";
@@ -2133,7 +2129,7 @@ EOD;
         return $D;
     }
 
-    public static function new_classic($system, $mode)
+    public static function new_classic($system, $mode, $newLinkOnly = false)
     {
         $show = Rxx::get_var('show');
         $sys = strtolower($system);
@@ -2184,15 +2180,22 @@ EOD;
                 break;
         }
 
+        $newLink =
+            "<a href=\""
+            . ($response['type'] === 'url' ? "//rxx.classaxe.com/en/$sys/" . $response['value'] : "#\" onclick=\"alert('" . $response['value'] . "');return false;")
+            . "\">";
+
+        if ($newLinkOnly) {
+            return $newLink;
+        }
+
         $html =
             "<div class=\"version\">\n"
             . "[\n"
             ."       <a href=\"/dx/ndb/$sys/$mode\" class=\"active\">Classic</a> <strong>"
             . exec('git describe --tags')
             . "</strong> |\n"
-            ."       <a href=\""
-            . ($response['type'] === 'url' ? "//rxx.classaxe.com/en/$sys/" . $response['value'] : "#\" onclick=\"alert('" . $response['value'] . "');return false;")
-            . "\">New</a>\n"
+            ."       " . $newLink ."New</a>\n"
             . "]</div>\n"
             . "</div>";
         return $html;

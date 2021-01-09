@@ -474,8 +474,11 @@ img.nav
     max-width: 360px;
     overflow: hidden;
 }
+.footer h3 {
+    text-align: center; margin: 0.5em 0; font-size: 120%; color: #ff0000;
+}
 .footer p {
-    text-align: center; margin: 0.5em 0; font-size: 60%;
+    text-align: center; margin: 0.5em 0; font-size: 100%;
 }
 .footer p a {
     font-weight: bold;
