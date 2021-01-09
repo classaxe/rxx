@@ -4,71 +4,14 @@ switch(system){
     case 'RNA':
         define("system_ID", "1");
         define("system_title", "Signals Received in N &amp; C America + Hawaii");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"comcast\"+\".\"+\"net"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
         break;
     case 'REU':
         define("system_ID", "2");
         define("system_title", "Signals Received in Europe");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB Editor' href='mail\"+\"to\"+\":"
-            ."aunumero73\"+\"@\"+\"gmail\"+\".\"+\"com"
-            ."?subject=".system."%20System'>Pat Vignoud\"+\"<\/a> (for NDBs)<br />"
-            ."<a title='Contact the Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"comcast\"+\".\"+\"net"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
         break;
     case 'RWW':
         define("system_ID", "3");
         define("system_title", "Signals Received Worldwide");
-        define(
-            "system_editor",
-            "<script type='text/javascript'>//<!--\n"
-            ."document.write(\""
-            ." <a title='Contact the DSC Mode Editor' href='mail\"+\"to\"+\":"
-            ."peter\"+\"conway\"+\"@\"+\"talk\"+\"talk.\"+\"net"
-            ."?subject=".system."%20System'>"
-            ."Peter Conway\"+\"<\/a> (for DSC signals)<br />"
-            ."<a title='Contact the NDB / Ham Beacon Editor' href='mail\"+\"to\"+\":"
-            ."smoketronics\"+\"@\"+\"comcast\"+\".\"+\"net"
-            ."?subject=".system."%20System'>S M O'Kelley\"+\"<\/a> (for NDBs and Ham Beacons)<br />"
-            ." <a title='Contact the DGPS and Navtex Modes Editor' href='mail\"+\"to\"+\":"
-            ."roelof\"+\"@\"+\"ndb\"+\".\"+\"demon\"+\".\"+\"nl"
-            ."?subject=".system."%20System'>"
-            ."Roelof Bakker\"+\"<\/a> (for DGPS and Navtex signals)<br />"
-            ."\");\n"
-            ."//--></script>"
-        );
         break;
 }
 define("NDB", 0);
